@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             x:Class="micro_c_app.Views.ItemDetails">
+    <ContentPage.BindingContext>
+        <vm:ItemDetailsViewModel />
+    </ContentPage.BindingContext>
+    
+    <ContentPage.Content>
+        <ScrollView>
+            <StackLayout Margin="10,0,10,0">
+                <Label Text="{Binding Item.Name, FallbackValue=NAME}" FontSize="36"/>
+                <Image Source="{Binding Item.PictureUrl, FallbackValue=https://aka.ms/campus.jpg}" HeightRequest="200" />
+                <Label Text="{Binding Item.Specs[SKU], FallbackValue=123456}"/>
+                <Label Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
+                <Label Text="{Binding Item.Price, StringFormat='$ {0}', FallbackValue=123.45}" FontSize="Large"/>
+                <ListView ItemsSource="{Binding Item.Specs}" IsEnabled="False" HasUnevenRows="True">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <ViewCell.View>
+                                    <StackLayout Orientation="Horizontal" Margin="0,10,0,10">
+                                        <Label Text="{Binding Key}" WidthRequest="200"/>
+                                        <Label Text="{Binding Value}"/>
+                                    </StackLayout>
+                                </ViewCell.View>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackLayout>
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>
