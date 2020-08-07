@@ -18,12 +18,12 @@
     </ContentPage.Resources>
 
     <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
-        <Picker x:Name="StorePicker" Title="Store" ItemsSource="{Binding StoreNames}" SelectedItem="{Binding SelectedStoreName, Mode=TwoWay}" />
+        <Picker x:Name="StorePicker" Title="Store" ItemsSource="{Binding StoreNames}" SelectedItem="{Binding SelectedStoreName, Mode=TwoWay}" TextColor="Black" TitleColor="DarkGray" />
         <Button Margin="0,0,0,30" Text="Scan"
                         BackgroundColor="{StaticResource Primary}"
                         Clicked="OnScanClicked"
                         TextColor="White" />
-        <Entry x:Name="SearchField" Keyboard="Numeric" Placeholder="Enter a SKU/UPC" />
+        <Entry x:Name="SearchField" Keyboard="Numeric" Placeholder="Enter a SKU/UPC"  TextColor="Black" PlaceholderColor="DarkGray"/>
         <Button Margin="0,10,0,0" Text="Search"
                         BackgroundColor="{StaticResource Primary}"
                         Clicked="OnSearchClicked"
