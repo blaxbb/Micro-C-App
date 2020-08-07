@@ -4,7 +4,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing;
@@ -13,13 +15,21 @@ using ZXing.Net.Mobile.Forms;
 
 namespace micro_c_app.Views
 {
-    public partial class AboutPage : ContentPage
+    public partial class SearchPage : ContentPage
     {
         HttpClient client;
-        public AboutPage()
+        public SearchPage()
         {
             client = new HttpClient();
             InitializeComponent();
+            StorePicker.SelectedIndexChanged += StorePicker_SelectedIndexChanged;
+        }
+
+        private void StorePicker_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+            var storeId = SearchViewModel.Stores[(string)StorePicker.SelectedItem];
+            Preferences.Set(SearchViewModel.PREF_SELECTED_STORE, storeId);
         }
 
         private void OnScanClicked(object sender, EventArgs e)
@@ -51,6 +61,7 @@ namespace micro_c_app.Views
                         {
                             await Navigation.PopAsync();
                             SearchField.Text = FilterBarcodeResult(result);
+                            OnSearchClicked(this, new EventArgs());
                         });
                 };
             });
@@ -75,35 +86,35 @@ namespace micro_c_app.Views
             {
                 return;
             }
-            var storeId = "141";
+            var storeId = Preferences.Get(SearchViewModel.PREF_SELECTED_STORE, "141");
             var response = client.GetAsync($"https://www.microcenter.com/search/search_results.aspx?Ntt={searchValue}&storeid={storeId}&Ntk=all").Result;
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var body = response.Content.ReadAsStringAsync().Result;
+
                 var matches = Regex.Matches(body, "href=\"/quickView/(\\d{6}/.*?)\"");
-                
-                    Device.BeginInvokeOnMainThread(async () =>
+
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    if (matches.Count == 0)
                     {
-                        if (matches.Count == 0)
+                        await DisplayAlert("Scanned Barcode", "Match failed", "OK");
+                    }
+                    else
+                    {
+                        if (matches.Count == 1)
                         {
-                            await DisplayAlert("Scanned Barcode", "Match failed", "OK");
-                        }
-                        else
-                        {
-                            if(matches.Count == 1)
-                            {
-                                var url = $"/product/{matches[0].Groups[1].Value}";
-                                var item = await Models.Item.FromUrl(url);
-                                var detailsPage = new ItemDetailsViewModel() { Item = item };
-                                await Navigation.PushAsync(new ItemDetails() { BindingContext = detailsPage });
+                            var item = await Models.Item.FromId(matches[0].Groups[1].Value);
+                            var detailsPage = new ItemDetailsViewModel() { Item = item };
+                            await Navigation.PushAsync(new ItemDetails() { BindingContext = detailsPage });
                                 //await DisplayAlert("Scanned Barcode", matches[0].Groups[1].Value, "OK");
                             }
-                            else
-                            {
-                                await DisplayAlert("Scanned Barcode", matches.Count.ToString(), "OK");
-                            }
+                        else
+                        {
+                            await DisplayAlert("Scanned Barcode", matches.Count.ToString(), "OK");
                         }
-                    });
+                    }
+                });
             }
             else
             {
