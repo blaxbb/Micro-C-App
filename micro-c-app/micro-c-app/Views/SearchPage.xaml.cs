@@ -43,14 +43,14 @@ namespace micro_c_app.Views
                     PossibleFormats = new List<BarcodeFormat>() {
                         BarcodeFormat.CODE_128,
                         BarcodeFormat.UPC_A
-                    }
+                    },
+                    UseNativeScanning = true
                 };
                 var scanPage = new ZXingScannerPage(options)
                 {
                     DefaultOverlayShowFlashButton = true
                 };
                 // Navigate to our scanner page
-                await Navigation.PushAsync(scanPage);
                 scanPage.OnScanResult += (result) =>
                 {
                     // Stop scanning
@@ -64,6 +64,7 @@ namespace micro_c_app.Views
                             OnSearchClicked(this, new EventArgs());
                         });
                 };
+                await Navigation.PushAsync(scanPage);
             });
         }
 

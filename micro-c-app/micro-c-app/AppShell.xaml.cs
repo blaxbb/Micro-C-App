@@ -11,6 +11,8 @@ namespace micro_c_app
         public AppShell()
         {
             InitializeComponent();
+            Routing.RegisterRoute(nameof(SearchPage), typeof(SearchPage));
+            Routing.RegisterRoute(nameof(BuildPage), typeof(BuildPage));
         }
     }
 }
