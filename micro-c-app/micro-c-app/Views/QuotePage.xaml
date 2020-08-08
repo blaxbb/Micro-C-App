@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             xmlns:views="clr-namespace:micro_c_app.Views"
+             x:Class="micro_c_app.Views.QuotePage">
+    <ContentPage.BindingContext>
+        <vm:QuotePageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout Margin="10" Orientation="Horizontal" x:Name="FlipStack">
+            <StackLayout>
+                <!--<Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>-->
+                <ScrollView Grid.Row="0">
+                    <ListView ItemsSource="{Binding Items}">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <ViewCell>
+                                    <Label Text="{Binding SKU}"/>
+                                </ViewCell>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </ScrollView>
+                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <Label Text="{Binding Items.Count,StringFormat='{0} Items'}" Grid.Column="0" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand"/>
+                    <StackLayout HorizontalOptions="FillAndExpand">
+                        <Label Text="{Binding Subtotal, StringFormat='Subtotal $ {0:#,#0.00}', FallbackValue=$123.45}" HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding TaxedTotal, StringFormat='Tax(7.5%) $ {0:#,#0.00}', FallbackValue=$123.45}" HorizontalTextAlignment="Center"/>
+                    </StackLayout>
+                </StackLayout>
+
+                <!--<Button Text="Add" Grid.Row="2" Command="{Binding AddButtonCommand}"/>-->
+            </StackLayout>
+            <views:SearchView Grid.Row="2" HorizontalOptions="FillAndExpand" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

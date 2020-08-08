@@ -85,6 +85,7 @@
     -->
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
         <ShellContent Title="Search" Icon="tab_about.png" Route="SearchPage" ContentTemplate="{DataTemplate local:SearchPage}" />
+        <ShellContent Title="Quote" Icon="tab_about.png" Route="QuotePage" ContentTemplate="{DataTemplate local:QuotePage}" />
         <ShellContent Title="PC Build" Icon="tab_about.png" Route="BuildPage" ContentTemplate="{DataTemplate local:BuildPage}" />
     </FlyoutItem>
 

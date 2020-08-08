@@ -13,6 +13,7 @@ namespace micro_c_app
             InitializeComponent();
             Routing.RegisterRoute(nameof(SearchPage), typeof(SearchPage));
             Routing.RegisterRoute(nameof(BuildPage), typeof(BuildPage));
+            Routing.RegisterRoute(nameof(QuotePage), typeof(QuotePage));
         }
     }
 }
