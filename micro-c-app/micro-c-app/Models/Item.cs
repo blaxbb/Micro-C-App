@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Web;
 using micro_c_app.ViewModels;
 using Xamarin.Essentials;
+using System.Linq;
 
 namespace micro_c_app.Models
 {
@@ -52,6 +53,8 @@ namespace micro_c_app.Models
                         item.Specs[HttpUtility.HtmlDecode(m.Groups[2].Value)] = HttpUtility.HtmlDecode(m.Groups[3].Value.Replace("<br /> ", "\n"));
                     }
                 }
+
+                item.SKU = item.Specs.ContainsKey("SKU") ? item.Specs["SKU"] : null;
 
                 var match = Regex.Match(body, "'productPrice':'(.*?)',");
                 if (match.Success)

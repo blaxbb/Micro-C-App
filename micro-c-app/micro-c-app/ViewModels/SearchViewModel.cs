@@ -1,4 +1,6 @@
-﻿using System;
+﻿using micro_c_app.Models;
+using micro_c_app.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;
@@ -15,8 +17,27 @@ namespace micro_c_app.ViewModels
 
         public static Dictionary<string, string> Stores { get; private set; }
         public const string PREF_SELECTED_STORE = "selected_store";
+
+        public ICommand OnProductFound { get; }
+        public ICommand OnProductError { get; }
+        public INavigation Navigation { get; internal set; }
+
         public SearchViewModel()
         {
+            OnProductFound = new Command<Item>(async (Item item) =>
+            {
+                var detailsPage = new ItemDetailsViewModel() { Item = item };
+
+                await Navigation.PushAsync(new ItemDetails() { BindingContext = detailsPage });
+
+            });
+
+            OnProductError = new Command<string>(async (string message) =>
+            {
+                
+                await Shell.Current?.DisplayAlert("Error", message, "Ok");
+            });
+
             Title = "Search";
             var storeId = Preferences.Get(PREF_SELECTED_STORE, "141");
 
