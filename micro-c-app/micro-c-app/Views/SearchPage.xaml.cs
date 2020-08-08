@@ -22,7 +22,6 @@ namespace micro_c_app.Views
         {
             client = new HttpClient();
             InitializeComponent();
-            StorePicker.SelectedIndexChanged += StorePicker_SelectedIndexChanged;
 
             if(BindingContext is SearchViewModel vm)
             {
@@ -30,11 +29,11 @@ namespace micro_c_app.Views
             }
         }
 
-        private void StorePicker_SelectedIndexChanged(object sender, EventArgs e)
-        {
+        //private void StorePicker_SelectedIndexChanged(object sender, EventArgs e)
+        //{
 
-            var storeId = SearchViewModel.Stores[(string)StorePicker.SelectedItem];
-            Preferences.Set(SearchViewModel.PREF_SELECTED_STORE, storeId);
-        }
+        //    var storeId = SearchViewModel.Stores[(string)StorePicker.SelectedItem];
+        //    Preferences.Set(SearchViewModel.PREF_SELECTED_STORE, storeId);
+        //}
     }
 }

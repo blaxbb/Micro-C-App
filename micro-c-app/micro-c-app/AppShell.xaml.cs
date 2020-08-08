@@ -15,5 +15,13 @@ namespace micro_c_app
             Routing.RegisterRoute(nameof(BuildPage), typeof(BuildPage));
             Routing.RegisterRoute(nameof(QuotePage), typeof(QuotePage));
         }
+
+        private void DisplaySettings(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                await Navigation.PushModalAsync(new SettingsPage());
+            });
+        }
     }
 }

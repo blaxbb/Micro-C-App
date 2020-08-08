@@ -8,6 +8,7 @@ using System.Web;
 using micro_c_app.ViewModels;
 using Xamarin.Essentials;
 using System.Linq;
+using micro_c_app.Views;
 
 namespace micro_c_app.Models
 {
@@ -38,7 +39,7 @@ namespace micro_c_app.Models
 
             using (HttpClient client = new HttpClient())
             {
-                var storeId = Preferences.Get(SearchViewModel.PREF_SELECTED_STORE, "141");
+                var storeId = Preferences.Get(SettingsPage.PREF_SELECTED_STORE, "141");
                 var response = await client.GetAsync($"https://www.microcenter.com{url}?storeid={storeId}");
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {

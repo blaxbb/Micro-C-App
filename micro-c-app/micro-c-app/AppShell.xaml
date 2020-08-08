@@ -88,5 +88,6 @@
         <ShellContent Title="Quote" Icon="tab_about.png" Route="QuotePage" ContentTemplate="{DataTemplate local:QuotePage}" />
         <ShellContent Title="PC Build" Icon="tab_about.png" Route="BuildPage" ContentTemplate="{DataTemplate local:BuildPage}" />
     </FlyoutItem>
+    <MenuItem Text="Settings" Icon="tab_about.png" Clicked="DisplaySettings" />
 
 </Shell>

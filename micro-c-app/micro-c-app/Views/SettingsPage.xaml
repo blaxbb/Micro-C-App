@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             x:Class="micro_c_app.Views.SettingsPage">
+    <ContentPage.BindingContext>
+        <vm:SettingsPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout Spacing="10" Margin="30">
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Store" WidthRequest="100" VerticalTextAlignment="Center"/>
+                <Picker x:Name="StorePicker" Title="Store" ItemsSource="{Binding StoreNames}" SelectedItem="{Binding SelectedStoreName, Mode=TwoWay}" TextColor="Black" TitleColor="DarkGray" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Sales ID" WidthRequest="100" VerticalTextAlignment="Center"/>
+                <Entry Placeholder="Sales ID" Text="{Binding SalesID}" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Tax Rate" WidthRequest="100" VerticalTextAlignment="Center"/>
+                <Entry Placeholder="Tax Rate" Text="{Binding TaxRate}" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
+            </StackLayout>
+            <Button Text="Save" WidthRequest="100" HorizontalOptions="End" Margin="0,30,30,0" Command="{Binding Save}"/>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
