@@ -15,11 +15,22 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>-->
                 <ScrollView Grid.Row="0">
-                    <ListView ItemsSource="{Binding Items}">
+                    <ListView ItemsSource="{Binding Items}" SelectionMode="None">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>
-                                    <Label Text="{Binding SKU}"/>
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                                        <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
+                                            <Label Text="{Binding Name}"/>
+                                            <Label Text="{Binding Price, StringFormat='${0:#,#0.00}'}"/>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
+                                            <Button Text="-" WidthRequest="40" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
+                                            <Label Text="{Binding Quantity}" VerticalTextAlignment="Center"/>
+                                            <Button Text="+" WidthRequest="40" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
+                                        </StackLayout>
+                                        <Button Text="X" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red" WidthRequest="40" HorizontalOptions="EndAndExpand"/>
+                                    </StackLayout>
                                 </ViewCell>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -28,8 +39,8 @@
                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                     <Label Text="{Binding Items.Count,StringFormat='{0} Items'}" Grid.Column="0" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand"/>
                     <StackLayout HorizontalOptions="FillAndExpand">
-                        <Label Text="{Binding Subtotal, StringFormat='Subtotal $ {0:#,#0.00}', FallbackValue=$123.45}" HorizontalTextAlignment="Center"/>
-                        <Label Text="{Binding TaxedTotal, StringFormat='Tax(7.5%) $ {0:#,#0.00}', FallbackValue=$123.45}" HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding Subtotal, StringFormat='Subtotal ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalTextAlignment="Center"/>
+                        <Label Text="{Binding TaxedTotal, StringFormat='Tax(7.5%) ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalTextAlignment="Center"/>
                     </StackLayout>
                 </StackLayout>
 

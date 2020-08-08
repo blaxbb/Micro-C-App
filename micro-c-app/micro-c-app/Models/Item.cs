@@ -11,8 +11,9 @@ using System.Linq;
 
 namespace micro_c_app.Models
 {
-    public class Item
+    public class Item : NotifyPropertyChangedItem
     {
+
         public string SKU { get; set; }
         public string Name { get; set; }
         public string PictureUrl { get; set; }
@@ -23,6 +24,8 @@ namespace micro_c_app.Models
         public bool OnSale => Price != OriginalPrice;
         public Dictionary<string, string> Specs { get; set; }
 
+        private int quantity = 1;
+        public int Quantity { get => quantity; set => SetProperty(ref quantity, value); }
         public Item()
         {
             Specs = new Dictionary<string, string>();
@@ -33,11 +36,11 @@ namespace micro_c_app.Models
             var url = $"/product/{productID}";
             var item = new Item();
 
-            using(HttpClient client = new HttpClient())
+            using (HttpClient client = new HttpClient())
             {
                 var storeId = Preferences.Get(SearchViewModel.PREF_SELECTED_STORE, "141");
                 var response = await client.GetAsync($"https://www.microcenter.com{url}?storeid={storeId}");
-                if(response.StatusCode != System.Net.HttpStatusCode.OK)
+                if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     return default(Item);
                 }
@@ -66,7 +69,7 @@ namespace micro_c_app.Models
                 }
 
                 match = Regex.Match(body, "data-price=\"(.*?)\"");
-                if(match.Success)
+                if (match.Success)
                 {
                     if (float.TryParse(match.Groups[1].Value, out float price))
                     {
@@ -97,7 +100,7 @@ namespace micro_c_app.Models
                 }
 
                 match = Regex.Match(body, "Add to Cart to see price");
-                if(match.Success)
+                if (match.Success)
                 {
                     var values = new List<KeyValuePair<string, string>>()
                     {
@@ -108,11 +111,11 @@ namespace micro_c_app.Models
                     var postContent = new FormUrlEncodedContent(values);
 
                     var postResponse = await client.PostAsync("https://www.microcenter.com/store/add_product.aspx", postContent);
-                    if(postResponse.StatusCode == System.Net.HttpStatusCode.OK)
+                    if (postResponse.StatusCode == System.Net.HttpStatusCode.OK)
                     {
 
                     }
-                    
+
                 }
 
             }
@@ -122,5 +125,5 @@ namespace micro_c_app.Models
         }
     }
 
-    
+
 }

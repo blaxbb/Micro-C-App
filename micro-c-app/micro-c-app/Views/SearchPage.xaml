@@ -3,8 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="micro_c_app.Views.SearchPage"
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
-             xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
-             xmlns:zxcm="clr-namespace:ZXing.Common;assembly=zxing.portable"
              xmlns:views="clr-namespace:micro_c_app.Views"
              Title="{Binding Title}">
     

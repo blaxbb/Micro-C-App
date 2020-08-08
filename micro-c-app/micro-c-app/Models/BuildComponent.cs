@@ -6,7 +6,7 @@ using System.Text;
 
 namespace micro_c_app.Models
 {
-    public class BuildComponent : INotifyPropertyChanged
+    public class BuildComponent : NotifyPropertyChangedItem
     {
         private string sku;
         private string productID;
@@ -23,30 +23,5 @@ namespace micro_c_app.Models
         public string ProductID { get => productID; set => SetProperty(ref productID, value); }
 
         public string ComponentLabel => $"{Type.ToString()} - {SKU}";
-
-        protected bool SetProperty<T>(ref T backingStore, T value,
-            [CallerMemberName] string propertyName = "",
-            Action onChanged = null)
-        {
-            if (EqualityComparer<T>.Default.Equals(backingStore, value))
-                return false;
-
-            backingStore = value;
-            onChanged?.Invoke();
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-        #region INotifyPropertyChanged
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            var changed = PropertyChanged;
-            if (changed == null)
-                return;
-
-            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-        #endregion
     }
 }
