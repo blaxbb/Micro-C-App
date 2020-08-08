@@ -3,10 +3,14 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
              xmlns:views="clr-namespace:micro_c_app.Views"
-             x:Class="micro_c_app.Views.QuotePage">
+             x:Class="micro_c_app.Views.QuotePage"
+             >
     <ContentPage.BindingContext>
         <vm:QuotePageViewModel/>
     </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Send" Order="Secondary" Command="{Binding SendQuote}"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Margin="10" Orientation="Horizontal" x:Name="FlipStack">
             <StackLayout>
@@ -14,28 +18,26 @@
                     <RowDefinition Height="*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>-->
-                <ScrollView Grid.Row="0">
-                    <ListView ItemsSource="{Binding Items}" SelectionMode="None">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell>
-                                    <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
-                                        <StackLayout Orientation="Vertical" HorizontalOptions="FillAndExpand">
-                                            <Label Text="{Binding Name}"/>
-                                            <Label Text="{Binding Price, StringFormat='${0:#,#0.00}'}"/>
-                                        </StackLayout>
-                                        <StackLayout Orientation="Horizontal" HorizontalOptions="CenterAndExpand">
-                                            <Button Text="-" WidthRequest="40" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
-                                            <Label Text="{Binding Quantity}" VerticalTextAlignment="Center"/>
-                                            <Button Text="+" WidthRequest="40" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
-                                        </StackLayout>
-                                        <Button Text="X" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red" WidthRequest="40" HorizontalOptions="EndAndExpand"/>
+                <ListView ItemsSource="{Binding Items}" SelectionMode="None" Grid.Row="0">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <StackLayout Orientation="Horizontal" Padding="0,0,0,10">
+                                    <StackLayout Orientation="Vertical"  HorizontalOptions="StartAndExpand">
+                                        <Label Text="{Binding Name}" LineBreakMode="TailTruncation"/>
+                                        <Label Text="{Binding Price, StringFormat='${0:#,#0.00}'}"/>
                                     </StackLayout>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
-                </ScrollView>
+                                    <StackLayout Orientation="Horizontal" Padding="0,0,10,0">
+                                        <Button Text="-" WidthRequest="40" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
+                                        <Label Text="{Binding Quantity}" VerticalTextAlignment="Center"/>
+                                        <Button Text="+" WidthRequest="40" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
+                                    </StackLayout>
+                                    <Button Text="X" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red" WidthRequest="40"/>
+                                </StackLayout>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
                 <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
                     <Label Text="{Binding Items.Count,StringFormat='{0} Items'}" Grid.Column="0" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand"/>
                     <StackLayout HorizontalOptions="FillAndExpand">
