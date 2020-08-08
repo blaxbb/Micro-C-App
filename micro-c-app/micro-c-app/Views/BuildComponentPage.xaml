@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             xmlns:views="clr-namespace:micro_c_app.Views"
              x:Class="micro_c_app.Views.BuildComponentPage">
     <ContentPage.BindingContext>
         <vm:BuildComponentViewModel/>
@@ -14,8 +15,7 @@
                 HorizontalOptions="CenterAndExpand" />
             <Label Text="{Binding Component.ComponentLabel}"
                 HorizontalOptions="CenterAndExpand" />
-            <Entry Text="{Binding Component.SKU}" Placeholder="Enter SKU"/>
-            <Button Command="{Binding SubmitButton}" Text="Submit"/>
+            <views:SearchView />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

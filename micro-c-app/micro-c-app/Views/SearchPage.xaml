@@ -20,9 +20,7 @@
 
     <StackLayout Orientation="Vertical" Padding="30,24,30,24" Spacing="10">
         <Picker x:Name="StorePicker" Title="Store" ItemsSource="{Binding StoreNames}" SelectedItem="{Binding SelectedStoreName, Mode=TwoWay}" TextColor="Black" TitleColor="DarkGray" />
-        <views:SearchView ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}">
-
-        </views:SearchView>
+        <views:SearchView ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}"/> 
         <!--<Button Margin="0,0,0,30" Text="Scan"
                         BackgroundColor="{StaticResource Primary}"
                         Clicked="OnScanClicked"

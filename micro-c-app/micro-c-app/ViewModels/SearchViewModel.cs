@@ -29,17 +29,14 @@ namespace micro_c_app.ViewModels
                 var detailsPage = new ItemDetailsViewModel() { Item = item };
 
                 await Navigation.PushAsync(new ItemDetails() { BindingContext = detailsPage });
-
             });
 
             OnProductError = new Command<string>(async (string message) =>
             {
-                
                 await Shell.Current?.DisplayAlert("Error", message, "Ok");
             });
 
             Title = "Search";
-            var storeId = Preferences.Get(PREF_SELECTED_STORE, "141");
 
             Stores = new Dictionary<string, string>()
             {
@@ -71,8 +68,9 @@ namespace micro_c_app.ViewModels
                 {"Micro Center Web Store", "029"}
             };
 
-            StoreNames = Stores.Keys.ToList();
+            var storeId = Preferences.Get(PREF_SELECTED_STORE, "141");
 
+            StoreNames = Stores.Keys.ToList();
             SelectedStoreName = Stores.FirstOrDefault(kvp => kvp.Value == storeId).Key;
         }
     }
