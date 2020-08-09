@@ -19,16 +19,20 @@ namespace micro_c_app.ViewModels
         public string StoreID { get; set; }
         public string SalesID { get; set; }
         public float TaxRate { get; set; }
+        public bool IncludeCSVWithQuote { get; set; }
 
         public ICommand Save { get; }
+
+        public const string SETTINGS_UPDATED_MESSAGE = "updated";
         public SettingsPageViewModel()
         {
             Save = new Command(DoSave);
 
             Title = "Settings";
-            StoreID = Preferences.Get(SettingsPage.PREF_SELECTED_STORE, "141");
-            SalesID = Preferences.Get(SettingsPage.PREF_SALES_ID, "SALESID");
-            TaxRate = Preferences.Get(SettingsPage.PREF_TAX_RATE, 7.5f);
+            StoreID = SettingsPage.StoreID();
+            SalesID = SettingsPage.SalesID();
+            TaxRate = SettingsPage.TaxRate();
+            IncludeCSVWithQuote = SettingsPage.IncludeCSVWithQuote();
 
             Stores = new Dictionary<string, string>()
             {
@@ -66,11 +70,18 @@ namespace micro_c_app.ViewModels
 
         private void DoSave(object obj)
         {
-            Preferences.Set(SettingsPage.PREF_SALES_ID, SalesID);
-            Preferences.Set(SettingsPage.PREF_TAX_RATE, TaxRate);
+            SettingsPage.SalesID(SalesID);
+            SettingsPage.TaxRate(TaxRate);
 
             var storeId = Stores[SelectedStoreName];
-            Preferences.Set(SettingsPage.PREF_SELECTED_STORE, storeId);
+            SettingsPage.StoreID(storeId);
+            SettingsPage.IncludeCSVWithQuote(IncludeCSVWithQuote);
+
+            MessagingCenter.Send(this, SETTINGS_UPDATED_MESSAGE);
+            Device.InvokeOnMainThreadAsync(async () =>
+            {
+                await Shell.Current.Navigation.PopModalAsync();
+            });
         }
     }
 }

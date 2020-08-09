@@ -20,6 +20,10 @@
                 <Label Text="Tax Rate" WidthRequest="100" VerticalTextAlignment="Center"/>
                 <Entry Placeholder="Tax Rate" Text="{Binding TaxRate}" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
             </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Include CSV with Quote" WidthRequest="100" VerticalTextAlignment="Center"/>
+                <CheckBox IsChecked="{Binding IncludeCSVWithQuote}" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
             <Button Text="Save" WidthRequest="100" HorizontalOptions="End" Margin="0,30,30,0" Command="{Binding Save}"/>
         </StackLayout>
     </ContentPage.Content>

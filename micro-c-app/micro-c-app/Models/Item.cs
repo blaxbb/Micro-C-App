@@ -39,7 +39,7 @@ namespace micro_c_app.Models
 
             using (HttpClient client = new HttpClient())
             {
-                var storeId = Preferences.Get(SettingsPage.PREF_SELECTED_STORE, "141");
+                var storeId = SettingsPage.StoreID();
                 var response = await client.GetAsync($"https://www.microcenter.com{url}?storeid={storeId}");
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {

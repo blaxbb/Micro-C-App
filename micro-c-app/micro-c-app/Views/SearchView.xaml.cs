@@ -89,7 +89,7 @@ namespace micro_c_app.Views
             {
                 return;
             }
-            var storeId = Preferences.Get(SettingsPage.PREF_SELECTED_STORE, "141");
+            var storeId = SettingsPage.StoreID();
             var response = client.GetAsync($"https://www.microcenter.com/search/search_results.aspx?Ntt={searchValue}&storeid={storeId}&Ntk=all").Result;
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
