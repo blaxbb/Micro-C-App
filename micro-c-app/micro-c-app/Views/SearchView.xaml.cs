@@ -32,6 +32,10 @@ namespace micro_c_app.Views
         {
             client = new HttpClient();
             InitializeComponent();
+            SearchField.ReturnCommand = new Command(() =>
+            {
+                OnSearchClicked(this, new EventArgs());
+            });
         }
 
         private void OnScanClicked(object sender, EventArgs e)

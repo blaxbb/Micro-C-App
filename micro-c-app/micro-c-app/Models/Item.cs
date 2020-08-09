@@ -18,7 +18,7 @@ namespace micro_c_app.Models
 
         public string SKU { get; set; }
         public string Name { get; set; }
-        public string PictureUrl { get; set; }
+        public List<string> PictureUrls { get; set; }
         public string Stock { get; set; }
         public float Price { get; set; }
         public float OriginalPrice { get; set; }
@@ -29,9 +29,11 @@ namespace micro_c_app.Models
         private int quantity = 1;
         public int Quantity { get => quantity; set => SetProperty(ref quantity, value); }
         public string Location { get; set; }
+        public List<Plan> Plans { get; set; }
         public Item()
         {
             Specs = new Dictionary<string, string>();
+            
         }
 
         public static async Task<Item> FromId(string productID)
@@ -96,10 +98,14 @@ namespace micro_c_app.Models
                     item.Name = HttpUtility.HtmlDecode(match.Groups[1].Value);
                 }
 
-                match = Regex.Match(body, "<img class= ?\"productImageZoom\" src=\"(.*?)\"");
-                if (match.Success)
+                matches = Regex.Matches(body, "<img class= ?\"productImageZoom\" src=\"(.*?)\"");
+                if (matches.Count > 0)
                 {
-                    item.PictureUrl = match.Groups[1].Value;
+                    item.PictureUrls = new List<string>();
+                    foreach(Match m in matches)
+                    {
+                        item.PictureUrls.Add(m.Groups[1].Value);
+                    }
                 }
 
                 match = Regex.Match(body, "class=\"findItLink\"(?:.*?)>(.*?)<");
@@ -118,6 +124,23 @@ namespace micro_c_app.Models
                     }
 
                     item.Location = b.ToString();
+                }
+
+                matches = Regex.Matches(body, "#planDetails(?:.*?)>(.*?)<(?:.*?)pricing\"> \\$(.*?)<");
+                if(matches.Count > 0)
+                {
+                    item.Plans = new List<Plan>();
+                    foreach(Match m in matches)
+                    {
+                        if (float.TryParse(m.Groups[2].Value, out float price))
+                        {
+                            item.Plans.Add(new Plan()
+                            {
+                                Name = m.Groups[1].Value,
+                                Price = price
+                            });
+                        }
+                    }
                 }
             }
 

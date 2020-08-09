@@ -30,18 +30,18 @@ namespace micro_c_app.ViewModels
         {
             Title = "Quote";
             Items = new ObservableCollection<Item>();
-            for(int i = 0; i < 10; i++)
-            {
-                var item = new Item()
-                {
-                    Name = "ITEM",
-                    SKU = "123456",
-                    OriginalPrice = 100,
-                    Price = 90,
-                    Stock = "5 in stock",
-                };
-                Items.Add(item);
-            }
+            //for(int i = 0; i < 10; i++)
+            //{
+            //    var item = new Item()
+            //    {
+            //        Name = "ITEM",
+            //        SKU = "123456",
+            //        OriginalPrice = 100,
+            //        Price = 90,
+            //        Stock = "5 in stock",
+            //    };
+            //    Items.Add(item);
+            //}
 
             Items.CollectionChanged += (sender, args) =>
             {
@@ -135,7 +135,7 @@ namespace micro_c_app.ViewModels
         public static string ExportTxtTable(IEnumerable<Item> items)
         {
             StringBuilder b = new StringBuilder();
-            b.AppendLine($"SKU      {string.Format("{0,-40}", "Name")}\tQty  Unit      Price");
+            b.AppendLine($"SKU      {string.Format("{0,-50}", "Name")}\tQty  Unit      Price");
             b.AppendLine();
             foreach (var item in items)
             {
