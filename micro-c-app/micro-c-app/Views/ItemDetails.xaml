@@ -21,6 +21,7 @@
                 <Image Source="{Binding Item.PictureUrl, FallbackValue=https://aka.ms/campus.jpg}" HeightRequest="200" />
                 <Label Text="{Binding Item.Specs[SKU], FallbackValue=123456}"/>
                 <Label Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
+                <Label Text="{Binding Item.Location, FallbackValue=Section 000}" FontSize="Large"/>
                 <StackLayout Orientation="Horizontal">
                     <Label Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}"/>
                     <Label Text="{Binding Item.Discount, StringFormat='-$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}"/>

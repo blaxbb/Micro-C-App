@@ -9,6 +9,7 @@ using micro_c_app.ViewModels;
 using Xamarin.Essentials;
 using System.Linq;
 using micro_c_app.Views;
+using System.Text;
 
 namespace micro_c_app.Models
 {
@@ -27,6 +28,7 @@ namespace micro_c_app.Models
 
         private int quantity = 1;
         public int Quantity { get => quantity; set => SetProperty(ref quantity, value); }
+        public string Location { get; set; }
         public Item()
         {
             Specs = new Dictionary<string, string>();
@@ -100,27 +102,24 @@ namespace micro_c_app.Models
                     item.PictureUrl = match.Groups[1].Value;
                 }
 
-                match = Regex.Match(body, "Add to Cart to see price");
+                match = Regex.Match(body, "class=\"findItLink\"(?:.*?)>(.*?)<");
                 if (match.Success)
                 {
-                    var values = new List<KeyValuePair<string, string>>()
+                    StringBuilder b = new StringBuilder();
+                    b.Append(match.Groups[1]);
+                    matches = Regex.Matches(body, "class=\"otherLocation\">(.*?)<");
+                    //
+                    // There is an invisible element with another findit panel in the html, so only grab the first half...
+                    //
+                    for(int i = 0; i < matches.Count / 2; i++)
                     {
-                        new KeyValuePair<string, string>("store_id", storeId),
-                        new KeyValuePair<string, string>("sku", item.SKU),
-                        new KeyValuePair<string, string>("productID", productID)
-                    };
-                    var postContent = new FormUrlEncodedContent(values);
-
-                    var postResponse = await client.PostAsync("https://www.microcenter.com/store/add_product.aspx", postContent);
-                    if (postResponse.StatusCode == System.Net.HttpStatusCode.OK)
-                    {
-
+                        var m = matches[i];
+                        b.Append(m.Groups[1]);
                     }
 
+                    item.Location = b.ToString();
                 }
-
             }
-
 
             return item;
         }
