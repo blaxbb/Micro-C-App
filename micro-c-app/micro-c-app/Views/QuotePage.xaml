@@ -14,7 +14,7 @@
     <ContentPage.Content>
         <StackLayout Margin="10,5,10,0" Orientation="Vertical" x:Name="FlipStack">
             <StackLayout VerticalOptions="FillAndExpand">
-                <ListView ItemsSource="{Binding Items}" SelectionMode="None" Grid.Row="0"  RowHeight="50" VerticalOptions="FillAndExpand">
+                <ListView ItemsSource="{Binding Items}" SelectionMode="None" Grid.Row="0"  RowHeight="75" VerticalOptions="FillAndExpand">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
@@ -23,8 +23,11 @@
                                         <Label Text="{Binding Name}" LineBreakMode="TailTruncation"/>
                                         <StackLayout Orientation="Horizontal">
                                             <Label Text="{Binding Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand"/>
-                                            <Label Text="{Binding Specs[UPC]}" HorizontalOptions="CenterAndExpand"/>
                                             <Label Text="{Binding SKU}" HorizontalOptions="EndAndExpand"/>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
+                                            <Label Text="{Binding Stock}" HorizontalOptions="EndAndExpand"/>
                                         </StackLayout>
                                     </StackLayout>
                                     <StackLayout Orientation="Horizontal" VerticalOptions="Center" Margin="10,0,0,0">
@@ -42,11 +45,9 @@
             </StackLayout>
             <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
                 <StackLayout Orientation="Horizontal"  VerticalOptions="CenterAndExpand">
-                    <Label Text="{Binding Items.Count,StringFormat='{0} Items'}" Grid.Column="0" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand"/>
-                    <StackLayout HorizontalOptions="FillAndExpand">
-                        <Label Text="{Binding Subtotal, StringFormat='Subtotal ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalTextAlignment="Center"/>
-                        <Label Text="{Binding TaxedTotal, StringFormat='Taxed {0}', FallbackValue=(7.5%) $123.45}" HorizontalTextAlignment="Center"/>
-                    </StackLayout>
+                    <Label Text="{Binding Items.Count,StringFormat='{0} Items'}" Grid.Column="0" HorizontalTextAlignment="Center" HorizontalOptions="Start"/>
+                    <Label Text="{Binding Subtotal, StringFormat='Subt ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand"/>
+                    <Label Text="{Binding TaxedTotal, StringFormat='Tot {0}', FallbackValue=(7.5%) $123.45}" HorizontalTextAlignment="Center" HorizontalOptions="End"/>
                 </StackLayout>
                 <views:SearchView Grid.Row="2" HorizontalOptions="FillAndExpand" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}"  VerticalOptions="CenterAndExpand" Margin="0,0,0,20"/>
             </StackLayout>

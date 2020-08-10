@@ -24,7 +24,10 @@
                 <Label Text="Include CSV with Quote" WidthRequest="100" VerticalTextAlignment="Center"/>
                 <CheckBox IsChecked="{Binding IncludeCSVWithQuote}" HorizontalOptions="FillAndExpand"/>
             </StackLayout>
-            <Button Text="Save" WidthRequest="100" HorizontalOptions="End" Margin="0,30,30,0" Command="{Binding Save}"/>
+            <StackLayout Orientation="Horizontal">
+                <Button Text="Cancel" WidthRequest="100" HorizontalOptions="StartAndExpand" Margin="0,30,30,0" Command="{Binding Cancel}" BackgroundColor="Red"/>
+                <Button Text="Save" WidthRequest="100" HorizontalOptions="End" Margin="0,30,30,0" Command="{Binding Save}" BackgroundColor="Green"/>
+            </StackLayout>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

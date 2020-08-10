@@ -3,6 +3,7 @@ using micro_c_app.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -22,11 +23,13 @@ namespace micro_c_app.ViewModels
         public bool IncludeCSVWithQuote { get; set; }
 
         public ICommand Save { get; }
+        public ICommand Cancel { get; }
 
         public const string SETTINGS_UPDATED_MESSAGE = "updated";
         public SettingsPageViewModel()
         {
             Save = new Command(DoSave);
+            Cancel = new Command(ExitSettings);
 
             Title = "Settings";
             StoreID = SettingsPage.StoreID();
@@ -68,7 +71,7 @@ namespace micro_c_app.ViewModels
             SelectedStoreName = Stores.FirstOrDefault(kvp => kvp.Value == StoreID).Key;
         }
 
-        private void DoSave(object obj)
+        private async void DoSave(object obj)
         {
             SettingsPage.SalesID(SalesID);
             SettingsPage.TaxRate(TaxRate);
@@ -78,7 +81,12 @@ namespace micro_c_app.ViewModels
             SettingsPage.IncludeCSVWithQuote(IncludeCSVWithQuote);
 
             MessagingCenter.Send(this, SETTINGS_UPDATED_MESSAGE);
-            Device.InvokeOnMainThreadAsync(async () =>
+            ExitSettings();
+        }
+
+        private async void ExitSettings()
+        {
+            await Device.InvokeOnMainThreadAsync(async () =>
             {
                 await Shell.Current.Navigation.PopModalAsync();
             });

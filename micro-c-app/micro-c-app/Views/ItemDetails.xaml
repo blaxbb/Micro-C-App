@@ -17,13 +17,16 @@
         <StackLayout x:Name="FlipStack" Orientation="Horizontal">
             <ScrollView>
                 <StackLayout Padding="10">
-                    <Label Text="{Binding Item.Name, FallbackValue=NAME}" FontSize="36"/>
+                    <Label Text="{Binding Item.Name, FallbackValue=NAME}" FontSize="32"/>
                     <StackLayout x:Name="PortraitPicture" Orientation="Horizontal" HeightRequest="200">
                         <Button Text="&lt;" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding BackPicture}"/>
-                        <Image Source="{Binding ActivePicture, FallbackValue=https://aka.ms/campus.jpg}" HeightRequest="300" WidthRequest="300" HorizontalOptions="CenterAndExpand" Aspect="AspectFit" />
+                        <Image Source="{Binding ActivePicture, FallbackValue=https://aka.ms/campus.jpg}" HorizontalOptions="FillAndExpand" Aspect="AspectFit" />
                         <Button Text=">" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding ForwardPicture}"/>
                     </StackLayout>
-                    <Label Text="{Binding Item.Specs[SKU], FallbackValue=123456}"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{Binding Item.Specs[SKU], FallbackValue=123456}" HorizontalOptions="StartAndExpand"/>
+                        <Label Text="{Binding Item.Specs[UPC], FallbackValue=123456}" HorizontalOptions="EndAndExpand"/>
+                    </StackLayout>
                     <Label Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
                     <Label x:Name="zzz" Text="{Binding Item.Location, FallbackValue=Section 000}" FontSize="Large"/>
                     <StackLayout Orientation="Horizontal">
@@ -35,7 +38,7 @@
                     <StackLayout x:Name="SpecsStackLayout"/>
                 </StackLayout>
             </ScrollView>
-            <StackLayout x:Name="LandscapePicture" Orientation="Horizontal" HeightRequest="200" WidthRequest="400" IsVisible="False" HorizontalOptions="EndAndExpand">
+            <StackLayout x:Name="LandscapePicture" Orientation="Horizontal" HeightRequest="200" WidthRequest="400" IsVisible="False" HorizontalOptions="EndAndExpand"  Margin="5,0,5,0">
                 <Button Text="&lt;" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding BackPicture}"/>
                 <Image Source="{Binding ActivePicture, FallbackValue=https://aka.ms/campus.jpg}" HeightRequest="300" WidthRequest="300" HorizontalOptions="CenterAndExpand" Aspect="AspectFit" />
                 <Button Text=">" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding ForwardPicture}"/>
