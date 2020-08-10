@@ -30,7 +30,7 @@ namespace micro_c_app.ViewModels
         {
             Title = "Quote";
             Items = new ObservableCollection<Item>();
-            //for(int i = 0; i < 10; i++)
+            //for (int i = 0; i < 10; i++)
             //{
             //    var item = new Item()
             //    {
@@ -103,12 +103,15 @@ namespace micro_c_app.ViewModels
                         attach
                     };
                 }
-
+                StackLayout s;
                 await Email.ComposeAsync(message);
             }
             catch(Exception e)
             {
-                Shell.Current.DisplayAlert("Error", e.ToString(), "Ok");
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    await Shell.Current.DisplayAlert("Error", e.ToString(), "Ok");
+                });
             }
         }
 
