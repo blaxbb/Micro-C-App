@@ -12,9 +12,9 @@
         <ToolbarItem Text="Send" Order="Secondary" Command="{Binding SendQuote}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout Margin="10,5,10,0" Orientation="Horizontal" x:Name="FlipStack">
-            <StackLayout>
-                <ListView ItemsSource="{Binding Items}" SelectionMode="None" Grid.Row="0"  RowHeight="50">
+        <StackLayout Margin="10,5,10,0" Orientation="Vertical" x:Name="FlipStack">
+            <StackLayout VerticalOptions="FillAndExpand">
+                <ListView ItemsSource="{Binding Items}" SelectionMode="None" Grid.Row="0"  RowHeight="50" VerticalOptions="FillAndExpand">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
@@ -40,7 +40,7 @@
                 </ListView>
                 <!--<Button Text="Add" Grid.Row="2" Command="{Binding AddButtonCommand}"/>-->
             </StackLayout>
-            <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand">
+            <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
                 <StackLayout Orientation="Horizontal"  VerticalOptions="CenterAndExpand">
                     <Label Text="{Binding Items.Count,StringFormat='{0} Items'}" Grid.Column="0" HorizontalTextAlignment="Center" HorizontalOptions="FillAndExpand"/>
                     <StackLayout HorizontalOptions="FillAndExpand">
@@ -48,7 +48,7 @@
                         <Label Text="{Binding TaxedTotal, StringFormat='Taxed {0}', FallbackValue=(7.5%) $123.45}" HorizontalTextAlignment="Center"/>
                     </StackLayout>
                 </StackLayout>
-                <views:SearchView Grid.Row="2" HorizontalOptions="FillAndExpand" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}"  VerticalOptions="CenterAndExpand"/>
+                <views:SearchView Grid.Row="2" HorizontalOptions="FillAndExpand" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}"  VerticalOptions="CenterAndExpand" Margin="0,0,0,20"/>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

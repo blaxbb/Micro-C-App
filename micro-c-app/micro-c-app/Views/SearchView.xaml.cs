@@ -20,22 +20,36 @@ namespace micro_c_app.Views
     public partial class SearchView : ContentView
     {
         HttpClient client;
-
+        private bool busy;
         public static readonly BindableProperty ProductFoundProperty = BindableProperty.Create(nameof(ProductFound), typeof(ICommand), typeof(SearchView), null);
-        public ICommand ProductFound { get { return (ICommand)GetValue(ProductFoundProperty); } set { SetValue(ProductFoundProperty, value); } }
 
         public static readonly BindableProperty ErrorProperty = BindableProperty.Create(nameof(Error), typeof(ICommand), typeof(SearchView), null);
+        public ICommand ProductFound { get { return (ICommand)GetValue(ProductFoundProperty); } set { SetValue(ProductFoundProperty, value); } }
         public ICommand Error { get { return (ICommand)GetValue(ErrorProperty); } set { SetValue(ErrorProperty, value); } }
 
+        public bool Busy
+        {
+            get
+            {
+                return busy;
+            }
+            set
+            {
+                busy = value;
+                BusyIndicator.IsRunning = Busy;
+                ScanButton.IsEnabled = !Busy;
+                SearchField.IsEnabled = !Busy;
+                SubmitButton.IsEnabled = !Busy;
+            }
+        }
 
         public SearchView()
         {
-            client = new HttpClient();
             InitializeComponent();
-            SearchField.ReturnCommand = new Command(() =>
-            {
-                OnSearchClicked(this, new EventArgs());
-            });
+            Busy = false;
+            client = new HttpClient();
+            SearchField.ReturnCommand = new Command(OnSubmit);
+            SubmitButton.Command = new Command(OnSubmit);
         }
 
         private void OnScanClicked(object sender, EventArgs e)
@@ -67,7 +81,7 @@ namespace micro_c_app.Views
                     {
                         await Navigation.PopModalAsync();
                         SearchField.Text = FilterBarcodeResult(result);
-                        OnSearchClicked(this, new EventArgs());
+                        OnSubmit();
                     });
                 };
                 await Navigation.PushModalAsync(scanPage);
@@ -86,46 +100,65 @@ namespace micro_c_app.Views
             }
         }
 
-        private void OnSearchClicked(object sender, EventArgs e)
+        private async void OnSubmit()
         {
+
             var searchValue = SearchField.Text;
             if (string.IsNullOrWhiteSpace(searchValue))
             {
                 return;
             }
-            var storeId = SettingsPage.StoreID();
-            var response = client.GetAsync($"https://www.microcenter.com/search/search_results.aspx?Ntt={searchValue}&storeid={storeId}&Ntk=all").Result;
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+
+            Busy = true;
+
+
+            await Task.Run(async () =>
             {
-                var body = response.Content.ReadAsStringAsync().Result;
-
-                var matches = Regex.Matches(body, "href=\"/quickView/(\\d{6}/.*?)\"");
-
-                Device.BeginInvokeOnMainThread(async () =>
+                var storeId = SettingsPage.StoreID();
+                var response = await client.GetAsync($"https://www.microcenter.com/search/search_results.aspx?Ntt={searchValue}&storeid={storeId}&Ntk=all");
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
+                    var body = response.Content.ReadAsStringAsync().Result;
+
+                    var matches = Regex.Matches(body, "href=\"/quickView/(\\d{6}/.*?)\"");
+
                     if (matches.Count == 0)
                     {
                         //await DisplayAlert("Scanned Barcode", "Match failed", "OK");
-                        Error?.Execute($"Failed to find product with query {searchValue}");
+                        DoError($"Failed to find product with query {searchValue}");
                     }
                     else
                     {
                         if (matches.Count == 1)
                         {
                             var item = await Models.Item.FromId(matches[0].Groups[1].Value);
-                            ProductFound?.Execute(item);
+                            await Device.InvokeOnMainThreadAsync(() =>
+                            {
+                                ProductFound?.Execute(item);
+                            });
+
                         }
                         else
                         {
-                            Error?.Execute($"Error found {matches.Count} results");
+                            DoError($"Error found {matches.Count} results");
                         }
                     }
-                });
-            }
-            else
+                }
+                else
+                {
+                    DoError($"webrequest returned error {response.StatusCode.ToString()}");
+                }
+            });
+
+            Busy = false;
+        }
+
+        private async void DoError(string message)
+        {
+            await Device.InvokeOnMainThreadAsync(() =>
             {
-                Error?.Execute($"webrequest returned error {response.StatusCode.ToString()}");
-            }
+                Error?.Execute(message);
+            });
         }
     }
 }

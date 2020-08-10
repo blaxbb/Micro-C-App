@@ -3,6 +3,7 @@ using micro_c_app.Views;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -12,13 +13,14 @@ namespace micro_c_app.ViewModels
 {
     public class SearchViewModel : BaseViewModel
     {
-
         public ICommand OnProductFound { get; }
         public ICommand OnProductError { get; }
         public INavigation Navigation { get; internal set; }
 
         public SearchViewModel()
         {
+            Title = "Search";
+
             OnProductFound = new Command<Item>(async (Item item) =>
             {
                 var detailsPage = new ItemDetailsViewModel() { Item = item };
@@ -31,7 +33,8 @@ namespace micro_c_app.ViewModels
                 await Shell.Current?.DisplayAlert("Error", message, "Ok");
             });
 
-            Title = "Search";
+
+
         }
     }
 }
