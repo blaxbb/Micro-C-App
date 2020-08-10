@@ -11,14 +11,23 @@
         <ScrollView>
             <StackLayout>
                 <Label  Text="{Binding ConfigID}" TextColor="Black"/>
-                <ListView ItemsSource="{Binding Components, Mode=TwoWay}" VerticalOptions="FillAndExpand" HasUnevenRows="False" RowHeight="100">
+                <ListView ItemsSource="{Binding Components, Mode=TwoWay}" VerticalOptions="FillAndExpand" HasUnevenRows="False" RowHeight="150">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
                                 <StackLayout Orientation="Vertical" MinimumHeightRequest="300">
                                     <Button Text="{Binding ComponentLabel}" Command="{Binding ComponentSelectClicked, Source={RelativeSource AncestorType={x:Type vm:BuildViewModel}}}" CommandParameter="{Binding .}"/>
-                                    <Label Text="{Binding Type}" TextColor="Black" MinimumHeightRequest="50"/>
-                                    <Label Text="{Binding SKU}"/>
+                                    <StackLayout Orientation="Vertical"  HorizontalOptions="StartAndExpand" VerticalOptions="Center">
+                                        <Label Text="{Binding Item.Name}" LineBreakMode="TailTruncation"/>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Item.Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand"/>
+                                            <Label Text="{Binding Item.SKU}" HorizontalOptions="EndAndExpand"/>
+                                        </StackLayout>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Item.Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
+                                            <Label Text="{Binding Item.Stock}" HorizontalOptions="EndAndExpand"/>
+                                        </StackLayout>
+                                    </StackLayout>
                                 </StackLayout>
                             </ViewCell>
                         </DataTemplate>

@@ -37,10 +37,10 @@ namespace micro_c_app.Views
             client = new HttpClient();
             if (string.IsNullOrWhiteSpace(viewModel.ConfigID))
             {
-                Task.Run(async () =>
-                {
-                    //viewModel.ConfigID = await GetBuildID();
-                });
+                //Task.Run(async () =>
+                //{
+                //    viewModel.ConfigID = await GetBuildID();
+                //});
             }
         }
 

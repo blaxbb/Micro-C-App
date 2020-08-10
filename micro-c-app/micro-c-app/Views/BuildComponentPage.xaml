@@ -15,7 +15,7 @@
                 HorizontalOptions="CenterAndExpand" />
             <Label Text="{Binding Component.ComponentLabel}"
                 HorizontalOptions="CenterAndExpand" />
-            <views:SearchView />
+            <views:SearchView ProductFound="{Binding ProductFound}" Error="{Binding SearchError}" CategoryFilter="{Binding Component.CategoryFilter}" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

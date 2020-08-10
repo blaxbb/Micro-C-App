@@ -25,12 +25,11 @@ namespace micro_c_app.ViewModels
 
             MessagingCenter.Subscribe<BuildComponentViewModel>(this, "selected", BuildComponentSelected);
 
-            Components = new ObservableCollection<BuildComponent>()
+            Components = new ObservableCollection<BuildComponent>();
+            foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
             {
-                new BuildComponent(){Type = BuildComponent.ComponentType.CPU},
-                new BuildComponent(){Type = BuildComponent.ComponentType.Motherboard},
-                new BuildComponent(){Type = BuildComponent.ComponentType.RAM}
-            };
+                Components.Add(new BuildComponent() { Type = t });
+            }
 
             ConfigID = "ZZZ";
             ComponentSelectClicked = new Command<BuildComponent>(async (BuildComponent comp) =>
@@ -47,6 +46,7 @@ namespace micro_c_app.ViewModels
 
         private void BuildComponentSelected(BuildComponentViewModel obj)
         {
+            var item = obj.Component.Item;
             OnPropertyChanged(nameof(Components));
             Navigation.PopModalAsync();
         }

@@ -27,6 +27,9 @@ namespace micro_c_app.Views
         public ICommand ProductFound { get { return (ICommand)GetValue(ProductFoundProperty); } set { SetValue(ProductFoundProperty, value); } }
         public ICommand Error { get { return (ICommand)GetValue(ErrorProperty); } set { SetValue(ErrorProperty, value); } }
 
+        public static readonly BindableProperty CategoryFilterProperty = BindableProperty.Create(nameof(CategoryFilter), typeof(string), typeof(SearchView), "");
+        public string CategoryFilter { get { return (string)GetValue(CategoryFilterProperty); } set { SetValue(CategoryFilterProperty, value); } }
+
         public bool Busy
         {
             get
@@ -54,6 +57,8 @@ namespace micro_c_app.Views
 
         private void OnScanClicked(object sender, EventArgs e)
         {
+            var filter = CategoryFilter;
+            Console.WriteLine(filter);
             Device.BeginInvokeOnMainThread(async () =>
             {
                 var options = new MobileBarcodeScanningOptions
@@ -115,7 +120,7 @@ namespace micro_c_app.Views
             await Task.Run(async () =>
             {
                 var storeId = SettingsPage.StoreID();
-                var response = await client.GetAsync($"https://www.microcenter.com/search/search_results.aspx?Ntt={searchValue}&storeid={storeId}&Ntk=all");
+                var response = await client.GetAsync($"https://www.microcenter.com/search/search_results.aspx?Ntt={searchValue}&storeid={storeId}&Ntk=all&N={CategoryFilter}");
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var body = response.Content.ReadAsStringAsync().Result;
