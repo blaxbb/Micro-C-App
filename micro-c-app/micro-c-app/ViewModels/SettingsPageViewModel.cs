@@ -88,7 +88,7 @@ namespace micro_c_app.ViewModels
         {
             await Device.InvokeOnMainThreadAsync(async () =>
             {
-                await Shell.Current.Navigation.PopModalAsync();
+                await Shell.Current.Navigation.PopAsync();
             });
         }
     }

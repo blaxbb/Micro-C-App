@@ -39,8 +39,7 @@ namespace micro_c_app.ViewModels
                 {
                     vm.Component = comp;
                 }
-
-                await Navigation.PushModalAsync(componentPage);
+                await Navigation.PushAsync(componentPage);
             });
         }
 
@@ -48,7 +47,7 @@ namespace micro_c_app.ViewModels
         {
             var item = obj.Component.Item;
             OnPropertyChanged(nameof(Components));
-            Navigation.PopModalAsync();
+            Navigation.PopAsync();
         }
     }
 }

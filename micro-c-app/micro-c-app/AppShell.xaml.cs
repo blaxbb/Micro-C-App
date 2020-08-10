@@ -20,7 +20,8 @@ namespace micro_c_app
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                await Navigation.PushModalAsync(new SettingsPage());
+                FlyoutIsPresented = false;
+                await Navigation.PushAsync(new SettingsPage());
             });
         }
     }
