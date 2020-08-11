@@ -9,8 +9,11 @@ namespace micro_c_app.Models
     public class BuildComponent : NotifyPropertyChangedItem
     {
         private Item item;
+        private string compatibilityError;
 
-        public Item Item { get => item; set { SetProperty(ref item, value); } }
+        public Item Item { get => item; set { SetProperty(ref item, value); OnPropertyChanged(nameof(ComponentLabel)); } }
+
+        public string CompatibilityError { get => compatibilityError; set { SetProperty(ref compatibilityError, value); } }
 
         public enum ComponentType
         {
@@ -27,7 +30,7 @@ namespace micro_c_app.Models
         public ComponentType Type { get; set; }
         public string CategoryFilter => CategoryFilterForType(Type);
 
-        public string ComponentLabel => $"{Type.ToString()} - {Item?.Name}";
+        public string ComponentLabel => Item == null ? Type.ToString() : $"{Item.Name}";
 
         public static string CategoryFilterForType(ComponentType type)
         {
@@ -40,7 +43,7 @@ namespace micro_c_app.Models
                 case ComponentType.Motherboard:
                     return "4294966996";
                 case ComponentType.RAM:
-                    return "4294966653";
+                    return "4294966965";
                 case ComponentType.PowerSupply:
                     return "4294966654";
                 case ComponentType.GPU:

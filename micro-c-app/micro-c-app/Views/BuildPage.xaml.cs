@@ -1,6 +1,8 @@
-﻿using micro_c_app.ViewModels;
+﻿using micro_c_app.Models;
+using micro_c_app.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -20,15 +22,12 @@ namespace micro_c_app.Views
         HttpClient client;
         public BuildPage()
         {
-
-            //if(viewModel == null)
-            //{
-            //    BindingContext = new BuildViewModel();
-            //}
             InitializeComponent();
             viewModel.Navigation = Navigation;
             viewModel.ConfigID = "CONFIG_ID";
         }
+
+        /*  Currently not using the microcenter.com build system at all, this may change at some point
 
         protected override void OnAppearing()
         {
@@ -95,5 +94,7 @@ namespace micro_c_app.Views
 
             return "";
         }
+
+        */
     }
 }

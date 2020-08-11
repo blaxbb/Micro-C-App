@@ -12,8 +12,7 @@
                     TextColor="White"/>
             <Grid>
                 <Entry x:Name="SearchField"
-                       Keyboard="Numeric"
-                       Placeholder="Enter a SKU/UPC"
+                       Placeholder="Enter a SKU/UPC/Search"
                        TextColor="Black"
                        PlaceholderColor="DarkGray"
                        HorizontalOptions="FillAndExpand"/>

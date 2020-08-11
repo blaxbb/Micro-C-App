@@ -10,15 +10,13 @@
     <ContentPage.Content>
         <ScrollView>
             <StackLayout>
-                <Label  Text="{Binding ConfigID}" TextColor="Black"/>
-                <ListView ItemsSource="{Binding Components, Mode=TwoWay}" VerticalOptions="FillAndExpand" HasUnevenRows="False" RowHeight="150">
+                <ListView ItemsSource="{Binding Components, Mode=TwoWay}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <StackLayout Orientation="Vertical" MinimumHeightRequest="300">
+                                <StackLayout Orientation="Vertical" Margin="10">
                                     <Button Text="{Binding ComponentLabel}" Command="{Binding ComponentSelectClicked, Source={RelativeSource AncestorType={x:Type vm:BuildViewModel}}}" CommandParameter="{Binding .}"/>
-                                    <StackLayout Orientation="Vertical"  HorizontalOptions="StartAndExpand" VerticalOptions="Center">
-                                        <Label Text="{Binding Item.Name}" LineBreakMode="TailTruncation"/>
+                                    <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="Center" Margin="20,0,20,0">
                                         <StackLayout Orientation="Horizontal">
                                             <Label Text="{Binding Item.Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand"/>
                                             <Label Text="{Binding Item.SKU}" HorizontalOptions="EndAndExpand"/>
@@ -27,6 +25,7 @@
                                             <Label Text="{Binding Item.Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
                                             <Label Text="{Binding Item.Stock}" HorizontalOptions="EndAndExpand"/>
                                         </StackLayout>
+                                        <Label Text="{Binding CompatibilityError}"/>
                                     </StackLayout>
                                 </StackLayout>
                             </ViewCell>

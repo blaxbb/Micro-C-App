@@ -3,6 +3,8 @@ using micro_c_app.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -43,9 +45,31 @@ namespace micro_c_app.ViewModels
             });
         }
 
-        private void BuildComponentSelected(BuildComponentViewModel obj)
+        private void BuildComponentSelected(BuildComponentViewModel updated)
         {
-            var item = obj.Component.Item;
+            if(updated?.Component.Item == null)
+            {
+                return;
+            }
+
+            StringBuilder b = new StringBuilder();
+            foreach(var other in Components.Where(c => c.Item != null))
+            {
+                if(other == updated.Component)
+                {
+                    continue;
+                }
+
+                foreach(var depend in BuildComponentDependency.Dependencies.Where(d => d.Applicable(updated.Component, other)))
+                {
+                    var compat = depend.Compatible(updated.Component, other);
+                    if (!compat)
+                    {
+                        b.AppendLine(depend.ErrorText);
+                    }
+                }
+            }
+            updated.Component.CompatibilityError = b.ToString();
             OnPropertyChanged(nameof(Components));
             Navigation.PopAsync();
         }
