@@ -15,7 +15,7 @@ namespace micro_c_app.Models
 {
     public class Item : NotifyPropertyChangedItem
     {
-
+        public string URL { get; set; }
         public string SKU { get; set; }
         public string Name { get; set; }
         public List<string> PictureUrls { get; set; }
@@ -36,9 +36,8 @@ namespace micro_c_app.Models
             
         }
 
-        public static async Task<Item> FromId(string productID)
+        public static async Task<Item> FromUrl(string url)
         {
-            var url = $"/product/{productID}";
             var item = new Item();
 
             using (HttpClient client = new HttpClient())
@@ -58,7 +57,7 @@ namespace micro_c_app.Models
                 {
                     foreach (Match m in matches)
                     {
-                        item.Specs[HttpUtility.HtmlDecode(m.Groups[2].Value)] = HttpUtility.HtmlDecode(m.Groups[3].Value.Replace("<br /> ", "\n"));
+                        item.Specs[HttpDecode(m.Groups[2].Value)] = HttpDecode(m.Groups[3].Value.Replace("<br /> ", "\n"));
                     }
                 }
 
@@ -71,6 +70,12 @@ namespace micro_c_app.Models
                     {
                         item.Price = price;
                     }
+                }
+
+                match = Regex.Match(body, "'pageUrl':'(.*?)',");
+                if (match.Success)
+                {
+                    item.URL = match.Groups[1].Value;
                 }
 
                 match = Regex.Match(body, "data-price=\"(.*?)\"");
@@ -95,7 +100,7 @@ namespace micro_c_app.Models
                 match = Regex.Match(body, "data-name=\"(.*?)\"");
                 if (match.Success)
                 {
-                    item.Name = HttpUtility.HtmlDecode(match.Groups[1].Value);
+                    item.Name = HttpDecode(match.Groups[1].Value);
                 }
 
                 matches = Regex.Matches(body, "<img class= ?\"productImageZoom\" src=\"(.*?)\"");
@@ -145,6 +150,16 @@ namespace micro_c_app.Models
             }
 
             return item;
+        }
+
+        public static string HttpDecode(string s)
+        {
+            var decoded = HttpUtility.HtmlDecode(s);
+            if (decoded == s)
+            {
+                return decoded;
+            }
+            return HttpDecode(decoded);
         }
     }
 

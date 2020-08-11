@@ -43,13 +43,13 @@
                 </ListView>
                 <!--<Button Text="Add" Grid.Row="2" Command="{Binding AddButtonCommand}"/>-->
             </StackLayout>
-            <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="EndAndExpand">
+            <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="End">
                 <StackLayout Orientation="Horizontal"  VerticalOptions="CenterAndExpand">
                     <Label Text="{Binding Items.Count,StringFormat='{0} Items'}" Grid.Column="0" HorizontalTextAlignment="Center" HorizontalOptions="Start"/>
                     <Label Text="{Binding Subtotal, StringFormat='Subt ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalTextAlignment="Center" HorizontalOptions="CenterAndExpand"/>
                     <Label Text="{Binding TaxedTotal, StringFormat='Tot {0}', FallbackValue=(7.5%) $123.45}" HorizontalTextAlignment="Center" HorizontalOptions="End"/>
                 </StackLayout>
-                <views:SearchView Grid.Row="2" HorizontalOptions="FillAndExpand" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}"  VerticalOptions="CenterAndExpand" Margin="0,0,0,20"/>
+                <views:SearchView Grid.Row="2" HorizontalOptions="FillAndExpand" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}"  VerticalOptions="CenterAndExpand" Margin="0,0,0,20" AutoPopSearchPage="True"/>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

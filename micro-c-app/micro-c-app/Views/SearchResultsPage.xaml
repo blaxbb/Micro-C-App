@@ -1,0 +1,31 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             x:Class="micro_c_app.Views.SearchResultsPage">
+    <ContentPage.BindingContext>
+        <vm:SearchResultsPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <ListView x:Name="ItemsList" ItemsSource="{Binding Items}">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="4*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Source="{Binding PictureUrls[0]}"/>
+                            <Label Grid.Column="1" Text="{Binding Name}" MaxLines="2" VerticalTextAlignment="Center"/>
+                            <Label Grid.Column="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" VerticalTextAlignment="Center"/>
+                            <Label Grid.Column="3" Text="{Binding Stock}" VerticalTextAlignment="Center"/>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
+</ContentPage>
