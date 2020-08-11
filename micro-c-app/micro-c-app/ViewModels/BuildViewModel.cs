@@ -30,7 +30,22 @@ namespace micro_c_app.ViewModels
             Components = new ObservableCollection<BuildComponent>();
             foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
             {
-                Components.Add(new BuildComponent() { Type = t });
+                var comp = new BuildComponent() { Type = t };
+                foreach(var dep in BuildComponentDependency.Dependencies)
+                {
+                    if(comp.Type == dep.FirstType)
+                    {
+                        dep.First = comp;
+                        comp.Dependencies.Add(dep);
+                    }
+                    else if(comp.Type == dep.SecondType)
+                    {
+                        dep.Second = comp;
+                        comp.Dependencies.Add(dep);
+                    }
+
+                }
+                Components.Add(comp);
             }
 
             ConfigID = "ZZZ";
@@ -52,24 +67,11 @@ namespace micro_c_app.ViewModels
                 return;
             }
 
-            StringBuilder b = new StringBuilder();
-            foreach(var other in Components.Where(c => c.Item != null))
+            foreach(var depend in updated?.Component.Dependencies)
             {
-                if(other == updated.Component)
-                {
-                    continue;
-                }
-
-                foreach(var depend in BuildComponentDependency.Dependencies.Where(d => d.Applicable(updated.Component, other)))
-                {
-                    var compat = depend.Compatible(updated.Component, other);
-                    if (!compat)
-                    {
-                        b.AppendLine(depend.ErrorText);
-                    }
-                }
+                depend.Other(updated.Component)?.OnDependencyStatusChanged();
             }
-            updated.Component.CompatibilityError = b.ToString();
+            updated.Component.OnDependencyStatusChanged();
             OnPropertyChanged(nameof(Components));
             Navigation.PopAsync();
         }

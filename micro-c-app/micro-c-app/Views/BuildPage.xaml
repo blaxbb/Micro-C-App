@@ -25,7 +25,8 @@
                                             <Label Text="{Binding Item.Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
                                             <Label Text="{Binding Item.Stock}" HorizontalOptions="EndAndExpand"/>
                                         </StackLayout>
-                                        <Label Text="{Binding CompatibilityError}"/>
+                                        <Label Text="{Binding HintText}"/>
+                                        <Label Text="{Binding ErrorText}"/>
                                     </StackLayout>
                                 </StackLayout>
                             </ViewCell>

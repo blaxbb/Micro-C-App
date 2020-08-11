@@ -15,6 +15,15 @@
                 HorizontalOptions="CenterAndExpand" />
             <Label Text="{Binding Component.ComponentLabel}"
                 HorizontalOptions="CenterAndExpand" />
+            <!--<ListView ItemsSource="{Binding Component.Dependencies}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Label Text="{Binding .}"/>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>-->
             <views:SearchView ProductFound="{Binding ProductFound}" Error="{Binding SearchError}" CategoryFilter="{Binding Component.CategoryFilter}" AutoPopSearchPage="True" />
         </StackLayout>
     </ContentPage.Content>

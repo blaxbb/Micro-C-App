@@ -1,5 +1,6 @@
 ﻿using micro_c_app.Models;
 using System;
+using System.Linq;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;

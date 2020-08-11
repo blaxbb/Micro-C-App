@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -9,11 +10,9 @@ namespace micro_c_app.Models
     public class BuildComponent : NotifyPropertyChangedItem
     {
         private Item item;
-        private string compatibilityError;
-
         public Item Item { get => item; set { SetProperty(ref item, value); OnPropertyChanged(nameof(ComponentLabel)); } }
 
-        public string CompatibilityError { get => compatibilityError; set { SetProperty(ref compatibilityError, value); } }
+        public List<BuildComponentDependency> Dependencies { get; }
 
         public enum ComponentType
         {
@@ -31,6 +30,20 @@ namespace micro_c_app.Models
         public string CategoryFilter => CategoryFilterForType(Type);
 
         public string ComponentLabel => Item == null ? Type.ToString() : $"{Item.Name}";
+
+        public string ErrorText => String.Join("\n", Dependencies.Where(d => !d.Compatible()).Select(d => d.ErrorText));
+        public string HintText => Item == null ? String.Join("\n", Dependencies.Where(d => d.Other(this).item != null).Select(d => d.HintText())) : null;
+
+        public BuildComponent()
+        {
+            Dependencies = new List<BuildComponentDependency>();
+        }
+
+        public void OnDependencyStatusChanged()
+        {
+            OnPropertyChanged(nameof(ErrorText));
+            OnPropertyChanged(nameof(HintText));
+        }
 
         public static string CategoryFilterForType(ComponentType type)
         {
