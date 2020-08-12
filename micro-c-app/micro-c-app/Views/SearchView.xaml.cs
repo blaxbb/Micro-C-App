@@ -35,6 +35,9 @@ namespace micro_c_app.Views
         public static readonly BindableProperty AutoPopSearchPageProperty = BindableProperty.Create(nameof(AutoPopSearchPage), typeof(bool), typeof(SearchView), false);
         public bool AutoPopSearchPage { get { return (bool)GetValue(AutoPopSearchPageProperty); } set { SetValue(AutoPopSearchPageProperty, value); } }
 
+        public static readonly BindableProperty OrientationProperty = BindableProperty.Create(nameof(Orientation), typeof(string), typeof(SearchView), null);
+        public string Orientation { get { return (string)GetValue(OrientationProperty); } set { SetValue(OrientationProperty, value); } }
+
         public bool Busy
         {
             get
@@ -46,8 +49,10 @@ namespace micro_c_app.Views
                 busy = value;
                 BusyIndicator.IsRunning = Busy;
                 ScanButton.IsEnabled = !Busy;
+                SKUField.IsEnabled = !Busy;
                 SearchField.IsEnabled = !Busy;
-                SubmitButton.IsEnabled = !Busy;
+                SKUSubmitButton.IsEnabled = !Busy;
+                SearchSubmitButton.IsEnabled = !Busy;
             }
         }
 
@@ -55,9 +60,28 @@ namespace micro_c_app.Views
         {
             InitializeComponent();
             Busy = false;
-            client = new HttpClient();
-            SearchField.ReturnCommand = new Command(OnSubmit);
-            SubmitButton.Command = new Command(OnSubmit);
+            if (!DesignMode.IsDesignModeEnabled)
+            {
+                client = new HttpClient();
+            }
+            SKUField.ReturnCommand = new Command(() => OnSubmit(SKUField.Text));
+            SearchField.ReturnCommand = new Command(() => OnSubmit(SearchField.Text));
+            SKUSubmitButton.Command = new Command(() => OnSubmit(SKUField.Text));
+            SearchSubmitButton.Command = new Command(() => OnSubmit(SearchField.Text));
+        }
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (string.IsNullOrWhiteSpace(Orientation))
+            {
+                FlipStack.Orientation = width > height ? StackOrientation.Horizontal : StackOrientation.Vertical;
+            }
+            else
+            {
+                FlipStack.Orientation = Orientation == "Horizontal" ? StackOrientation.Horizontal : StackOrientation.Vertical;
+            }
+
         }
 
         private void OnScanClicked(object sender, EventArgs e)
@@ -90,8 +114,8 @@ namespace micro_c_app.Views
                     Device.BeginInvokeOnMainThread(async () =>
                     {
                         await Navigation.PopModalAsync();
-                        SearchField.Text = FilterBarcodeResult(result);
-                        OnSubmit();
+                        SKUField.Text = FilterBarcodeResult(result);
+                        OnSubmit(SKUField.Text);
                     });
                 };
                 await Navigation.PushModalAsync(scanPage);
@@ -110,10 +134,8 @@ namespace micro_c_app.Views
             }
         }
 
-        private async void OnSubmit()
+        private async void OnSubmit(string searchValue)
         {
-
-            var searchValue = SearchField.Text;
             if (string.IsNullOrWhiteSpace(searchValue))
             {
                 return;

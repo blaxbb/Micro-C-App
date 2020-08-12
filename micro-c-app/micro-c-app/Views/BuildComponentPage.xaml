@@ -8,7 +8,7 @@
         <vm:BuildComponentViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout Margin="10">
+        <StackLayout x:Name="FlipStack" Margin="10">
             <Label Text="Build component selection"
                 HorizontalOptions="CenterAndExpand" />
             <Label Text="{Binding Component.Type}"

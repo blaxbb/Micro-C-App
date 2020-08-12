@@ -23,10 +23,14 @@ namespace micro_c_app.Views
             if (width > height)
             {
                 FlipStack.Orientation = StackOrientation.Horizontal;
+                SecondaryStack.VerticalOptions = LayoutOptions.FillAndExpand;
+                SearchView.Orientation = "Vertical";
             }
             else
             {
                 FlipStack.Orientation = StackOrientation.Vertical;
+                SecondaryStack.VerticalOptions = LayoutOptions.End;
+                SearchView.Orientation = "Horizontal";
             }
         }
     }

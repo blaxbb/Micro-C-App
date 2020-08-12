@@ -16,5 +16,18 @@ namespace micro_c_app.Views
         {
             InitializeComponent();
         }
+
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if (width > height)
+            {
+                FlipStack.Orientation = StackOrientation.Horizontal;
+            }
+            else
+            {
+                FlipStack.Orientation = StackOrientation.Vertical;
+            }
+        }
     }
 }

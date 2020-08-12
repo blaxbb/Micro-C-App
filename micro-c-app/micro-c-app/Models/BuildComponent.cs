@@ -9,7 +9,7 @@ namespace micro_c_app.Models
 {
     public class BuildComponent : NotifyPropertyChangedItem
     {
-        private Item item;
+        private Item item;  
         public Item Item { get => item; set { SetProperty(ref item, value); OnPropertyChanged(nameof(ComponentLabel)); } }
 
         public List<BuildComponentDependency> Dependencies { get; }

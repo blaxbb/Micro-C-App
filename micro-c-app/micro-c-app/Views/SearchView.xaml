@@ -3,25 +3,40 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="micro_c_app.Views.SearchView">
   <ContentView.Content>
-      <StackLayout>
+      <StackLayout x:Name="FlipStack" Orientation="Vertical">
             <Button x:Name="ScanButton"
                     Margin="0,0,0,10"
                     Text="Scan"
                     BackgroundColor="{StaticResource Primary}"
                     Clicked="OnScanClicked"
-                    TextColor="White"/>
-            <Grid>
-                <Entry x:Name="SearchField"
-                       Placeholder="Enter a SKU/UPC/Search"
+                    TextColor="White"
+                    HorizontalOptions="FillAndExpand"
+                    HeightRequest="75"
+                    VerticalOptions="Center"/>
+            <Grid HorizontalOptions="FillAndExpand">
+                <StackLayout Orientation="Horizontal" Grid.Row="0">
+                    <Entry x:Name="SKUField"
+                       Placeholder="Enter a SKU/UPC"
+                       TextColor="Black"
+                       PlaceholderColor="DarkGray"
+                       HorizontalOptions="FillAndExpand"
+                        Keyboard="Numeric"/>
+                    <Button x:Name="SKUSubmitButton" Margin="0,10,0,0" Text="Search" Grid.Row="0" Grid.Column="0"
+                            BackgroundColor="{StaticResource Primary}"
+                            TextColor="White"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal" Grid.Row="1">
+                    <Entry x:Name="SearchField"
+                       Placeholder="Search"
                        TextColor="Black"
                        PlaceholderColor="DarkGray"
                        HorizontalOptions="FillAndExpand"/>
-                
-                <ActivityIndicator x:Name="BusyIndicator"  IsRunning="False" Scale="0.7"/>
-            </Grid>
-            <Button x:Name="SubmitButton" Margin="0,10,0,0" Text="Search" Grid.Row="0" Grid.Column="0"
+                    <Button x:Name="SearchSubmitButton" Margin="0,10,0,0" Text="Search" Grid.Row="0" Grid.Column="0"
                             BackgroundColor="{StaticResource Primary}"
                             TextColor="White"/>
+                </StackLayout>
+                <ActivityIndicator x:Name="BusyIndicator"  IsRunning="False" Scale="0.7"/>
+            </Grid>
         </StackLayout>
   </ContentView.Content>
 </ContentView>
