@@ -12,12 +12,12 @@ namespace micro_c_app.ViewModels
     {
         private BuildComponent component;
 
-        public BuildComponent Component { get => component; set { SetProperty(ref component, value); OnPropertyChanged(nameof(RemoveVisible)); } }
+        public BuildComponent Component { get => component; set { SetProperty(ref component, value); OnPropertyChanged(nameof(ItemExists)); } }
         public ICommand SubmitButton { get; }
         public ICommand ProductFound { get; }
         public ICommand SearchError { get; }
         public ICommand Remove { get; }
-        public bool RemoveVisible => Component?.Item != null;
+        public bool ItemExists => Component?.Item != null;
         public BuildComponentViewModel()
         {
             Title = "Details";

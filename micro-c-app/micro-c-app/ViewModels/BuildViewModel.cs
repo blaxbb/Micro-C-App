@@ -61,6 +61,7 @@ namespace micro_c_app.ViewModels
                 {
                     vm.Component = comp;
                 }
+                componentPage.SetupPlansAndSpecs();
                 await Navigation.PushAsync(componentPage);
             });
 

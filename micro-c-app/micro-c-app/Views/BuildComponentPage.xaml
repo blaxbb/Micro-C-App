@@ -4,30 +4,38 @@
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
              xmlns:views="clr-namespace:micro_c_app.Views"
              x:Class="micro_c_app.Views.BuildComponentPage"
-             Title="Build component selection">
+             Title="{Binding Component.Type, StringFormat='Component Selection ({0})'}">
     <ContentPage.BindingContext>
         <vm:BuildComponentViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout x:Name="FlipStack" Margin="10">
-            <StackLayout Orientation="Vertical">
-                <Label Text="{Binding Component.Type}"
-                    HorizontalOptions="CenterAndExpand" />
-                <Label Text="{Binding Component.ComponentLabel}"
-                    HorizontalOptions="CenterAndExpand"
-                       IsVisible="{Binding RemoveVisible}"/>
-                <Button Text="Remove" BackgroundColor="Red" Command="{Binding Remove}" IsVisible="{Binding RemoveVisible}"/>
+        <Grid Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <ScrollView IsVisible="{Binding ItemExists}" VerticalOptions="StartAndExpand" HorizontalOptions="Start" Grid.Row="0">
+                <StackLayout Padding="10">
+                    <Label Text="{Binding Component.Item.Name, FallbackValue=NAME}" FontSize="Large" LineBreakMode="TailTruncation"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{Binding Component.Item.Specs[SKU], FallbackValue=123456}" HorizontalOptions="StartAndExpand"/>
+                        <Label Text="{Binding Component.Item.Specs[UPC], FallbackValue=123456}" HorizontalOptions="EndAndExpand"/>
+                    </StackLayout>
+                    <Label Text="{Binding Component.Item.Stock, FallbackValue=3 in stock}"/>
+                    <Label x:Name="zzz" Text="{Binding Component.Item.Location, FallbackValue=Section 000}"/>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="{Binding Component.Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" TextDecorations="Strikethrough" IsVisible="{Binding Component.Item.OnSale}"/>
+                        <Label Text="{Binding Component.Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" IsVisible="{Binding Component.Item.OnSale}"/>
+                        <Label Text="{Binding Component.Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}"/>
+                    </StackLayout>
+                    <StackLayout x:Name="PlansStackLayout"/>
+                    <StackLayout x:Name="SpecsStackLayout"/>
+                </StackLayout>
+            </ScrollView>
+            <StackLayout x:Name="ButtonContainer" Orientation="Vertical" FlexLayout.Basis="50%" Grid.Row="0" Grid.Column="1" VerticalOptions="Center">
+                <Button Text="Remove" BackgroundColor="Red" Command="{Binding Remove}"/>
+                <views:SearchView ProductFound="{Binding ProductFound}" Error="{Binding SearchError}" CategoryFilter="{Binding Component.CategoryFilter}" AutoPopSearchPage="True" Orientation="Horizontal"/>
             </StackLayout>
-            <!--<ListView ItemsSource="{Binding Component.Dependencies}">
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <ViewCell>
-                            <Label Text="{Binding .}"/>
-                        </ViewCell>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>-->
-            <views:SearchView ProductFound="{Binding ProductFound}" Error="{Binding SearchError}" CategoryFilter="{Binding Component.CategoryFilter}" AutoPopSearchPage="True" />
-        </StackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
