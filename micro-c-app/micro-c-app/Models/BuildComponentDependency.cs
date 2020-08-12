@@ -26,7 +26,7 @@ namespace micro_c_app.Models
             {
                 return null;
             }
-            if(First == null)
+            if(First.Item == null)
             {
                 return $"{FirstFieldName} = {SecondValue.Replace('\n', ',')}";
             }
