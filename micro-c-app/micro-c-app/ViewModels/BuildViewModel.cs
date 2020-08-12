@@ -62,11 +62,6 @@ namespace micro_c_app.ViewModels
 
         private void BuildComponentSelected(BuildComponentViewModel updated)
         {
-            if(updated?.Component.Item == null)
-            {
-                return;
-            }
-
             foreach(var depend in updated?.Component.Dependencies)
             {
                 depend.Other(updated.Component)?.OnDependencyStatusChanged();

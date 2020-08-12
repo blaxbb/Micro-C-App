@@ -32,7 +32,7 @@ namespace micro_c_app.Models
         public string ComponentLabel => Item == null ? Type.ToString() : $"{Item.Name}";
 
         public string ErrorText => String.Join("\n", Dependencies.Where(d => !d.Compatible()).Select(d => d.ErrorText));
-        public string HintText => Item == null ? String.Join("\n", Dependencies.Where(d => d.Other(this).item != null).Select(d => d.HintText())) : null;
+        public string HintText => Item == null ? String.Join("\n", Dependencies.Where(d => d.Other(this)?.item != null).Select(d => d.HintText())) : null;
 
         public BuildComponent()
         {

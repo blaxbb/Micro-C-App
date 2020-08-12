@@ -3,18 +3,21 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
              xmlns:views="clr-namespace:micro_c_app.Views"
-             x:Class="micro_c_app.Views.BuildComponentPage">
+             x:Class="micro_c_app.Views.BuildComponentPage"
+             Title="Build component selection">
     <ContentPage.BindingContext>
         <vm:BuildComponentViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <StackLayout x:Name="FlipStack" Margin="10">
-            <Label Text="Build component selection"
-                HorizontalOptions="CenterAndExpand" />
-            <Label Text="{Binding Component.Type}"
-                HorizontalOptions="CenterAndExpand" />
-            <Label Text="{Binding Component.ComponentLabel}"
-                HorizontalOptions="CenterAndExpand" />
+            <StackLayout Orientation="Vertical">
+                <Label Text="{Binding Component.Type}"
+                    HorizontalOptions="CenterAndExpand" />
+                <Label Text="{Binding Component.ComponentLabel}"
+                    HorizontalOptions="CenterAndExpand"
+                       IsVisible="{Binding RemoveVisible}"/>
+                <Button Text="Remove" BackgroundColor="Red" Command="{Binding Remove}" IsVisible="{Binding RemoveVisible}"/>
+            </StackLayout>
             <!--<ListView ItemsSource="{Binding Component.Dependencies}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
