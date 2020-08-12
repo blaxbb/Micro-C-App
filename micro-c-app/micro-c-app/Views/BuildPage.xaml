@@ -8,32 +8,34 @@
         <vm:BuildViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <ScrollView>
-            <StackLayout>
-                <ListView ItemsSource="{Binding Components, Mode=TwoWay}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <StackLayout Orientation="Vertical" Margin="10">
-                                    <Button Text="{Binding ComponentLabel}" Command="{Binding ComponentSelectClicked, Source={RelativeSource AncestorType={x:Type vm:BuildViewModel}}}" CommandParameter="{Binding .}"/>
-                                    <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="Center" Margin="20,0,20,0">
-                                        <StackLayout Orientation="Horizontal">
-                                            <Label Text="{Binding Item.Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand"/>
-                                            <Label Text="{Binding Item.SKU}" HorizontalOptions="EndAndExpand"/>
-                                        </StackLayout>
-                                        <StackLayout Orientation="Horizontal">
-                                            <Label Text="{Binding Item.Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
-                                            <Label Text="{Binding Item.Stock}" HorizontalOptions="EndAndExpand"/>
-                                        </StackLayout>
-                                        <Label Text="{Binding HintText}"/>
-                                        <Label Text="{Binding ErrorText}"/>
-                                    </StackLayout>
-                                </StackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
+        <StackLayout Orientation="Vertical">
+            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="30,10,30,10">
+                <Label Text="{Binding Subtotal, StringFormat='Subtotal ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalOptions="StartAndExpand" VerticalTextAlignment="Center"/>
+                <Label Text="{Binding TaxedTotal, StringFormat='Total {0}', FallbackValue=(7.5%) $123.45}" HorizontalOptions="EndAndExpand" VerticalTextAlignment="Center"/>
             </StackLayout>
-        </ScrollView>
+            <ListView ItemsSource="{Binding Components, Mode=TwoWay}" VerticalOptions="FillAndExpand" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Vertical" Margin="10">
+                                <Button Text="{Binding ComponentLabel}" Command="{Binding ComponentSelectClicked, Source={RelativeSource AncestorType={x:Type vm:BuildViewModel}}}" CommandParameter="{Binding .}"/>
+                                <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="Center" Margin="20,0,20,0">
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="{Binding Item.Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand"/>
+                                        <Label Text="{Binding Item.SKU}" HorizontalOptions="EndAndExpand"/>
+                                    </StackLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="{Binding Item.Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
+                                        <Label Text="{Binding Item.Stock}" HorizontalOptions="EndAndExpand"/>
+                                    </StackLayout>
+                                    <Label Text="{Binding HintText}"/>
+                                    <Label Text="{Binding ErrorText}"/>
+                                </StackLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>

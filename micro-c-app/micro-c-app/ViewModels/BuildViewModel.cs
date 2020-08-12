@@ -21,6 +21,9 @@ namespace micro_c_app.ViewModels
         public ObservableCollection<BuildComponent> Components { get; }
         public INavigation Navigation { get; internal set; }
 
+        public float Subtotal => Components.Sum(c => c.Item?.Price ?? 0f);
+        public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${(Subtotal * SettingsPage.TaxRateFactor()).ToString("#0.00")}";
+
         public BuildViewModel()
         {
             Title = "Build";
@@ -68,6 +71,8 @@ namespace micro_c_app.ViewModels
             }
             updated.Component.OnDependencyStatusChanged();
             OnPropertyChanged(nameof(Components));
+            OnPropertyChanged(nameof(Subtotal));
+            OnPropertyChanged(nameof(TaxedTotal));
             Navigation.PopAsync();
         }
     }
