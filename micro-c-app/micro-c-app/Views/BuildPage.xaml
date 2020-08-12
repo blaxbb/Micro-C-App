@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:micro_c_app"
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
              x:Class="micro_c_app.Views.BuildPage"
              Title="{Binding Title}">
@@ -23,16 +24,16 @@
                             <StackLayout Orientation="Vertical" Margin="10">
                                 <Button Text="{Binding ComponentLabel}" Command="{Binding ComponentSelectClicked, Source={RelativeSource AncestorType={x:Type vm:BuildViewModel}}}" CommandParameter="{Binding .}"/>
                                 <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="Center" Margin="20,0,20,0">
-                                    <StackLayout Orientation="Horizontal">
-                                        <Label Text="{Binding Item.Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand"/>
+                                    <StackLayout Orientation="Horizontal" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}">
+                                        <Label Text="{Binding Item.Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" IsVisible="{Binding Path=Item.SKU}"/>
                                         <Label Text="{Binding Item.SKU}" HorizontalOptions="EndAndExpand"/>
                                     </StackLayout>
-                                    <StackLayout Orientation="Horizontal">
+                                    <StackLayout Orientation="Horizontal" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}">
                                         <Label Text="{Binding Item.Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
                                         <Label Text="{Binding Item.Stock}" HorizontalOptions="EndAndExpand"/>
                                     </StackLayout>
-                                    <Label Text="{Binding HintText}"/>
-                                    <Label Text="{Binding ErrorText}"/>
+                                    <Label Text="{Binding HintText}" IsVisible="{Binding HintText, Converter={StaticResource StringNullOrEmptyConverter}}"/>
+                                    <Label Text="{Binding ErrorText}" IsVisible="{Binding ErrorText, Converter={StaticResource StringNullOrEmptyConverter}}" BackgroundColor="Red" TextColor="White"/>
                                 </StackLayout>
                             </StackLayout>
                         </ViewCell>
