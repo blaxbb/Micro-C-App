@@ -24,6 +24,8 @@ namespace micro_c_app.ViewModels
         public float Subtotal => Components.Sum(c => c.Item?.Price ?? 0f);
         public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${(Subtotal * SettingsPage.TaxRateFactor()).ToString("#0.00")}";
 
+        public ICommand SendQuote { get; }
+
         public BuildViewModel()
         {
             Title = "Build";
@@ -61,6 +63,8 @@ namespace micro_c_app.ViewModels
                 }
                 await Navigation.PushAsync(componentPage);
             });
+
+            SendQuote = new Command(async () => await QuotePageViewModel.DoSendQuote(Components.Where(c => c.Item != null).Select(c => c.Item)));
         }
 
         private void BuildComponentSelected(BuildComponentViewModel updated)

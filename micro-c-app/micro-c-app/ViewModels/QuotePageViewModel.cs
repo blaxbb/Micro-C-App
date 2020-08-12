@@ -6,6 +6,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -77,13 +78,13 @@ namespace micro_c_app.ViewModels
                 Items.Remove(item);
             });
 
-            SendQuote = new Command(DoSendQuote);
+            SendQuote = new Command(async () => await DoSendQuote(Items));
 
             MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, (_) => { UpdateProperties(); });
 
         }
 
-        private async void DoSendQuote(object obj)
+        public static async Task DoSendQuote(IEnumerable<Item> Items)
         {
             try
             {
