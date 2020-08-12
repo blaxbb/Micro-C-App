@@ -15,23 +15,11 @@ namespace micro_c_app.ViewModels
     public class SearchResultsPageViewModel : BaseViewModel
     {
         public ObservableCollection<Item> Items { get; }
-        public ICommand OnProductSelected { get; }
-        public ICommand OnProductError { get; }
 
         public SearchResultsPageViewModel()
         {
             Title = "Search";
             Items = new ObservableCollection<Item>();
-
-            OnProductSelected = new Command<Item>(async (Item item) =>
-            {
-
-            });
-
-            OnProductError = new Command<string>(async (string message) =>
-            {
-                
-            });
         }
     }
 }

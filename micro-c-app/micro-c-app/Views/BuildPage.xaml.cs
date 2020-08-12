@@ -19,7 +19,7 @@ namespace micro_c_app.Views
     public partial class BuildPage : ContentPage
     {
         BuildViewModel viewModel => (BuildViewModel)BindingContext;
-        HttpClient client;
+        //HttpClient client;
         public BuildPage()
         {
             InitializeComponent();

@@ -28,8 +28,8 @@ namespace micro_c_app.ViewModels
         public const string SETTINGS_UPDATED_MESSAGE = "updated";
         public SettingsPageViewModel()
         {
-            Save = new Command(DoSave);
-            Cancel = new Command(ExitSettings);
+            Save = new Command(async (o) => await DoSave(o));
+            Cancel = new Command(async () => await ExitSettings());
 
             Title = "Settings";
             StoreID = SettingsPage.StoreID();
@@ -71,7 +71,7 @@ namespace micro_c_app.ViewModels
             SelectedStoreName = Stores.FirstOrDefault(kvp => kvp.Value == StoreID).Key;
         }
 
-        private async void DoSave(object obj)
+        private async Task DoSave(object obj)
         {
             SettingsPage.SalesID(SalesID);
             SettingsPage.TaxRate(TaxRate);
@@ -81,10 +81,10 @@ namespace micro_c_app.ViewModels
             SettingsPage.IncludeCSVWithQuote(IncludeCSVWithQuote);
 
             MessagingCenter.Send(this, SETTINGS_UPDATED_MESSAGE);
-            ExitSettings();
+            await ExitSettings();
         }
 
-        private async void ExitSettings()
+        private async Task ExitSettings()
         {
             await Device.InvokeOnMainThreadAsync(async () =>
             {

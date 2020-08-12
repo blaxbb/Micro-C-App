@@ -188,7 +188,7 @@ namespace micro_c_app.Views
                                 await Shell.Current.Navigation.PushAsync(page);
                             });
 
-                            await Task.Run(async () =>
+                            await Task.Run(() =>
                             {
                                 var shortMatches = Regex.Matches(body, "class=\"image\" data-name=\"(.*?)\" data-id=\"(.*?)\"(?:.*?)price=\"(.*?)\"(?:.*?)href=\"(.*?)\"(?:.*?)src=\"(.*?)\"");
                                 var stockMatches = Regex.Matches(body, "<div class=\"stock\">(?:.*?)>([\\d+ ]*?)<", RegexOptions.Singleline);

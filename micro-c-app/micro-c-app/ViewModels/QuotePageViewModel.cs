@@ -104,7 +104,6 @@ namespace micro_c_app.ViewModels
                         attach
                     };
                 }
-                StackLayout s;
                 await Email.ComposeAsync(message);
             }
             catch(Exception e)
