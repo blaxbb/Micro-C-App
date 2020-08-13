@@ -16,6 +16,7 @@ namespace micro_c_app.Models
             CPU,
             Motherboard,
             RAM,
+            Case,
             PowerSupply,
             GPU,
             SSD,
@@ -54,6 +55,8 @@ namespace micro_c_app.Models
                     return "4294966996";
                 case ComponentType.RAM:
                     return "4294966965";
+                case ComponentType.Case:
+                    return "4294964318";
                 case ComponentType.PowerSupply:
                     return "4294966654";
                 case ComponentType.GPU:

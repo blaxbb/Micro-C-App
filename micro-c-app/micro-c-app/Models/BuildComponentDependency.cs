@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using static micro_c_app.Models.BuildComponent;
 
 namespace micro_c_app.Models
 {
@@ -44,38 +45,33 @@ namespace micro_c_app.Models
         {
             Dependencies = new List<BuildComponentDependency>();
 
-            AddCPUDependencies();
-            AddMoboDependencies();
+            //CPU -> Other
+            Dependencies.Add(new BuildComponentDependency(ComponentType.CPU, "Socket Type", ComponentType.Motherboard, "Socket Type"));
+            Dependencies.Add(new BuildComponentDependency(ComponentType.CPU, "Compatibility", ComponentType.Motherboard, "North Bridge"));
+
+            //Mobo -> Other
+            Dependencies.Add(new BuildComponentDependency(ComponentType.Motherboard, "Memory Type", ComponentType.RAM, "Memory Speed (MHz)"));
+            Dependencies.Add(new BuildComponentDependency(ComponentType.Motherboard, "Form Factor", ComponentType.Case, "Motherboard Support"));
+            //Mobo liquid cooler compatibility
+            //SSD Form Factor
+
+            //GPU Power supply Wattage
+
+            //HDD 3.5" exists in case
+            //Rad size supported in case
         }
 
-        static void AddCPUDependencies()
+        public BuildComponentDependency()
         {
-            Dependencies.Add(new BuildComponentDependency()
-            {
-                FirstType = BuildComponent.ComponentType.CPU,
-                SecondType = BuildComponent.ComponentType.Motherboard,
-                FirstFieldName = "Socket Type",
-                SecondFieldName = "Socket Type"
-            });
 
-            Dependencies.Add(new BuildComponentDependency()
-            {
-                FirstType = BuildComponent.ComponentType.CPU,
-                SecondType = BuildComponent.ComponentType.Motherboard,
-                FirstFieldName = "Compatibility",
-                SecondFieldName = "North Bridge"
-            });
         }
 
-        static void AddMoboDependencies()
+        public BuildComponentDependency(ComponentType first, string firstField, ComponentType second, string secondField)
         {
-            Dependencies.Add(new BuildComponentDependency()
-            {
-                FirstType = BuildComponent.ComponentType.Motherboard,
-                SecondType = BuildComponent.ComponentType.RAM,
-                FirstFieldName = "Memory Type",
-                SecondFieldName = "Memory Speed (MHz)"
-            });
+            FirstType = first;
+            FirstFieldName = firstField;
+            SecondType = second;
+            SecondFieldName = secondField;
         }
 
         public BuildComponent Other(BuildComponent comp) => First == comp ? Second : First;
