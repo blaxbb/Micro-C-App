@@ -1,7 +1,4 @@
-﻿using System;
-using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using micro_c_app.Views;
+﻿using Xamarin.Forms;
 
 namespace micro_c_app
 {

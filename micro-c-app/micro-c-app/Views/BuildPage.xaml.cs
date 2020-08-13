@@ -1,14 +1,4 @@
-﻿using micro_c_app.Models;
-using micro_c_app.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+﻿using micro_c_app.ViewModels;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

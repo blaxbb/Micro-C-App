@@ -2,14 +2,10 @@
 using micro_c_app.ViewModels;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Web;
 using System.Windows.Input;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing;
@@ -192,7 +188,7 @@ namespace micro_c_app.Views
                             {
                                 var shortMatches = Regex.Matches(body, "class=\"image\" data-name=\"(.*?)\" data-id=\"(.*?)\"(?:.*?)price=\"(.*?)\"(?:.*?)href=\"(.*?)\"(?:.*?)src=\"(.*?)\"");
                                 var stockMatches = Regex.Matches(body, "<div class=\"stock\">(?:.*?)>([\\d+ ]*?)<", RegexOptions.Singleline);
-                                for(int i = 0; i < shortMatches.Count; i++)
+                                for (int i = 0; i < shortMatches.Count; i++)
                                 {
                                     Match m = shortMatches[i];
                                     string stock = "0";

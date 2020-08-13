@@ -10,7 +10,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
-using ZXing.Net.Mobile.Forms;
 
 namespace micro_c_app.ViewModels
 {
@@ -106,7 +105,7 @@ namespace micro_c_app.ViewModels
                 }
                 await Email.ComposeAsync(message);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {

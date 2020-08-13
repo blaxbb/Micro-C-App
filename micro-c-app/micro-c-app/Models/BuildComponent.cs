@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace micro_c_app.Models
 {
     public class BuildComponent : NotifyPropertyChangedItem
     {
-        private Item item;  
+        private Item item;
         public Item Item { get => item; set { SetProperty(ref item, value); OnPropertyChanged(nameof(ComponentLabel)); } }
 
         public List<BuildComponentDependency> Dependencies { get; }

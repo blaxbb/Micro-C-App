@@ -1,15 +1,10 @@
-﻿using System;
+﻿using micro_c_app.Views;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Text.Json;
 using System.Web;
-using micro_c_app.ViewModels;
-using Xamarin.Essentials;
-using System.Linq;
-using micro_c_app.Views;
-using System.Text;
 
 namespace micro_c_app.Models
 {
@@ -33,7 +28,7 @@ namespace micro_c_app.Models
         public Item()
         {
             Specs = new Dictionary<string, string>();
-            
+
         }
 
         public static async Task<Item> FromUrl(string url)
@@ -107,7 +102,7 @@ namespace micro_c_app.Models
                 if (matches.Count > 0)
                 {
                     item.PictureUrls = new List<string>();
-                    foreach(Match m in matches)
+                    foreach (Match m in matches)
                     {
                         item.PictureUrls.Add(m.Groups[1].Value);
                     }
@@ -122,7 +117,7 @@ namespace micro_c_app.Models
                     //
                     // There is an invisible element with another findit panel in the html, so only grab the first half...
                     //
-                    for(int i = 0; i < matches.Count / 2; i++)
+                    for (int i = 0; i < matches.Count / 2; i++)
                     {
                         var m = matches[i];
                         b.Append(m.Groups[1]);
@@ -132,10 +127,10 @@ namespace micro_c_app.Models
                 }
 
                 matches = Regex.Matches(body, "#planDetails(?:.*?)>(.*?)<(?:.*?)pricing\"> \\$(.*?)<");
-                if(matches.Count > 0)
+                if (matches.Count > 0)
                 {
                     item.Plans = new List<Plan>();
-                    foreach(Match m in matches)
+                    foreach (Match m in matches)
                     {
                         if (float.TryParse(m.Groups[2].Value, out float price))
                         {

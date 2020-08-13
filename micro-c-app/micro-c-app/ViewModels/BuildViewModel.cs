@@ -1,14 +1,10 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Windows.Input;
-using Xamarin.Essentials;
 using Xamarin.Forms;
-using ZXing.Net.Mobile.Forms;
 
 namespace micro_c_app.ViewModels
 {
@@ -36,14 +32,14 @@ namespace micro_c_app.ViewModels
             foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
             {
                 var comp = new BuildComponent() { Type = t };
-                foreach(var dep in BuildComponentDependency.Dependencies)
+                foreach (var dep in BuildComponentDependency.Dependencies)
                 {
-                    if(comp.Type == dep.FirstType)
+                    if (comp.Type == dep.FirstType)
                     {
                         dep.First = comp;
                         comp.Dependencies.Add(dep);
                     }
-                    else if(comp.Type == dep.SecondType)
+                    else if (comp.Type == dep.SecondType)
                     {
                         dep.Second = comp;
                         comp.Dependencies.Add(dep);
@@ -70,7 +66,7 @@ namespace micro_c_app.ViewModels
 
         private void BuildComponentSelected(BuildComponentViewModel updated)
         {
-            foreach(var depend in updated?.Component.Dependencies)
+            foreach (var depend in updated?.Component.Dependencies)
             {
                 depend.Other(updated.Component)?.OnDependencyStatusChanged();
             }

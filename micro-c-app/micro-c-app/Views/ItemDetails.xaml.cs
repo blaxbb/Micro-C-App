@@ -1,17 +1,12 @@
 ﻿using micro_c_app.ViewModels;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace micro_c_app.Views
 {
-	[XamlCompilation(XamlCompilationOptions.Compile)]
+    [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ItemDetails : ContentPage
     {
         public ItemDetails()
@@ -23,7 +18,7 @@ namespace micro_c_app.Views
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
-            if(width > height)
+            if (width > height)
             {
                 //landscape
                 FlipStack.Orientation = StackOrientation.Horizontal;
@@ -74,11 +69,11 @@ namespace micro_c_app.Views
         private void SetSpecItems()
         {
             SpecsStackLayout.Children.Clear();
-            if(BindingContext is ItemDetailsViewModel vm)
+            if (BindingContext is ItemDetailsViewModel vm)
             {
-                if(vm.Item.Specs != null)
+                if (vm.Item.Specs != null)
                 {
-                    foreach(var spec in vm.Item.Specs)
+                    foreach (var spec in vm.Item.Specs)
                     {
                         AddSpacer(SpecsStackLayout, Color.LightGray);
                         var stack = new StackLayout() { Orientation = StackOrientation.Horizontal };

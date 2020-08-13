@@ -1,17 +1,6 @@
 ﻿using micro_c_app.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Net;
 using System.Net.Http;
-using System.Text;
-using System.Text.RegularExpressions;
-using Xamarin.Essentials;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using ZXing;
-using ZXing.Mobile;
-using ZXing.Net.Mobile.Forms;
 
 namespace micro_c_app.Views
 {
@@ -23,7 +12,7 @@ namespace micro_c_app.Views
             client = new HttpClient();
             InitializeComponent();
 
-            if(BindingContext is SearchViewModel vm)
+            if (BindingContext is SearchViewModel vm)
             {
                 vm.Navigation = Navigation;
             }

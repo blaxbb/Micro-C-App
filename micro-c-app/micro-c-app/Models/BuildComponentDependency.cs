@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace micro_c_app.Models
 {
@@ -22,11 +21,11 @@ namespace micro_c_app.Models
 
         public string HintText()
         {
-            if(First?.Item == null && Second?.Item == null)
+            if (First?.Item == null && Second?.Item == null)
             {
                 return null;
             }
-            if(First.Item == null)
+            if (First.Item == null)
             {
                 return $"{FirstFieldName} = {SecondValue.Replace('\n', ',')}";
             }
@@ -94,18 +93,18 @@ namespace micro_c_app.Models
 
         public bool Compatible(BuildComponent a, BuildComponent b)
         {
-            if(a == null || b == null)
+            if (a == null || b == null)
             {
                 return false;
             }
 
             BuildComponent first, second;
-            if(a.Type == FirstType && b.Type == SecondType)
+            if (a.Type == FirstType && b.Type == SecondType)
             {
                 first = a;
                 second = b;
             }
-            else if(a.Type == SecondType && b.Type == FirstType)
+            else if (a.Type == SecondType && b.Type == FirstType)
             {
                 first = b;
                 second = a;
@@ -115,7 +114,7 @@ namespace micro_c_app.Models
                 return true;
             }
 
-            if(a.Item == null || b.Item == null)
+            if (a.Item == null || b.Item == null)
             {
                 return true;
             }

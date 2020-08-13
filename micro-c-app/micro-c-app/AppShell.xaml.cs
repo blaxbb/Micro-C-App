@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using micro_c_app.ViewModels;
-using micro_c_app.Views;
+﻿using micro_c_app.Views;
+using System;
 using Xamarin.Forms;
 
 namespace micro_c_app

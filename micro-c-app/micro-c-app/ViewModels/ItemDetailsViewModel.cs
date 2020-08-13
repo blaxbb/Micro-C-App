@@ -1,10 +1,6 @@
 ﻿using micro_c_app.Models;
-using System;
-using System.Collections.Generic;
 using System.Windows.Input;
-using Xamarin.Essentials;
 using Xamarin.Forms;
-using ZXing.Net.Mobile.Forms;
 
 namespace micro_c_app.ViewModels
 {
@@ -38,12 +34,13 @@ namespace micro_c_app.ViewModels
 
             BackPicture = new Command(() =>
             {
-                if(PictureIndex > 0)
+                if (PictureIndex > 0)
                 {
                     PictureIndex--;
                     OnPropertyChanged(nameof(ActivePicture));
                 }
-                else if(Item != null && Item?.PictureUrls?.Count > 1){
+                else if (Item != null && Item?.PictureUrls?.Count > 1)
+                {
                     PictureIndex = Item.PictureUrls.Count - 1;
                     OnPropertyChanged(nameof(ActivePicture));
                 }
@@ -51,17 +48,17 @@ namespace micro_c_app.ViewModels
 
             ForwardPicture = new Command(() =>
             {
-                if(PictureIndex < Item?.PictureUrls?.Count - 1)
+                if (PictureIndex < Item?.PictureUrls?.Count - 1)
                 {
                     PictureIndex++;
                     OnPropertyChanged(nameof(ActivePicture));
                 }
-                else if(Item != null && Item?.PictureUrls?.Count > 1)
+                else if (Item != null && Item?.PictureUrls?.Count > 1)
                 {
                     PictureIndex = 0;
                     OnPropertyChanged(nameof(ActivePicture));
                 }
-                
+
             });
         }
     }
