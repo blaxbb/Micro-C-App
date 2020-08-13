@@ -1,6 +1,7 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
 using System;
+using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -27,25 +28,14 @@ namespace micro_c_app.ViewModels
             Title = "Build";
 
             MessagingCenter.Subscribe<BuildComponentViewModel>(this, "selected", BuildComponentSelected);
+            MessagingCenter.Subscribe<BuildComponentViewModel>(this, "new",      BuildComponentNew);
+            MessagingCenter.Subscribe<BuildComponentViewModel>(this, "removed",  BuildComponentRemove);
 
             Components = new ObservableCollection<BuildComponent>();
             foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
             {
                 var comp = new BuildComponent() { Type = t };
-                foreach (var dep in BuildComponentDependency.Dependencies)
-                {
-                    if (comp.Type == dep.FirstType)
-                    {
-                        dep.First = comp;
-                        comp.Dependencies.Add(dep);
-                    }
-                    else if (comp.Type == dep.SecondType)
-                    {
-                        dep.Second = comp;
-                        comp.Dependencies.Add(dep);
-                    }
-
-                }
+                comp.AddDependencies(BuildComponentDependency.Dependencies);
                 Components.Add(comp);
             }
 
@@ -64,12 +54,49 @@ namespace micro_c_app.ViewModels
             SendQuote = new Command(async () => await QuotePageViewModel.DoSendQuote(Components.Where(c => c.Item != null).Select(c => c.Item)));
         }
 
+        private void BuildComponentRemove(BuildComponentViewModel updated)
+        {
+            var emptyComponents = Components.Where(c => updated.Component.Type == c.Type && c.Item == null).ToList();
+
+            var count = emptyComponents.Count;
+            for(int i = 0; i < count - 1; i++)
+            {
+                Components.Remove(emptyComponents[i]);
+            }
+            BuildComponentSelected(updated);
+        }
+
+        private void BuildComponentNew(BuildComponentViewModel updated)
+        {
+            var existing = Components.Count(d => d.Type == updated.Component.Type);
+            if(existing < BuildComponent.MaxNumberPerType(updated.Component.Type))
+            {
+                var newItem = new BuildComponent()
+                {
+                    Type = updated.Component.Type,
+                };
+                foreach (var d in updated.Component.Dependencies)
+                {
+                    var clone = d.Clone();
+                    newItem.AddDependency(clone);
+                    d.Other(updated.Component).AddDependency(clone);
+                }
+                var index = Components.IndexOf(updated.Component);
+                Components.Insert(index + 1, newItem);
+            }
+
+            BuildComponentSelected(updated);
+        }
+
+
         private void BuildComponentSelected(BuildComponentViewModel updated)
         {
             foreach (var depend in updated?.Component.Dependencies)
             {
                 depend.Other(updated.Component)?.OnDependencyStatusChanged();
             }
+
+
             updated.Component.OnDependencyStatusChanged();
             OnPropertyChanged(nameof(Components));
             OnPropertyChanged(nameof(Subtotal));

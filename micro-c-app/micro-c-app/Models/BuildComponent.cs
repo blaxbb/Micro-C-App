@@ -43,6 +43,29 @@ namespace micro_c_app.Models
             OnPropertyChanged(nameof(HintText));
         }
 
+        public void AddDependencies(List<BuildComponentDependency> dependencies)
+        {
+            foreach (var dep in dependencies)
+            {
+                AddDependency(dep);
+
+            }
+        }
+
+        public void AddDependency(BuildComponentDependency dependency)
+        {
+            if (Type == dependency.FirstType)
+            {
+                dependency.First = this;
+                Dependencies.Add(dependency);
+            }
+            else if (Type == dependency.SecondType)
+            {
+                dependency.Second = this;
+                Dependencies.Add(dependency);
+            }
+        }
+
         public static string CategoryFilterForType(ComponentType type)
         {
             //from microcenter.com search N field ex: &N=4294966995
@@ -71,6 +94,29 @@ namespace micro_c_app.Models
                     return "4294966926";
                 default:
                     return "";
+            }
+        }
+
+        public static int MaxNumberPerType(ComponentType type)
+        {
+            switch (type)
+            {
+                case ComponentType.CPU:
+                case ComponentType.Motherboard:
+                case ComponentType.Case:
+                case ComponentType.PowerSupply:
+                case ComponentType.CPUCooler:
+                    return 1;
+                case ComponentType.GPU:
+                    return 4;
+                case ComponentType.RAM:
+                case ComponentType.CaseFan:
+                    return 8;
+                case ComponentType.SSD:
+                    return 64;
+                case ComponentType.HDD:
+                default:
+                    return 64;
             }
         }
     }

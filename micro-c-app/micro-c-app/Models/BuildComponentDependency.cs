@@ -41,6 +41,11 @@ namespace micro_c_app.Models
             return $"{FirstType}({FirstFieldName}) === {SecondType}({SecondFieldName})";
         }
 
+        public BuildComponentDependency Clone()
+        {
+            return new BuildComponentDependency(FirstType, FirstFieldName, SecondType, SecondFieldName);
+        }
+
         static BuildComponentDependency()
         {
             Dependencies = new List<BuildComponentDependency>();

@@ -20,8 +20,16 @@ namespace micro_c_app.ViewModels
 
             ProductFound = new Command<Item>((item) =>
             {
+                var isNew = Component.Item == null;
                 Component.Item = item;
-                MessagingCenter.Send(this, "selected");
+                if (isNew)
+                {
+                    MessagingCenter.Send(this, "new");
+                }
+                else
+                {
+                    MessagingCenter.Send(this, "selected");
+                }
             });
 
             SearchError = new Command<string>(async (message) =>
@@ -35,7 +43,7 @@ namespace micro_c_app.ViewModels
             Remove = new Command(() =>
             {
                 component.Item = null;
-                MessagingCenter.Send(this, "selected");
+                MessagingCenter.Send(this, "removed");
             });
         }
     }
