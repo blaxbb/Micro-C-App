@@ -12,6 +12,7 @@ namespace micro_c_app
             Routing.RegisterRoute(nameof(SearchPage), typeof(SearchPage));
             Routing.RegisterRoute(nameof(BuildPage), typeof(BuildPage));
             Routing.RegisterRoute(nameof(QuotePage), typeof(QuotePage));
+            var i = Items;
         }
 
         private void DisplaySettings(object sender, EventArgs e)

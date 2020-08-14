@@ -18,6 +18,9 @@ namespace micro_c_app.ViewModels
         public float TaxRate { get; set; }
         public bool IncludeCSVWithQuote { get; set; }
 
+        public List<OSAppTheme> ThemeOptions { get; set; }
+        public OSAppTheme Theme { get; set; }
+
         public ICommand Save { get; }
         public ICommand Cancel { get; }
 
@@ -32,6 +35,9 @@ namespace micro_c_app.ViewModels
             SalesID = SettingsPage.SalesID();
             TaxRate = SettingsPage.TaxRate();
             IncludeCSVWithQuote = SettingsPage.IncludeCSVWithQuote();
+
+            ThemeOptions = System.Enum.GetValues(typeof(OSAppTheme)).Cast<OSAppTheme>().ToList();
+            Theme = SettingsPage.Theme();
 
             Stores = new Dictionary<string, string>()
             {
@@ -75,6 +81,13 @@ namespace micro_c_app.ViewModels
             var storeId = Stores[SelectedStoreName];
             SettingsPage.StoreID(storeId);
             SettingsPage.IncludeCSVWithQuote(IncludeCSVWithQuote);
+
+            if(Theme != SettingsPage.Theme())
+            {
+                Application.Current.UserAppTheme = Theme;
+            }
+
+            SettingsPage.Theme(Theme);
 
             MessagingCenter.Send(this, SETTINGS_UPDATED_MESSAGE);
             await ExitSettings();

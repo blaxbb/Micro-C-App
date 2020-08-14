@@ -10,7 +10,7 @@
         <StackLayout Spacing="10" Margin="30">
             <StackLayout Orientation="Horizontal">
                 <Label Text="Store" WidthRequest="100" VerticalTextAlignment="Center"/>
-                <Picker x:Name="StorePicker" Title="Store" ItemsSource="{Binding StoreNames}" SelectedItem="{Binding SelectedStoreName, Mode=TwoWay}" TextColor="Black" TitleColor="DarkGray" HorizontalOptions="FillAndExpand"/>
+                <Picker x:Name="StorePicker" Title="Store" ItemsSource="{Binding StoreNames}" SelectedItem="{Binding SelectedStoreName, Mode=TwoWay}" HorizontalOptions="FillAndExpand"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Label Text="Sales ID" WidthRequest="100" VerticalTextAlignment="Center"/>
@@ -23,6 +23,10 @@
             <StackLayout Orientation="Horizontal">
                 <Label Text="Include CSV with Quote" WidthRequest="100" VerticalTextAlignment="Center"/>
                 <CheckBox IsChecked="{Binding IncludeCSVWithQuote}" HorizontalOptions="FillAndExpand"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Theme" WidthRequest="100" VerticalTextAlignment="Center"/>
+                <Picker x:Name="ThemePicker" Title="Theme" ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding Theme}" HorizontalOptions="FillAndExpand"/>
             </StackLayout>
             <StackLayout Orientation="Horizontal">
                 <Button Text="Cancel" WidthRequest="100" HorizontalOptions="StartAndExpand" Margin="0,30,30,0" Command="{Binding Cancel}" BackgroundColor="Red"/>
