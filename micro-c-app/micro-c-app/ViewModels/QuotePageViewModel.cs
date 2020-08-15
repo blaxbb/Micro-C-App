@@ -15,6 +15,8 @@ namespace micro_c_app.ViewModels
 {
     public class QuotePageViewModel : BaseViewModel
     {
+        private bool notBusy;
+
         public ObservableCollection<Item> Items { get; set; }
         public ICommand OnProductFound { get; }
         public ICommand OnProductError { get; }
@@ -23,6 +25,10 @@ namespace micro_c_app.ViewModels
         public ICommand RemoveItem { get; }
 
         public ICommand SendQuote { get; }
+        public ICommand ExportQuote { get; }
+        public ICommand ImportQuote { get; }
+
+        public bool NotBusy { get => notBusy; set { SetProperty(ref notBusy, value); } }
 
         public float Subtotal => Items.Sum(i => i.Price * i.Quantity);
         public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${(Subtotal * SettingsPage.TaxRateFactor()).ToString("#0.00")}";
@@ -78,6 +84,10 @@ namespace micro_c_app.ViewModels
             });
 
             SendQuote = new Command(async () => await DoSendQuote(Items));
+
+            ExportQuote = new Command(async () => await DoExportQuote(Items));
+
+            ImportQuote = new Command(async () => await ImportQuoteAction());
 
             MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, (_) => { UpdateProperties(); });
 
@@ -157,6 +167,50 @@ namespace micro_c_app.ViewModels
             b.AppendLine($"Quote created by {salesId} for additional help contact me at {salesId}@microcenter.com");
 
             return b.ToString();
+        }
+
+        public static async Task DoExportQuote(IEnumerable<Item> Items)
+        {
+            var page = new ExportQRPage();
+            if (page.BindingContext is ExportQRPageViewModel vm)
+            {
+                foreach (var i in Items)
+                {
+                    vm.Items.Add(i);
+                }
+            }
+
+            await Shell.Current.Navigation.PushAsync(page);
+        }
+
+        private async Task ImportQuoteAction()
+        {
+            NotBusy = false;
+            await DoImportQuote(
+                new Command<Item>(async (Item i) =>
+                {
+                    await Device.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Shell.Current.DisplayAlert("Title", i.Name, "Ok");
+                    });
+                }),
+                new Command<Item>(async (Item i) =>
+                {
+                    await Device.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Shell.Current.DisplayAlert("ERROR", i.Name, "Ok");
+                    });
+                })
+            );
+            NotBusy = true;
+        }
+
+        public static async Task DoImportQuote(Command<Item> productFound, Command error)
+        {
+            var view = new SearchView();
+            view.ProductFound = productFound;
+            view.Error = error;
+            await view.OnSubmit("951970");
         }
 
         private void UpdateProperties()

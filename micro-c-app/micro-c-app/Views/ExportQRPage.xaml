@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             xmlns:zxing="clr-namespace:ZXing.Net.Mobile.Forms;assembly=ZXing.Net.Mobile.Forms"
+             xmlns:zxcm="clr-namespace:ZXing.Common;assembly=zxing"
+             x:Class="micro_c_app.Views.ExportQRPage"
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <vm:ExportQRPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout Orientation="Vertical" Padding="10" x:Name="FlipStack">
+            <zxing:ZXingBarcodeImageView VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" BarcodeValue="{Binding CurrentJSON}" BarcodeFormat="QR_CODE">
+                <zxing:ZXingBarcodeImageView.BarcodeOptions>
+                    <zxcm:EncodingOptions Width="600" Height="600" />
+                </zxing:ZXingBarcodeImageView.BarcodeOptions>
+            </zxing:ZXingBarcodeImageView>
+            <StackLayout Orientation="Horizontal" HorizontalOptions="Center" VerticalOptions="End">
+                <Button Text="&lt;-" Command="{Binding QRCodeBack}"/>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="{Binding CurrentIndexLabel, StringFormat='{0} of '}" VerticalTextAlignment="Center"/>
+                    <Label Text="{Binding TotalCodes}" VerticalTextAlignment="Center"/>
+                </StackLayout>
+                <Button Text="->" Command="{Binding QRCodeForward}"/>
+            </StackLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

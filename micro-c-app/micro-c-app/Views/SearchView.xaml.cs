@@ -60,10 +60,10 @@ namespace micro_c_app.Views
             {
                 client = new HttpClient();
             }
-            SKUField.ReturnCommand = new Command(() => OnSubmit(SKUField.Text));
-            SearchField.ReturnCommand = new Command(() => OnSubmit(SearchField.Text));
-            SKUSubmitButton.Command = new Command(() => OnSubmit(SKUField.Text));
-            SearchSubmitButton.Command = new Command(() => OnSubmit(SearchField.Text));
+            SKUField.ReturnCommand = new Command(async () => await OnSubmit(SKUField.Text));
+            SearchField.ReturnCommand = new Command(async () => await OnSubmit(SearchField.Text));
+            SKUSubmitButton.Command = new Command(async () => await OnSubmit(SKUField.Text));
+            SearchSubmitButton.Command = new Command(async () => await OnSubmit(SearchField.Text));
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -111,7 +111,7 @@ namespace micro_c_app.Views
                     {
                         await Navigation.PopModalAsync();
                         SKUField.Text = FilterBarcodeResult(result);
-                        OnSubmit(SKUField.Text);
+                        await OnSubmit(SKUField.Text);
                     });
                 };
                 await Navigation.PushModalAsync(scanPage);
@@ -130,7 +130,7 @@ namespace micro_c_app.Views
             }
         }
 
-        private async void OnSubmit(string searchValue)
+        public async Task OnSubmit(string searchValue)
         {
             if (string.IsNullOrWhiteSpace(searchValue))
             {

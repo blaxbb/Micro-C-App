@@ -10,9 +10,11 @@
     </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Send" Order="Secondary" Command="{Binding SendQuote}"/>
+        <!--<ToolbarItem Text="Export" Order="Secondary" Command="{Binding ExportQuote}"/>
+        <ToolbarItem Text="Import" Order="Secondary" Command="{Binding ImportQuote}"/>-->
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout Margin="10,5,10,0" Orientation="Horizontal" x:Name="FlipStack">
+        <StackLayout Margin="10,5,10,0" Orientation="Horizontal" x:Name="FlipStack" IsEnabled="{Binding NotBusy}">
             <StackLayout VerticalOptions="FillAndExpand">
                 <ListView ItemsSource="{Binding Items}" SelectionMode="None" Grid.Row="0"  RowHeight="75" VerticalOptions="FillAndExpand">
                     <ListView.ItemTemplate>

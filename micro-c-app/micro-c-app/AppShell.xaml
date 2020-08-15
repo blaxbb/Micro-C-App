@@ -73,8 +73,8 @@
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
         <ShellContent Title="Search" Icon="tab_about.png" Route="SearchPage" ContentTemplate="{DataTemplate local:SearchPage}" />
         <ShellContent Title="Quote" Icon="tab_feed.png" Route="QuotePage" ContentTemplate="{DataTemplate local:QuotePage}" />
-        <ShellContent Title="PC Build" Icon="tab_about.png" Route="BuildPage" ContentTemplate="{DataTemplate local:BuildPage}">
-        </ShellContent>
+        <ShellContent Title="PC Build" Icon="tab_about.png" Route="BuildPage" ContentTemplate="{DataTemplate local:BuildPage}" />
+        <ShellContent Title="References" Icon="tab_about.png" Route="ReferencePage" ContentTemplate="{DataTemplate local:ReferencePage}" />
     </FlyoutItem>
     <MenuItem Text="Settings" Icon="tab_about.png" Clicked="DisplaySettings" />
 
