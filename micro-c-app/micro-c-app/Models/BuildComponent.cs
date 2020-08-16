@@ -22,7 +22,9 @@ namespace micro_c_app.Models
             SSD,
             HDD,
             CPUCooler,
-            CaseFan
+            CaseFan,
+            OperatingSystem,
+            Miscellaneous
         }
         public ComponentType Type { get; set; }
         public string CategoryFilter => CategoryFilterForType(Type);
@@ -92,6 +94,9 @@ namespace micro_c_app.Models
                     return "4294966927";
                 case ComponentType.CaseFan:
                     return "4294966926";
+                case ComponentType.OperatingSystem:
+                    return "4294967276";
+                case ComponentType.Miscellaneous:
                 default:
                     return "";
             }
@@ -106,6 +111,7 @@ namespace micro_c_app.Models
                 case ComponentType.Case:
                 case ComponentType.PowerSupply:
                 case ComponentType.CPUCooler:
+                case ComponentType.OperatingSystem:
                     return 1;
                 case ComponentType.GPU:
                     return 4;
@@ -115,6 +121,7 @@ namespace micro_c_app.Models
                 case ComponentType.SSD:
                     return 64;
                 case ComponentType.HDD:
+                case ComponentType.Miscellaneous:
                 default:
                     return 64;
             }

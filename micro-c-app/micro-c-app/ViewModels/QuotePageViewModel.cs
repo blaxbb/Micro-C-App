@@ -35,6 +35,7 @@ namespace micro_c_app.ViewModels
         public QuotePageViewModel()
         {
             Title = "Quote";
+            NotBusy = true;
             Items = new ObservableCollection<Item>();
             //for (int i = 0; i < 10; i++)
             //{
