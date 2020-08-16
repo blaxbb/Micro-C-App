@@ -35,7 +35,7 @@ namespace micro_c_app.ViewModels
             foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
             {
                 var comp = new BuildComponent() { Type = t };
-                comp.AddDependencies(BuildComponentDependency.Dependencies);
+                comp.AddDependencies(FieldContainsDependency.Dependencies);
                 Components.Add(comp);
             }
 

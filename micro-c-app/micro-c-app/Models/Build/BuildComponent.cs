@@ -56,16 +56,12 @@ namespace micro_c_app.Models
 
         public void AddDependency(BuildComponentDependency dependency)
         {
-            if (Type == dependency.FirstType)
+            if(dependency.SetRelevant(this))
             {
-                dependency.First = this;
                 Dependencies.Add(dependency);
             }
-            else if (Type == dependency.SecondType)
-            {
-                dependency.Second = this;
-                Dependencies.Add(dependency);
-            }
+
+            
         }
 
         public static string CategoryFilterForType(ComponentType type)
