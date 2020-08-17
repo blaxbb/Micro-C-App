@@ -1,8 +1,11 @@
 ﻿using micro_c_app.Models;
+using micro_c_app.Models.Reference;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace micro_c_app.ViewModels
 {
@@ -23,57 +26,37 @@ namespace micro_c_app.ViewModels
             get => selectedItem;
             set
             {
-                if(EndLevel)
-                {
-                    return;
-                }
-
                 SetProperty(ref selectedItem, value);
-                if (value != null)
-                {
-                    SetPath(Path + SelectedItem + "/");
-                }
             }
         }
 
+        public ICommand ItemTapped { get; }
+
         public ReferencePageViewModel()
         {
+            ItemTapped = new Command(() =>
+            {
+                if(SelectedItem == "Back")
+                {
+                    var pathComps = Path.Split('/');
+                    var path = $"{string.Join("/", pathComps.Take(pathComps.Length - 2))}/";
+                    SetPath(path);
+                    return;
+                }
+                if (EndLevel)
+                {
+                    return;
+                }
+                SetPath(Path + SelectedItem + "/");
+            });
             Title = "Search";
             Items = new List<PriceReference>();
             ListItems = new ObservableCollection<string>();
 
-            Items.Add(new PriceReference("/Plans/Replacement/$0.00-$4.99    ",     ("2 year", 0.75f),  ("3 year", 1.99f)));
-            Items.Add(new PriceReference("/Plans/Replacement/$4.99-$9.99    ",     ("2 year", 0.99f),  ("3 year", 2.49f)));
-            Items.Add(new PriceReference("/Plans/Replacement/$10.00-$14.99  ",   ("2 year", 1.49f),  ("3 year", 2.99f)));
-            Items.Add(new PriceReference("/Plans/Replacement/$15.00-$19.99  ",   ("2 year", 1.99f),  ("3 year", 3.99f)));
-            Items.Add(new PriceReference("/Plans/Replacement/$20.00-$24.99  ",   ("2 year", 2.49f),  ("3 year", 4.99f)));
-            Items.Add(new PriceReference("/Plans/Replacement/$25.00-$49.99  ",   ("2 year", 4.99f),  ("3 year", 9.99f)));
-            Items.Add(new PriceReference("/Plans/Replacement/$50.00-$74.99  ",   ("2 year", 6.99f),  ("3 year", 14.99f)));
-            Items.Add(new PriceReference("/Plans/Replacement/$75.00-$99.99  ",   ("2 year", 9.99f),  ("3 year", 19.99f)));
-            Items.Add(new PriceReference("/Plans/Replacement/$100.00-$199.99", ("2 year", 19.99f), ("3 year", 39.99f)));
-            Items.Add(new PriceReference("/Plans/Replacement/$200.00-$299.99", ("2 year", 29.99f), ("3 year", 59.99f)));
-            Items.Add(new PriceReference("/Plans/Replacement/$300.00-$399.99", ("2 year", 49.99f), ("3 year", 89.99f)));
-            Items.Add(new PriceReference("/Plans/Replacement/$400.00-$500.00", ("2 year", 69.99f), ("3 year", 139.99f)));
-
-            Items.Add(new PriceReference("/Plans/Small Electronic ADH/$0.00-$49.99",     ("2 year", 14.99f),  ("1 year", 5.99f)));
-            Items.Add(new PriceReference("/Plans/Small Electronic ADH/$50.00-$99.99",    ("2 year", 39.99f),  ("1 year", 19.99f)));
-            Items.Add(new PriceReference("/Plans/Small Electronic ADH/$100.00-$199.99",  ("2 year", 69.99f),  ("1 year", 29.99f)));
-            Items.Add(new PriceReference("/Plans/Small Electronic ADH/$200.00-$199.99",  ("2 year", 99.99f),  ("1 year", 49.99f)));
-            Items.Add(new PriceReference("/Plans/Small Electronic ADH/$300.00-$199.99",  ("2 year", 139.99f), ("1 year", 59.99f)));
-            Items.Add(new PriceReference("/Plans/Small Electronic ADH/$400.00-$199.99",  ("2 year", 179.99f), ("1 year", 79.99f)));
-            Items.Add(new PriceReference("/Plans/Small Electronic ADH/$500.00-$199.99",  ("2 year", 199.99f), ("1 year", 99.99f)));
-            Items.Add(new PriceReference("/Plans/Small Electronic ADH/$750.00-$199.99",  ("2 year", 299.99f), ("1 year", 199.99f)));
-            Items.Add(new PriceReference("/Plans/Small Electronic ADH/$1000.00-$199.99", ("2 year", 399.99f), ("1 year", 299.99f)));
-
-            Items.Add(new PriceReference("/Plans/BYO Replacement/$0.00-49.99",      ("3 year", 9.99f),   ("2 year", 6.99f)));
-            Items.Add(new PriceReference("/Plans/BYO Replacement/$50.00-99.99",     ("3 year", 29.99f),  ("2 year", 14.99f)));
-            Items.Add(new PriceReference("/Plans/BYO Replacement/$100.00-199.99",   ("3 year", 49.99f),  ("2 year", 29.99f)));
-            Items.Add(new PriceReference("/Plans/BYO Replacement/$200.00-299.99",   ("3 year", 69.99f),  ("2 year", 49.99f)));
-            Items.Add(new PriceReference("/Plans/BYO Replacement/$300.00-399.99",   ("3 year", 99.99f),  ("2 year", 69.99f)));
-            Items.Add(new PriceReference("/Plans/BYO Replacement/$400.00-499.99",   ("3 year", 129.99f), ("2 year", 89.99f)));
-            Items.Add(new PriceReference("/Plans/BYO Replacement/$500.00-999.99",   ("3 year", 199.99f), ("2 year", 139.99f)));
-            Items.Add(new PriceReference("/Plans/BYO Replacement/$1000.00-1499.99", ("3 year", 279.99f), ("2 year", 199.99f)));
-            Items.Add(new PriceReference("/Plans/BYO Replacement/$1500.00-3000.00", ("3 year", 429.99f), ("2 year", 299.99f)));
+            foreach (var plan in PlanReference.AllPlans)
+            {
+                Items.Add(new PriceReference($"/Plans/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.duration} years", t.price)).ToArray()));
+            }
 
             SetPath("/");
         }
@@ -85,9 +68,15 @@ namespace micro_c_app.ViewModels
             //
             Path = path;
 
+
             var currentItems = Items.Where(i => i.Path.StartsWith(Path));
             var paths = currentItems.GroupBy(i => i.Path.Substring(Path.Length).Split('/').FirstOrDefault()).ToList();
             ListItems.Clear();
+
+            if(Path != "/")
+            {
+                ListItems.Add("Back");
+            }
 
             if (currentItems.Any(c => c.Path.Substring(Path.Length).Contains('/')))
             {
@@ -102,6 +91,10 @@ namespace micro_c_app.ViewModels
                 EndLevel = true;
                 StringBuilder b = new StringBuilder();
                 var first = currentItems.FirstOrDefault();
+
+                var pathComps = first.Path.Split('/');
+                Title = pathComps.ElementAtOrDefault(pathComps.Length - 2);
+
                 var cats = first.Items.Select(f => f.name);
                 var maxCatLength = cats.Max(c => c.Length);
                 var maxPathLength = paths.Max(p => p.Key.Length);

@@ -61,7 +61,7 @@ namespace micro_c_app.Models
             //Mobo -> Other
             Dependencies.Add(new FieldContainsDependency(ComponentType.Motherboard, "Memory Type", ComponentType.RAM, "Memory Speed (MHz)"));
             Dependencies.Add(new FieldContainsDependency(ComponentType.Motherboard, "Form Factor", ComponentType.Case, "Motherboard Support"));
-            //Mobo liquid cooler compatibility
+            
             Dependencies.Add(new FieldContainsDependency(ComponentType.Motherboard, "M.2 Port Type", ComponentType.SSD, "Form Factor"));
 
             Dependencies.Add(new FieldComparisonDependency(ComponentType.GPU, "Recommended Power Supply", ComponentType.PowerSupply, "Wattage", FieldComparisonDependency.CompareMode.LessThanOrEqual));

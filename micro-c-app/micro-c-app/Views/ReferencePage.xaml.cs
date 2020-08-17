@@ -1,4 +1,5 @@
-﻿using System;
+﻿using micro_c_app.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,6 +16,14 @@ namespace micro_c_app.Views
         public ReferencePage()
         {
             InitializeComponent();
+        }
+
+        private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)
+        {
+            if(BindingContext is ReferencePageViewModel vm)
+            {
+                vm.ItemTapped?.Execute(null);
+            }
         }
     }
 }
