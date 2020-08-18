@@ -1,4 +1,5 @@
 ﻿using micro_c_app.Models;
+using micro_c_app.Models.Reference;
 using micro_c_app.Views;
 using System;
 using System.Collections;
@@ -30,6 +31,7 @@ namespace micro_c_app.ViewModels
             MessagingCenter.Subscribe<BuildComponentViewModel>(this, "selected", BuildComponentSelected);
             MessagingCenter.Subscribe<BuildComponentViewModel>(this, "new",      BuildComponentNew);
             MessagingCenter.Subscribe<BuildComponentViewModel>(this, "removed",  BuildComponentRemove);
+            MessagingCenter.Subscribe<BuildComponentViewModel, PlanTier>(this, "add_plan", BuildComponentAddPlan);
 
             Components = new ObservableCollection<BuildComponent>();
             foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
@@ -96,11 +98,16 @@ namespace micro_c_app.ViewModels
                 depend.Other(updated.Component)?.OnDependencyStatusChanged();
             }
 
-
             updated.Component.OnDependencyStatusChanged();
             OnPropertyChanged(nameof(Components));
             OnPropertyChanged(nameof(Subtotal));
             OnPropertyChanged(nameof(TaxedTotal));
+            Navigation.PopAsync();
+        }
+
+        public void BuildComponentAddPlan(BuildComponentViewModel vm, PlanTier tier)
+        {
+            Components.Add(new BuildComponent() { Type = BuildComponent.ComponentType.Miscellaneous, Item = new Item() { Name = $"{tier.Duration} year protection on {vm?.Component?.Item?.Name}", Price = tier.Price } });
             Navigation.PopAsync();
         }
     }

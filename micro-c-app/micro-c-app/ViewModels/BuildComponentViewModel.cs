@@ -1,4 +1,5 @@
 ﻿using micro_c_app.Models;
+using micro_c_app.Models.Reference;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -45,6 +46,11 @@ namespace micro_c_app.ViewModels
                 component.Item = null;
                 MessagingCenter.Send(this, "removed");
             });
+        }
+
+        public void BuildComponentAddPlan(PlanTier tier)
+        {
+            MessagingCenter.Send(this, "add_plan", tier);
         }
     }
 }

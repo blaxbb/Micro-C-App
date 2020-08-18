@@ -29,15 +29,17 @@ namespace micro_c_app.Views
             PlansStackLayout?.Children?.Clear();
             if (BindingContext is BuildComponentViewModel vm)
             {
-                if (vm?.Component?.Item?.Plans != null)
+                if (vm.Component?.Item != null && vm.Component.Type != Models.BuildComponent.ComponentType.Miscellaneous)
                 {
-
-                    foreach (var plan in vm.Component.Item.Plans)
+                    var plans = Models.Reference.PlanReference.Get(Models.Reference.PlanReference.PlanType.Replacement, vm.Component.Item.Price);
+                    foreach(var tier in plans.Tiers)
                     {
+                        this.ToolbarItems.Add(new ToolbarItem($"Add {tier.Duration} yr plan", "", () => { vm.BuildComponentAddPlan(tier); }) { Order = ToolbarItemOrder.Secondary });
+
                         AddSpacer(PlansStackLayout, Color.LightGray);
                         var stack = new StackLayout() { Orientation = StackOrientation.Horizontal };
-                        stack.Children.Add(new Label() { Text = plan.Name, HorizontalOptions = LayoutOptions.StartAndExpand, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.Start });
-                        stack.Children.Add(new Label() { Text = $"${plan.Price.ToString("#0.00")}", HorizontalOptions = LayoutOptions.End, WidthRequest = 100, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.End });
+                        stack.Children.Add(new Label() { Text = $"{tier.Duration} year {plans.Name}", HorizontalOptions = LayoutOptions.StartAndExpand, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.Start });
+                        stack.Children.Add(new Label() { Text = $"${tier.Price.ToString("#0.00")}", HorizontalOptions = LayoutOptions.End, WidthRequest = 100, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.End });
 
                         PlansStackLayout.Children.Add(stack);
                     }

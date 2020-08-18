@@ -55,7 +55,7 @@ namespace micro_c_app.ViewModels
 
             foreach (var plan in PlanReference.AllPlans)
             {
-                Items.Add(new PriceReference($"/Plans/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.duration} years", t.price)).ToArray()));
+                Items.Add(new PriceReference($"/Plans/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
             }
 
             SetPath("/");
