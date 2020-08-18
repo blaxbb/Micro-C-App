@@ -13,6 +13,7 @@ namespace micro_c_app.Models
 
         public enum ComponentType
         {
+            BuildService,
             CPU,
             Motherboard,
             RAM,
@@ -78,6 +79,7 @@ namespace micro_c_app.Models
                 case ComponentType.HDD:
                 case ComponentType.CaseFan:
                 case ComponentType.GPU:
+                case ComponentType.BuildService:
                 default:
                     return true;
                 case ComponentType.OperatingSystem:
@@ -115,6 +117,8 @@ namespace micro_c_app.Models
                     return "4294966926";
                 case ComponentType.OperatingSystem:
                     return "4294967276";
+                case ComponentType.BuildService:
+                    return "4294809201";
                 case ComponentType.Miscellaneous:
                 default:
                     return "";
@@ -131,6 +135,7 @@ namespace micro_c_app.Models
                 case ComponentType.PowerSupply:
                 case ComponentType.CPUCooler:
                 case ComponentType.OperatingSystem:
+                case ComponentType.BuildService:
                     return 1;
                 case ComponentType.GPU:
                     return 4;

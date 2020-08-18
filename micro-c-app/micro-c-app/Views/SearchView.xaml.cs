@@ -34,6 +34,17 @@ namespace micro_c_app.Views
         public static readonly BindableProperty OrientationProperty = BindableProperty.Create(nameof(Orientation), typeof(string), typeof(SearchView), null);
         public string Orientation { get { return (string)GetValue(OrientationProperty); } set { SetValue(OrientationProperty, value); } }
 
+        public static readonly BindableProperty OrderByProperty = BindableProperty.Create(nameof(OrderBy), typeof(OrderByMode), typeof(SearchView), null);
+        public OrderByMode OrderBy { get { return (OrderByMode)GetValue(OrderByProperty); } set { SetValue(OrderByProperty, value); } }
+        public enum OrderByMode
+        {
+            match,
+            rating,
+            numreviews,
+            pricelow,
+            pricehigh
+        }
+
         public bool Busy
         {
             get
@@ -143,7 +154,7 @@ namespace micro_c_app.Views
             await Task.Run(async () =>
             {
                 var storeId = SettingsPage.StoreID();
-                var response = await client.GetAsync($"https://www.microcenter.com/search/search_results.aspx?Ntt={searchValue}&storeid={storeId}&myStore=false&Ntk=all&N={CategoryFilter}");
+                var response = await client.GetAsync($"https://www.microcenter.com/search/search_results.aspx?Ntt={searchValue}&storeid={storeId}&myStore=false&Ntk=all&N={CategoryFilter}&sortby={OrderBy}");
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var body = response.Content.ReadAsStringAsync().Result;
