@@ -19,7 +19,7 @@ namespace micro_c_app.Views
             SetSpecItems();
             if(BindingContext is BuildComponentViewModel vm)
             {
-                if(vm.Component.AutoSearch())
+                if(vm.Component.AutoSearch() && vm.Component.Item == null)
                 {
                     SearchView.OrderBy = SearchView.OrderByMode.pricelow;
                     SearchView.OnSubmit("");
