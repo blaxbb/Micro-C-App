@@ -25,7 +25,8 @@ namespace micro_c_app.Models
             CPUCooler,
             CaseFan,
             OperatingSystem,
-            Miscellaneous
+            Miscellaneous,
+            Plan
         }
         public ComponentType Type { get; set; }
         public string CategoryFilter => CategoryFilterForType(Type);
@@ -80,10 +81,11 @@ namespace micro_c_app.Models
                 case ComponentType.CaseFan:
                 case ComponentType.GPU:
                 case ComponentType.BuildService:
+                case ComponentType.Miscellaneous:
                 default:
                     return true;
                 case ComponentType.OperatingSystem:
-                case ComponentType.Miscellaneous:
+                case ComponentType.Plan:
                     return false;
             }
 
@@ -104,6 +106,7 @@ namespace micro_c_app.Models
                 case ComponentType.CaseFan:
                 case ComponentType.GPU:
                 case ComponentType.Miscellaneous:
+                case ComponentType.Plan:
                 default:
                     return false;
                 case ComponentType.OperatingSystem:
@@ -144,6 +147,7 @@ namespace micro_c_app.Models
                 case ComponentType.BuildService:
                     return "4294809201";
                 case ComponentType.Miscellaneous:
+                case ComponentType.Plan:
                 default:
                     return "";
             }
@@ -153,6 +157,8 @@ namespace micro_c_app.Models
         {
             switch (type)
             {
+                case ComponentType.Plan:
+                    return 0;
                 case ComponentType.CPU:
                 case ComponentType.Motherboard:
                 case ComponentType.Case:

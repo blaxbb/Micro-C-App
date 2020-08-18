@@ -38,9 +38,12 @@ namespace micro_c_app.ViewModels
             Components = new ObservableCollection<BuildComponent>();
             foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
             {
-                var comp = new BuildComponent() { Type = t };
-                comp.AddDependencies(FieldContainsDependency.Dependencies);
-                Components.Add(comp);
+                if (BuildComponent.MaxNumberPerType(t) > 0)
+                {
+                    var comp = new BuildComponent() { Type = t };
+                    comp.AddDependencies(FieldContainsDependency.Dependencies);
+                    Components.Add(comp);
+                }
             }
 
             ConfigID = "ZZZ";
@@ -63,7 +66,11 @@ namespace micro_c_app.ViewModels
             var emptyComponents = Components.Where(c => updated.Component.Type == c.Type && c.Item == null).ToList();
 
             var count = emptyComponents.Count;
-            for(int i = 0; i < count - 1; i++)
+            ///
+            // for types that we don't want the user to add manually, remove all empty items, othewise leave one for interaction
+            //
+            var stop = BuildComponent.MaxNumberPerType(updated.Component.Type) == 0 ? count : count - 1;
+            for(int i = 0; i < stop; i++)
             {
                 Components.Remove(emptyComponents[i]);
             }
@@ -110,7 +117,7 @@ namespace micro_c_app.ViewModels
 
         public void BuildComponentAddPlan(BuildComponentViewModel vm, PlanTier tier)
         {
-            Components.Add(new BuildComponent() { Type = BuildComponent.ComponentType.Miscellaneous, Item = new Item() { Name = $"{tier.Duration} year protection on {vm?.Component?.Item?.Name}", Price = tier.Price } });
+            Components.Add(new BuildComponent() { Type = BuildComponent.ComponentType.Plan, Item = new Item() { Name = $"{tier.Duration} year protection on {vm?.Component?.Item?.Name}", Price = tier.Price } });
             BuildComponentSelected(vm);
         }
     }
