@@ -34,7 +34,7 @@
             </ScrollView>
             <StackLayout x:Name="ButtonContainer" Orientation="Vertical" FlexLayout.Basis="50%" Grid.Row="0" Grid.Column="1" VerticalOptions="Center">
                 <Button Text="Remove" BackgroundColor="Red" Command="{Binding Remove}" IsVisible="{Binding Component.Item, Converter={StaticResource NullBoolConverter}}"/>
-                <views:SearchView ProductFound="{Binding ProductFound}" Error="{Binding SearchError}" CategoryFilter="{Binding Component.CategoryFilter}" AutoPopSearchPage="True" Orientation="Horizontal"/>
+                <views:SearchView x:Name="SearchView"  ProductFound="{Binding ProductFound}" Error="{Binding SearchError}" CategoryFilter="{Binding Component.CategoryFilter}" AutoPopSearchPage="True" Orientation="Horizontal"/>
             </StackLayout>
         </Grid>
     </ContentPage.Content>

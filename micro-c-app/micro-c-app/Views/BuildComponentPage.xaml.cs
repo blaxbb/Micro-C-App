@@ -13,10 +13,18 @@ namespace micro_c_app.Views
             InitializeComponent();
         }
 
-        public void SetupPlansAndSpecs()
+        public void Setup()
         {
             SetPlanItems();
             SetSpecItems();
+            if(BindingContext is BuildComponentViewModel vm)
+            {
+                if(vm.Component.AutoSearch())
+                {
+                    SearchView.OrderBy = SearchView.OrderByMode.pricelow;
+                    SearchView.OnSubmit("");
+                }
+            }
         }
 
         private static void AddSpacer(StackLayout stack, Color color)
