@@ -22,6 +22,8 @@ namespace micro_c_app.ViewModels
         public float Subtotal => Components.Sum(c => c.Item?.Price ?? 0f);
         public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${(Subtotal * SettingsPage.TaxRateFactor()).ToString("#0.00")}";
 
+        public static float CurrentSubTotal { get; set; }
+
         public ICommand SendQuote { get; }
 
         public BuildViewModel()
@@ -98,6 +100,7 @@ namespace micro_c_app.ViewModels
                 depend.Other(updated.Component)?.OnDependencyStatusChanged();
             }
 
+            CurrentSubTotal = Subtotal;
             updated.Component.OnDependencyStatusChanged();
             OnPropertyChanged(nameof(Components));
             OnPropertyChanged(nameof(Subtotal));
@@ -108,7 +111,7 @@ namespace micro_c_app.ViewModels
         public void BuildComponentAddPlan(BuildComponentViewModel vm, PlanTier tier)
         {
             Components.Add(new BuildComponent() { Type = BuildComponent.ComponentType.Miscellaneous, Item = new Item() { Name = $"{tier.Duration} year protection on {vm?.Component?.Item?.Name}", Price = tier.Price } });
-            Navigation.PopAsync();
+            BuildComponentSelected(vm);
         }
     }
 }

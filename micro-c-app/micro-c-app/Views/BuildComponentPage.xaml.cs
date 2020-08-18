@@ -1,4 +1,5 @@
-﻿using micro_c_app.ViewModels;
+﻿using micro_c_app.Models.Reference;
+using micro_c_app.ViewModels;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -39,7 +40,16 @@ namespace micro_c_app.Views
             {
                 if (vm.Component?.Item != null && vm.Component.PlanApplicable())
                 {
-                    var plans = Models.Reference.PlanReference.Get(Models.Reference.PlanReference.PlanType.Replacement, vm.Component.Item.Price);
+                    PlanReference plans;
+                    if (vm.Component.Type == Models.BuildComponent.ComponentType.BuildService)
+                    {
+                        plans = Models.Reference.PlanReference.Get(PlanReference.PlanType.Build_Plan, BuildViewModel.CurrentSubTotal);
+                    }
+                    else
+                    {
+                        plans = Models.Reference.PlanReference.Get(Models.Reference.PlanReference.PlanType.Replacement, vm.Component.Item.Price);
+                    }
+
                     foreach(var tier in plans.Tiers)
                     {
                         this.ToolbarItems.Add(new ToolbarItem($"Add {tier.Duration} yr plan", "", () => { vm.BuildComponentAddPlan(tier); }) { Order = ToolbarItemOrder.Secondary });
