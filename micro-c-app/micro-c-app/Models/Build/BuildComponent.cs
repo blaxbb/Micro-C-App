@@ -64,6 +64,29 @@ namespace micro_c_app.Models
             
         }
 
+        public bool PlanApplicable()
+        {
+            switch (Type)
+            {
+                case ComponentType.CPU:
+                case ComponentType.Motherboard:
+                case ComponentType.RAM:
+                case ComponentType.Case:
+                case ComponentType.PowerSupply:
+                case ComponentType.SSD:
+                case ComponentType.CPUCooler:
+                case ComponentType.HDD:
+                case ComponentType.CaseFan:
+                case ComponentType.GPU:
+                default:
+                    return true;
+                case ComponentType.OperatingSystem:
+                case ComponentType.Miscellaneous:
+                    return false;
+            }
+
+        }
+
         public static string CategoryFilterForType(ComponentType type)
         {
             //from microcenter.com search N field ex: &N=4294966995

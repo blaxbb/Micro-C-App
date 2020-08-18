@@ -132,7 +132,7 @@ namespace micro_c_app.Views
 
         public async Task OnSubmit(string searchValue)
         {
-            if (string.IsNullOrWhiteSpace(searchValue))
+            if (string.IsNullOrWhiteSpace(searchValue) && string.IsNullOrWhiteSpace(CategoryFilter))
             {
                 return;
             }

@@ -29,7 +29,7 @@ namespace micro_c_app.Views
             PlansStackLayout?.Children?.Clear();
             if (BindingContext is BuildComponentViewModel vm)
             {
-                if (vm.Component?.Item != null && vm.Component.Type != Models.BuildComponent.ComponentType.Miscellaneous)
+                if (vm.Component?.Item != null && vm.Component.PlanApplicable())
                 {
                     var plans = Models.Reference.PlanReference.Get(Models.Reference.PlanReference.PlanType.Replacement, vm.Component.Item.Price);
                     foreach(var tier in plans.Tiers)
