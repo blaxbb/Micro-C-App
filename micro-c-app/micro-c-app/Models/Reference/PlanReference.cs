@@ -20,7 +20,7 @@ namespace micro_c_app.Models.Reference
             Replacement,
             Small_Electronic_ADH,
             BYO_Replacement,
-            Build_Plans,
+            Build_Plan,
         }
 
         public PlanReference(PlanType type, float minPrice, float maxPrice, params PlanTier[] tiers)
@@ -71,6 +71,21 @@ namespace micro_c_app.Models.Reference
             AllPlans.Add(new PlanReference(PlanType.BYO_Replacement, 500.00f, 999.99f, new PlanTier(2, 139.99f), new PlanTier(3, 199.99f)));
             AllPlans.Add(new PlanReference(PlanType.BYO_Replacement, 1000.00f, 1499.99f, new PlanTier(2, 199.99f), new PlanTier(3, 279.99f)));
             AllPlans.Add(new PlanReference(PlanType.BYO_Replacement, 1500.00f, 3000.00f, new PlanTier(2, 299.99f), new PlanTier(3, 429.99f)));
+
+
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 0.00f,     399.99f,   new PlanTier(2, 49.99f),   new PlanTier(3, 59.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 400.00f,   599.99f,   new PlanTier(2, 69.99f),   new PlanTier(3, 99.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 600.00f,   799.99f,   new PlanTier(2, 99.99f),   new PlanTier(3, 129.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 800.00f,   999.99f,   new PlanTier(2, 119.99f),  new PlanTier(3, 149.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 1000.00f,  1199.99f,  new PlanTier(2, 129.99f),  new PlanTier(3, 179.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 1200.00f,  1499.99f,  new PlanTier(2, 149.99f),  new PlanTier(3, 199.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 1500.00f,  1999.99f,  new PlanTier(2, 199.99f),  new PlanTier(3, 249.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 2000.00f,  3999.99f,  new PlanTier(2, 249.99f),  new PlanTier(3, 279.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 4000.00f,  5999.99f,  new PlanTier(2, 399.99f),  new PlanTier(3, 449.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 6000.00f,  7499.99f,  new PlanTier(2, 549.99f),  new PlanTier(3, 699.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 7500.00f,  9999.99f,  new PlanTier(2, 699.99f),  new PlanTier(3, 799.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 10000.00f, 14999.99f, new PlanTier(2, 1299.99f), new PlanTier(3, 1499.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Build_Plan, 15000.00f, 20000.00f, new PlanTier(2, 1499.99f), new PlanTier(3, 1999.99f)));
 
         }
     }
