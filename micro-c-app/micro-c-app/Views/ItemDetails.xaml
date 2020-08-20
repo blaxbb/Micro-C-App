@@ -25,7 +25,7 @@
                     <v:SelectableLabel Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
                     <v:SelectableLabel x:Name="zzz" Text="{Binding Item.Location, FallbackValue=Section 000}" FontSize="Large"/>
                     <StackLayout Orientation="Horizontal">
-                        <v:SelectableLabel Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough"/>
+                        <v:SelectableLabel Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}"/>
                         <v:SelectableLabel Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}"/>
                         <v:SelectableLabel Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large"/>
                     </StackLayout>
