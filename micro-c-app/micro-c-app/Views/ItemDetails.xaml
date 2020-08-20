@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             xmlns:v="clr-namespace:micro_c_app.Views"
              x:Class="micro_c_app.Views.ItemDetails"
              BackgroundColor="{DynamicResource PageBackgroundColor}">
     <ContentPage.BindingContext>
@@ -11,22 +12,22 @@
         <StackLayout x:Name="FlipStack" Orientation="Horizontal">
             <ScrollView>
                 <StackLayout Padding="10">
-                    <Label Text="{Binding Item.Name, FallbackValue=NAME}" FontSize="32"/>
+                    <v:SelectableLabel Text="{Binding Item.Name, FallbackValue=NAME}" FontSize="32"/>
                     <StackLayout x:Name="PortraitPicture" Orientation="Horizontal" HeightRequest="200">
                         <Button Text="&lt;" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding BackPicture}"/>
                         <Image Source="{Binding ActivePicture, FallbackValue=https://aka.ms/campus.jpg}" HorizontalOptions="FillAndExpand" Aspect="AspectFit" />
                         <Button Text=">" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding ForwardPicture}"/>
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
-                        <Label Text="{Binding Item.Specs[SKU], FallbackValue=123456}" HorizontalOptions="StartAndExpand"/>
-                        <Label Text="{Binding Item.Specs[UPC], FallbackValue=123456}" HorizontalOptions="EndAndExpand"/>
+                        <v:SelectableLabel Text="{Binding Item.Specs[SKU], FallbackValue=123456}" HorizontalOptions="StartAndExpand"/>
+                        <v:SelectableLabel Text="{Binding Item.Specs[UPC], FallbackValue=123456}" HorizontalOptions="EndAndExpand"/>
                     </StackLayout>
-                    <Label Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
-                    <Label x:Name="zzz" Text="{Binding Item.Location, FallbackValue=Section 000}" FontSize="Large"/>
+                    <v:SelectableLabel Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
+                    <v:SelectableLabel x:Name="zzz" Text="{Binding Item.Location, FallbackValue=Section 000}" FontSize="Large"/>
                     <StackLayout Orientation="Horizontal">
-                        <Label Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}"/>
-                        <Label Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}"/>
-                        <Label Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large"/>
+                        <v:SelectableLabel Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough"/>
+                        <v:SelectableLabel Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}"/>
+                        <v:SelectableLabel Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large"/>
                     </StackLayout>
                     <StackLayout x:Name="PlansStackLayout"/>
                     <StackLayout x:Name="SpecsStackLayout"/>
