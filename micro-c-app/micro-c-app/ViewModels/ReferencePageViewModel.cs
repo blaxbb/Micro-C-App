@@ -53,9 +53,20 @@ namespace micro_c_app.ViewModels
             Items = new List<PriceReference>();
             ListItems = new ObservableCollection<string>();
 
-            foreach (var plan in PlanReference.AllPlans)
+            foreach (var plan in PlanReference.AllPlans)  
             {
-                Items.Add(new PriceReference($"/Plans/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                if (plan.Type.ToString().StartsWith("Apple_Plans_ADH"))   // Placeholder to separate ADH and non-ADH Apple Plans from regular plans, and yes I know it's ugly
+                {
+                    Items.Add(new PriceReference($"/Plans/Apple/ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ADH", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                }
+                else if (plan.Type.ToString().StartsWith("Apple_Plans"))
+                {
+                    Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                }
+                else
+                {
+                    Items.Add(new PriceReference($"/Plans/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                }
             }
 
             SetPath("/");

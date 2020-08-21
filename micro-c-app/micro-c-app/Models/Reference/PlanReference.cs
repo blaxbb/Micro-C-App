@@ -21,6 +21,18 @@ namespace micro_c_app.Models.Reference
             Small_Electronic_ADH,
             BYO_Replacement,
             Build_Plan,
+            Apple_Plans_iPad,
+            Apple_Plans_ADH_iPad,
+            Apple_Plans_13,
+            Apple_Plans_ADH_13,
+            Apple_Plans_15_and_16,
+            Apple_Plans_ADH_15_and_16,
+            Apple_Plans_iMac,
+            Apple_Plans_ADH_iMac,
+            Apple_Plans_Mac_Pro,
+            Apple_Plans_ADH_Mac_Pro,
+            Apple_Plans_Mac_Mini,
+            Apple_Plans_ADH_Mac_Mini,
         }
 
         public PlanReference(PlanType type, float minPrice, float maxPrice, params PlanTier[] tiers)
@@ -30,6 +42,8 @@ namespace micro_c_app.Models.Reference
             MaxPrice = maxPrice;
             Tiers = tiers.ToList();
         }
+
+        
 
         public static PlanReference Get(PlanType type, float price)
         {
@@ -86,6 +100,22 @@ namespace micro_c_app.Models.Reference
             AllPlans.Add(new PlanReference(PlanType.Build_Plan, 7500.00f,  9999.99f,  new PlanTier(2, 699.99f),  new PlanTier(3, 799.99f)));
             AllPlans.Add(new PlanReference(PlanType.Build_Plan, 10000.00f, 14999.99f, new PlanTier(2, 1299.99f), new PlanTier(3, 1499.99f)));
             AllPlans.Add(new PlanReference(PlanType.Build_Plan, 15000.00f, 20000.00f, new PlanTier(2, 1499.99f), new PlanTier(3, 1999.99f)));
+
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_Mac_Mini, 0.00f, 0.00f, new PlanTier(2, 119.99f), new PlanTier(3, 149.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_Mac_Mini, 0.00f, 0.00f, new PlanTier(3, 74.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_13, 0.00f, 0.00f, new PlanTier(3, 319.99f), new PlanTier(2, 239.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_13, 0.00f, 0.00f, new PlanTier(3, 149.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_15_and_16, 0.00f, 0.00f, new PlanTier(3, 429.99f), new PlanTier(2, 349.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_15_and_16, 0.00f, 0.00f, new PlanTier(3, 149.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_Mac_Pro, 0.00f, 0.00f, new PlanTier(3, 299.99f), new PlanTier(2, 219.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_Mac_Pro, 0.00f, 0.00f, new PlanTier(3, 149.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_iMac, 0.00f, 0.00f, new PlanTier(3, 219.99f), new PlanTier(2, 169.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_iMac, 0.00f, 0.00f, new PlanTier(3, 149.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_iPad, 0.00f, 299.99f, new PlanTier(2, 69.99f), new PlanTier(1, 39.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_iPad, 300.00f, 1699.99f, new PlanTier(2, 99.99f), new PlanTier(1, 69.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_iPad, 0.00f, 299.99f, new PlanTier(3, 59.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_iPad, 300.00f, 1699.99f, new PlanTier(3, 79.99f)));
+
 
         }
     }
