@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using static micro_c_app.Models.BuildComponent;
 
 namespace micro_c_app.Models
 {
     public class FieldContainsDependency : BuildComponentDependency
     {
-        public override string ErrorText => $"({FirstFieldName}) {FirstValue.Replace('\n', ',')} != ({SecondFieldName}) {SecondValue.Replace('\n', ',')}";
+        [JsonIgnore]
+        public override string ErrorText => $"({FirstFieldName}) {FirstValue?.Replace('\n', ',')} != ({SecondFieldName}) {SecondValue?.Replace('\n', ',')}";
 
         public override string HintText()
         {

@@ -36,7 +36,15 @@ namespace micro_c_app.ViewModels
         {
             Title = "Quote";
             NotBusy = true;
-            Items = new ObservableCollection<Item>();
+            if(RestoreState.Instance.QuoteItems != null)
+            {
+                Items = new ObservableCollection<Item>(RestoreState.Instance.QuoteItems);
+            }
+            else
+            {
+                Items = new ObservableCollection<Item>();
+            }
+            
             //for (int i = 0; i < 10; i++)
             //{
             //    var item = new Item()
@@ -218,6 +226,8 @@ namespace micro_c_app.ViewModels
         {
             OnPropertyChanged(nameof(Subtotal));
             OnPropertyChanged(nameof(TaxedTotal));
+            RestoreState.Instance.QuoteItems = Items.ToList();
+            RestoreState.Save();
         }
     }
 }

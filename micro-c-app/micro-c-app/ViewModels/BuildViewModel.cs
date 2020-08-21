@@ -35,14 +35,25 @@ namespace micro_c_app.ViewModels
             MessagingCenter.Subscribe<BuildComponentViewModel>(this, "removed",  BuildComponentRemove);
             MessagingCenter.Subscribe<BuildComponentViewModel, PlanTier>(this, "add_plan", BuildComponentAddPlan);
 
-            Components = new ObservableCollection<BuildComponent>();
-            foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
+            if (RestoreState.Instance.BuildComponents == null)
             {
-                if (BuildComponent.MaxNumberPerType(t) > 0)
+                Components = new ObservableCollection<BuildComponent>();
+                foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
                 {
-                    var comp = new BuildComponent() { Type = t };
+                    if (BuildComponent.MaxNumberPerType(t) > 0)
+                    {
+                        var comp = new BuildComponent() { Type = t };
+                        comp.AddDependencies(FieldContainsDependency.Dependencies);
+                        Components.Add(comp);
+                    }
+                }
+            }
+            else
+            {
+                Components = new ObservableCollection<BuildComponent>(RestoreState.Instance.BuildComponents);
+                foreach(var comp in Components)
+                {
                     comp.AddDependencies(FieldContainsDependency.Dependencies);
-                    Components.Add(comp);
                 }
             }
 
@@ -59,6 +70,14 @@ namespace micro_c_app.ViewModels
             });
 
             SendQuote = new Command(async () => await QuotePageViewModel.DoSendQuote(Components.Where(c => c.Item != null).Select(c => c.Item)));
+
+            Components.CollectionChanged += (sender, args) => { Save(); };
+        }
+
+        private void Save()
+        {
+            RestoreState.Instance.BuildComponents = Components.ToList();
+            RestoreState.Save();
         }
 
         private void BuildComponentRemove(BuildComponentViewModel updated)
@@ -113,6 +132,7 @@ namespace micro_c_app.ViewModels
             OnPropertyChanged(nameof(Subtotal));
             OnPropertyChanged(nameof(TaxedTotal));
             Navigation.PopAsync();
+            Save();
         }
 
         public void BuildComponentAddPlan(BuildComponentViewModel vm, PlanTier tier)

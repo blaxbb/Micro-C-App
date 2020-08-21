@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace micro_c_app.Models
 {
@@ -9,6 +10,7 @@ namespace micro_c_app.Models
         private Item item;
         public Item Item { get => item; set { SetProperty(ref item, value); OnPropertyChanged(nameof(ComponentLabel)); } }
 
+        [JsonIgnore]
         public List<BuildComponentDependency> Dependencies { get; }
 
         public enum ComponentType
@@ -29,11 +31,13 @@ namespace micro_c_app.Models
             Plan
         }
         public ComponentType Type { get; set; }
+        [JsonIgnore]
         public string CategoryFilter => CategoryFilterForType(Type);
-
+        [JsonIgnore]
         public string ComponentLabel => Item == null ? Type.ToString() : $"{Item.Name}";
-
+        [JsonIgnore]
         public string ErrorText => String.Join("\n", Dependencies.Where(d => !d.Compatible()).Select(d => d.ErrorText));
+        [JsonIgnore]
         public string HintText => Item == null ? String.Join("\n", Dependencies.Where(d => d.Other(this)?.item != null).Select(d => d.HintText())) : null;
 
         public BuildComponent()

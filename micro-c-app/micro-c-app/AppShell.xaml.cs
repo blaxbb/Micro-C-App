@@ -1,4 +1,5 @@
-﻿using micro_c_app.Views;
+﻿using micro_c_app.Models;
+using micro_c_app.Views;
 using System;
 using System.Linq;
 using Xamarin.Forms;
@@ -13,6 +14,8 @@ namespace micro_c_app
             Routing.RegisterRoute(nameof(SearchPage), typeof(SearchPage));
             Routing.RegisterRoute(nameof(BuildPage), typeof(BuildPage));
             Routing.RegisterRoute(nameof(QuotePage), typeof(QuotePage));
+
+            RestoreState.Load();
 
             if(SettingsPage.VersionPrompt() < SettingsPage.CURRENT_VERSION_PROMPT)
             {
@@ -30,6 +33,9 @@ namespace micro_c_app
 
         private void DisplaySettings(object sender, EventArgs e)
         {
+            RestoreState.Save();
+            return;
+
             Device.BeginInvokeOnMainThread(async () =>
             {
                 FlyoutIsPresented = false;

@@ -33,10 +33,10 @@
                                         </StackLayout>
                                     </StackLayout>
                                     <StackLayout Orientation="Horizontal" VerticalOptions="Center" Margin="10,0,0,0">
-                                        <Button Text="-" WidthRequest="40" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
-                                        <Label Text="{Binding Quantity}" VerticalTextAlignment="Center"/>
-                                        <Button Text="+" WidthRequest="40" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" Margin="0,0,10,0"/>
-                                        <Button Text="X" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red" WidthRequest="40"/>
+                                        <Button Text="-" WidthRequest="30" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
+                                        <Label Text="{Binding Quantity}" MinimumWidthRequest="50" VerticalTextAlignment="Center"/>
+                                        <Button Text="+" WidthRequest="30" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" Margin="0,0,10,0"/>
+                                        <Button Text="X" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red" WidthRequest="30"/>
                                     </StackLayout>
                                 </StackLayout>
                             </ViewCell>

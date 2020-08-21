@@ -1,7 +1,10 @@
-﻿namespace micro_c_app.Models
+﻿using System.Text.Json.Serialization;
+
+namespace micro_c_app.Models
 {
     internal class FieldQuantityDependency : BuildComponentDependency
     {
+        [JsonIgnore]
         public override string ErrorText => $"{FirstType} requires {SecondType} to have {SecondFieldName}";
 
         public FieldQuantityDependency(BuildComponent.ComponentType first, BuildComponent.ComponentType second, string field)

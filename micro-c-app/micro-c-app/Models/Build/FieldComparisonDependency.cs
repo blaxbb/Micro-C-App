@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace micro_c_app.Models
 {
     internal class FieldComparisonDependency : BuildComponentDependency
     {
-        CompareMode Mode;
+        public CompareMode Mode { get; set; }
 
+        [JsonIgnore]
         public override string ErrorText => $"{FirstFieldName} {Mode} {SecondFieldName}";
 
         public enum CompareMode
