@@ -25,6 +25,7 @@ namespace micro_c_app.ViewModels
         public static float CurrentSubTotal { get; set; }
 
         public ICommand SendQuote { get; }
+        public ICommand Reset { get; }
 
         public BuildViewModel()
         {
@@ -38,15 +39,7 @@ namespace micro_c_app.ViewModels
             if (RestoreState.Instance.BuildComponents == null)
             {
                 Components = new ObservableCollection<BuildComponent>();
-                foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
-                {
-                    if (BuildComponent.MaxNumberPerType(t) > 0)
-                    {
-                        var comp = new BuildComponent() { Type = t };
-                        comp.AddDependencies(FieldContainsDependency.Dependencies);
-                        Components.Add(comp);
-                    }
-                }
+                SetupDefaultComponents();
             }
             else
             {
@@ -71,7 +64,33 @@ namespace micro_c_app.ViewModels
 
             SendQuote = new Command(async () => await QuotePageViewModel.DoSendQuote(Components.Where(c => c.Item != null).Select(c => c.Item)));
 
+            Reset = new Command(async () =>
+            {
+                await Device.InvokeOnMainThreadAsync(async () => {
+                    var reset = await Shell.Current.DisplayAlert("Reset", "Are you sure you want to reset the quote?", "Yes", "No");
+                    if (reset)
+                    {
+                        Components.Clear();
+                        SetupDefaultComponents();
+                        Save();
+                    }
+                });
+            });
+
             Components.CollectionChanged += (sender, args) => { Save(); };
+        }
+
+        void SetupDefaultComponents()
+        {
+            foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
+            {
+                if (BuildComponent.MaxNumberPerType(t) > 0)
+                {
+                    var comp = new BuildComponent() { Type = t };
+                    comp.AddDependencies(FieldContainsDependency.Dependencies);
+                    Components.Add(comp);
+                }
+            }
         }
 
         private void Save()

@@ -44,6 +44,7 @@ namespace micro_c_app.Models
         static bool repeatSaveTask;
         public static void Save()
         {
+            //dont start saving if already saving
             if (saveTask == null || saveTask.IsCompleted)
             {
                 repeatSaveTask = false;
@@ -65,6 +66,7 @@ namespace micro_c_app.Models
             }
             else
             {
+                //if something updated, schedule another save
                 repeatSaveTask = true;
             }
         }

@@ -10,6 +10,7 @@
     </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Send" Order="Secondary" Command="{Binding SendQuote}"/>
+        <ToolbarItem Text="Reset" Order="Secondary" Command="{Binding Reset}"/>
         <!--<ToolbarItem Text="Export" Order="Secondary" Command="{Binding ExportQuote}"/>
         <ToolbarItem Text="Import" Order="Secondary" Command="{Binding ImportQuote}"/>-->
     </ContentPage.ToolbarItems>

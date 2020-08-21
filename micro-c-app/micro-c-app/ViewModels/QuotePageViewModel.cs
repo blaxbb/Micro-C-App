@@ -27,6 +27,7 @@ namespace micro_c_app.ViewModels
         public ICommand SendQuote { get; }
         public ICommand ExportQuote { get; }
         public ICommand ImportQuote { get; }
+        public ICommand Reset { get; }
 
         public bool NotBusy { get => notBusy; set { SetProperty(ref notBusy, value); } }
 
@@ -99,6 +100,18 @@ namespace micro_c_app.ViewModels
             ImportQuote = new Command(async () => await ImportQuoteAction());
 
             MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, (_) => { UpdateProperties(); });
+
+            Reset = new Command(async () =>
+            {
+                Device.InvokeOnMainThreadAsync(async () => {
+                    var reset = await Shell.Current.DisplayAlert("Reset", "Are you sure you want to reset the quote?", "Yes", "No");
+                    if (reset)
+                    {
+                        Items.Clear();
+                        UpdateProperties();
+                    }
+                });
+            });
 
         }
 

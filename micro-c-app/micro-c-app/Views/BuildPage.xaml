@@ -10,6 +10,7 @@
     </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Send Quote" Order="Secondary" Command="{Binding SendQuote}"/>
+        <ToolbarItem Text="Reset" Order="Secondary" Command="{Binding Reset}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
