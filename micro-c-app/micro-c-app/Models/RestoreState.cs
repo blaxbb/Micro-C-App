@@ -16,7 +16,7 @@ namespace micro_c_app.Models
 
         public List<BuildComponent> BuildComponents { get; set; }
         public List<Item> QuoteItems { get; set; }
-        public BuildViewModel BuildVM { get; set; }
+        public BuildPageViewModel BuildVM { get; set; }
 
         public const string FILENAME = "RestoreState.json";
         static string Path => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "temp.txt");

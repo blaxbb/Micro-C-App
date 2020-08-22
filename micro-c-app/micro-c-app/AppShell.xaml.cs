@@ -33,8 +33,6 @@ namespace micro_c_app
 
         private void DisplaySettings(object sender, EventArgs e)
         {
-            RestoreState.Save();
-            return;
 
             Device.BeginInvokeOnMainThread(async () =>
             {

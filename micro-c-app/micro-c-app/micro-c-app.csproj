@@ -25,6 +25,9 @@
     <Compile Update="Views\BuildComponentPage.xaml.cs">
       <DependentUpon>BuildComponentPage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\ItemDetailsPage.xaml.cs">
+      <DependentUpon>ItemDetailsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
@@ -43,7 +46,7 @@
     <EmbeddedResource Update="Views\ExportQRPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\ItemDetails.xaml">
+    <EmbeddedResource Update="Views\ItemDetailsPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\BuildPage.xaml">
