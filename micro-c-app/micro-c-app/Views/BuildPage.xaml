@@ -6,7 +6,7 @@
              x:Class="micro_c_app.Views.BuildPage"
              Title="{Binding Title}">
     <ContentPage.BindingContext>
-        <vm:BuildViewModel/>
+        <vm:BuildPageViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
         <ToolbarItem Text="Send Quote" Order="Secondary" Command="{Binding SendQuote}"/>

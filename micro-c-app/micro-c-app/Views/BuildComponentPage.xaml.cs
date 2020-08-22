@@ -43,7 +43,7 @@ namespace micro_c_app.Views
                     PlanReference plans;
                     if (vm.Component.Type == Models.BuildComponent.ComponentType.BuildService)
                     {
-                        plans = Models.Reference.PlanReference.Get(PlanReference.PlanType.Build_Plan, BuildViewModel.CurrentSubTotal);
+                        plans = Models.Reference.PlanReference.Get(PlanReference.PlanType.Build_Plan, BuildPageViewModel.CurrentSubTotal);
                     }
                     else
                     {
