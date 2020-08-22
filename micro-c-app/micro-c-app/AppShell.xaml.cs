@@ -33,7 +33,6 @@ namespace micro_c_app
 
         private void DisplaySettings(object sender, EventArgs e)
         {
-
             Device.BeginInvokeOnMainThread(async () =>
             {
                 FlyoutIsPresented = false;

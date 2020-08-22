@@ -23,7 +23,7 @@
                     <DataTemplate>
                         <ViewCell>
                             <StackLayout Orientation="Vertical" Margin="10">
-                                <Button Text="{Binding ComponentLabel}" Command="{Binding ComponentSelectClicked, Source={RelativeSource AncestorType={x:Type vm:BuildViewModel}}}" CommandParameter="{Binding .}"/>
+                                <Button Text="{Binding ComponentLabel}" Command="{Binding ComponentSelectClicked, Source={RelativeSource AncestorType={x:Type vm:BuildPageViewModel}}}" CommandParameter="{Binding .}"/>
                                 <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="Center" Margin="20,0,20,0">
                                     <StackLayout Orientation="Horizontal" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}">
                                         <Label Text="{Binding Item.Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" IsVisible="{Binding Path=Item.SKU}"/>
