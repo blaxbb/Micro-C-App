@@ -63,6 +63,7 @@
 
             <local:NullBoolConverter x:Key="NullBoolConverter"/>
             <local:StringNullOrEmptyBoolConverter x:Key="StringNullOrEmptyConverter"/>
+            <local:EqualsConverter x:Key="EqualsConverter"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

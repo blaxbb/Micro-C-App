@@ -235,7 +235,7 @@ namespace micro_c_app.ViewModels
             await view.OnSubmit("951970");
         }
 
-        private void UpdateProperties()
+        public void UpdateProperties()
         {
             OnPropertyChanged(nameof(Subtotal));
             OnPropertyChanged(nameof(TaxedTotal));

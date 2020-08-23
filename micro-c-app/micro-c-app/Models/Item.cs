@@ -15,13 +15,15 @@ namespace micro_c_app.Models
         public string Name { get; set; }
         public List<string> PictureUrls { get; set; }
         public string Stock { get; set; }
-        public float Price { get; set; }
+        public float Price { get => price; set => SetProperty(ref price, value); }
         public float OriginalPrice { get; set; }
         public float Discount => Price - OriginalPrice;
         public bool OnSale => Price != OriginalPrice;
         public Dictionary<string, string> Specs { get; set; }
 
         private int quantity = 1;
+        private float price;
+
         public int Quantity { get => quantity; set => SetProperty(ref quantity, value); }
         public string Location { get; set; }
         public List<Plan> Plans { get; set; }
