@@ -17,12 +17,14 @@ namespace micro_c_app.ViewModels
     {
         private bool notBusy;
 
+        public Item SelectedItem { get; set; }
         public ObservableCollection<Item> Items { get; set; }
         public ICommand OnProductFound { get; }
         public ICommand OnProductError { get; }
         public ICommand IncreaseQuantity { get; }
         public ICommand DecreaseQuantity { get; }
         public ICommand RemoveItem { get; }
+        public ICommand DetailItem { get; }
 
         public ICommand SendQuote { get; }
         public ICommand ExportQuote { get; }
@@ -103,13 +105,22 @@ namespace micro_c_app.ViewModels
 
             Reset = new Command(async () =>
             {
-                Device.InvokeOnMainThreadAsync(async () => {
+                await Device.InvokeOnMainThreadAsync(async () => {
                     var reset = await Shell.Current.DisplayAlert("Reset", "Are you sure you want to reset the quote?", "Yes", "No");
                     if (reset)
                     {
                         Items.Clear();
                         UpdateProperties();
                     }
+                });
+            });
+
+            DetailItem = new Command(async () =>
+            {
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    var detailsPage = new ItemDetailsPageViewModel() { Item = SelectedItem };
+                    await Shell.Current.Navigation.PushAsync(new ItemDetailsPage() { BindingContext = detailsPage });
                 });
             });
 

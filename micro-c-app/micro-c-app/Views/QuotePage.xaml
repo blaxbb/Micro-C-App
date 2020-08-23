@@ -17,7 +17,7 @@
     <ContentPage.Content>
         <StackLayout Margin="10,5,10,0" Orientation="Horizontal" x:Name="FlipStack" IsEnabled="{Binding NotBusy}">
             <StackLayout VerticalOptions="FillAndExpand">
-                <ListView x:Name="listView" ItemsSource="{Binding Items}" ItemTapped="listView_ItemTapped" SelectionMode="Single" Grid.Row="0" VerticalOptions="FillAndExpand" HasUnevenRows="True">
+                <ListView x:Name="listView" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" ItemTapped="listView_ItemTapped" SelectionMode="Single" Grid.Row="0" VerticalOptions="FillAndExpand" HasUnevenRows="True">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
@@ -34,19 +34,19 @@
                                                 <Label Text="{Binding Stock}" HorizontalOptions="EndAndExpand"/>
                                             </StackLayout>
                                         </StackLayout>
-                                        <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" MinimumWidthRequest="50" VerticalTextAlignment="Center" Margin="10,0,0,0"/>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Button Text="-" WidthRequest="45" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
+                                            <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" MinimumWidthRequest="50" VerticalTextAlignment="Center" Margin="10,0,10,0" HorizontalTextAlignment="Center"/>
+                                            <Button Text="+" WidthRequest="45" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
+                                        </StackLayout>
                                     </StackLayout>
                                     <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceEvenly" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
                                         <StackLayout Orientation="Horizontal">
-                                            <Label Text="Adjust Price" VerticalTextAlignment="Center"/>
+                                            <Label Text="Price" VerticalTextAlignment="Center"/>
                                             <Entry Text="{Binding Price}" TextChanged="ItemPriceChanged" Keyboard="Numeric" WidthRequest="100"/>
                                         </StackLayout>
-                                        <StackLayout Orientation="Horizontal">
-                                            <Button Text="-" WidthRequest="60" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
-                                            <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" MinimumWidthRequest="50" VerticalTextAlignment="Center"/>
-                                            <Button Text="+" WidthRequest="60" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
-                                        </StackLayout>
-                                        <Button Text="X" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red" WidthRequest="30"/>
+                                        <Button Text="Details" Command="{Binding DetailItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
+                                        <Button Text="Delete" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red"/>
                                     </FlexLayout>
                                 </StackLayout>
                             </ViewCell>
