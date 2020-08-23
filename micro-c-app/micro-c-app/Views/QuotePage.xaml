@@ -21,10 +21,6 @@
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <ViewCell>
-                                <ViewCell.ContextActions>
-                                    <MenuItem  CommandParameter="{Binding .}" Text="More" />
-                                    <MenuItem CommandParameter="{Binding .}" Text="Delete" IsDestructive="True" />
-                                </ViewCell.ContextActions>
                                 <StackLayout Orientation="Vertical" x:Name="item" Margin="5">
                                     <StackLayout Orientation="Horizontal" Padding="0,0,10,0"  HeightRequest="70">
                                         <StackLayout Orientation="Vertical"  HorizontalOptions="StartAndExpand" VerticalOptions="Center">

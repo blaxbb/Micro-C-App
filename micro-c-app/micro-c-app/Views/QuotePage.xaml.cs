@@ -12,12 +12,6 @@ namespace micro_c_app.Views
         public QuotePage()
         {
             InitializeComponent();
-            listView.Focused += ListView_Focused;
-        }
-
-        private void ListView_Focused(object sender, FocusEventArgs e)
-        {
-            
         }
 
         protected override void OnSizeAllocated(double width, double height)
