@@ -38,9 +38,9 @@
                 </StackLayout>
             </ScrollView>
             <StackLayout x:Name="LandscapePicture" Orientation="Horizontal" HeightRequest="200" WidthRequest="400" IsVisible="False" HorizontalOptions="EndAndExpand"  Margin="5,0,5,0">
-                <Button Text="&lt;" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding BackPicture}"/>
+                <Button Text="&#xf04a;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding BackPicture}"/>
                 <Image Source="{Binding ActivePicture, FallbackValue=https://aka.ms/campus.jpg}" HeightRequest="300" WidthRequest="300" HorizontalOptions="CenterAndExpand" Aspect="AspectFit" />
-                <Button Text=">" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding ForwardPicture}"/>
+                <Button Text="&#xf04e;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding ForwardPicture}"/>
             </StackLayout>
         </StackLayout>
     </ContentPage.Content>

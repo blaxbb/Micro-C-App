@@ -75,11 +75,59 @@
         <Label Text="Micro C App" Padding="20" BackgroundColor="{DynamicResource PageBackgroundColor}"/>
     </Shell.FlyoutHeader>
     <FlyoutItem FlyoutDisplayOptions="AsMultipleItems">
-        <ShellContent Title="Search" Icon="tab_about.png" Route="SearchPage" ContentTemplate="{DataTemplate local:SearchPage}" />
-        <ShellContent Title="Quote" Icon="tab_feed.png" Route="QuotePage" ContentTemplate="{DataTemplate local:QuotePage}" />
-        <ShellContent Title="PC Build" Icon="tab_about.png" Route="BuildPage" ContentTemplate="{DataTemplate local:BuildPage}" />
-        <ShellContent Title="References" Icon="tab_about.png" Route="ReferencePage" ContentTemplate="{DataTemplate local:ReferencePage}" />
+        <ShellContent Title="Search" Route="SearchPage" ContentTemplate="{DataTemplate local:SearchPage}">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="{StaticResource FontAwesomeSolid}"
+                    Glyph="&#xf002;"
+                    Color="Black"
+                    Size="24"/>
+            </ShellContent.Icon>
+        </ShellContent>
+        <ShellContent Title="Quote" Route="QuotePage" ContentTemplate="{DataTemplate local:QuotePage}">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="{StaticResource FontAwesomeSolid}"
+                    Glyph="&#xf573;"
+                    Color="Black"
+                    Size="24"/>
+            </ShellContent.Icon>
+        </ShellContent>
+        <ShellContent Title="PC Build" Route="BuildPage" ContentTemplate="{DataTemplate local:BuildPage}">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="{StaticResource FontAwesomeSolid}"
+                    Glyph="&#xf7d9;"
+                    Color="Black"
+                    Size="24"/>
+            </ShellContent.Icon>
+        </ShellContent>
+        <ShellContent Title="References" Route="ReferencePage" ContentTemplate="{DataTemplate local:ReferencePage}">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="{StaticResource FontAwesomeSolid}"
+                    Glyph="&#xf02d;"
+                    Color="Black"
+                    Size="24"/>
+            </ShellContent.Icon>
+        </ShellContent>
     </FlyoutItem>
-    <MenuItem Text="Settings" Icon="tab_about.png" Clicked="DisplaySettings" />
-    <MenuItem Text="Reminders" Clicked="DisplayReminders"/>
+    <MenuItem Text="Settings" Clicked="DisplaySettings">
+        <MenuItem.IconImageSource>
+            <FontImageSource
+                FontFamily="{StaticResource FontAwesomeSolid}"
+                Glyph="&#xf085;"
+                Color="Black"
+                Size="24"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
+    <MenuItem Text="Reminders" Clicked="DisplayReminders">
+        <MenuItem.IconImageSource>
+            <FontImageSource
+                FontFamily="{StaticResource FontAwesomeSolid}"
+                Glyph="&#xf2f2;"
+                Color="Black"
+                Size="24"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
 </Shell>

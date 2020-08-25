@@ -18,13 +18,13 @@
                        Placeholder="Enter a SKU/UPC"
                        HorizontalOptions="FillAndExpand"
                         Keyboard="Numeric"/>
-                    <Button x:Name="SKUSubmitButton" Margin="0,10,0,0" Text="Search" Grid.Row="0" Grid.Column="0"/>
+                    <Button x:Name="SKUSubmitButton" Margin="0,10,0,0" Text="&#xf002;" FontFamily="{StaticResource FontAwesomeSolid}"  Grid.Row="0" Grid.Column="0"/>
                 </StackLayout>
                 <StackLayout Orientation="Horizontal" Grid.Row="1">
                     <Entry x:Name="SearchField"
                        Placeholder="Search"
                        HorizontalOptions="FillAndExpand"/>
-                    <Button x:Name="SearchSubmitButton" Margin="0,10,0,0" Text="Search" Grid.Row="0" Grid.Column="0"/>
+                    <Button x:Name="SearchSubmitButton" Margin="0,10,0,0" Text="&#xf002;" FontFamily="{StaticResource FontAwesomeSolid}" Grid.Row="0" Grid.Column="0"/>
                 </StackLayout>
                 <ActivityIndicator x:Name="BusyIndicator"  IsRunning="False" Scale="0.7"/>
             </Grid>
