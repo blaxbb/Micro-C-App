@@ -8,6 +8,10 @@
     <ContentPage.BindingContext>
         <vm:ItemDetailsPageViewModel />
     </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="Webpage" Command="{Binding GoToWebpage}"/>
+        <ToolbarItem Order="Secondary" Text="Add Reminder" Command="{Binding AddReminder}"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout x:Name="FlipStack" Orientation="Horizontal">
             <ScrollView>

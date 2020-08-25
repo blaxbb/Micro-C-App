@@ -1,4 +1,5 @@
 ﻿using micro_c_app.Models;
+using micro_c_app.Views;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -11,6 +12,8 @@ namespace micro_c_app.ViewModels
         int PictureIndex = 0;
         public ICommand BackPicture { get; }
         public ICommand ForwardPicture { get; }
+        public ICommand GoToWebpage { get; }
+        public ICommand AddReminder { get; }
 
         public ItemDetailsPageViewModel()
         {
@@ -58,7 +61,22 @@ namespace micro_c_app.ViewModels
                     PictureIndex = 0;
                     OnPropertyChanged(nameof(ActivePicture));
                 }
+            });
 
+            GoToWebpage = new Command(async () =>
+            {
+                await Xamarin.Essentials.Browser.OpenAsync($"https://microcenter.com{Item.URL}", Xamarin.Essentials.BrowserLaunchMode.SystemPreferred);
+            });
+
+            AddReminder = new Command(async () =>
+            {
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    var vm = new ReminderEditPageViewModel();
+                    vm.Reminder = new Reminder(Item);
+                    vm.NewItem = true;
+                    await Shell.Current.Navigation.PushAsync(new ReminderEditPage() { BindingContext = vm });
+                });
             });
         }
     }

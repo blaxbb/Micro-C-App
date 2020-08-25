@@ -92,7 +92,24 @@ namespace micro_c_app.ViewModels
             });
             RemoveItem = new Command<Item>((Item item) =>
             {
+                /*
+                 * 
+                 * I am not sure if this a xaml bug or not, but the layout for the elements that
+                 * toggle display visibility on selected break if the list of items is not cleared
+                 * and reset when removing...
+                 * 
+                 * 
+                 * Ideally we just call Items.Remove(item) and are done with it, worth investigating longer
+                 * 
+                 * Also see RemindersPageViewModel
+                 */
                 Items.Remove(item);
+                var tmp = Items.ToList();
+                Items.Clear();
+                foreach(var i in tmp)
+                {
+                    Items.Add(i);
+                }
             });
 
             SendQuote = new Command(async () => await DoSendQuote(Items));

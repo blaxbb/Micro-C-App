@@ -74,6 +74,7 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AndroidNotificationManager.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Renderer\SelectableLabelRenderer.cs" />
     <Compile Include="Resources\Resource.designer.cs" />

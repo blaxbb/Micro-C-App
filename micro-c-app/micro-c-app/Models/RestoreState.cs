@@ -19,7 +19,7 @@ namespace micro_c_app.Models
         public BuildPageViewModel BuildVM { get; set; }
 
         public const string FILENAME = "RestoreState.json";
-        static string Path => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "temp.txt");
+        static string Path => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), FILENAME);
         public static void Load()
         {
             if (Instance == null)

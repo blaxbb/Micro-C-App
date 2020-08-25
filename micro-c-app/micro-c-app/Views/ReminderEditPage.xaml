@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             x:Class="micro_c_app.Views.ReminderEditPage"
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <vm:ReminderEditPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <!--<StackLayout Spacing="10" Margin="30">
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Name" WidthRequest="100" VerticalTextAlignment="Center"/>
+                <Entry Text="Binding Reminder.Name" HorizontalOptions="End"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="SKU" WidthRequest="100" VerticalTextAlignment="Center"/>
+                <Entry IsReadOnly="True" Text="{Binding Reminder.SKU}" HorizontalOptions="EndAndExpand"/>
+            </StackLayout>
+            <StackLayout Orientation="Horizontal">
+                <Label Text="Message" WidthRequest="100" VerticalTextAlignment="Center"/>
+                <Entry Text="{Binding Reminder.Message}"/>
+            </StackLayout>
+            <FlexLayout Direction="Row">
+                <Button Text="Cancel" />
+                <Button Text="Save"/>
+            </FlexLayout>
+        </StackLayout>-->
+        <TableView HasUnevenRows="True">
+            <TableRoot>
+                <TableSection>
+                    <TextCell Text="{Binding Reminder.Name}"/>
+                    <TextCell Text="{Binding Reminder.SKU, StringFormat='SKU: {0}'}"/>
+                    <ViewCell Height="200">
+                        <Editor Placeholder="Message" Text="{Binding Message}" MinimumHeightRequest="200"/>
+                    </ViewCell>
+                </TableSection>
+                <TableSection>
+                    <ViewCell>
+                        <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceEvenly" Margin="0, 20, 0, 20">
+                            <Button Text="Save" BackgroundColor="Green" Command="{Binding Save}"/>
+                            <Button Text="Cancel" BackgroundColor="Red" Command="{Binding Cancel}"/>
+                        </FlexLayout>
+                    </ViewCell>
+                </TableSection>
+            </TableRoot>
+        </TableView>
+    </ContentPage.Content>
+</ContentPage>

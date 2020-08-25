@@ -81,5 +81,5 @@
         <ShellContent Title="References" Icon="tab_about.png" Route="ReferencePage" ContentTemplate="{DataTemplate local:ReferencePage}" />
     </FlyoutItem>
     <MenuItem Text="Settings" Icon="tab_about.png" Clicked="DisplaySettings" />
-
+    <MenuItem Text="Reminders" Clicked="DisplayReminders"/>
 </Shell>

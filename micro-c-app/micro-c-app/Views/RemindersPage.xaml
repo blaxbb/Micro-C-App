@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             x:Class="micro_c_app.Views.RemindersPage"
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <vm:RemindersPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Check All" Command="{Binding CheckAll}" Order="Secondary"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <ListView x:Name="listView" ItemsSource="{Binding Reminders}" HasUnevenRows="True" ItemTapped="listView_ItemTapped">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <StackLayout x:Name="item" Orientation="Vertical">
+                            <StackLayout Orientation="Horizontal">
+                                <Label Text="{Binding Name}" HorizontalOptions="Start"/>
+                                <Label Text="{Binding SKU}" HorizontalOptions="EndAndExpand" WidthRequest="100"/>
+                            </StackLayout>
+                            <Label Text="{Binding Message}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
+                            <FlexLayout Direction="Row" JustifyContent="SpaceAround" AlignContent="Center" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}" Margin="0,0,0,5">
+                                <Button Text="Edit" BackgroundColor="Green" Command="{Binding Edit, Source={RelativeSource AncestorType={x:Type vm:RemindersPageViewModel}}}" CommandParameter="{Binding .}"/>
+                                <Button Text="Remove" BackgroundColor="Red" Command="{Binding Delete, Source={RelativeSource AncestorType={x:Type vm:RemindersPageViewModel}}}" CommandParameter="{Binding .}"/>
+                            </FlexLayout>
+                        </StackLayout>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </ContentPage.Content>
+</ContentPage>
