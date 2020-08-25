@@ -16,10 +16,18 @@
                 <DataTemplate>
                     <ViewCell>
                         <StackLayout x:Name="item" Orientation="Vertical">
-                            <StackLayout Orientation="Horizontal">
-                                <Label Text="{Binding Name}" HorizontalOptions="Start"/>
-                                <Label Text="{Binding SKU}" HorizontalOptions="EndAndExpand" WidthRequest="100"/>
-                            </StackLayout>
+                            <Grid HeightRequest="100">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="4*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Image Grid.Column="0" Source="{Binding PictureURL}"/>
+                                <Label Grid.Column="1" Text="{Binding Notified}" VerticalTextAlignment="Center"/>
+                                <Label Grid.Column="2" Text="{Binding Name}" MaxLines="2" VerticalTextAlignment="Center"/>
+                                <Label Grid.Column="3" Text="{Binding SKU}" VerticalTextAlignment="Center"/>
+                            </Grid>
                             <Label Text="{Binding Message}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
                             <FlexLayout Direction="Row" JustifyContent="SpaceAround" AlignContent="Center" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}" Margin="0,0,0,5">
                                 <Button Text="Edit" BackgroundColor="Green" Command="{Binding Edit, Source={RelativeSource AncestorType={x:Type vm:RemindersPageViewModel}}}" CommandParameter="{Binding .}"/>
