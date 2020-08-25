@@ -80,7 +80,7 @@
                 <FontImageSource
                     FontFamily="{StaticResource FontAwesomeSolid}"
                     Glyph="&#xf002;"
-                    Color="Black"
+                    Color="{DynamicResource PrimaryTextColor}"
                     Size="24"/>
             </ShellContent.Icon>
         </ShellContent>
@@ -89,7 +89,7 @@
                 <FontImageSource
                     FontFamily="{StaticResource FontAwesomeSolid}"
                     Glyph="&#xf573;"
-                    Color="Black"
+                    Color="{DynamicResource PrimaryTextColor}"
                     Size="24"/>
             </ShellContent.Icon>
         </ShellContent>
@@ -98,7 +98,7 @@
                 <FontImageSource
                     FontFamily="{StaticResource FontAwesomeSolid}"
                     Glyph="&#xf7d9;"
-                    Color="Black"
+                    Color="{DynamicResource PrimaryTextColor}"
                     Size="24"/>
             </ShellContent.Icon>
         </ShellContent>
@@ -107,7 +107,7 @@
                 <FontImageSource
                     FontFamily="{StaticResource FontAwesomeSolid}"
                     Glyph="&#xf02d;"
-                    Color="Black"
+                    Color="{DynamicResource PrimaryTextColor}"
                     Size="24"/>
             </ShellContent.Icon>
         </ShellContent>
@@ -117,7 +117,7 @@
             <FontImageSource
                 FontFamily="{StaticResource FontAwesomeSolid}"
                 Glyph="&#xf085;"
-                Color="Black"
+                Color="{DynamicResource PrimaryTextColor}"
                 Size="24"/>
         </MenuItem.IconImageSource>
     </MenuItem>
@@ -126,7 +126,7 @@
             <FontImageSource
                 FontFamily="{StaticResource FontAwesomeSolid}"
                 Glyph="&#xf2f2;"
-                Color="Black"
+                Color="{DynamicResource PrimaryTextColor}"
                 Size="24"/>
         </MenuItem.IconImageSource>
     </MenuItem>
