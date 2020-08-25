@@ -33,6 +33,12 @@ namespace micro_c_app.Models.Reference
             Apple_Plans_ADH_Mac_Pro,
             Apple_Plans_Mac_Mini,
             Apple_Plans_ADH_Mac_Mini,
+            Laptop_ADH,
+            Laptop_DOP,
+            Laptop_Extension,
+            Desktop_ADH,
+            Desktop_DOP,
+            Desktop_Extension,
         }
 
         public PlanReference(PlanType type, float minPrice, float maxPrice, params PlanTier[] tiers)
@@ -115,6 +121,13 @@ namespace micro_c_app.Models.Reference
             AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_iPad, 300.00f, 1699.99f, new PlanTier(2, 99.99f), new PlanTier(1, 69.99f)));
             AllPlans.Add(new PlanReference(PlanType.Apple_Plans_iPad, 0.00f, 299.99f, new PlanTier(3, 59.99f)));
             AllPlans.Add(new PlanReference(PlanType.Apple_Plans_iPad, 300.00f, 1699.99f, new PlanTier(3, 79.99f)));
+
+            AllPlans.Add(new PlanReference(PlanType.Laptop_ADH, 0.00f, 99.99f, new PlanTier(1, 19.99f), new PlanTier(2, 39.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Laptop_ADH, 100.00f, 199.99f, new PlanTier(1, 29.99f), new PlanTier(2, 79.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Laptop_ADH, 200.00f, 299.99f, new PlanTier(1, 49.99f), new PlanTier(2, 119.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Laptop_ADH, 300.00f, 399.99f, new PlanTier(1, 59.99f), new PlanTier(2, 129.99f)));
+
+
 
 
         }

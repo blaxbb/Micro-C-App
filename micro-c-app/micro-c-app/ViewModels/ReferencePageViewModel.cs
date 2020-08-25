@@ -28,7 +28,106 @@ namespace micro_c_app.ViewModels
             {
                 SetProperty(ref selectedItem, value);
             }
+        
         }
+
+
+
+        protected void SortPlans(PlanReference plan)
+        {
+            switch (plan.Type)
+            {
+                case PlanReference.PlanType.Apple_Plans_ADH_13:  // ADH Apple
+                    Items.Add(new PriceReference($"/Plans/Apple/ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ADH ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Apple_Plans_ADH_15_and_16:
+                    Items.Add(new PriceReference($"/Plans/Apple/ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ADH ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Apple_Plans_ADH_iMac:
+                    Items.Add(new PriceReference($"/Plans/Apple/ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ADH ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Apple_Plans_ADH_iPad:
+                    Items.Add(new PriceReference($"/Plans/Apple/ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ADH ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Apple_Plans_ADH_Mac_Mini:
+                    Items.Add(new PriceReference($"/Plans/Apple/ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ADH ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Apple_Plans_ADH_Mac_Pro:
+                    Items.Add(new PriceReference($"/Plans/Apple/ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ADH ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+
+                case PlanReference.PlanType.Laptop_ADH:  // ADH Laptops and desktops
+                    Items.Add(new PriceReference($"/Plans/Laptops/{plan.Type.ToString().Replace('_', ' ').Replace("Laptop ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Desktop_ADH:
+                    Items.Add(new PriceReference($"/Plans/Desktop/{plan.Type.ToString().Replace('_', ' ').Replace("Desktop ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+
+                case PlanReference.PlanType.Laptop_DOP:  // Laptops and desktops DOP
+                    Items.Add(new PriceReference($"/Plans/Laptops/{plan.Type.ToString().Replace('_', ' ').Replace("Laptop ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Desktop_DOP:
+                    Items.Add(new PriceReference($"/Plans/Desktop/{plan.Type.ToString().Replace('_', ' ').Replace("Desktop ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+
+                case PlanReference.PlanType.Laptop_Extension:  // Laptops and desktops extension
+                    Items.Add(new PriceReference($"/Plans/Laptops/{plan.Type.ToString().Replace('_', ' ').Replace("Laptop ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Desktop_Extension:
+                    Items.Add(new PriceReference($"/Plans/Desktop/{plan.Type.ToString().Replace('_', ' ').Replace("Desktop ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+
+                case PlanReference.PlanType.Apple_Plans_13:
+                    Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Apple_Plans_15_and_16:
+                    Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Apple_Plans_iMac:
+                    Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Apple_Plans_iPad:
+                    Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Apple_Plans_Mac_Mini:
+                    Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Apple_Plans_Mac_Pro:
+                    Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+
+                default:
+                    Items.Add(new PriceReference($"/Plans/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+            }
+        }
+            
+            /* Old way of doing ^that
+            if (plan.Type.ToString().StartsWith("Apple_Plans_ADH"))   
+            {
+                //Items.Add(new PriceReference($"/Plans/Apple/ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ADH ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+            }
+            else if (plan.Type.ToString().StartsWith("Apple_Plans"))
+            {
+                Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+            }
+            else if (plan.Type.ToString().StartsWith("Laptop_ADH"))
+            {
+                Items.Add(new PriceReference($"/Plans/Laptops/{plan.Type.ToString().Replace('_', ' ').Replace("Laptop", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+            }
+            else if (plan.Type.ToString().StartsWith("Laptop_DOP"))
+            {
+                Items.Add(new PriceReference($"/Plans/Laptops/{plan.Type.ToString().Replace('_', ' ').Replace("Laptop", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+            }
+            else if (plan.Type.ToString().StartsWith("Laptop_Extension"))
+            {
+                Items.Add(new PriceReference($"/Plans/Laptops/{plan.Type.ToString().Replace('_', ' ').Replace("Laptop", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+            }
+            else
+            {
+                Items.Add(new PriceReference($"/Plans/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+            }
+        } */
 
         public ICommand ItemTapped { get; }
 
@@ -53,22 +152,10 @@ namespace micro_c_app.ViewModels
             Items = new List<PriceReference>();
             ListItems = new ObservableCollection<string>();
 
-            foreach (var plan in PlanReference.AllPlans)  
+            foreach (var plan in PlanReference.AllPlans)
             {
-                if (plan.Type.ToString().StartsWith("Apple_Plans_ADH"))   // Placeholder to separate ADH and non-ADH Apple Plans from regular plans, and yes I know it's ugly
-                {
-                    Items.Add(new PriceReference($"/Plans/Apple/ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ADH", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
-                }
-                else if (plan.Type.ToString().StartsWith("Apple_Plans"))
-                {
-                    Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
-                }
-                else
-                {
-                    Items.Add(new PriceReference($"/Plans/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
-                }
+                SortPlans(plan);
             }
-
             SetPath("/");
         }
 
