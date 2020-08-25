@@ -21,7 +21,7 @@ namespace micro_c_app.Models
 
         public override bool Compatible(BuildComponent a, BuildComponent b)
         {
-            if(a.Item == null || b.Item == null)
+            if(a?.Item == null || b?.Item == null)
             {
                 return true;
             }

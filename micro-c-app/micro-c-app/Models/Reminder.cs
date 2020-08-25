@@ -135,7 +135,7 @@ namespace micro_c_app.Models
 
                     if (status)
                     {
-                        notificationManager.ScheduleNotification($"Restocked: {reminder.Name}", reminder.Message);
+                        notificationManager?.ScheduleNotification($"Restocked: {reminder.Name}", reminder.Message);
                         //await Device.InvokeOnMainThreadAsync(async () =>
                         //{
                         //    await Shell.Current.DisplayAlert("Reminder", $"{reminder.Name} - {reminder.Message}", "ok");

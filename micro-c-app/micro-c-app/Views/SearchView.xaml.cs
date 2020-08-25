@@ -195,7 +195,7 @@ namespace micro_c_app.Views
                                 await Shell.Current.Navigation.PushAsync(page);
                             });
 
-                            await Task.Run(() =>
+                            await Task.Run(async () =>
                             {
                                 var shortMatches = Regex.Matches(body, "class=\"image\" data-name=\"(.*?)\" data-id=\"(.*?)\"(?:.*?)price=\"(.*?)\"(?:.*?)href=\"(.*?)\"(?:.*?)src=\"(.*?)\"");
                                 var stockMatches = Regex.Matches(body, "<div class=\"stock\">(?:.*?)>([\\d+ ]*?)<", RegexOptions.Singleline);
@@ -219,7 +219,10 @@ namespace micro_c_app.Views
                                         PictureUrls = new List<string>() { m.Groups[5].Value },
                                     };
 
-                                    ((SearchResultsPageViewModel)page.BindingContext).Items.Add(item);
+                                    await Device.InvokeOnMainThreadAsync(async () =>
+                                    {
+                                        ((SearchResultsPageViewModel)page.BindingContext).Items.Add(item);
+                                    });
                                 }
                             });
                         }
