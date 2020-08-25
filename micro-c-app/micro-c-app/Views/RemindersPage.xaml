@@ -24,7 +24,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Image Grid.Column="0" Source="{Binding PictureURL}"/>
-                                <Label Grid.Column="1" Text="{Binding Notified}" VerticalTextAlignment="Center"/>
+                                <Label Grid.Column="1" FontSize="36" TextColor="Green" Text="&#xf00c;" HorizontalTextAlignment="Center" FontFamily="{StaticResource FontAwesomeSolid}" VerticalTextAlignment="Center" IsVisible="{Binding Notified}"/>
                                 <Label Grid.Column="2" Text="{Binding Name}" MaxLines="2" VerticalTextAlignment="Center"/>
                                 <Label Grid.Column="3" Text="{Binding SKU}" VerticalTextAlignment="Center"/>
                             </Grid>
