@@ -1,6 +1,7 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Models.Reference;
 using micro_c_app.Views;
+using micro_c_app.Views.CollectionFile;
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
@@ -26,6 +27,8 @@ namespace micro_c_app.ViewModels
 
         public ICommand SendQuote { get; }
         public ICommand Reset { get; }
+        public ICommand Save { get; }
+        public ICommand Load { get; }
 
         public BuildPageViewModel()
         {
@@ -67,17 +70,45 @@ namespace micro_c_app.ViewModels
             Reset = new Command(async () =>
             {
                 await Device.InvokeOnMainThreadAsync(async () => {
-                    var reset = await Shell.Current.DisplayAlert("Reset", "Are you sure you want to reset the quote?", "Yes", "No");
+                    var reset = await Shell.Current.DisplayAlert("Reset", "Are you sure you want to reset the build?", "Yes", "No");
                     if (reset)
                     {
                         Components.Clear();
                         SetupDefaultComponents();
-                        Save();
+                        SaveRestore();
                     }
                 });
             });
 
-            Components.CollectionChanged += (sender, args) => { Save(); };
+            Save = new Command(async () =>
+            {
+                var vm = new CollectionSavePageViewModel("build", Components.ToList());
+
+                await Shell.Current.Navigation.PushModalAsync(new CollectionSavePage() { BindingContext = vm });
+            });
+
+            Load = new Command(async () =>
+            {
+                var vm = new CollectionLoadPageViewModel<BuildComponent>("build");
+                MessagingCenter.Subscribe<CollectionLoadPageViewModel<BuildComponent>>(this, "load", DoLoad, vm);
+                await Shell.Current.Navigation.PushModalAsync(new CollectionLoadPage() { BindingContext = vm });
+            });
+
+            Components.CollectionChanged += (sender, args) => { SaveRestore(); };
+        }
+
+        private void DoLoad(CollectionLoadPageViewModel<BuildComponent> obj)
+        {
+            Components.Clear();
+            foreach (var i in obj.Result)
+            {
+                Components.Add(i);
+            }
+
+            foreach (var comp in Components)
+            {
+                comp.AddDependencies(FieldContainsDependency.Dependencies);
+            }
         }
 
         void SetupDefaultComponents()
@@ -93,7 +124,7 @@ namespace micro_c_app.ViewModels
             }
         }
 
-        private void Save()
+        private void SaveRestore()
         {
             RestoreState.Instance.BuildComponents = Components.ToList();
             RestoreState.Save();
@@ -151,7 +182,7 @@ namespace micro_c_app.ViewModels
             OnPropertyChanged(nameof(Subtotal));
             OnPropertyChanged(nameof(TaxedTotal));
             Navigation.PopAsync();
-            Save();
+            SaveRestore();
         }
 
         public void BuildComponentAddPlan(BuildComponentViewModel vm, PlanTier tier)

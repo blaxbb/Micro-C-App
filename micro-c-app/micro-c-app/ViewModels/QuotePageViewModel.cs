@@ -1,5 +1,6 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
+using micro_c_app.Views.CollectionFile;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -30,6 +31,8 @@ namespace micro_c_app.ViewModels
         public ICommand ExportQuote { get; }
         public ICommand ImportQuote { get; }
         public ICommand Reset { get; }
+        public ICommand Save { get; }
+        public ICommand Load { get; }
 
         public bool NotBusy { get => notBusy; set { SetProperty(ref notBusy, value); } }
 
@@ -141,6 +144,30 @@ namespace micro_c_app.ViewModels
                 });
             });
 
+            Save = new Command(async () =>
+            {
+                var vm = new CollectionSavePageViewModel("quote", Items.ToList());
+
+                await Shell.Current.Navigation.PushModalAsync(new CollectionSavePage() { BindingContext = vm });
+            });
+
+            Load = new Command(async () =>
+            {
+                var vm = new CollectionLoadPageViewModel<Item>("quote");
+                MessagingCenter.Subscribe<CollectionLoadPageViewModel<Item>>(this, "load", DoLoad, vm);
+                await Shell.Current.Navigation.PushModalAsync(new CollectionLoadPage() { BindingContext = vm });
+            });
+        }
+
+        private void DoLoad(CollectionLoadPageViewModel<Item> obj)
+        {
+            Items.Clear();
+            foreach(var i in obj.Result)
+            {
+                Items.Add(i);
+            }
+
+            UpdateProperties();
         }
 
         public static async Task DoSendQuote(IEnumerable<Item> Items)

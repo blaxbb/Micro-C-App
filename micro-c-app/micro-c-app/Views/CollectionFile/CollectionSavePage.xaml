@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             xmlns:local="clr-namespace:micro_c_app"
+             x:Class="micro_c_app.Views.CollectionFile.CollectionSavePage"
+             Title="{Binding Title}">
+    <ContentPage.BindingContext>
+        <vm:CollectionSavePageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <StackLayout Margin="10">
+            <Entry x:Name="filenameEntry" Text="{Binding Filename}" Placeholder="Filename" HorizontalOptions="FillAndExpand" VerticalOptions="Start"/>
+            <Label Text="{Binding ErrorText}" HorizontalOptions="CenterAndExpand" FontSize="Title"/>
+            <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceAround">
+                <Button Text="Save" BackgroundColor="Green" Command="{Binding Save}"/>
+                <Button Text="Cancel" BackgroundColor="Red" Command="{Binding Cancel}"/>
+            </FlexLayout>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>
