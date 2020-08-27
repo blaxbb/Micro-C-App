@@ -101,16 +101,16 @@ namespace micro_c_app.Views
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
-            if (width > height)
-            {
-                Grid.SetColumn(ButtonContainer, 1);
-                Grid.SetRow(ButtonContainer, 0);
-            }
-            else
-            {
-                Grid.SetColumn(ButtonContainer, 0);
-                Grid.SetRow(ButtonContainer, 1);
-            }
+            //if (width > height)
+            //{
+            //    Grid.SetColumn(ButtonContainer, 1);
+            //    Grid.SetRow(ButtonContainer, 0);
+            //}
+            //else
+            //{
+            //    Grid.SetColumn(ButtonContainer, 0);
+            //    Grid.SetRow(ButtonContainer, 1);
+            //}
         }
     }
 }

@@ -17,8 +17,9 @@ namespace micro_c_app.ViewModels
     public class QuotePageViewModel : BaseViewModel
     {
         private bool notBusy;
+        private Item selectedItem;
 
-        public Item SelectedItem { get; set; }
+        public Item SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); } }
         public ObservableCollection<Item> Items { get; set; }
         public ICommand OnProductFound { get; }
         public ICommand OnProductError { get; }
@@ -38,11 +39,12 @@ namespace micro_c_app.ViewModels
 
         public float Subtotal => Items.Sum(i => i.Price * i.Quantity);
         public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${(Subtotal * SettingsPage.TaxRateFactor()).ToString("#0.00")}";
+
         public QuotePageViewModel()
         {
             Title = "Quote";
             NotBusy = true;
-            if(RestoreState.Instance.QuoteItems != null)
+            if (RestoreState.Instance.QuoteItems != null)
             {
                 Items = new ObservableCollection<Item>(RestoreState.Instance.QuoteItems);
             }
@@ -50,7 +52,7 @@ namespace micro_c_app.ViewModels
             {
                 Items = new ObservableCollection<Item>();
             }
-            
+
             //for (int i = 0; i < 10; i++)
             //{
             //    var item = new Item()
@@ -109,7 +111,7 @@ namespace micro_c_app.ViewModels
                 Items.Remove(item);
                 var tmp = Items.ToList();
                 Items.Clear();
-                foreach(var i in tmp)
+                foreach (var i in tmp)
                 {
                     Items.Add(i);
                 }
@@ -125,7 +127,8 @@ namespace micro_c_app.ViewModels
 
             Reset = new Command(async () =>
             {
-                await Device.InvokeOnMainThreadAsync(async () => {
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
                     var reset = await Shell.Current.DisplayAlert("Reset", "Are you sure you want to reset the quote?", "Yes", "No");
                     if (reset)
                     {
@@ -162,7 +165,7 @@ namespace micro_c_app.ViewModels
         private void DoLoad(CollectionLoadPageViewModel<Item> obj)
         {
             Items.Clear();
-            foreach(var i in obj.Result)
+            foreach (var i in obj.Result)
             {
                 Items.Add(i);
             }

@@ -30,6 +30,8 @@ namespace micro_c_app.ViewModels
         public ICommand Save { get; }
         public ICommand Load { get; }
 
+        public static event Action CellUpdated;
+
         public BuildPageViewModel()
         {
             Title = "Build";
@@ -38,6 +40,8 @@ namespace micro_c_app.ViewModels
             MessagingCenter.Subscribe<BuildComponentViewModel>(this, "new",      BuildComponentNew);
             MessagingCenter.Subscribe<BuildComponentViewModel>(this, "removed",  BuildComponentRemove);
             MessagingCenter.Subscribe<BuildComponentViewModel, PlanTier>(this, "add_plan", BuildComponentAddPlan);
+
+            MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, (_) => { UpdateProperties(); });
 
             if (RestoreState.Instance.BuildComponents == null)
             {
@@ -75,6 +79,7 @@ namespace micro_c_app.ViewModels
                     {
                         Components.Clear();
                         SetupDefaultComponents();
+                        UpdateProperties();
                         SaveRestore();
                     }
                 });
@@ -178,11 +183,17 @@ namespace micro_c_app.ViewModels
 
             CurrentSubTotal = Subtotal;
             updated.Component.OnDependencyStatusChanged();
+            UpdateProperties();
+            Navigation.PopAsync();
+            CellUpdated?.Invoke();
+            SaveRestore();
+        }
+
+        private void UpdateProperties()
+        {
             OnPropertyChanged(nameof(Components));
             OnPropertyChanged(nameof(Subtotal));
             OnPropertyChanged(nameof(TaxedTotal));
-            Navigation.PopAsync();
-            SaveRestore();
         }
 
         public void BuildComponentAddPlan(BuildComponentViewModel vm, PlanTier tier)

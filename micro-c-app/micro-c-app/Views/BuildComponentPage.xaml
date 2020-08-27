@@ -9,33 +9,31 @@
         <vm:BuildComponentViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <Grid Margin="20">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <ScrollView IsVisible="{Binding ItemExists}" VerticalOptions="StartAndExpand" HorizontalOptions="Start" Grid.Row="0">
-                <StackLayout Padding="10">
-                    <Label Text="{Binding Component.Item.Name, FallbackValue=NAME}" FontSize="Large" LineBreakMode="TailTruncation"/>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="{Binding Component.Item.Specs[SKU], FallbackValue=123456}" HorizontalOptions="StartAndExpand"/>
-                        <Label Text="{Binding Component.Item.Specs[UPC], FallbackValue=123456}" HorizontalOptions="EndAndExpand"/>
+        <StackLayout Orientation="Vertical" Padding="0,0,0,0">
+            <StackLayout Orientation="Vertical" VerticalOptions="FillAndExpand">
+                <ScrollView IsVisible="{Binding ItemExists}" VerticalOptions="FillAndExpand">
+                    <StackLayout>
+                        <Label Text="{Binding Component.Item.Name, FallbackValue=NAME}" FontSize="Large" LineBreakMode="TailTruncation"/>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Component.Item.Specs[SKU], FallbackValue=123456}" HorizontalOptions="StartAndExpand"/>
+                            <Label Text="{Binding Component.Item.Specs[UPC], FallbackValue=123456}" HorizontalOptions="EndAndExpand"/>
+                        </StackLayout>
+                        <Label Text="{Binding Component.Item.Stock, FallbackValue=3 in stock}"/>
+                        <Label x:Name="zzz" Text="{Binding Component.Item.Location, FallbackValue=Section 000}"/>
+                        <StackLayout Orientation="Horizontal">
+                            <Label Text="{Binding Component.Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" TextDecorations="Strikethrough" IsVisible="{Binding Component.Item.OnSale}"/>
+                            <Label Text="{Binding Component.Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" IsVisible="{Binding Component.Item.OnSale}"/>
+                            <Label Text="{Binding Component.Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}"/>
+                        </StackLayout>
+                        <StackLayout x:Name="PlansStackLayout"/>
+                        <StackLayout x:Name="SpecsStackLayout"/>
                     </StackLayout>
-                    <Label Text="{Binding Component.Item.Stock, FallbackValue=3 in stock}"/>
-                    <Label x:Name="zzz" Text="{Binding Component.Item.Location, FallbackValue=Section 000}"/>
-                    <StackLayout Orientation="Horizontal">
-                        <Label Text="{Binding Component.Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" TextDecorations="Strikethrough" IsVisible="{Binding Component.Item.OnSale}"/>
-                        <Label Text="{Binding Component.Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" IsVisible="{Binding Component.Item.OnSale}"/>
-                        <Label Text="{Binding Component.Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}"/>
-                    </StackLayout>
-                    <StackLayout x:Name="PlansStackLayout"/>
-                    <StackLayout x:Name="SpecsStackLayout"/>
-                </StackLayout>
-            </ScrollView>
-            <StackLayout x:Name="ButtonContainer" Orientation="Vertical" FlexLayout.Basis="50%" Grid.Row="0" Grid.Column="1" VerticalOptions="Center">
+                </ScrollView>
+            </StackLayout>
+            <StackLayout x:Name="ButtonContainer" Orientation="Vertical" VerticalOptions="End" HorizontalOptions="FillAndExpand">
                 <Button Text="Remove" BackgroundColor="Red" Command="{Binding Remove}" IsVisible="{Binding Component.Item, Converter={StaticResource NullBoolConverter}}"/>
                 <views:SearchView x:Name="SearchView"  ProductFound="{Binding ProductFound}" Error="{Binding SearchError}" CategoryFilter="{Binding Component.CategoryFilter}" AutoPopSearchPage="True" Orientation="Horizontal"/>
             </StackLayout>
-        </Grid>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>
