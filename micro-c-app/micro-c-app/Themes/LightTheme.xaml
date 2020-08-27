@@ -13,4 +13,5 @@
     <Color x:Key="ButtonTextColor">White</Color>
     <Color x:Key="DisabledButtonBackground">Gray</Color>
     <Color x:Key="ButtonBorder">Transparent</Color>
+    <Color x:Key="IOSEntryTextColor">Black</Color>
 </ResourceDictionary>

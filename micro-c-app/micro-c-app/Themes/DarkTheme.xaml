@@ -14,4 +14,6 @@
     <Color x:Key="ButtonTextColor">White</Color>
     <Color x:Key="DisabledButtonBackground">#454545</Color>
     <Color x:Key="ButtonBorder">#454545</Color>
+
+    <Color x:Key="IOSEntryTextColor">Black</Color>
 </ResourceDictionary>

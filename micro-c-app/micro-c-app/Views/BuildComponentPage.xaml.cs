@@ -23,7 +23,7 @@ namespace micro_c_app.Views
                 if(vm.Component.AutoSearch() && vm.Component.Item == null)
                 {
                     SearchView.OrderBy = SearchView.OrderByMode.pricelow;
-                    SearchView.OnSubmit("").Wait();
+                    _ = SearchView.OnSubmit("");
                 }
             }
         }

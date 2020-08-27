@@ -1,5 +1,6 @@
 ﻿using micro_c_app.Themes;
 using micro_c_app.Views;
+using System.Collections.Generic;
 using System.Linq;
 using Xamarin.Forms;
 
@@ -11,7 +12,17 @@ namespace micro_c_app
         public App()
         {
             InitializeComponent();
+
             MainPage = new AppShell();
+
+            if (Device.RuntimePlatform == Device.Android)
+            {
+                IOS.Clear();
+            }
+            else if (Device.RuntimePlatform == Device.iOS)
+            {
+                Android.Clear();
+            }
 
             RequestedThemeChanged += App_RequestedThemeChanged;
             SwitchTheme(SettingsPage.Theme());

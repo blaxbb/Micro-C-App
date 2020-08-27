@@ -30,33 +30,7 @@ namespace micro_c_app.iOS.Renderer
                 uiTextView = new UITextView();
             }
 
-            uiTextView.Selectable = true;
-            uiTextView.Editable = false;
-            uiTextView.ScrollEnabled = false;
-            uiTextView.TextContainerInset = UIEdgeInsets.Zero;
-            uiTextView.TextContainer.LineFragmentPadding = 0;
-            uiTextView.BackgroundColor = UIColor.Clear;
-
-            // Initial properties Set
-            uiTextView.Text = label.Text;
-            uiTextView.TextColor = label.TextColor.ToUIColor();
-            switch (label.FontAttributes)
-            {
-                case FontAttributes.None:
-                    uiTextView.Font = UIFont.SystemFontOfSize(new nfloat(label.FontSize));
-                    break;
-                case FontAttributes.Bold:
-                    uiTextView.Font = UIFont.BoldSystemFontOfSize(new nfloat(label.FontSize));
-                    break;
-                case FontAttributes.Italic:
-                    uiTextView.Font = UIFont.ItalicSystemFontOfSize(new nfloat(label.FontSize));
-                    break;
-                default:
-                    uiTextView.Font = UIFont.BoldSystemFontOfSize(new nfloat(label.FontSize));
-                    break;
-            }
             var textDecorations = Element.TextDecorations;
-
 #if __MOBILE__
             var newAttributedText = new NSMutableAttributedString(label.Text);
             var strikeThroughStyleKey = UIStringAttributeKey.StrikethroughStyle;
@@ -84,6 +58,32 @@ namespace micro_c_app.iOS.Renderer
 #else
 			uiTextView.AttributedStringValue = newAttributedText;
 #endif
+
+            uiTextView.Selectable = true;
+            uiTextView.Editable = false;
+            uiTextView.ScrollEnabled = false;
+            uiTextView.TextContainerInset = UIEdgeInsets.Zero;
+            uiTextView.TextContainer.LineFragmentPadding = 0;
+            uiTextView.BackgroundColor = UIColor.Clear;
+
+            // Initial properties Set
+            uiTextView.Text = label.Text;
+            uiTextView.TextColor = label.TextColor.ToUIColor();
+            switch (label.FontAttributes)
+            {
+                case FontAttributes.None:
+                    uiTextView.Font = UIFont.SystemFontOfSize(new nfloat(label.FontSize));
+                    break;
+                case FontAttributes.Bold:
+                    uiTextView.Font = UIFont.BoldSystemFontOfSize(new nfloat(label.FontSize));
+                    break;
+                case FontAttributes.Italic:
+                    uiTextView.Font = UIFont.ItalicSystemFontOfSize(new nfloat(label.FontSize));
+                    break;
+                default:
+                    uiTextView.Font = UIFont.BoldSystemFontOfSize(new nfloat(label.FontSize));
+                    break;
+            }
 
             switch (label.HorizontalTextAlignment)
             {
