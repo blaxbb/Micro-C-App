@@ -23,7 +23,7 @@ namespace micro_c_app.Views
                 if(vm.Component.AutoSearch() && vm.Component.Item == null)
                 {
                     SearchView.OrderBy = SearchView.OrderByMode.pricelow;
-                    SearchView.OnSubmit("");
+                    SearchView.OnSubmit("").Wait();
                 }
             }
         }
@@ -101,16 +101,36 @@ namespace micro_c_app.Views
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
-            //if (width > height)
-            //{
-            //    Grid.SetColumn(ButtonContainer, 1);
-            //    Grid.SetRow(ButtonContainer, 0);
-            //}
-            //else
-            //{
-            //    Grid.SetColumn(ButtonContainer, 0);
-            //    Grid.SetRow(ButtonContainer, 1);
-            //}
+            if (width > height)
+            {
+                //FlipStack.Orientation = StackOrientation.Horizontal;
+                if(grid.RowDefinitions.Count > 1 && grid.ColumnDefinitions.Count > 0)
+                {
+                    grid.RowDefinitions[1].Height = 0;
+                    grid.ColumnDefinitions[1].Width = GridLength.Star;
+                }
+
+                grid.RowSpacing = 0;
+                grid.ColumnSpacing = 20;
+
+                Grid.SetRow(ButtonContainer, 0);
+                Grid.SetColumn(ButtonContainer, 1);
+                SearchView.Orientation = "Vertical";
+            }
+            else
+            {
+                //FlipStack.Orientation = StackOrientation.Vertical;
+                if (grid.RowDefinitions.Count > 1 && grid.ColumnDefinitions.Count > 0)
+                {
+                    grid.RowDefinitions[1].Height = GridLength.Star;
+                    grid.ColumnDefinitions[1].Width = 0;
+                }
+                grid.RowSpacing = 20;
+                grid.ColumnSpacing = 0;
+                Grid.SetRow(ButtonContainer, 1);
+                Grid.SetColumn(ButtonContainer, 0);
+                SearchView.Orientation = "Horizontal";
+            }
         }
     }
 }

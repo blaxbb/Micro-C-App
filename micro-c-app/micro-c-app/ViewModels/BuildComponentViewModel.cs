@@ -9,12 +9,13 @@ namespace micro_c_app.ViewModels
     {
         private BuildComponent component;
 
-        public BuildComponent Component { get => component; set { SetProperty(ref component, value); OnPropertyChanged(nameof(ItemExists)); } }
+        public BuildComponent Component { get => component; set { SetProperty(ref component, value); OnPropertyChanged(nameof(ItemExists)); OnPropertyChanged(nameof(ItemNotExists)); } }
         public ICommand SubmitButton { get; }
         public ICommand ProductFound { get; }
         public ICommand SearchError { get; }
         public ICommand Remove { get; }
         public bool ItemExists => Component?.Item != null;
+        public bool ItemNotExists => !ItemExists;
         public BuildComponentViewModel()
         {
             Title = "Details";
