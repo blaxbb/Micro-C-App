@@ -28,6 +28,10 @@
                     </VisualStateGroupList>
                 </Setter>
             </Style>
+            <Style TargetType="Picker">
+                <Setter Property="TextColor" Value="{DynamicResource IOSEntryTextColor}"/>
+                <Setter Property="TitleColor" Value="{DynamicResource SecondaryTextColor}"/>
+            </Style>
         </ResourceDictionary>
         <ResourceDictionary x:Name="Android">
             <Style TargetType="Entry">
@@ -48,6 +52,10 @@
                         </VisualStateGroup>
                     </VisualStateGroupList>
                 </Setter>
+            </Style>
+            <Style TargetType="Picker">
+                <Setter Property="TextColor" Value="{DynamicResource PrimaryTextColor}"/>
+                <Setter Property="TitleColor" Value="{DynamicResource SecondaryTextColor}"/>
             </Style>
         </ResourceDictionary>
         <ResourceDictionary>
@@ -73,14 +81,9 @@
                     </VisualStateGroupList>
                 </Setter>
             </Style>
-            
+
             <Style TargetType="ContentPage" ApplyToDerivedTypes="True">
                 <Setter Property="BackgroundColor" Value="{DynamicResource PageBackgroundColor}"/>
-            </Style>
-
-            <Style TargetType="Picker">
-                <Setter Property="TextColor" Value="{DynamicResource PrimaryTextColor}"/>
-                <Setter Property="TitleColor" Value="{DynamicResource SecondaryTextColor}"/>
             </Style>
 
             <Style TargetType="ListView">

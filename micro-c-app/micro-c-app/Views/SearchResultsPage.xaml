@@ -13,14 +13,14 @@
                     <ViewCell>
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*"/>
-                                <ColumnDefinition Width="4*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="6*"/>
+                                <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" Source="{Binding PictureUrls[0]}"/>
                             <Label Grid.Column="1" Text="{Binding Name}" MaxLines="2" VerticalTextAlignment="Center"/>
-                            <Label Grid.Column="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" VerticalTextAlignment="Center"/>
+                            <Label Grid.Column="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" VerticalTextAlignment="Center" HorizontalTextAlignment="End"/>
                             <Label Grid.Column="3" Text="{Binding Stock}" VerticalTextAlignment="Center"/>
                         </Grid>
                     </ViewCell>

@@ -32,7 +32,7 @@ namespace micro_c_app.iOS.Renderer
 
             var textDecorations = Element.TextDecorations;
 #if __MOBILE__
-            var newAttributedText = new NSMutableAttributedString(label.Text);
+            var newAttributedText = new NSMutableAttributedString(label?.Text ?? "");
             var strikeThroughStyleKey = UIStringAttributeKey.StrikethroughStyle;
             var underlineStyleKey = UIStringAttributeKey.UnderlineStyle;
 
@@ -67,7 +67,7 @@ namespace micro_c_app.iOS.Renderer
             uiTextView.BackgroundColor = UIColor.Clear;
 
             // Initial properties Set
-            uiTextView.Text = label.Text;
+            uiTextView.Text = label?.Text;
             uiTextView.TextColor = label.TextColor.ToUIColor();
             switch (label.FontAttributes)
             {

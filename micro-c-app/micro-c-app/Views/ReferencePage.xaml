@@ -13,7 +13,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Label Text="{Binding .}">
+                            <Label Text="{Binding .}" VerticalTextAlignment="Center" HorizontalTextAlignment="Start" FontSize="12">
                                 <Label.FontFamily>
                                     <OnPlatform x:TypeArguments="x:String">
                                         <OnPlatform.Android>monospace</OnPlatform.Android>

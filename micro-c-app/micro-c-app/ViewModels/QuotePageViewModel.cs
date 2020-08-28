@@ -95,7 +95,7 @@ namespace micro_c_app.ViewModels
                     UpdateProperties();
                 }
             });
-            RemoveItem = new Command<Item>((Item item) =>
+            RemoveItem = new Command<Item>(async (Item item) =>
             {
                 /*
                  * 
@@ -108,13 +108,20 @@ namespace micro_c_app.ViewModels
                  * 
                  * Also see RemindersPageViewModel
                  */
-                Items.Remove(item);
-                var tmp = Items.ToList();
-                Items.Clear();
-                foreach (var i in tmp)
+                await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    Items.Add(i);
-                }
+                    var reset = await Shell.Current.DisplayAlert("Remove", $"Are you sure you want to remove {item?.Name}", "Yes", "No");
+                    if (reset)
+                    {
+                        Items.Remove(item);
+                        var tmp = Items.ToList();
+                        Items.Clear();
+                        foreach (var i in tmp)
+                        {
+                            Items.Add(i);
+                        }
+                    }
+                });
             });
 
             SendQuote = new Command(async () => await DoSendQuote(Items));

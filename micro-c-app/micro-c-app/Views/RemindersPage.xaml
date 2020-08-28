@@ -21,7 +21,7 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="4*"/>
-                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
                                 </Grid.ColumnDefinitions>
                                 <Image Grid.Column="0" Source="{Binding PictureURL}"/>
                                 <Label Grid.Column="1" FontSize="36" TextColor="Green" Text="&#xf00c;" HorizontalTextAlignment="Center" FontFamily="{StaticResource FontAwesomeSolid}" VerticalTextAlignment="Center" IsVisible="{Binding Notified}"/>

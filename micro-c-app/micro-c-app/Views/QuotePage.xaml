@@ -42,13 +42,13 @@
                                             <Button Text="&#xf067;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
                                         </StackLayout>
                                     </StackLayout>
-                                    <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceEvenly" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
-                                        <StackLayout Orientation="Horizontal">
+                                    <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
+                                        <StackLayout Orientation="Horizontal" HorizontalOptions="Start">
                                             <Label Text="Price" VerticalTextAlignment="Center"/>
                                             <Entry Text="{Binding Price}" TextChanged="ItemPriceChanged" Keyboard="Numeric" WidthRequest="100"/>
                                         </StackLayout>
-                                        <Button Text="&#xf129;" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding DetailItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
-                                        <Button Text="&#xf2ed;" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red"/>
+                                        <Button Text="&#xf129;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding DetailItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
+                                        <Button Text="&#xf2ed;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red"/>
                                     </FlexLayout>
                                 </StackLayout>
                             </ViewCell>

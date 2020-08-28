@@ -38,8 +38,8 @@
                 <TableSection>
                     <ViewCell>
                         <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceEvenly" Margin="0, 20, 0, 20">
-                            <Button Text="Save" BackgroundColor="Green" Command="{Binding Save}"/>
-                            <Button Text="Cancel" BackgroundColor="Red" Command="{Binding Cancel}"/>
+                            <Button Text="Save" BackgroundColor="Green" Command="{Binding Save}" WidthRequest="100"/>
+                            <Button Text="Cancel" BackgroundColor="Red" Command="{Binding Cancel}" WidthRequest="100"/>
                         </FlexLayout>
                     </ViewCell>
                 </TableSection>
