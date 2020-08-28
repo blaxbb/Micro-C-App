@@ -39,7 +39,7 @@ namespace micro_c_app.Models
             Name = item.Name;
             SKU = item.SKU;
             URL = item.URL;
-            PictureURL = item.PictureUrls.FirstOrDefault();
+            PictureURL = item.PictureUrls?.FirstOrDefault();
         }
 
         public async Task<bool> CheckStock()
