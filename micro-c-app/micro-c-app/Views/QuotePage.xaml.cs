@@ -13,6 +13,7 @@ namespace micro_c_app.Views
         public QuotePage()
         {
             InitializeComponent();
+            this.SetupActionButton();
         }
 
         protected override void OnSizeAllocated(double width, double height)

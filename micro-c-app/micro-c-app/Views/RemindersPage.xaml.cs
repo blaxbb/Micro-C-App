@@ -16,6 +16,7 @@ namespace micro_c_app.Views
         public RemindersPage()
         {
             InitializeComponent();
+            this.SetupActionButton();
         }
 
         Reminder previousSelection;

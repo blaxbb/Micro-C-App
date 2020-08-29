@@ -1,5 +1,6 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Models.Reference;
+using System.Collections.Generic;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -16,6 +17,30 @@ namespace micro_c_app.ViewModels
         public ICommand Remove { get; }
         public bool ItemExists => Component?.Item != null;
         public bool ItemNotExists => !ItemExists;
+
+        protected override Dictionary<string, ICommand> Actions
+        {
+            get
+            {
+                var res = new Dictionary<string, ICommand>();
+                PlanReference plans;
+                if (Component.Type == Models.BuildComponent.ComponentType.BuildService)
+                {
+                    plans = Models.Reference.PlanReference.Get(PlanReference.PlanType.Build_Plan, BuildPageViewModel.CurrentSubTotal);
+                }
+                else
+                {
+                    plans = Models.Reference.PlanReference.Get(Models.Reference.PlanReference.PlanType.Replacement, Component.Item.Price);
+                }
+
+                foreach (var tier in plans.Tiers)
+                {
+                    res.Add($"Add {tier.Duration}yr plan", new Command(() => { BuildComponentAddPlan(tier); }));
+                }
+
+                return res;
+            }
+        }
         public BuildComponentViewModel()
         {
             Title = "Details";

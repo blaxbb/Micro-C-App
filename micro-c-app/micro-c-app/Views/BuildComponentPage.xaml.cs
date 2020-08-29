@@ -12,6 +12,7 @@ namespace micro_c_app.Views
         public BuildComponentPage()
         {
             InitializeComponent();
+            this.SetupActionButton();
         }
 
         public void Setup()
@@ -52,7 +53,11 @@ namespace micro_c_app.Views
 
                     foreach(var tier in plans.Tiers)
                     {
-                        this.ToolbarItems.Add(new ToolbarItem($"Add {tier.Duration} yr plan", "", () => { vm.BuildComponentAddPlan(tier); }) { Order = ToolbarItemOrder.Secondary });
+                        //iOS is handled in BuildComponentViewModel.cs Actions
+                        if (Device.RuntimePlatform == "Android")
+                        {
+                            this.ToolbarItems.Add(new ToolbarItem($"Add {tier.Duration} yr plan", "", () => { vm.BuildComponentAddPlan(tier); }) { Order = ToolbarItemOrder.Secondary });
+                        }
 
                         AddSpacer(PlansStackLayout, Color.LightGray);
                         var stack = new StackLayout() { Orientation = StackOrientation.Horizontal };

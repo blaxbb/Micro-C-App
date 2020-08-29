@@ -4,6 +4,7 @@ using micro_c_app.Views;
 using micro_c_app.Views.CollectionFile;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -29,6 +30,14 @@ namespace micro_c_app.ViewModels
         public ICommand Reset { get; }
         public ICommand Save { get; }
         public ICommand Load { get; }
+
+        protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
+        {
+            {"Send", SendQuote },
+            {"Reset", Reset },
+            {"Save", Save },
+            {"Load", Load }
+        };
 
         public static event Action CellUpdated;
 

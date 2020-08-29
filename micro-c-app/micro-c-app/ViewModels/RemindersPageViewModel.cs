@@ -1,6 +1,7 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -14,6 +15,11 @@ namespace micro_c_app.ViewModels
         public ICommand Edit { get; }
         public ICommand Delete { get; }
         public ICommand CheckAll { get; }
+
+        protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
+        {
+            { "Check All", CheckAll }
+        };
 
         INotificationManager notificationManager { get; }
         public RemindersPageViewModel()

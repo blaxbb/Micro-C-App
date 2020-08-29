@@ -13,6 +13,7 @@ namespace micro_c_app.Views
         public BuildPage()
         {
             InitializeComponent();
+            this.SetupActionButton();
             viewModel.Navigation = Navigation;
             viewModel.ConfigID = "CONFIG_ID";
         }

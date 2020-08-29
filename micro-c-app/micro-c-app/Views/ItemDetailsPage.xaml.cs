@@ -13,6 +13,7 @@ namespace micro_c_app.Views
         {
             InitializeComponent();
             BindingContextChanged += ItemDetails_BindingContextChanged;
+            this.SetupActionButton();
         }
 
         protected override void OnSizeAllocated(double width, double height)

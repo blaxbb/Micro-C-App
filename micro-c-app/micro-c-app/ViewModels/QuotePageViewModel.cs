@@ -35,6 +35,14 @@ namespace micro_c_app.ViewModels
         public ICommand Save { get; }
         public ICommand Load { get; }
 
+        protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
+        {
+            {"Send", SendQuote },
+            {"Reset", Reset },
+            {"Save", Save },
+            {"Load", Load }
+        };
+
         public bool NotBusy { get => notBusy; set { SetProperty(ref notBusy, value); } }
 
         public float Subtotal => Items.Sum(i => i.Price * i.Quantity);

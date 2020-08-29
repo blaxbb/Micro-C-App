@@ -1,5 +1,7 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
+using System.Collections.Generic;
+using System.Linq;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -14,6 +16,12 @@ namespace micro_c_app.ViewModels
         public ICommand ForwardPicture { get; }
         public ICommand GoToWebpage { get; }
         public ICommand AddReminder { get; }
+
+        protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
+        {
+            { "Go to Webpage", GoToWebpage },
+            { "Add Reminder",  AddReminder }
+        };
 
         public ItemDetailsPageViewModel()
         {
