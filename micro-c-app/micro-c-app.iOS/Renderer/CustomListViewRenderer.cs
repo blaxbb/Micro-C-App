@@ -24,6 +24,16 @@ namespace micro_c_app.iOS.Renderer
             BuildPageViewModel.CellUpdated += UpdateTableView;
         }
 
+        protected override void OnElementChanged(ElementChangedEventArgs<ListView> e)
+        {
+            base.OnElementChanged(e);
+
+            if(Control != null)
+            {
+                Control.KeyboardDismissMode = UIScrollViewKeyboardDismissMode.OnDrag;
+            }
+        }
+
         private void CustomListViewRenderer_ElementChanged(object sender, ElementChangedEventArgs<ListView> e)
         {
             if (e.NewElement is ListView listView)

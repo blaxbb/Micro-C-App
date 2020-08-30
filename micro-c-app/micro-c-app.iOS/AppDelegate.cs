@@ -4,6 +4,8 @@ using System.Linq;
 
 using Foundation;
 using UIKit;
+using UserNotifications;
+using Xamarin.Forms;
 
 namespace micro_c_app.iOS
 {
@@ -25,9 +27,15 @@ namespace micro_c_app.iOS
             global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
             global::Xamarin.Forms.Forms.Init();
 
+            UNUserNotificationCenter.Current.Delegate = new iOSNotificationReceiver();
+
             ZXing.Net.Mobile.Forms.iOS.Platform.Init();
+            var notificationManager = DependencyService.Get<INotificationManager>();
+            notificationManager?.Initialize();
+
 
             LoadApplication(new App());
+
 
             return base.FinishedLaunching(app, options);
         }

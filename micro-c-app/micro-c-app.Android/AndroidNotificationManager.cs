@@ -25,7 +25,7 @@ namespace micro_c_app.Droid
 {
     public class AndroidNotificationManager : INotificationManager
     {
-        public event EventHandler NotificationRecieved;
+        public event EventHandler NotificationReceived;
         NotificationManager manager;
 
         const string CHANNEL_ID = "default";
@@ -59,14 +59,14 @@ namespace micro_c_app.Droid
             initialized = true;
         }
 
-        public void RecieveNotification(string title, string message)
+        public void ReceiveNotification(string title, string message)
         {
             var args = new NotificationEventArgs()
             {
                 Title = title,
                 Message = message
             };
-            NotificationRecieved?.Invoke(null, args);
+            NotificationReceived?.Invoke(null, args);
         }
 
         public int ScheduleNotification(string title, string message)

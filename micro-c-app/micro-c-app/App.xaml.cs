@@ -17,11 +17,11 @@ namespace micro_c_app
 
             if (Device.RuntimePlatform == Device.Android)
             {
-                IOS.Clear();
+                //IOS.Clear();
             }
             else if (Device.RuntimePlatform == Device.iOS)
             {
-                Android.Clear();
+                //Android.Clear();
             }
 
             RequestedThemeChanged += App_RequestedThemeChanged;

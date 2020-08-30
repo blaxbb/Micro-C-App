@@ -9,13 +9,13 @@
         <vm:CollectionSavePageViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <StackLayout Margin="10">
-            <Entry x:Name="filenameEntry" Text="{Binding Filename}" Placeholder="Filename" HorizontalOptions="FillAndExpand" VerticalOptions="Start"/>
-            <Label Text="{Binding ErrorText}" HorizontalOptions="CenterAndExpand" FontSize="Title"/>
-            <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceAround">
+        <FlexLayout Margin="10" Direction="Column" JustifyContent="Center" VerticalOptions="FillAndExpand">
+            <Entry x:Name="filenameEntry" Text="{Binding Filename}" Placeholder="Filename" HorizontalOptions="FillAndExpand"/>
+            <Label Text="{Binding ErrorText}" HorizontalOptions="CenterAndExpand" FontSize="Title" HeightRequest="40"/>
+            <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceAround" HeightRequest="40">
                 <Button Text="Save" BackgroundColor="Green" Command="{Binding Save}"/>
                 <Button Text="Cancel" BackgroundColor="Red" Command="{Binding Cancel}"/>
             </FlexLayout>
-        </StackLayout>
+        </FlexLayout>
     </ContentPage.Content>
 </ContentPage>

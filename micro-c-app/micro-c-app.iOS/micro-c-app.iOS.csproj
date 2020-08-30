@@ -70,9 +70,12 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="iOSNotificationManager.cs" />
+    <Compile Include="iOSNotificationReceiver.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
     <Compile Include="Renderer\CustomListViewRenderer.cs" />
+    <Compile Include="Renderer\CustomViewCellRenderer.cs" />
     <Compile Include="Renderer\SelectableLabelRenderer.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />

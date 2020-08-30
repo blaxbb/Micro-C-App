@@ -125,7 +125,14 @@ namespace micro_c_app.Views
                         await OnSubmit(SKUField.Text);
                     });
                 };
-                await Navigation.PushModalAsync(scanPage);
+
+                var navPage = new NavigationPage(scanPage);
+                navPage.ToolbarItems.Add(new ToolbarItem()
+                {
+                    Text = "Cancel",
+                    Command = new Command(async () => { await Navigation.PopModalAsync(); })
+                });
+                await Navigation.PushModalAsync(navPage);
             });
         }
 

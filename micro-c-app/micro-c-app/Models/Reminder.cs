@@ -22,7 +22,7 @@ namespace micro_c_app.Models
         public string SKU { get => sku; set => SetProperty(ref sku, value); }
         public string PictureURL { get => pictureURL; set => SetProperty(ref pictureURL, value); }
         public string URL { get => url; set => SetProperty(ref url, value); }
-        public string Message { get => message; set => SetProperty(ref message, value); }
+        public string Message { get => message ?? ""; set => SetProperty(ref message, value); }
         public bool Notified { get => notified; set => SetProperty(ref notified, value); }
 
         public const string FILENAME = "Reminders.json";
