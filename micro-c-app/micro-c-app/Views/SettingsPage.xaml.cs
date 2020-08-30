@@ -21,7 +21,7 @@ namespace micro_c_app.Views
         }
 
         public static string StoreID() => Preferences.Get(PREF_SELECTED_STORE, "141");
-        public static string SalesID() => Preferences.Get(PREF_SALES_ID, "SALESID");
+        public static string SalesID() => Preferences.Get(PREF_SALES_ID, "");
         public static float TaxRate() => Preferences.Get(PREF_TAX_RATE, 7.5f);
         public static float TaxRateFactor() => (TaxRate() * .01f) + 1;
         public static bool IncludeCSVWithQuote() => Preferences.Get(PREF_CSV_QUOTE, true);

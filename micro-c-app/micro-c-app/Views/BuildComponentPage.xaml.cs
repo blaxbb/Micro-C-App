@@ -118,8 +118,8 @@ namespace micro_c_app.Views
                 grid.RowSpacing = 0;
                 grid.ColumnSpacing = 20;
 
-                Grid.SetRow(ButtonContainer, 0);
-                Grid.SetColumn(ButtonContainer, 1);
+                Grid.SetRow(ItemInfo, 0);
+                Grid.SetColumn(ItemInfo, 1);
                 SearchView.Orientation = "Vertical";
             }
             else
@@ -127,13 +127,13 @@ namespace micro_c_app.Views
                 //FlipStack.Orientation = StackOrientation.Vertical;
                 if (grid.RowDefinitions.Count > 1 && grid.ColumnDefinitions.Count > 0)
                 {
-                    grid.RowDefinitions[1].Height = GridLength.Star;
+                    grid.RowDefinitions[1].Height = new GridLength(2.5, GridUnitType.Star);
                     grid.ColumnDefinitions[1].Width = 0;
                 }
                 grid.RowSpacing = 20;
                 grid.ColumnSpacing = 0;
-                Grid.SetRow(ButtonContainer, 1);
-                Grid.SetColumn(ButtonContainer, 0);
+                Grid.SetRow(ItemInfo, 1);
+                Grid.SetColumn(ItemInfo, 0);
                 SearchView.Orientation = "Horizontal";
             }
         }
