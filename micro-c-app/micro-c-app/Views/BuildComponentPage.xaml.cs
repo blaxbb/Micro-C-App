@@ -120,7 +120,7 @@ namespace micro_c_app.Views
 
                 Grid.SetRow(ItemInfo, 0);
                 Grid.SetColumn(ItemInfo, 1);
-                SearchView.Orientation = "Vertical";
+                //SearchView.Orientation = "Vertical";
             }
             else
             {
@@ -134,7 +134,7 @@ namespace micro_c_app.Views
                 grid.ColumnSpacing = 0;
                 Grid.SetRow(ItemInfo, 1);
                 Grid.SetColumn(ItemInfo, 0);
-                SearchView.Orientation = "Horizontal";
+                //SearchView.Orientation = "Horizontal";
             }
         }
     }

@@ -12,24 +12,23 @@
                     HorizontalOptions="FillAndExpand"
                     HeightRequest="75"
                     VerticalOptions="Center"/>
-            <Grid HorizontalOptions="FillAndExpand" RowSpacing="20">
-                <StackLayout Orientation="Horizontal" Grid.Row="0">
+            <FlexLayout Direction="Column" AlignItems="Stretch" JustifyContent="SpaceEvenly" HorizontalOptions="FillAndExpand">
+                <StackLayout Orientation="Horizontal" Margin="0,0,0,20">
                     <Entry x:Name="SKUField"
                        Placeholder="Enter a SKU/UPC"
-                       HorizontalOptions="FillAndExpand"
-                           VerticalOptions="CenterAndExpand"
-                        Keyboard="Numeric"/>
-                    <Button x:Name="SKUSubmitButton" Margin="20,0,0,0" Text="&#xf002;" FontFamily="{StaticResource FontAwesomeSolid}"  VerticalOptions="CenterAndExpand" HorizontalOptions="End" WidthRequest="40"/>
+                        HorizontalOptions="FillAndExpand"
+                       VerticalOptions="CenterAndExpand"/>
+                        <Button x:Name="SKUSubmitButton" Margin="20,0,0,0" Text="&#xf002;" FontFamily="{StaticResource FontAwesomeSolid}"  VerticalOptions="CenterAndExpand" HorizontalOptions="End" WidthRequest="40"/>
                 </StackLayout>
-                <StackLayout Orientation="Horizontal" Grid.Row="1">
+                <StackLayout Orientation="Horizontal">
                     <Entry x:Name="SearchField"
                        Placeholder="Search"
                        HorizontalOptions="FillAndExpand"
-                           VerticalOptions="CenterAndExpand"/>
+                       VerticalOptions="CenterAndExpand"/>
                     <Button x:Name="SearchSubmitButton" Margin="20,0,0,0" Text="&#xf002;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="End" WidthRequest="40"/>
                 </StackLayout>
                 <ActivityIndicator x:Name="BusyIndicator"  IsRunning="False" Scale="0.7"/>
-            </Grid>
+            </FlexLayout>
         </StackLayout>
   </ContentView.Content>
 </ContentView>
