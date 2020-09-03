@@ -141,7 +141,11 @@ namespace micro_c_app.Views
             switch (result.BarcodeFormat)
             {
                 case BarcodeFormat.CODE_128:
-                    return result.Text.Substring(0, 6);
+                    if(result.Text.Length >= 6)
+                    {
+                        return result.Text.Substring(0, 6);
+                    }
+                    return "";
                 case BarcodeFormat.UPC_A:
                 default:
                     return result.Text;
