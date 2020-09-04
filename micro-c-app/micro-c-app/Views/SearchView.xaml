@@ -6,29 +6,30 @@
   <ContentView.Content>
         <StackLayout x:Name="FlipStack" Orientation="Vertical" Spacing="20">
             <Button x:Name="ScanButton"
-                    Margin="0,0,0,10"
+                    Margin="0,0,0,0"
                     Text="Scan"
                     Clicked="OnScanClicked"
                     HorizontalOptions="FillAndExpand"
                     HeightRequest="75"
                     VerticalOptions="Center"/>
-            <FlexLayout Direction="Column" AlignItems="Stretch" JustifyContent="SpaceEvenly" HorizontalOptions="FillAndExpand">
-                <StackLayout Orientation="Horizontal" Margin="0,0,0,20">
+            <Grid HorizontalOptions="FillAndExpand" RowSpacing="20">
+                <StackLayout Orientation="Horizontal" Grid.Row="0" VerticalOptions="FillAndExpand">
                     <Entry x:Name="SKUField"
                        Placeholder="Enter a SKU/UPC"
-                        HorizontalOptions="FillAndExpand"
-                       VerticalOptions="CenterAndExpand"/>
-                        <Button x:Name="SKUSubmitButton" Margin="20,0,0,0" Text="&#xf002;" FontFamily="{StaticResource FontAwesomeSolid}"  VerticalOptions="CenterAndExpand" HorizontalOptions="End" WidthRequest="40"/>
+                       HorizontalOptions="FillAndExpand"
+                           VerticalOptions="CenterAndExpand"
+                        Keyboard="Numeric"/>
+                    <Button x:Name="SKUSubmitButton" Margin="20,0,0,0" Text="&#xf002;" FontFamily="{StaticResource FontAwesomeSolid}"  VerticalOptions="CenterAndExpand" HorizontalOptions="End" WidthRequest="40"/>
                 </StackLayout>
-                <StackLayout Orientation="Horizontal">
+                <StackLayout Orientation="Horizontal" Grid.Row="1">
                     <Entry x:Name="SearchField"
                        Placeholder="Search"
                        HorizontalOptions="FillAndExpand"
-                       VerticalOptions="CenterAndExpand"/>
+                           VerticalOptions="CenterAndExpand"/>
                     <Button x:Name="SearchSubmitButton" Margin="20,0,0,0" Text="&#xf002;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="End" WidthRequest="40"/>
                 </StackLayout>
                 <ActivityIndicator x:Name="BusyIndicator"  IsRunning="False" Scale="0.7"/>
-            </FlexLayout>
+            </Grid>
         </StackLayout>
   </ContentView.Content>
 </ContentView>

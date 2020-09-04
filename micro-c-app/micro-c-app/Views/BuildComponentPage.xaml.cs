@@ -127,7 +127,7 @@ namespace micro_c_app.Views
                 //FlipStack.Orientation = StackOrientation.Vertical;
                 if (grid.RowDefinitions.Count > 1 && grid.ColumnDefinitions.Count > 0)
                 {
-                    grid.RowDefinitions[1].Height = new GridLength(2.5, GridUnitType.Star);
+                    grid.RowDefinitions[1].Height = new GridLength(2.25, GridUnitType.Star);
                     grid.ColumnDefinitions[1].Width = 0;
                 }
                 grid.RowSpacing = 20;

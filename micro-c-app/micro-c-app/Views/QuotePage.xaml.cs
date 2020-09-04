@@ -47,17 +47,17 @@ namespace micro_c_app.Views
         Models.Item previousSelection;
         private void listView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            //var newItem = e.Item;
+            var newItem = e.Item;
 
-            //if(previousSelection == newItem)
-            //{
-            //    listView.SelectedItem = null;
-            //    previousSelection = null;
-            //}
-            //else
-            //{
-            //    previousSelection = newItem as Models.Item;
-            //}
+            if (previousSelection == newItem)
+            {
+                listView.SelectedItem = null;
+                previousSelection = null;
+            }
+            else
+            {
+                previousSelection = newItem as Models.Item;
+            }
         }
     }
 }

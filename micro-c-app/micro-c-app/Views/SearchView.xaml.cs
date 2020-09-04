@@ -55,6 +55,7 @@ namespace micro_c_app.Views
             {
                 busy = value;
                 BusyIndicator.IsRunning = Busy;
+                BusyIndicator.IsVisible = Busy;
                 ScanButton.IsEnabled = !Busy;
                 SKUField.IsEnabled = !Busy;
                 SearchField.IsEnabled = !Busy;
