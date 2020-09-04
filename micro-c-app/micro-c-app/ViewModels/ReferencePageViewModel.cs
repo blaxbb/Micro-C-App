@@ -93,7 +93,21 @@ namespace micro_c_app.ViewModels
                     Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
                     break;
                 case PlanReference.PlanType.Apple_Plans_Mac_Pro:
-                    Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+
+                case PlanReference.PlanType.Tablet_ADH:
+                    Items.Add(new PriceReference($"/Plans/Tablets/{plan.Type.ToString().Replace('_', ' ').Replace("Tablet ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Tablet_DOP:
+                    Items.Add(new PriceReference($"/Plans/Tablets/{plan.Type.ToString().Replace('_', ' ').Replace("Tablet ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+                case PlanReference.PlanType.Tablet_Extension:
+                    Items.Add(new PriceReference($"/Plans/Tablets/{plan.Type.ToString().Replace('_', ' ').Replace("Tablet ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
+                    break;
+
+                case PlanReference.PlanType.Carry_In:
+                    Items.Add(new PriceReference($"/Plans/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
                     break;
 
                 default:
