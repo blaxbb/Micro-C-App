@@ -184,5 +184,39 @@ namespace micro_c_app.Models
                     return 64;
             }
         }
+
+        public static string MCOLSelectorIDForType(ComponentType type)
+        {
+            switch (type)
+            {
+                case ComponentType.CPU:
+                    return "1";
+                case ComponentType.Motherboard:
+                    return "2";
+                case ComponentType.RAM:
+                    return "7";
+                case ComponentType.Case:
+                    return "5";
+                case ComponentType.PowerSupply:
+                    return "6";
+                case ComponentType.GPU:
+                    return "8";
+                case ComponentType.SSD:
+                    return "15";
+                case ComponentType.HDD:
+                    return "14";
+                case ComponentType.CPUCooler:
+                    return "9";
+                case ComponentType.CaseFan:
+                    return "90";
+                case ComponentType.BuildService:
+                case ComponentType.Plan:
+                case ComponentType.OperatingSystem:
+                    return "12";
+                case ComponentType.Miscellaneous:
+                default:
+                    return "19";
+            }
+        }
     }
 }

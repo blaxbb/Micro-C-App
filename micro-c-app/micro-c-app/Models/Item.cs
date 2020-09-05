@@ -27,6 +27,8 @@ namespace micro_c_app.Models
         public int Quantity { get => quantity; set => SetProperty(ref quantity, value); }
         public string Location { get; set; }
         public List<Plan> Plans { get; set; }
+        public string ID { get; set; }
+
         public Item()
         {
             Specs = new Dictionary<string, string>();
@@ -144,6 +146,13 @@ namespace micro_c_app.Models
                         }
                     }
                 }
+
+                match = Regex.Match(url, "\\/product\\/(\\d+?)\\/");
+                if (match.Success)
+                {
+                    item.ID = match.Groups[1].Value;
+                }
+
             }
 
             return item;

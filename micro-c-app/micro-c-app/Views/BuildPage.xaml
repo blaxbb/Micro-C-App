@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:micro_c_app"
-             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels" xmlns:views="clr-namespace:micro_c_app.Views"
              x:Class="micro_c_app.Views.BuildPage"
              Title="{Binding Title}">
     <ContentPage.BindingContext>
@@ -13,6 +13,7 @@
         <ToolbarItem Text="Reset" Order="Secondary" Command="{Binding Reset}"/>
         <ToolbarItem Text="Load" Order="Secondary" Command="{Binding Load}"/>
         <ToolbarItem Text="Save" Order="Secondary" Command="{Binding Save}"/>
+        <ToolbarItem Text="Export" Order="Secondary" Command="{Binding Export}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">
@@ -20,6 +21,7 @@
                 <Label Text="{Binding Subtotal, StringFormat='Subtotal ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalOptions="StartAndExpand" VerticalTextAlignment="Center"/>
                 <Label Text="{Binding TaxedTotal, StringFormat='Total {0}', FallbackValue=(7.5%) $123.45}" HorizontalOptions="EndAndExpand" VerticalTextAlignment="Center"/>
             </StackLayout>
+            <views:SelectableLabel TextColor="Green" Text="{Binding BuildURL}"/>
             <ListView x:Name="listView" ItemsSource="{Binding Components, Mode=TwoWay}" VerticalOptions="FillAndExpand" HasUnevenRows="True" RowHeight="-1">
                 <ListView.ItemTemplate>
                     <DataTemplate>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
@@ -16,6 +17,15 @@ namespace micro_c_app.iOS.Renderer
     public class SelectableLabelRenderer :ViewRenderer<SelectableLabel, UITextView>
     {
         UITextView uiTextView;
+
+        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            base.OnElementPropertyChanged(sender, e);
+            if (e.PropertyName == SelectableLabel.TextProperty.PropertyName)
+            {
+                uiTextView.Text = ((SelectableLabel)Element).Text ?? "";
+            }
+        }
 
         protected override void OnElementChanged(ElementChangedEventArgs<SelectableLabel> e)
         {

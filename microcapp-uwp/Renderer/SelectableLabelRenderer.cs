@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
@@ -22,6 +23,15 @@ namespace micro_c_app.UWP.Renderer
 
         }
 
+        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            base.OnElementPropertyChanged(sender, e);
+            if(e.PropertyName == SelectableLabel.TextProperty.PropertyName)
+            {
+                textBlock.Text = ((SelectableLabel)Element).Text ?? "";
+            }
+        }
+
         protected override void OnElementChanged(ElementChangedEventArgs<SelectableLabel> e)
         {
             base.OnElementChanged(e);
@@ -36,7 +46,7 @@ namespace micro_c_app.UWP.Renderer
             }
 
             textBlock.IsTextSelectionEnabled = true;
-            textBlock.Text = label.Text;
+            textBlock.Text = label.Text ?? "";
             switch (label.FontAttributes)
             {
                 case FontAttributes.Bold:

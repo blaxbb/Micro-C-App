@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
@@ -25,6 +26,15 @@ namespace micro_c_app.Droid.Renderer
         public SelectableLabelRenderer(Context context) : base(context)
         {
 
+        }
+
+        protected override void OnElementPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            base.OnElementPropertyChanged(sender, e);
+            if (e.PropertyName == SelectableLabel.TextProperty.PropertyName)
+            {
+                textView.Text = ((SelectableLabel)Element).Text ?? "";
+            }
         }
 
         protected override void OnElementChanged(ElementChangedEventArgs<SelectableLabel> e)

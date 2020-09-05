@@ -7,6 +7,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net.Http;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -15,7 +18,7 @@ namespace micro_c_app.ViewModels
     public class BuildPageViewModel : BaseViewModel
     {
         string configID;
-        public string ConfigID { get => configID; set { SetProperty(ref configID, value); } }
+        private string buildURL;
         public ICommand ComponentSelectClicked { get; }
 
         public ObservableCollection<BuildComponent> Components { get; }
@@ -30,13 +33,17 @@ namespace micro_c_app.ViewModels
         public ICommand Reset { get; }
         public ICommand Save { get; }
         public ICommand Load { get; }
+        public ICommand Export { get; }
+
+        public string BuildURL { get => buildURL; set => SetProperty(ref buildURL, value); }
 
         protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
         {
             {"Send", SendQuote },
             {"Reset", Reset },
             {"Save", Save },
-            {"Load", Load }
+            {"Load", Load },
+            {"Export", Export }
         };
 
         public static event Action CellUpdated;
@@ -46,8 +53,8 @@ namespace micro_c_app.ViewModels
             Title = "Build";
 
             MessagingCenter.Subscribe<BuildComponentViewModel>(this, "selected", BuildComponentSelected);
-            MessagingCenter.Subscribe<BuildComponentViewModel>(this, "new",      BuildComponentNew);
-            MessagingCenter.Subscribe<BuildComponentViewModel>(this, "removed",  BuildComponentRemove);
+            MessagingCenter.Subscribe<BuildComponentViewModel>(this, "new", BuildComponentNew);
+            MessagingCenter.Subscribe<BuildComponentViewModel>(this, "removed", BuildComponentRemove);
             MessagingCenter.Subscribe<BuildComponentViewModel, PlanTier>(this, "add_plan", BuildComponentAddPlan);
 
             MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, (_) => { UpdateProperties(); });
@@ -60,13 +67,12 @@ namespace micro_c_app.ViewModels
             else
             {
                 Components = new ObservableCollection<BuildComponent>(RestoreState.Instance.BuildComponents);
-                foreach(var comp in Components)
+                foreach (var comp in Components)
                 {
                     comp.AddDependencies(FieldContainsDependency.Dependencies);
                 }
             }
 
-            ConfigID = "ZZZ";
             ComponentSelectClicked = new Command<BuildComponent>(async (BuildComponent comp) =>
             {
                 var componentPage = new BuildComponentPage();
@@ -82,10 +88,12 @@ namespace micro_c_app.ViewModels
 
             Reset = new Command(async () =>
             {
-                await Device.InvokeOnMainThreadAsync(async () => {
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
                     var reset = await Shell.Current.DisplayAlert("Reset", "Are you sure you want to reset the build?", "Yes", "No");
                     if (reset)
                     {
+                        BuildURL = null;
                         Components.Clear();
                         SetupDefaultComponents();
                         UpdateProperties();
@@ -106,6 +114,70 @@ namespace micro_c_app.ViewModels
                 var vm = new CollectionLoadPageViewModel<BuildComponent>("build");
                 MessagingCenter.Subscribe<CollectionLoadPageViewModel<BuildComponent>>(this, "load", DoLoad, vm);
                 await Shell.Current.Navigation.PushModalAsync(new CollectionLoadPage() { BindingContext = vm });
+            });
+
+            Export = new Command(async () =>
+            {
+                var vm = new ProgressPageViewModel()
+                {
+                    Description = "Exporting build to MCOL",
+                    TotalItems = Components.Count(c => c.Item != null && c.Item.ID != null)
+                };
+                var page = new ProgressPage() { BindingContext = vm };
+
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    await Shell.Current.Navigation.PushModalAsync(page, true);
+                });
+
+                try
+                {
+                    using (var client = new HttpClient())
+                    {
+                        List<string> hitCategories = new List<string>();
+                        int cnt = 0;
+                        for (int i = 0; i < Components.Count; i++)
+                        {
+                            var comp = Components[i];
+                            if (comp.Item == null || comp.Item.ID == null)
+                            {
+                                continue;
+                            }
+                            cnt++;
+                            await Device.InvokeOnMainThreadAsync(() =>
+                            {
+                                vm.CurrentItem = cnt;
+                            });
+                            var selectorID = BuildComponent.MCOLSelectorIDForType(comp.Type);
+                            bool duplicateSelector = hitCategories.Contains(selectorID);
+                            var url = $"https://www.microcenter.com/site/content/custom-pc-builder.aspx?toselectorId={selectorID}&configuratorId=1&productId={comp.Item.ID}&productName={comp.Item.Name}&newItem={(duplicateSelector ? "true" : "false")}";
+                            if (!duplicateSelector)
+                            {
+                                hitCategories.Add(selectorID);
+                            }
+
+                            var result = await client.GetAsync(url);
+                            var body = await result.Content.ReadAsStringAsync();
+                            var match = Regex.Match(body, "value=\"(.*?)\" name=\"shareURL\" id=\"shareURL\">");
+                            if (match.Success)
+                            {
+                                BuildURL = match.Groups[1].Value;
+                            }
+                        }
+                    }
+                }
+                catch(Exception e)
+                {
+                    Device.InvokeOnMainThreadAsync(async () =>
+                    {
+                        Shell.Current.DisplayAlert("Exception", e.ToString(), "Ok");
+                    });
+                }
+
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    await Shell.Current.Navigation.PopModalAsync();
+                });
             });
 
             Components.CollectionChanged += (sender, args) => { SaveRestore(); };
@@ -153,7 +225,7 @@ namespace micro_c_app.ViewModels
             // for types that we don't want the user to add manually, remove all empty items, othewise leave one for interaction
             //
             var stop = BuildComponent.MaxNumberPerType(updated.Component.Type) == 0 ? count : count - 1;
-            for(int i = 0; i < stop; i++)
+            for (int i = 0; i < stop; i++)
             {
                 Components.Remove(emptyComponents[i]);
             }
@@ -163,7 +235,7 @@ namespace micro_c_app.ViewModels
         private void BuildComponentNew(BuildComponentViewModel updated)
         {
             var existing = Components.Count(d => d.Type == updated.Component.Type);
-            if(existing < BuildComponent.MaxNumberPerType(updated.Component.Type))
+            if (existing < BuildComponent.MaxNumberPerType(updated.Component.Type))
             {
                 var newItem = new BuildComponent()
                 {
