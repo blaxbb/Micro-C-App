@@ -39,7 +39,7 @@ namespace micro_c_app.ViewModels
                 {
 
                     var result = await Shell.Current.DisplayActionSheet("Actions", CANCEL_TEXT, null, Actions.Keys.ToArray());
-                    if (Actions.ContainsKey(result) && result != CANCEL_TEXT)
+                    if (result != null && Actions.ContainsKey(result) && result != CANCEL_TEXT)
                     {
                         Actions[result].Execute(param);
                     }

@@ -19,6 +19,13 @@ namespace micro_c_app.Views
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
+            if(Device.RuntimePlatform == "UWP")
+            {
+                //xamarin bug, shell does not pass correct width and height to contained pages on UWP
+                width = App.Current.MainPage.Width;
+                height = App.Current.MainPage.Height;
+            }
+
             if (width > height)
             {
                 FlipStack.Orientation = StackOrientation.Horizontal;

@@ -17,7 +17,7 @@ namespace micro_c_app.Views
             viewModel.Navigation = Navigation;
             viewModel.ConfigID = "CONFIG_ID";
         }
-
+        //https://www.microcenter.com/site/content/custom-pc-builder.aspx?toselectorId=1&configuratorId=1&productId=608328
         /*  Currently not using the microcenter.com build system at all, this may change at some point
 
         protected override void OnAppearing()

@@ -10,7 +10,7 @@ namespace micro_c_app
     {
         public static void SetupActionButton(this ContentPage page)
         {
-            if (Device.RuntimePlatform == "iOS")
+            if (Device.RuntimePlatform == "iOS" || Device.RuntimePlatform == "UWP")
             {
                 page.ToolbarItems.Clear();
                 page.ToolbarItems.Add(new ToolbarItem()
