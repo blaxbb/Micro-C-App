@@ -18,7 +18,7 @@
                 <Label Text="Price" Grid.Column="2" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
                 <Label Text="Qty" Grid.Column="3" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             </Grid>
-            <ListView x:Name="ItemsList" ItemsSource="{Binding Items}">
+            <ListView x:Name="ItemsList" ItemsSource="{Binding Items}" HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
