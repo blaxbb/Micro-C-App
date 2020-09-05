@@ -23,7 +23,8 @@
                         <Button Text=">" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding ForwardPicture}"/>
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
-                        <v:SelectableLabel Text="{Binding Item.Specs[SKU], FallbackValue=123456}" HorizontalOptions="StartAndExpand"/>
+                        <v:SelectableLabel Text="{Binding Item.Brand}" HorizontalOptions="StartAndExpand"/>
+                        <v:SelectableLabel Text="{Binding Item.Specs[SKU], FallbackValue=123456}" HorizontalOptions="Center"/>
                         <v:SelectableLabel Text="{Binding Item.Specs[UPC], FallbackValue=123456}" HorizontalOptions="EndAndExpand"/>
                     </StackLayout>
                     <v:SelectableLabel Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>

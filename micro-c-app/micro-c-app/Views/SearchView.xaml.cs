@@ -153,6 +153,11 @@ namespace micro_c_app.Views
             }
         }
 
+        public static string GetSearchUrl(string query, string storeId, string categoryFilter, OrderByMode orderBy)
+        {
+            return $"https://www.microcenter.com/search/search_results.aspx?Ntt={query}&storeid={storeId}&myStore=false&Ntk=all&N={categoryFilter}&sortby={orderBy}&rpp=96";
+        }
+
         public async Task OnSubmit(string searchValue)
         {
             if (string.IsNullOrWhiteSpace(searchValue) && string.IsNullOrWhiteSpace(CategoryFilter))
@@ -162,11 +167,10 @@ namespace micro_c_app.Views
 
             Busy = true;
 
-
             await Task.Run(async () =>
             {
                 var storeId = SettingsPage.StoreID();
-                var response = await client.GetAsync($"https://www.microcenter.com/search/search_results.aspx?Ntt={searchValue}&storeid={storeId}&myStore=false&Ntk=all&N={CategoryFilter}&sortby={OrderBy}");
+                var response = await client.GetAsync(GetSearchUrl(searchValue, storeId, CategoryFilter, OrderBy));
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var body = response.Content.ReadAsStringAsync().Result;
@@ -207,36 +211,10 @@ namespace micro_c_app.Views
                                 await Shell.Current.Navigation.PushAsync(page);
                             });
 
-                            await Task.Run(async () =>
+                            if(page.BindingContext is SearchResultsPageViewModel vm)
                             {
-                                var shortMatches = Regex.Matches(body, "class=\"image\" data-name=\"(.*?)\" data-id=\"(.*?)\"(?:.*?)price=\"(.*?)\"(?:.*?)href=\"(.*?)\"(?:.*?)src=\"(.*?)\"");
-                                var stockMatches = Regex.Matches(body, "<div class=\"stock\">(?:.*?)>([\\d+ ]*?)<", RegexOptions.Singleline);
-                                for (int i = 0; i < shortMatches.Count; i++)
-                                {
-                                    Match m = shortMatches[i];
-                                    string stock = "0";
-                                    if (i < stockMatches.Count)
-                                    {
-                                        Match stockMatch = stockMatches[i];
-                                        stock = string.IsNullOrWhiteSpace(stockMatch.Groups[1].Value) ? "0" : stockMatch.Groups[1].Value;
-                                    }
-                                    float.TryParse(m.Groups[3].Value, out float price);
-
-                                    var item = new Models.Item()
-                                    {
-                                        Name = Item.HttpDecode(m.Groups[1].Value),
-                                        Price = price,
-                                        URL = m.Groups[4].Value,
-                                        Stock = stock,
-                                        PictureUrls = new List<string>() { m.Groups[5].Value },
-                                    };
-
-                                    await Device.InvokeOnMainThreadAsync(async () =>
-                                    {
-                                        ((SearchResultsPageViewModel)page.BindingContext).Items.Add(item);
-                                    });
-                                }
-                            });
+                                await vm.ParseBody(body);
+                            }
                         }
                     }
                 }

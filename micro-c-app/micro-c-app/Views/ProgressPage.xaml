@@ -1,0 +1,28 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" xmlns:viewmodels="clr-namespace:micro_c_app.ViewModels"
+             x:Class="micro_c_app.Views.ProgressPage">
+    <ContentPage.BindingContext>
+        <viewmodels:ProgressPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <Style TargetType="Label">
+            <Setter Property="HorizontalTextAlignment" Value="Center"/>
+        </Style>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <FlexLayout Direction="Column" JustifyContent="Center" AlignItems="Stretch">
+            <Label Text="{Binding Description}" HorizontalTextAlignment="Center"/>
+            <Label>
+                <Label.FormattedText>
+                    <FormattedString>
+                        <Span Text="{Binding CurrentItem, FallbackValue=0}"/>
+                        <Span Text="/"/>
+                        <Span Text="{Binding TotalItems, FallbackValue=0}"/>
+                    </FormattedString>
+                </Label.FormattedText>
+            </Label>
+            <ProgressBar x:Name="Progress" Progress="{Binding Progress}" HorizontalOptions="FillAndExpand"/>
+        </FlexLayout>
+    </ContentPage.Content>
+</ContentPage>

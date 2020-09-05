@@ -23,11 +23,13 @@ namespace micro_c_app.Models
 
         private int quantity = 1;
         private float price;
+        private string brand;
 
         public int Quantity { get => quantity; set => SetProperty(ref quantity, value); }
         public string Location { get; set; }
         public List<Plan> Plans { get; set; }
         public string ID { get; set; }
+        public string Brand { get => brand; set => SetProperty(ref brand, value); }
 
         public Item()
         {
@@ -151,6 +153,12 @@ namespace micro_c_app.Models
                 if (match.Success)
                 {
                     item.ID = match.Groups[1].Value;
+                }
+
+                match = Regex.Match(body, "data-brand=\"(.*?)\"");
+                if (match.Success)
+                {
+                    item.Brand = match.Groups[1].Value;
                 }
 
             }
