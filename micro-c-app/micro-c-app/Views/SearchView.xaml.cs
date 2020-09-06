@@ -193,7 +193,16 @@ namespace micro_c_app.Views
                         }
                         else
                         {
-                            var page = new SearchResultsPage();
+                            var page = new SearchResultsPage()
+                            {
+                                BindingContext = new SearchResultsPageViewModel()
+                                {
+                                    SearchQuery = searchValue,
+                                    StoreID = storeId,
+                                    CategoryFilter = CategoryFilter,
+                                    OrderBy = OrderBy,
+                                }
+                            };
                             page.AutoPop = AutoPopSearchPage;
                             page.ItemTapped += (sender, args) =>
                             {
@@ -214,10 +223,6 @@ namespace micro_c_app.Views
 
                             if (page.BindingContext is SearchResultsPageViewModel vm)
                             {
-                                vm.SearchQuery = searchValue;
-                                vm.StoreID = storeId;
-                                vm.CategoryFilter = CategoryFilter;
-                                vm.OrderBy = OrderBy;
                                 await vm.ParseBody(body);
                             }
                         }

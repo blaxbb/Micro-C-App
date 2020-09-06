@@ -168,9 +168,9 @@ namespace micro_c_app.ViewModels
                 }
                 catch(Exception e)
                 {
-                    Device.InvokeOnMainThreadAsync(async () =>
+                    await Device.InvokeOnMainThreadAsync(async () =>
                     {
-                        Shell.Current.DisplayAlert("Exception", e.ToString(), "Ok");
+                        await Shell.Current.DisplayAlert("Exception", e.ToString(), "Ok");
                     });
                 }
 

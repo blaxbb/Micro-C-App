@@ -24,9 +24,9 @@ namespace micro_c_app.ViewModels
         public ICommand ChangeOrderBy { get; }
 
         HttpClient client;
-        private int itemThreshold = 10;
+        private int itemThreshold = 5;
         private int totalResults;
-        private int page;
+        private int page = 1;
         public const int RESULTS_PER_PAGE = 96;
         public int ItemThreshold { get => itemThreshold; set => SetProperty(ref itemThreshold, value); }
         public ICommand LoadMore { get; }
@@ -88,6 +88,16 @@ namespace micro_c_app.ViewModels
             var stockMatches = Regex.Matches(body, "<div class=\"stock\">(?:.*?)>([\\d+ ]*?)<", RegexOptions.Singleline);
             var skuMatches = Regex.Matches(body, "<p class=\"sku\">SKU: (\\d{6})</p>");
             var newItems = new List<Item>();
+
+            var match = Regex.Match(body, "(\\d+) items found");
+            if (match.Success)
+            {
+                if (int.TryParse(match.Groups[1].Value, out int totalResults))
+                {
+                    TotalResults = totalResults;
+                }
+            }
+
             for (int i = 0; i < shortMatches.Count; i++)
             {
                 Match m = shortMatches[i];
@@ -122,20 +132,11 @@ namespace micro_c_app.ViewModels
 
             await Device.InvokeOnMainThreadAsync(() =>
             {
-                foreach(var item in newItems)
+                foreach (var item in newItems)
                 {
                     Items.Add(item);
                 }
             });
-
-            var match = Regex.Match(body, "(\\d+) items found");
-            if (match.Success)
-            {
-                if (int.TryParse(match.Groups[1].Value, out int totalResults))
-                {
-                    TotalResults = totalResults;
-                }
-            }
         }
     }
 }

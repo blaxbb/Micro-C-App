@@ -1,6 +1,6 @@
 ﻿using micro_c_app.Models.Reference;
 using micro_c_app.ViewModels;
-
+using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -24,7 +24,7 @@ namespace micro_c_app.Views
                 if(vm.Component.AutoSearch() && vm.Component.Item == null)
                 {
                     SearchView.OrderBy = SearchView.OrderByMode.pricelow;
-                    _ = SearchView.OnSubmit("");
+                    Task.Run(() => SearchView.OnSubmit(""));
                 }
             }
         }
