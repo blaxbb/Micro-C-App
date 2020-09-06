@@ -28,15 +28,25 @@ namespace micro_c_app.Views
 
             if (width > height)
             {
-                FlipStack.Orientation = StackOrientation.Horizontal;
-                SecondaryStack.VerticalOptions = LayoutOptions.FillAndExpand;
+                FlipStack.Direction = FlexDirection.RowReverse;
+                //SecondaryStack.VerticalOptions = LayoutOptions.FillAndExpand;
                 SearchView.Orientation = "Vertical";
+                SearchView.WidthRequest = 300;
             }
             else
             {
-                FlipStack.Orientation = StackOrientation.Vertical;
-                SecondaryStack.VerticalOptions = LayoutOptions.End;
+                if(Device.RuntimePlatform == Device.iOS)
+                {
+                    FlipStack.Direction = FlexDirection.Column;
+                }
+                else
+                {
+                    FlipStack.Direction = FlexDirection.ColumnReverse;
+                }
+
+                //SecondaryStack.VerticalOptions = LayoutOptions.Start;
                 SearchView.Orientation = "Horizontal";
+                SearchView.WidthRequest = -1;
             }
         }
 

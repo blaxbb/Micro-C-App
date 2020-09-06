@@ -17,52 +17,50 @@
         <ToolbarItem Text="Import" Order="Secondary" Command="{Binding ImportQuote}"/>-->
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout Margin="10,5,10,0" Orientation="Horizontal" x:Name="FlipStack" IsEnabled="{Binding NotBusy}">
-            <StackLayout x:Name="SecondaryStack" Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="Start">
-                <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+        <FlexLayout Direction="ColumnReverse" x:Name="FlipStack" IsEnabled="{Binding NotBusy}">
+            <!--<StackLayout x:Name="SecondaryStack" Orientation="Vertical">-->
+                <!--<StackLayout Orientation="Horizontal">
                     <Label Text="{Binding Subtotal, StringFormat='Subtotal ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand"/>
                     <Label Text="{Binding TaxedTotal, StringFormat='Total {0}', FallbackValue=(7.5%) $123.45}" HorizontalOptions="EndAndExpand" VerticalOptions="CenterAndExpand"/>
-                </StackLayout>
-                <views:SearchView x:Name="SearchView" VerticalOptions="End" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" Margin="0,0,0,20" AutoPopSearchPage="True" Orientation="Vertical"/>
-            </StackLayout>
-            <StackLayout VerticalOptions="FillAndExpand">
-                <ListView x:Name="listView" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" ItemTapped="listView_ItemTapped" Grid.Row="0" VerticalOptions="Start" HasUnevenRows="True">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <StackLayout Orientation="Vertical" x:Name="item" Margin="5">
-                                    <StackLayout Orientation="Horizontal" Padding="0,0,10,0"  HeightRequest="70">
-                                        <StackLayout Orientation="Vertical"  HorizontalOptions="StartAndExpand" VerticalOptions="Center">
-                                            <Label Text="{Binding Name}" LineBreakMode="TailTruncation"/>
-                                            <StackLayout Orientation="Horizontal">
-                                                <Label Text="{Binding Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand"/>
-                                                <Label Text="{Binding SKU}" HorizontalOptions="EndAndExpand"/>
-                                            </StackLayout>
-                                            <StackLayout Orientation="Horizontal">
-                                                <Label Text="{Binding Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
-                                                <Label Text="{Binding Stock}" HorizontalOptions="EndAndExpand"/>
-                                            </StackLayout>
+                </StackLayout>-->
+            <!--</StackLayout>-->
+            <views:SearchView x:Name="SearchView" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" AutoPopSearchPage="True" Orientation="Horizontal" HeightRequest="400" WidthRequest="-1" Margin="10,5,10,5"/>
+            <ListView x:Name="listView" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" ItemTapped="listView_ItemTapped" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <StackLayout Orientation="Vertical" x:Name="item" Margin="5">
+                                <StackLayout Orientation="Horizontal" Padding="0,0,10,0"  HeightRequest="70">
+                                    <StackLayout Orientation="Vertical"  HorizontalOptions="StartAndExpand" VerticalOptions="Center">
+                                        <Label Text="{Binding Name}" LineBreakMode="TailTruncation"/>
+                                        <StackLayout Orientation="Horizontal">
+                                            <Label Text="{Binding Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand"/>
+                                            <Label Text="{Binding SKU}" HorizontalOptions="EndAndExpand"/>
                                         </StackLayout>
                                         <StackLayout Orientation="Horizontal">
-                                            <Button Text="&#xf068;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
-                                            <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" MinimumWidthRequest="50" VerticalTextAlignment="Center" Margin="10,0,10,0" HorizontalTextAlignment="Center"/>
-                                            <Button Text="&#xf067;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
+                                            <Label Text="{Binding Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
+                                            <Label Text="{Binding Stock}" HorizontalOptions="EndAndExpand"/>
                                         </StackLayout>
                                     </StackLayout>
-                                    <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
-                                        <StackLayout Orientation="Horizontal" HorizontalOptions="Start">
-                                            <Label Text="Price" VerticalTextAlignment="Center"/>
-                                            <Entry Text="{Binding Price}" TextChanged="ItemPriceChanged" Keyboard="Numeric" WidthRequest="100"/>
-                                        </StackLayout>
-                                        <Button Text="&#xf129;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding DetailItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
-                                        <Button Text="&#xf2ed;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red"/>
-                                    </FlexLayout>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Button Text="&#xf068;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
+                                        <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" MinimumWidthRequest="50" VerticalTextAlignment="Center" Margin="10,0,10,0" HorizontalTextAlignment="Center"/>
+                                        <Button Text="&#xf067;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
+                                    </StackLayout>
                                 </StackLayout>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackLayout>
-        </StackLayout>
+                                <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
+                                    <StackLayout Orientation="Horizontal" HorizontalOptions="Start">
+                                        <Label Text="Price" VerticalTextAlignment="Center"/>
+                                        <Entry Text="{Binding Price}" TextChanged="ItemPriceChanged" Keyboard="Numeric" WidthRequest="100"/>
+                                    </StackLayout>
+                                    <Button Text="&#xf129;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding DetailItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
+                                    <Button Text="&#xf2ed;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red"/>
+                                </FlexLayout>
+                            </StackLayout>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </FlexLayout>
     </ContentPage.Content>
 </ContentPage>
