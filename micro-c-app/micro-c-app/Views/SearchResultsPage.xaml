@@ -21,32 +21,30 @@
                 <Label Text="Price" Grid.Column="2" HorizontalTextAlignment="Center"/>
                 <Label Text="Qty" Grid.Column="3" HorizontalTextAlignment="Center"/>
             </Grid>
-            <ListView x:Name="ItemsList" ItemsSource="{Binding Items}" HasUnevenRows="True">
-                <ListView.ItemTemplate>
+            <CollectionView x:Name="ItemsList" ItemsSource="{Binding Items}" SelectionMode="Single" RemainingItemsThreshold="{Binding ItemThreshold}" RemainingItemsThresholdReachedCommand="{Binding LoadMore}">
+                <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <ViewCell>
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="2*"/>
-                                    <ColumnDefinition Width="6*"/>
-                                    <ColumnDefinition Width="3*"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Image Grid.Column="0" Source="{Binding PictureUrls[0]}"/>
-                                <StackLayout Orientation="Vertical" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
-                                    <Label Text="{Binding Name}" MaxLines="2" VerticalTextAlignment="Center"/>
-                                    <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween">
-                                        <Label Text="{Binding Brand}" HorizontalOptions="Start"/>
-                                        <Label Text="{Binding SKU, StringFormat='SKU {0}'}" HorizontalOptions="End" HorizontalTextAlignment="End"/>
-                                    </FlexLayout>
-                                </StackLayout>
-                                <Label Grid.Column="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                                <Label Grid.Column="3" Text="{Binding Stock}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                            </Grid>
-                        </ViewCell>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="2*"/>
+                                <ColumnDefinition Width="6*"/>
+                                <ColumnDefinition Width="3*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Image Grid.Column="0" Source="{Binding PictureUrls[0]}"/>
+                            <StackLayout Orientation="Vertical" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
+                                <Label Text="{Binding Name}" MaxLines="2" VerticalTextAlignment="Center"/>
+                                <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween">
+                                    <Label Text="{Binding Brand}" HorizontalOptions="Start"/>
+                                    <Label Text="{Binding SKU, StringFormat='SKU {0}'}" HorizontalOptions="End" HorizontalTextAlignment="End"/>
+                                </FlexLayout>
+                            </StackLayout>
+                            <Label Grid.Column="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                            <Label Grid.Column="3" Text="{Binding Stock}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                        </Grid>
                     </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

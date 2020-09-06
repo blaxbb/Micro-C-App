@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -21,26 +22,47 @@ namespace micro_c_app.ViewModels
         public OrderByMode OrderBy { get; set; }
 
         public ICommand ChangeOrderBy { get; }
+
         HttpClient client;
+        private int itemThreshold = 10;
+        private int totalResults;
+        private int page;
+        public const int RESULTS_PER_PAGE = 96;
+        public int ItemThreshold { get => itemThreshold; set => SetProperty(ref itemThreshold, value); }
+        public ICommand LoadMore { get; }
+        public int Page { get => page; set => SetProperty(ref page, value); }
+        public int TotalPages => (int)Math.Ceiling((double)totalResults / RESULTS_PER_PAGE);
+        public int TotalResults { get => totalResults; set => SetProperty(ref totalResults, value); }
 
         public SearchResultsPageViewModel()
         {
             Title = "Search";
             client = new HttpClient();
             Items = new ObservableCollection<Item>();
+
+            LoadMore = new Command(async () =>
+            {
+                if(page < TotalPages)
+                {
+                    page++;
+                    await LoadQuery();
+                }
+            });
+
             ChangeOrderBy = new Command(async () =>
             {
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
                     var result = await Shell.Current.DisplayActionSheet("Order Mode", "Cancel", null, Enum.GetNames(typeof(OrderByMode)));
-                    if(result != null && result != "Cancel")
+                    if (result != null && result != "Cancel")
                     {
-                        if(Enum.TryParse<OrderByMode>(result, out var newMode))
+                        if (Enum.TryParse<OrderByMode>(result, out var newMode))
                         {
-                            if(OrderBy != newMode)
+                            if (OrderBy != newMode)
                             {
                                 OrderBy = newMode;
                                 Items.Clear();
+                                page = 1;
                                 await LoadQuery();
                             }
                         }
@@ -51,7 +73,7 @@ namespace micro_c_app.ViewModels
 
         private async Task LoadQuery()
         {
-            var response = await client.GetAsync(GetSearchUrl(SearchQuery, StoreID, CategoryFilter, OrderBy));
+            var response = await client.GetAsync(GetSearchUrl(SearchQuery, StoreID, CategoryFilter, OrderBy, RESULTS_PER_PAGE, page));
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var body = response.Content.ReadAsStringAsync().Result;
@@ -65,6 +87,7 @@ namespace micro_c_app.ViewModels
             var shortMatches = Regex.Matches(body, "class=\"image\" data-name=\"(.*?)\" data-id=\"(.*?)\"(?:.*?)price=\"(.*?)\"(?:.*?)data-brand=\"(.*?)\"(?:.*?)href=\"(.*?)\"(?:.*?)src=\"(.*?)\"");
             var stockMatches = Regex.Matches(body, "<div class=\"stock\">(?:.*?)>([\\d+ ]*?)<", RegexOptions.Singleline);
             var skuMatches = Regex.Matches(body, "<p class=\"sku\">SKU: (\\d{6})</p>");
+            var newItems = new List<Item>();
             for (int i = 0; i < shortMatches.Count; i++)
             {
                 Match m = shortMatches[i];
@@ -83,7 +106,7 @@ namespace micro_c_app.ViewModels
                 }
 
                 float.TryParse(m.Groups[3].Value, out float price);
-                var item = new Models.Item()
+                var item = new Item()
                 {
                     Name = Item.HttpDecode(m.Groups[1].Value),
                     Price = price,
@@ -94,10 +117,24 @@ namespace micro_c_app.ViewModels
                     SKU = sku,
                 };
 
-                await Device.InvokeOnMainThreadAsync(() =>
+                newItems.Add(item);
+            }
+
+            await Device.InvokeOnMainThreadAsync(() =>
+            {
+                foreach(var item in newItems)
                 {
                     Items.Add(item);
-                });
+                }
+            });
+
+            var match = Regex.Match(body, "(\\d+) items found");
+            if (match.Success)
+            {
+                if (int.TryParse(match.Groups[1].Value, out int totalResults))
+                {
+                    TotalResults = totalResults;
+                }
             }
         }
     }

@@ -8,15 +8,15 @@ namespace micro_c_app.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SearchResultsPage : ContentPage
     {
-        public event EventHandler<ItemTappedEventArgs> ItemTapped;
+        public event EventHandler<SelectionChangedEventArgs> ItemTapped;
         public bool AutoPop { get; set; }
         public SearchResultsPage()
         {
             InitializeComponent();
-            ItemsList.ItemTapped += ItemsList_ItemTapped;
+            ItemsList.SelectionChanged += ItemsList_ItemTapped;
         }
 
-        private void ItemsList_ItemTapped(object sender, ItemTappedEventArgs e)
+        private void ItemsList_ItemTapped(object sender, SelectionChangedEventArgs e)
         {
             ItemTapped?.Invoke(sender, e);
             if (AutoPop)

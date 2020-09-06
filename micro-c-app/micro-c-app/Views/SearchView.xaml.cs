@@ -2,6 +2,7 @@
 using micro_c_app.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -153,9 +154,9 @@ namespace micro_c_app.Views
             }
         }
 
-        public static string GetSearchUrl(string query, string storeId, string categoryFilter, OrderByMode orderBy)
+        public static string GetSearchUrl(string query, string storeId, string categoryFilter, OrderByMode orderBy, int resultsPerPage, int page)
         {
-            return $"https://www.microcenter.com/search/search_results.aspx?Ntt={query}&storeid={storeId}&myStore=false&Ntk=all&N={categoryFilter}&sortby={orderBy}&rpp=96";
+            return $"https://www.microcenter.com/search/search_results.aspx?Ntt={query}&storeid={storeId}&myStore=false&Ntk=all&N={categoryFilter}&sortby={orderBy}&rpp={resultsPerPage}&page={page}";
         }
 
         public async Task OnSubmit(string searchValue)
@@ -170,7 +171,7 @@ namespace micro_c_app.Views
             await Task.Run(async () =>
             {
                 var storeId = SettingsPage.StoreID();
-                var response = await client.GetAsync(GetSearchUrl(searchValue, storeId, CategoryFilter, OrderBy));
+                var response = await client.GetAsync(GetSearchUrl(searchValue, storeId, CategoryFilter, OrderBy, SearchResultsPageViewModel.RESULTS_PER_PAGE, 1));
                 if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
                     var body = response.Content.ReadAsStringAsync().Result;
@@ -198,7 +199,7 @@ namespace micro_c_app.Views
                             {
                                 Task.Run(async () =>
                                 {
-                                    if (args.Item is Models.Item shortItem)
+                                    if (args.CurrentSelection.FirstOrDefault() is Models.Item shortItem)
                                     {
                                         var item = await Models.Item.FromUrl(shortItem.URL);
                                         DoProductFound(item);
@@ -206,8 +207,12 @@ namespace micro_c_app.Views
                                 });
                             };
 
+                            await Device.InvokeOnMainThreadAsync(async () =>
+                            {
+                                await Shell.Current.Navigation.PushAsync(page);
+                            });
 
-                            if(page.BindingContext is SearchResultsPageViewModel vm)
+                            if (page.BindingContext is SearchResultsPageViewModel vm)
                             {
                                 vm.SearchQuery = searchValue;
                                 vm.StoreID = storeId;
@@ -215,11 +220,6 @@ namespace micro_c_app.Views
                                 vm.OrderBy = OrderBy;
                                 await vm.ParseBody(body);
                             }
-
-                            await Device.InvokeOnMainThreadAsync(async () =>
-                            {
-                                await Shell.Current.Navigation.PushAsync(page);
-                            });
                         }
                     }
                 }
