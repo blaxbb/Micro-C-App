@@ -9,13 +9,12 @@
     <ContentPage.BindingContext>
         <vm:SearchViewModel />
     </ContentPage.BindingContext>
-    
+
     <ContentPage.Resources>
         <ResourceDictionary>
             <Color x:Key="Accent">#96d1ff</Color>
         </ResourceDictionary>
     </ContentPage.Resources>
-
-    <views:SearchView ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" Padding="30"/>
+    <views:SearchView ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" Margin="40"/>
 
 </ContentPage>

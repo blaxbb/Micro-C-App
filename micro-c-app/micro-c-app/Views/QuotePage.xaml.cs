@@ -32,6 +32,7 @@ namespace micro_c_app.Views
                 //SecondaryStack.VerticalOptions = LayoutOptions.FillAndExpand;
                 SearchView.Orientation = "Vertical";
                 SecondaryStack.WidthRequest = 300;
+                SecondaryStack.HeightRequest = -1;
             }
             else
             {
@@ -46,6 +47,7 @@ namespace micro_c_app.Views
 
                 SearchView.Orientation = "Horizontal";
                 SecondaryStack.WidthRequest = -1;
+                SecondaryStack.HeightRequest = 400;
             }
         }
 

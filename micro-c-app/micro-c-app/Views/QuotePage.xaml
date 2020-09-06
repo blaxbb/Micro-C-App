@@ -26,7 +26,7 @@
                 <views:SearchView x:Name="SearchView" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" AutoPopSearchPage="True" Orientation="Horizontal"/>
             </StackLayout>
             
-            <ListView x:Name="listView" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" ItemTapped="listView_ItemTapped" HasUnevenRows="True">
+            <ListView x:Name="listView" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" ItemTapped="listView_ItemTapped" HasUnevenRows="True" FlexLayout.Grow="1" HeightRequest="-1">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
