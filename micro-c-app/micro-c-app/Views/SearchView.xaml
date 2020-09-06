@@ -5,13 +5,6 @@
              x:Class="micro_c_app.Views.SearchView">
   <ContentView.Content>
         <StackLayout x:Name="FlipStack" Orientation="Vertical" Spacing="20">
-            <Button x:Name="ScanButton"
-                    Margin="0,0,0,0"
-                    Text="Scan"
-                    Clicked="OnScanClicked"
-                    HorizontalOptions="FillAndExpand"
-                    HeightRequest="75"
-                    VerticalOptions="Center"/>
             <Grid HorizontalOptions="FillAndExpand" RowSpacing="20">
                 <StackLayout Orientation="Horizontal" Grid.Row="0" VerticalOptions="FillAndExpand">
                     <Entry x:Name="SKUField"
@@ -30,6 +23,13 @@
                 </StackLayout>
                 <ActivityIndicator x:Name="BusyIndicator"  IsRunning="False" Scale="0.7"/>
             </Grid>
+            <Button x:Name="ScanButton"
+                    Margin="0,0,0,0"
+                    Text="Scan"
+                    Clicked="OnScanClicked"
+                    HorizontalOptions="FillAndExpand"
+                    HeightRequest="75"
+                    VerticalOptions="Center"/>
         </StackLayout>
   </ContentView.Content>
 </ContentView>
