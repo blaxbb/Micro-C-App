@@ -31,7 +31,7 @@ namespace micro_c_app.Views
                 FlipStack.Direction = FlexDirection.RowReverse;
                 //SecondaryStack.VerticalOptions = LayoutOptions.FillAndExpand;
                 SearchView.Orientation = "Vertical";
-                SearchView.WidthRequest = 300;
+                SecondaryStack.WidthRequest = 300;
             }
             else
             {
@@ -44,9 +44,8 @@ namespace micro_c_app.Views
                     FlipStack.Direction = FlexDirection.ColumnReverse;
                 }
 
-                //SecondaryStack.VerticalOptions = LayoutOptions.Start;
                 SearchView.Orientation = "Horizontal";
-                SearchView.WidthRequest = -1;
+                SecondaryStack.WidthRequest = -1;
             }
         }
 
