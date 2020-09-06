@@ -206,15 +206,20 @@ namespace micro_c_app.Views
                                 });
                             };
 
+
+                            if(page.BindingContext is SearchResultsPageViewModel vm)
+                            {
+                                vm.SearchQuery = searchValue;
+                                vm.StoreID = storeId;
+                                vm.CategoryFilter = CategoryFilter;
+                                vm.OrderBy = OrderBy;
+                                await vm.ParseBody(body);
+                            }
+
                             await Device.InvokeOnMainThreadAsync(async () =>
                             {
                                 await Shell.Current.Navigation.PushAsync(page);
                             });
-
-                            if(page.BindingContext is SearchResultsPageViewModel vm)
-                            {
-                                await vm.ParseBody(body);
-                            }
                         }
                     }
                 }

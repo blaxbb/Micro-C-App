@@ -1,9 +1,13 @@
 ﻿using micro_c_app.Models;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using Xamarin.Forms;
+using static micro_c_app.Views.SearchView;
 
 namespace micro_c_app.ViewModels
 {
@@ -11,10 +15,49 @@ namespace micro_c_app.ViewModels
     {
         public ObservableCollection<Item> Items { get; }
 
+        public string SearchQuery { get; set; }
+        public string StoreID { get; set; }
+        public string CategoryFilter { get; set; }
+        public OrderByMode OrderBy { get; set; }
+
+        public ICommand ChangeOrderBy { get; }
+        HttpClient client;
+
         public SearchResultsPageViewModel()
         {
             Title = "Search";
+            client = new HttpClient();
             Items = new ObservableCollection<Item>();
+            ChangeOrderBy = new Command(async () =>
+            {
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    var result = await Shell.Current.DisplayActionSheet("Order Mode", "Cancel", null, Enum.GetNames(typeof(OrderByMode)));
+                    if(result != null && result != "Cancel")
+                    {
+                        if(Enum.TryParse<OrderByMode>(result, out var newMode))
+                        {
+                            if(OrderBy != newMode)
+                            {
+                                OrderBy = newMode;
+                                Items.Clear();
+                                await LoadQuery();
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        private async Task LoadQuery()
+        {
+            var response = await client.GetAsync(GetSearchUrl(SearchQuery, StoreID, CategoryFilter, OrderBy));
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            {
+                var body = response.Content.ReadAsStringAsync().Result;
+
+                await ParseBody(body);
+            }
         }
 
         public async Task ParseBody(string body)
