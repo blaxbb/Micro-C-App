@@ -19,7 +19,7 @@ namespace micro_c_app.Views
             this.SetupActionButton();
         }
 
-        Reminder previousSelection;
+        Reminder? previousSelection;
         private void listView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             var newItem = e.Item;

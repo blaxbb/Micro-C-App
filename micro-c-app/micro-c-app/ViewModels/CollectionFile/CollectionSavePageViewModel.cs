@@ -11,10 +11,10 @@ namespace micro_c_app.ViewModels
     public class CollectionSavePageViewModel : BaseViewModel
     {
         private string filename;
-        private string errorText;
+        private string? errorText;
 
         public string Filename { get => filename; set => SetProperty(ref filename, value); }
-        public string ErrorText { get => errorText; set => SetProperty(ref errorText, value); }
+        public string? ErrorText { get => errorText; set => SetProperty(ref errorText, value); }
 
         private IEnumerable<object> Items { get; set; }
 
@@ -87,7 +87,7 @@ namespace micro_c_app.ViewModels
             }
         }
 
-        private static (bool result, string text) ValidateFilename(string filename)
+        private static (bool result, string? text) ValidateFilename(string filename)
         {
             if (string.IsNullOrWhiteSpace(filename))
             {

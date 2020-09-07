@@ -62,7 +62,7 @@ namespace micro_c_app.Views
             }
         }
 
-        Models.Item previousSelection;
+        Models.Item? previousSelection;
         private void listView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             var newItem = e.Item;

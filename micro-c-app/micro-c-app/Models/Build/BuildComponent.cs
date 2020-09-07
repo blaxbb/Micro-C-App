@@ -7,8 +7,8 @@ namespace micro_c_app.Models
 {
     public class BuildComponent : NotifyPropertyChangedItem
     {
-        private Item item;
-        public Item Item { get => item; set { SetProperty(ref item, value); OnPropertyChanged(nameof(ComponentLabel)); } }
+        private Item? item;
+        public Item? Item { get => item; set { SetProperty(ref item, value); OnPropertyChanged(nameof(ComponentLabel)); } }
 
         [JsonIgnore]
         public List<BuildComponentDependency> Dependencies { get; }
@@ -38,7 +38,7 @@ namespace micro_c_app.Models
         [JsonIgnore]
         public string ErrorText => String.Join("\n", Dependencies.Where(d => !d.Compatible()).Select(d => d.ErrorText));
         [JsonIgnore]
-        public string HintText => Item == null ? String.Join("\n", Dependencies.Where(d => d.Other(this)?.item != null).Select(d => d.HintText())) : null;
+        public string HintText => Item == null ? String.Join("\n", Dependencies.Where(d => d.Other(this)?.item != null).Select(d => d.HintText())) : "";
 
         public BuildComponent()
         {

@@ -24,11 +24,11 @@ namespace micro_c_app.ViewModels
 
             OnProductError = new Command<string>(async (string message) =>
             {
-                await Shell.Current?.DisplayAlert("Error", message, "Ok");
+                if (Shell.Current != null)
+                {
+                    await Shell.Current.DisplayAlert("Error", message, "Ok");
+                }
             });
-
-
-
         }
     }
 }

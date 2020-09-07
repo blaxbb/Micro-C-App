@@ -15,8 +15,8 @@ namespace micro_c_app.Models
         public string FirstFieldName { get; set; }
         public string SecondFieldName { get; set; }
 
-        public string FirstValue => First?.Item?.Specs?[FirstFieldName];
-        public string SecondValue => Second?.Item?.Specs?[SecondFieldName];
+        public string? FirstValue => First?.Item?.Specs?[FirstFieldName];
+        public string? SecondValue => Second?.Item?.Specs?[SecondFieldName];
 
         public bool Applicable(BuildComponent first, BuildComponent second)
         {

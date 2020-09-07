@@ -47,7 +47,7 @@ namespace micro_c_app.Models
                 var response = await client.GetAsync($"https://www.microcenter.com{url}?storeid={storeId}");
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
-                    return default(Item);
+                    return new Item(){ Name = "Product not found", SKU = "000000" };
                 }
 
                 var body = await response.Content.ReadAsStringAsync();
@@ -62,7 +62,10 @@ namespace micro_c_app.Models
                     }
                 }
 
-                item.SKU = item.Specs.ContainsKey("SKU") ? item.Specs["SKU"] : null;
+                if (item.Specs != null && item.Specs.ContainsKey("SKU"))
+                {
+                    item.SKU = item.Specs["SKU"] ?? "000000";
+                }
 
                 var match = Regex.Match(body, "'productPrice':'(.*?)',");
                 if (match.Success)

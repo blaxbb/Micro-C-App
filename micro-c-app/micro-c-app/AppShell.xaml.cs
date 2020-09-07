@@ -61,7 +61,7 @@ namespace micro_c_app
         {
             var current = Navigation.NavigationStack.Last();
             var currentPage = (Shell.Current?.CurrentItem?.CurrentItem as IShellSectionController)?.PresentedPage;
-            if (currentPage.BindingContext is ViewModels.ReferencePageViewModel vm)
+            if (currentPage?.BindingContext is ViewModels.ReferencePageViewModel vm)
             {
                 return vm.BackButton();
             }

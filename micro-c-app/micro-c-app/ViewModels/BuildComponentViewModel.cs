@@ -23,19 +23,25 @@ namespace micro_c_app.ViewModels
             get
             {
                 var res = new Dictionary<string, ICommand>();
-                PlanReference plans;
+                PlanReference? plans = null;
                 if (Component.Type == Models.BuildComponent.ComponentType.BuildService)
                 {
                     plans = Models.Reference.PlanReference.Get(PlanReference.PlanType.Build_Plan, BuildPageViewModel.CurrentSubTotal);
                 }
                 else
                 {
-                    plans = Models.Reference.PlanReference.Get(Models.Reference.PlanReference.PlanType.Replacement, Component.Item.Price);
+                    if (Component?.Item != null)
+                    {
+                        plans = PlanReference.Get(PlanReference.PlanType.Replacement, Component.Item.Price);
+                    }
                 }
 
-                foreach (var tier in plans.Tiers)
+                if (plans != null)
                 {
-                    res.Add($"Add {tier.Duration}yr plan", new Command(() => { BuildComponentAddPlan(tier); }));
+                    foreach (var tier in plans.Tiers)
+                    {
+                        res.Add($"Add {tier.Duration}yr plan", new Command(() => { BuildComponentAddPlan(tier); }));
+                    }
                 }
 
                 return res;

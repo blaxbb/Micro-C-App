@@ -17,6 +17,7 @@ namespace micro_c_app.Models
         private string url;
         private string message;
         private bool notified;
+        private string pictureURL;
 
         public string Name { get => name; set => SetProperty(ref name, value); }
         public string SKU { get => sku; set => SetProperty(ref sku, value); }
@@ -39,7 +40,7 @@ namespace micro_c_app.Models
             Name = item.Name;
             SKU = item.SKU;
             URL = item.URL;
-            PictureURL = item.PictureUrls?.FirstOrDefault();
+            PictureURL = item.PictureUrls?.FirstOrDefault() ?? "";
         }
 
         public async Task<bool> CheckStock()
@@ -83,7 +84,6 @@ namespace micro_c_app.Models
 
         static Task saveTask;
         static bool repeatSaveTask;
-        private string pictureURL;
 
         public static void SaveAll()
         {

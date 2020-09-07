@@ -15,15 +15,15 @@ namespace micro_c_app.Models
         {
             if (First?.Item == null && Second?.Item == null)
             {
-                return null;
+                return "";
             }
-            if (First.Item == null)
+            if (First?.Item == null)
             {
-                return $"{FirstFieldName} = {SecondValue.Replace('\n', ',')}";
+                return $"{FirstFieldName} = {SecondValue?.Replace('\n', ',') ?? ""}";
             }
             else
             {
-                return $"{SecondFieldName} = {FirstValue.Replace('\n', ',')}";
+                return $"{SecondFieldName} = {FirstValue?.Replace('\n', ',') ?? ""}";
             }
         }
 

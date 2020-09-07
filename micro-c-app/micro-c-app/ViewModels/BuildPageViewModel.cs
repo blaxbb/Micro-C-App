@@ -17,8 +17,7 @@ namespace micro_c_app.ViewModels
 {
     public class BuildPageViewModel : BaseViewModel
     {
-        string configID;
-        private string buildURL;
+        private string? buildURL;
         public ICommand ComponentSelectClicked { get; }
 
         public ObservableCollection<BuildComponent> Components { get; }
@@ -35,7 +34,7 @@ namespace micro_c_app.ViewModels
         public ICommand Load { get; }
         public ICommand Export { get; }
 
-        public string BuildURL { get => buildURL; set => SetProperty(ref buildURL, value); }
+        public string? BuildURL { get => buildURL; set => SetProperty(ref buildURL, value); }
 
         protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
         {
@@ -84,7 +83,7 @@ namespace micro_c_app.ViewModels
                 await Navigation.PushAsync(componentPage);
             });
 
-            SendQuote = new Command(async () => await QuotePageViewModel.DoSendQuote(Components.Where(c => c.Item != null).Select(c => c.Item)));
+            SendQuote = new Command(async () => await QuotePageViewModel.DoSendQuote(Components.Where(c => c.Item != null).Select(c => c.Item!)));
 
             Reset = new Command(async () =>
             {
@@ -257,7 +256,12 @@ namespace micro_c_app.ViewModels
 
         private void BuildComponentSelected(BuildComponentViewModel updated)
         {
-            foreach (var depend in updated?.Component.Dependencies)
+            if(updated?.Component?.Dependencies == null)
+            {
+                return;
+            }
+
+            foreach (var depend in updated.Component.Dependencies)
             {
                 depend.Other(updated.Component)?.OnDependencyStatusChanged();
             }
@@ -279,7 +283,12 @@ namespace micro_c_app.ViewModels
 
         public void BuildComponentAddPlan(BuildComponentViewModel vm, PlanTier tier)
         {
-            Components.Add(new BuildComponent() { Type = BuildComponent.ComponentType.Plan, Item = new Item() { Name = $"{tier.Duration} year protection on {vm?.Component?.Item?.Name}", Price = tier.Price } });
+            if (vm == null || tier == null)
+            {
+                return;
+            }
+
+            Components.Add(new BuildComponent() { Type = BuildComponent.ComponentType.Plan, Item = new Item() { Name = $"{tier.Duration} year protection on {vm.Component?.Item?.Name}", Price = tier.Price } });
             BuildComponentSelected(vm);
         }
     }

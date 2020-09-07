@@ -86,7 +86,10 @@ namespace micro_c_app.ViewModels
 
             OnProductError = new Command<string>(async (string message) =>
             {
-                await Shell.Current?.DisplayAlert("Error", message, "Ok");
+                if (Shell.Current != null)
+                {
+                    await Shell.Current.DisplayAlert("Error", message, "Ok");
+                }
             });
 
             IncreaseQuantity = new Command<Item>((Item item) =>
@@ -118,15 +121,19 @@ namespace micro_c_app.ViewModels
                  */
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    var reset = await Shell.Current.DisplayAlert("Remove", $"Are you sure you want to remove {item?.Name}", "Yes", "No");
-                    if (reset)
+                    if (item != null)
                     {
-                        Items.Remove(item);
-                        var tmp = Items.ToList();
-                        Items.Clear();
-                        foreach (var i in tmp)
+                        var reset = await Shell.Current.DisplayAlert("Remove", $"Are you sure you want to remove {item.Name}", "Yes", "No");
+                        if (reset)
                         {
-                            Items.Add(i);
+                            Items.Remove(item);
+
+                            var tmp = Items.ToList();
+                            Items.Clear();
+                            foreach (var i in tmp)
+                            {
+                                Items.Add(i);
+                            }
                         }
                     }
                 });
