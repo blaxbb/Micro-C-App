@@ -51,20 +51,23 @@ namespace micro_c_app.Views
                         plans = Models.Reference.PlanReference.Get(Models.Reference.PlanReference.PlanType.Replacement, vm.Component.Item.Price);
                     }
 
-                    foreach(var tier in plans.Tiers)
+                    if (plans != null)
                     {
-                        //iOS is handled in BuildComponentViewModel.cs Actions
-                        if (Device.RuntimePlatform == "Android")
+                        foreach (var tier in plans.Tiers)
                         {
-                            this.ToolbarItems.Add(new ToolbarItem($"Add {tier.Duration} yr plan", "", () => { vm.BuildComponentAddPlan(tier); }) { Order = ToolbarItemOrder.Secondary });
+                            //iOS is handled in BuildComponentViewModel.cs Actions
+                            if (Device.RuntimePlatform == "Android")
+                            {
+                                this.ToolbarItems.Add(new ToolbarItem($"Add {tier.Duration} yr plan", "", () => { vm.BuildComponentAddPlan(tier); }) { Order = ToolbarItemOrder.Secondary });
+                            }
+
+                            AddSpacer(PlansStackLayout, Color.LightGray);
+                            var stack = new StackLayout() { Orientation = StackOrientation.Horizontal };
+                            stack.Children.Add(new Label() { Text = $"{tier.Duration} year {plans.Name}", HorizontalOptions = LayoutOptions.StartAndExpand, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.Start });
+                            stack.Children.Add(new Label() { Text = $"${tier.Price.ToString("#0.00")}", HorizontalOptions = LayoutOptions.End, WidthRequest = 100, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.End });
+
+                            PlansStackLayout.Children.Add(stack);
                         }
-
-                        AddSpacer(PlansStackLayout, Color.LightGray);
-                        var stack = new StackLayout() { Orientation = StackOrientation.Horizontal };
-                        stack.Children.Add(new Label() { Text = $"{tier.Duration} year {plans.Name}", HorizontalOptions = LayoutOptions.StartAndExpand, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.Start });
-                        stack.Children.Add(new Label() { Text = $"${tier.Price.ToString("#0.00")}", HorizontalOptions = LayoutOptions.End, WidthRequest = 100, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.End });
-
-                        PlansStackLayout.Children.Add(stack);
                     }
                 }
             }
