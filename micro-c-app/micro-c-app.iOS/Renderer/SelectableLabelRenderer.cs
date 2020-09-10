@@ -71,7 +71,7 @@ namespace micro_c_app.iOS.Renderer
 
             uiTextView.Selectable = true;
             uiTextView.Editable = false;
-            uiTextView.ScrollEnabled = false;
+            uiTextView.ScrollEnabled = true;
             uiTextView.TextContainerInset = UIEdgeInsets.Zero;
             uiTextView.TextContainer.LineFragmentPadding = 0;
             uiTextView.BackgroundColor = UIColor.Clear;

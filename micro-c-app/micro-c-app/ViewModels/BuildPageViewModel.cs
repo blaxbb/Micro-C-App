@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 
 namespace micro_c_app.ViewModels
@@ -33,6 +34,7 @@ namespace micro_c_app.ViewModels
         public ICommand Save { get; }
         public ICommand Load { get; }
         public ICommand Export { get; }
+        public ICommand OpenURL { get; }
 
         public string? BuildURL { get => buildURL; set => SetProperty(ref buildURL, value); }
 
@@ -180,6 +182,14 @@ namespace micro_c_app.ViewModels
             });
 
             Components.CollectionChanged += (sender, args) => { SaveRestore(); };
+
+            OpenURL = new Command(async () =>
+            {
+                if (!string.IsNullOrWhiteSpace(BuildURL))
+                {
+                    await Launcher.TryOpenAsync(BuildURL);
+                }
+            });
         }
 
         private void DoLoad(CollectionLoadPageViewModel<BuildComponent> obj)
