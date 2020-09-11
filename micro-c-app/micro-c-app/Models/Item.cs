@@ -10,30 +10,32 @@ namespace micro_c_app.Models
 {
     public class Item : NotifyPropertyChangedItem
     {
-        public string URL { get; set; }
-        public string SKU { get; set; }
-        public string Name { get; set; }
+        public string URL { get; set; } = "";
+        public string SKU { get; set; } = "000000";
+        public string Name { get; set; } = "";
         public List<string> PictureUrls { get; set; }
-        public string Stock { get; set; }
+        public string Stock { get; set; } = "";
         public float Price { get => price; set => SetProperty(ref price, value); }
-        public float OriginalPrice { get; set; }
+        public float OriginalPrice { get; set; } = 0f;
         public float Discount => Price - OriginalPrice;
         public bool OnSale => Price != OriginalPrice;
         public Dictionary<string, string> Specs { get; set; }
 
         private int quantity = 1;
-        private float price;
-        private string brand;
+        private float price = 0f;
+        private string brand = "";
 
         public int Quantity { get => quantity; set => SetProperty(ref quantity, value); }
-        public string Location { get; set; }
+        public string Location { get; set; } = "";
         public List<Plan> Plans { get; set; }
-        public string ID { get; set; }
+        public string ID { get; set; } = "";
         public string Brand { get => brand; set => SetProperty(ref brand, value); }
 
         public Item()
         {
             Specs = new Dictionary<string, string>();
+            PictureUrls = new List<string>();
+            Plans = new List<Plan>();
 
         }
 

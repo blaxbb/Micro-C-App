@@ -8,10 +8,9 @@ namespace micro_c_app.ViewModels
 {
     public class BuildComponentViewModel : BaseViewModel
     {
-        private BuildComponent component;
+        private BuildComponent? component;
 
-        public BuildComponent Component { get => component; set { SetProperty(ref component, value); OnPropertyChanged(nameof(ItemExists)); OnPropertyChanged(nameof(ItemNotExists)); } }
-        public ICommand SubmitButton { get; }
+        public BuildComponent? Component { get => component; set { SetProperty(ref component, value); OnPropertyChanged(nameof(ItemExists)); OnPropertyChanged(nameof(ItemNotExists)); } }
         public ICommand ProductFound { get; }
         public ICommand SearchError { get; }
         public ICommand Remove { get; }
@@ -23,6 +22,11 @@ namespace micro_c_app.ViewModels
             get
             {
                 var res = new Dictionary<string, ICommand>();
+                if(Component == null)
+                {
+                    return res;
+                }
+
                 PlanReference? plans = null;
                 if (Component.Type == Models.BuildComponent.ComponentType.BuildService)
                 {
@@ -53,15 +57,19 @@ namespace micro_c_app.ViewModels
 
             ProductFound = new Command<Item>((item) =>
             {
-                var isNew = Component.Item == null;
-                Component.Item = item;
-                if (isNew)
+                if (Component != null)
                 {
-                    MessagingCenter.Send(this, "new");
-                }
-                else
-                {
-                    MessagingCenter.Send(this, "selected");
+                    var isNew = Component.Item == null;
+                    Component.Item = item;
+
+                    if (isNew)
+                    {
+                        MessagingCenter.Send(this, "new");
+                    }
+                    else
+                    {
+                        MessagingCenter.Send(this, "selected");
+                    }
                 }
             });
 
@@ -75,8 +83,11 @@ namespace micro_c_app.ViewModels
 
             Remove = new Command(() =>
             {
-                component.Item = null;
-                MessagingCenter.Send(this, "removed");
+                if (Component != null)
+                {
+                    Component.Item = null;
+                    MessagingCenter.Send(this, "removed");
+                }
             });
         }
 

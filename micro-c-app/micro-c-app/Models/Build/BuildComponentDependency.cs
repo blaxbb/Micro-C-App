@@ -7,13 +7,13 @@ namespace micro_c_app.Models
     {
         public static List<BuildComponentDependency> Dependencies { get; }
         public virtual string ErrorText => "";
-        public BuildComponent First { get; set; }
-        public BuildComponent Second { get; set; }
+        public BuildComponent? First { get; set; }
+        public BuildComponent? Second { get; set; }
         public BuildComponent.ComponentType FirstType { get; set; }
         public BuildComponent.ComponentType SecondType { get; set; }
 
-        public string FirstFieldName { get; set; }
-        public string SecondFieldName { get; set; }
+        public string FirstFieldName { get; set; } = "";
+        public string SecondFieldName { get; set; } = "";
 
         public string? FirstValue => First?.Item?.Specs?[FirstFieldName];
         public string? SecondValue => Second?.Item?.Specs?[SecondFieldName];
@@ -26,7 +26,7 @@ namespace micro_c_app.Models
         public abstract BuildComponentDependency Clone();
         public bool Compatible()
         {
-            return Compatible(First, Second);
+            return Compatible(First!, Second!);
         }
         public abstract bool Compatible(BuildComponent a, BuildComponent b);
         public bool SetRelevant(BuildComponent comp)
@@ -48,7 +48,7 @@ namespace micro_c_app.Models
         }
 
         public abstract string HintText();
-        public BuildComponent Other(BuildComponent comp) => First == comp ? Second : First;
+        public BuildComponent? Other(BuildComponent comp) => First == comp ? Second : First;
 
         static BuildComponentDependency()
         {

@@ -14,7 +14,6 @@ namespace micro_c_app.Views
         {
             InitializeComponent();
             this.SetupActionButton();
-            viewModel.Navigation = Navigation;
         }
     }
 }

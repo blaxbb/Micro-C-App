@@ -10,18 +10,18 @@ namespace micro_c_app.ViewModels
 {
     public class CollectionSavePageViewModel : BaseViewModel
     {
-        private string filename;
+        private string filename = "";
         private string? errorText;
 
         public string Filename { get => filename; set => SetProperty(ref filename, value); }
         public string? ErrorText { get => errorText; set => SetProperty(ref errorText, value); }
 
-        private IEnumerable<object> Items { get; set; }
+        private IEnumerable<object> Items { get; set; } = new List<object>();
 
         public ICommand Cancel { get; }
         public ICommand Save { get; }
 
-        private string Folder { get; }
+        private string? Folder { get; }
 
         public string FolderPath => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Folder);
         public string Path => System.IO.Path.Combine(FolderPath, Filename);
@@ -29,6 +29,7 @@ namespace micro_c_app.ViewModels
         public CollectionSavePageViewModel()
         {
             Title = "Save";
+
             Cancel = new Command(async () =>
             {
                 await Shell.Current.Navigation.PopModalAsync();

@@ -22,7 +22,6 @@ namespace micro_c_app.ViewModels
         public ICommand ComponentSelectClicked { get; }
 
         public ObservableCollection<BuildComponent> Components { get; }
-        public INavigation Navigation { get; internal set; }
 
         public float Subtotal => Components.Sum(c => c.Item?.Price ?? 0f);
         public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${(Subtotal * SettingsPage.TaxRateFactor()).ToString("#0.00")}";
@@ -47,7 +46,7 @@ namespace micro_c_app.ViewModels
             {"Export", Export }
         };
 
-        public static event Action CellUpdated;
+        public static event Action? CellUpdated;
 
         public BuildPageViewModel()
         {
@@ -82,7 +81,7 @@ namespace micro_c_app.ViewModels
                     vm.Component = comp;
                 }
                 componentPage.Setup();
-                await Navigation.PushAsync(componentPage);
+                await Shell.Current.Navigation.PushAsync(componentPage);
             });
 
             SendQuote = new Command(async () => await QuotePageViewModel.DoSendQuote(Components.Where(c => c.Item != null).Select(c => c.Item!)));
@@ -227,6 +226,11 @@ namespace micro_c_app.ViewModels
 
         private void BuildComponentRemove(BuildComponentViewModel updated)
         {
+            if(updated.Component == null)
+            {
+                return;
+            }
+
             var emptyComponents = Components.Where(c => updated.Component.Type == c.Type && c.Item == null).ToList();
 
             var count = emptyComponents.Count;
@@ -243,6 +247,11 @@ namespace micro_c_app.ViewModels
 
         private void BuildComponentNew(BuildComponentViewModel updated)
         {
+            if (updated.Component == null)
+            {
+                return;
+            }
+
             var existing = Components.Count(d => d.Type == updated.Component.Type);
             if (existing < BuildComponent.MaxNumberPerType(updated.Component.Type))
             {
@@ -254,7 +263,7 @@ namespace micro_c_app.ViewModels
                 {
                     var clone = d.Clone();
                     newItem.AddDependency(clone);
-                    d.Other(updated.Component).AddDependency(clone);
+                    d.Other(updated.Component)?.AddDependency(clone);
                 }
                 var index = Components.IndexOf(updated.Component);
                 Components.Insert(index + 1, newItem);
@@ -279,7 +288,7 @@ namespace micro_c_app.ViewModels
             CurrentSubTotal = Subtotal;
             updated.Component.OnDependencyStatusChanged();
             UpdateProperties();
-            Navigation.PopAsync();
+            Shell.Current.Navigation.PopAsync();
             CellUpdated?.Invoke();
             SaveRestore();
         }

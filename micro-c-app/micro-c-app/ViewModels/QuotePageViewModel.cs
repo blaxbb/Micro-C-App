@@ -17,9 +17,9 @@ namespace micro_c_app.ViewModels
     public class QuotePageViewModel : BaseViewModel
     {
         private bool notBusy;
-        private Item selectedItem;
+        private Item? selectedItem;
 
-        public Item SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); } }
+        public Item? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); } }
         public ObservableCollection<Item> Items { get; set; }
         public ICommand OnProductFound { get; }
         public ICommand OnProductError { get; }

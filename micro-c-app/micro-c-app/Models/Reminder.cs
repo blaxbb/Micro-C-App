@@ -10,14 +10,14 @@ namespace micro_c_app.Models
 {
     public class Reminder : NotifyPropertyChangedItem
     {
-        public static List<Reminder> AllReminders { get; set; }
+        public static List<Reminder>? AllReminders { get; set; }
 
-        private string name;
-        private string sku;
-        private string url;
-        private string message;
-        private bool notified;
-        private string pictureURL;
+        private string name = "";
+        private string sku = "000000";
+        private string url = "";
+        private string message = "";
+        private bool notified = false;
+        private string pictureURL = "";
 
         public string Name { get => name; set => SetProperty(ref name, value); }
         public string SKU { get => sku; set => SetProperty(ref sku, value); }
@@ -32,7 +32,7 @@ namespace micro_c_app.Models
 
         public Reminder()
         {
-
+            
         }
 
         public Reminder(Item item)
@@ -51,7 +51,7 @@ namespace micro_c_app.Models
 
         public static void Add(Reminder reminder)
         {
-            AllReminders.Add(reminder);
+            AllReminders?.Add(reminder);
         }
 
         public static List<Reminder> LoadAll()
@@ -82,7 +82,7 @@ namespace micro_c_app.Models
             return AllReminders;
         }
 
-        static Task saveTask;
+        static Task? saveTask;
         static bool repeatSaveTask;
 
         public static void SaveAll()
