@@ -24,7 +24,7 @@ namespace micro_c_app.ViewModels
         public ObservableCollection<BuildComponent> Components { get; }
 
         public float Subtotal => Components.Sum(c => c.Item?.Price ?? 0f);
-        public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${(Subtotal * SettingsPage.TaxRateFactor()).ToString("#0.00")}";
+        public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${Subtotal * SettingsPage.TaxRateFactor():#0.00}";
 
         public static float CurrentSubTotal { get; set; }
 

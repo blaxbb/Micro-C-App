@@ -124,37 +124,22 @@ namespace micro_c_app.Models
         {
             //from microcenter.com search N field ex: &N=4294966995
 
-            switch (type)
+            return type switch
             {
-                case ComponentType.CPU:
-                    return "4294966995";
-                case ComponentType.Motherboard:
-                    return "4294966996";
-                case ComponentType.RAM:
-                    return "4294966965";
-                case ComponentType.Case:
-                    return "4294964318";
-                case ComponentType.PowerSupply:
-                    return "4294966654";
-                case ComponentType.GPU:
-                    return "4294966938";
-                case ComponentType.SSD:
-                    return "4294945779";
-                case ComponentType.HDD:
-                    return "4294945772";
-                case ComponentType.CPUCooler:
-                    return "4294966927";
-                case ComponentType.CaseFan:
-                    return "4294966926";
-                case ComponentType.OperatingSystem:
-                    return "4294967276";
-                case ComponentType.BuildService:
-                    return "4294809201";
-                case ComponentType.Miscellaneous:
-                case ComponentType.Plan:
-                default:
-                    return "";
-            }
+                ComponentType.CPU => "4294966995",
+                ComponentType.Motherboard => "4294966996",
+                ComponentType.RAM => "4294966965",
+                ComponentType.Case => "4294964318",
+                ComponentType.PowerSupply => "4294966654",
+                ComponentType.GPU => "4294966938",
+                ComponentType.SSD => "4294945779",
+                ComponentType.HDD => "4294945772",
+                ComponentType.CPUCooler => "4294966927",
+                ComponentType.CaseFan => "4294966926",
+                ComponentType.OperatingSystem => "4294967276",
+                ComponentType.BuildService => "4294809201",
+                _ => "",
+            };
         }
 
         public static int MaxNumberPerType(ComponentType type)

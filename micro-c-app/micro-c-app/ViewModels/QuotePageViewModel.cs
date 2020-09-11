@@ -46,7 +46,7 @@ namespace micro_c_app.ViewModels
         public bool NotBusy { get => notBusy; set { SetProperty(ref notBusy, value); } }
 
         public float Subtotal => Items.Sum(i => i.Price * i.Quantity);
-        public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${(Subtotal * SettingsPage.TaxRateFactor()).ToString("#0.00")}";
+        public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${Subtotal * SettingsPage.TaxRateFactor():#0.00}";
 
         public QuotePageViewModel()
         {
@@ -232,7 +232,7 @@ namespace micro_c_app.ViewModels
             b.AppendLine($"SKU,Name,Qty,Unit,Price");
             foreach (var item in items)
             {
-                b.AppendLine($"{item.SKU},{item.Name},{item.Quantity},${item.Price.ToString("#0.00")},${(item.Price * item.Quantity).ToString("#0.00")}");
+                b.AppendLine($"{item.SKU},{item.Name},{item.Quantity},${item.Price:#0.00},${item.Price * item.Quantity:#0.00}");
             }
 
             var Subtotal = items.Sum(i => i.Price * i.Quantity);
@@ -240,8 +240,8 @@ namespace micro_c_app.ViewModels
 
             b.AppendLine();
             var salesId = Preferences.Get("sales_id", "SALESID");
-            b.AppendLine($"Subtotal,${Subtotal.ToString("#0.00")},,Sales ID,{salesId}");
-            b.AppendLine($"Total ({SettingsPage.TaxRate()}),${TaxedTotal.ToString("#0.00")},,Contact,{salesId}@microcenter.com");
+            b.AppendLine($"Subtotal,${Subtotal:#0.00},,Sales ID,{salesId}");
+            b.AppendLine($"Total ({SettingsPage.TaxRate()}),${TaxedTotal:#0.00},,Contact,{salesId}@microcenter.com");
 
             return b.ToString();
         }
@@ -253,15 +253,15 @@ namespace micro_c_app.ViewModels
             b.AppendLine();
             foreach (var item in items)
             {
-                b.AppendLine($"{item.SKU}\t{string.Format("{0,-40}", item.Name.Substring(0, Math.Min(item.Name.Length, 30)))}\t{item.Quantity}    ${item.Price.ToString("#0.00")}    ${(item.Price * item.Quantity).ToString("#0.00")}");
+                b.AppendLine($"{item.SKU}\t{string.Format("{0,-40}", item.Name.Substring(0, Math.Min(item.Name.Length, 30)))}\t{item.Quantity}    ${item.Price:#0.00}    ${item.Price * item.Quantity:#0.00}");
             }
 
             var Subtotal = items.Sum(i => i.Price * i.Quantity);
             var TaxedTotal = Subtotal * SettingsPage.TaxRateFactor();
 
             b.AppendLine();
-            b.AppendLine(string.Format("{0,78}", $"Sub ${Subtotal.ToString("#0.00")}"));
-            b.AppendLine(string.Format("{0,78}", $"Total ${TaxedTotal.ToString("#0.00")}"));
+            b.AppendLine(string.Format("{0,78}", $"Sub ${Subtotal:#0.00}"));
+            b.AppendLine(string.Format("{0,78}", $"Total ${TaxedTotal:#0.00}"));
 
             b.AppendLine();
 

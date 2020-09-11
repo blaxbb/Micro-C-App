@@ -230,7 +230,7 @@ namespace micro_c_app.Views
                 }
                 else
                 {
-                    DoError($"webrequest returned error {response.StatusCode.ToString()}");
+                    DoError($"webrequest returned error {response.StatusCode}");
                 }
             });
 

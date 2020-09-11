@@ -52,21 +52,22 @@ namespace micro_c_app.Models
 
         static BuildComponentDependency()
         {
-            Dependencies = new List<BuildComponentDependency>();
+            Dependencies = new List<BuildComponentDependency>
+            {
+                //CPU -> Other
+                new FieldContainsDependency(ComponentType.CPU, "Socket Type", ComponentType.Motherboard, "Socket Type"),
+                new FieldContainsDependency(ComponentType.CPU, "Compatibility", ComponentType.Motherboard, "North Bridge"),
 
-            //CPU -> Other
-            Dependencies.Add(new FieldContainsDependency(ComponentType.CPU, "Socket Type", ComponentType.Motherboard, "Socket Type"));
-            Dependencies.Add(new FieldContainsDependency(ComponentType.CPU, "Compatibility", ComponentType.Motherboard, "North Bridge"));
+                //Mobo -> Other
+                new FieldContainsDependency(ComponentType.Motherboard, "Memory Type", ComponentType.RAM, "Memory Speed (MHz)"),
+                new FieldContainsDependency(ComponentType.Motherboard, "Form Factor", ComponentType.Case, "Motherboard Support"),
 
-            //Mobo -> Other
-            Dependencies.Add(new FieldContainsDependency(ComponentType.Motherboard, "Memory Type", ComponentType.RAM, "Memory Speed (MHz)"));
-            Dependencies.Add(new FieldContainsDependency(ComponentType.Motherboard, "Form Factor", ComponentType.Case, "Motherboard Support"));
-            
-            Dependencies.Add(new FieldContainsDependency(ComponentType.Motherboard, "M.2 Port Type", ComponentType.SSD, "Form Factor"));
+                new FieldContainsDependency(ComponentType.Motherboard, "M.2 Port Type", ComponentType.SSD, "Form Factor"),
 
-            Dependencies.Add(new FieldComparisonDependency(ComponentType.GPU, "Recommended Power Supply", ComponentType.PowerSupply, "Wattage", FieldComparisonDependency.CompareMode.LessThanOrEqual));
+                new FieldComparisonDependency(ComponentType.GPU, "Recommended Power Supply", ComponentType.PowerSupply, "Wattage", FieldComparisonDependency.CompareMode.LessThanOrEqual),
 
-            Dependencies.Add(new FieldQuantityDependency(ComponentType.HDD, ComponentType.Case, "Internal 3.5\" Drive Bays"));
+                new FieldQuantityDependency(ComponentType.HDD, ComponentType.Case, "Internal 3.5\" Drive Bays")
+            };
             //Rad size supported in case
         }
     }

@@ -8,8 +8,6 @@ namespace micro_c_app.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class BuildPage : ContentPage
     {
-        BuildPageViewModel viewModel => (BuildPageViewModel)BindingContext;
-        //HttpClient client;
         public BuildPage()
         {
             InitializeComponent();

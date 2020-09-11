@@ -44,10 +44,12 @@ namespace micro_c_app.iOS.Renderer
 
         private void UpdateTableView()
         {
-            var tv = Control as UITableView;
-            if (tv == null) return;
-            tv.BeginUpdates();
-            tv.EndUpdates();
+            if (Control is UITableView tv)
+            {
+                if (tv == null) return;
+                tv.BeginUpdates();
+                tv.EndUpdates();
+            }
         }
     }
 }
