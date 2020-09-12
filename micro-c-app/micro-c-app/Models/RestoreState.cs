@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using micro_c_app.ViewModels;
+using MicroCLib.Models;
 
 namespace micro_c_app.Models
 {

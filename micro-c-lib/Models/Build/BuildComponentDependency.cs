@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using static micro_c_app.Models.BuildComponent;
+using static MicroCLib.Models.BuildComponent;
+using static MicroCLib.Models.BuildComponent;
 
-namespace micro_c_app.Models
+namespace MicroCLib.Models
 {
     public abstract class BuildComponentDependency
     {

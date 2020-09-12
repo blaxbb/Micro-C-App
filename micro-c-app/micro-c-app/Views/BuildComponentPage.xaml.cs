@@ -1,5 +1,6 @@
-﻿using micro_c_app.Models.Reference;
-using micro_c_app.ViewModels;
+﻿using micro_c_app.ViewModels;
+using MicroCLib.Models;
+using MicroCLib.Models.Reference;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -42,13 +43,13 @@ namespace micro_c_app.Views
                 if (vm.Component?.Item != null && vm.Component.PlanApplicable())
                 {
                     PlanReference plans;
-                    if (vm.Component.Type == Models.BuildComponent.ComponentType.BuildService)
+                    if (vm.Component.Type == BuildComponent.ComponentType.BuildService)
                     {
-                        plans = Models.Reference.PlanReference.Get(PlanReference.PlanType.Build_Plan, BuildPageViewModel.CurrentSubTotal);
+                        plans = PlanReference.Get(PlanReference.PlanType.Build_Plan, BuildPageViewModel.CurrentSubTotal);
                     }
                     else
                     {
-                        plans = Models.Reference.PlanReference.Get(Models.Reference.PlanReference.PlanType.Replacement, vm.Component.Item.Price);
+                        plans = PlanReference.Get(PlanReference.PlanType.Replacement, vm.Component.Item.Price);
                     }
 
                     if (plans != null)

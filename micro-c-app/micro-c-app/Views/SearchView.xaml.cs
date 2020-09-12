@@ -1,5 +1,6 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.ViewModels;
+using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -187,7 +188,7 @@ namespace micro_c_app.Views
                     {
                         if (matches.Count == 1)
                         {
-                            var item = await Models.Item.FromUrl($"/product/{matches[0].Groups[1].Value}", storeId);
+                            var item = await Item.FromUrl($"/product/{matches[0].Groups[1].Value}", storeId);
                             DoProductFound(item);
 
                         }
@@ -208,9 +209,9 @@ namespace micro_c_app.Views
                             {
                                 Task.Run(async () =>
                                 {
-                                    if (args.CurrentSelection.FirstOrDefault() is Models.Item shortItem)
+                                    if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
                                     {
-                                        var item = await Models.Item.FromUrl(shortItem.URL, storeId);
+                                        var item = await Item.FromUrl(shortItem.URL, storeId);
                                         DoProductFound(item);
                                     }
                                 });

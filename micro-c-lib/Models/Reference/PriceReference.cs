@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace micro_c_app.Models
+namespace MicroCLib.Models
 {
     public class PriceReference
     {

@@ -1,5 +1,6 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
+using MicroCLib.Models;
 using System.Windows.Input;
 using Xamarin.Forms;
 

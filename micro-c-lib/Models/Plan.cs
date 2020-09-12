@@ -1,4 +1,4 @@
-﻿namespace micro_c_app.Models
+﻿namespace MicroCLib.Models
 {
     public class Plan
     {

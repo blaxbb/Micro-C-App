@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
-namespace micro_c_app.Models
+namespace MicroCLib.Models
 {
     public abstract class NotifyPropertyChangedItem : INotifyPropertyChanged
     {

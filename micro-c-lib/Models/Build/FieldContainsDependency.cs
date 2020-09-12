@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
-using static micro_c_app.Models.BuildComponent;
+using static MicroCLib.Models.BuildComponent;
 
-namespace micro_c_app.Models
+namespace MicroCLib.Models
 {
     public class FieldContainsDependency : BuildComponentDependency
     {

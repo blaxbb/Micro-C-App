@@ -1,5 +1,6 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
+using MicroCLib.Models;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Input;

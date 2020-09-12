@@ -1,15 +1,14 @@
 ﻿using micro_c_app.Models;
-using micro_c_app.Models.Reference;
 using micro_c_app.Views;
 using micro_c_app.Views.CollectionFile;
+using MicroCLib.Models;
+using MicroCLib.Models.Reference;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;

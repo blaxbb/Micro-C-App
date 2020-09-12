@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace micro_c_app.Models.Reference
+namespace MicroCLib.Models.Reference
 {
     public class PlanTier
     {

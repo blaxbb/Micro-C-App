@@ -1,5 +1,6 @@
 ﻿
 using micro_c_app.ViewModels;
+using MicroCLib.Models;
 using System;
 using System.Threading.Tasks;
 using Xamarin.Forms;
@@ -62,7 +63,7 @@ namespace micro_c_app.Views
             }
         }
 
-        Models.Item? previousSelection;
+        Item? previousSelection;
         private void listView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             var newItem = e.Item;
@@ -74,7 +75,7 @@ namespace micro_c_app.Views
             }
             else
             {
-                previousSelection = newItem as Models.Item;
+                previousSelection = newItem as Item;
             }
         }
     }

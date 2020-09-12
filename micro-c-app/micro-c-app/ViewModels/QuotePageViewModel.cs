@@ -1,6 +1,7 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
 using micro_c_app.Views.CollectionFile;
+using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

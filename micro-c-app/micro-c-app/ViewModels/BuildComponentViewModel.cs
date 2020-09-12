@@ -1,5 +1,5 @@
-﻿using micro_c_app.Models;
-using micro_c_app.Models.Reference;
+﻿using MicroCLib.Models;
+using MicroCLib.Models.Reference;
 using System.Collections.Generic;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -28,9 +28,9 @@ namespace micro_c_app.ViewModels
                 }
 
                 PlanReference? plans = null;
-                if (Component.Type == Models.BuildComponent.ComponentType.BuildService)
+                if (Component.Type == BuildComponent.ComponentType.BuildService)
                 {
-                    plans = Models.Reference.PlanReference.Get(PlanReference.PlanType.Build_Plan, BuildPageViewModel.CurrentSubTotal);
+                    plans = PlanReference.Get(PlanReference.PlanType.Build_Plan, BuildPageViewModel.CurrentSubTotal);
                 }
                 else
                 {

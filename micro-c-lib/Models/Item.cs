@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
 
-namespace micro_c_app.Models
+namespace MicroCLib.Models
 {
     public class Item : NotifyPropertyChangedItem
     {

@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace micro_c_app.Models
+namespace MicroCLib.Models
 {
     internal class FieldQuantityDependency : BuildComponentDependency
     {
