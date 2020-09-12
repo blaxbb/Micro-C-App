@@ -1,4 +1,4 @@
-﻿using micro_c_app.Views;
+﻿
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
@@ -39,13 +39,12 @@ namespace micro_c_app.Models
 
         }
 
-        public static async Task<Item> FromUrl(string url)
+        public static async Task<Item> FromUrl(string url, string storeId)
         {
             var item = new Item();
 
             using (HttpClient client = new HttpClient())
             {
-                var storeId = SettingsPage.StoreID();
                 var response = await client.GetAsync($"https://www.microcenter.com{url}?storeid={storeId}");
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {

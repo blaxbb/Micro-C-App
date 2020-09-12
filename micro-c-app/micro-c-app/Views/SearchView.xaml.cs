@@ -187,7 +187,7 @@ namespace micro_c_app.Views
                     {
                         if (matches.Count == 1)
                         {
-                            var item = await Models.Item.FromUrl($"/product/{matches[0].Groups[1].Value}");
+                            var item = await Models.Item.FromUrl($"/product/{matches[0].Groups[1].Value}", storeId);
                             DoProductFound(item);
 
                         }
@@ -210,7 +210,7 @@ namespace micro_c_app.Views
                                 {
                                     if (args.CurrentSelection.FirstOrDefault() is Models.Item shortItem)
                                     {
-                                        var item = await Models.Item.FromUrl(shortItem.URL);
+                                        var item = await Models.Item.FromUrl(shortItem.URL, storeId);
                                         DoProductFound(item);
                                     }
                                 });

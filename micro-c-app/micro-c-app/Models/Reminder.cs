@@ -1,4 +1,5 @@
-﻿using System;
+﻿using micro_c_app.Views;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace micro_c_app.Models
 
         public async Task<bool> CheckStock()
         {
-            var item = await Item.FromUrl(URL);
+            var item = await Item.FromUrl(URL, SettingsPage.StoreID());
             return item.Stock != "Sold Out";
         }
 

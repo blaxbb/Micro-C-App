@@ -163,6 +163,10 @@
       <Project>{83617979-eea1-43d5-8130-d25fea189970}</Project>
       <Name>micro-c-app</Name>
     </ProjectReference>
+    <ProjectReference Include="..\micro-c-lib\micro-c-lib.csproj">
+      <Project>{f750678a-8fd0-464c-b75f-46b4c34b7129}</Project>
+      <Name>micro-c-lib</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\FontAwesome5Regular.otf" />

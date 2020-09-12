@@ -18,6 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\micro-c-lib\micro-c-lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Update="Themes\LightTheme.xaml.cs">
       <DependentUpon>LightTheme.xaml</DependentUpon>
     </Compile>
