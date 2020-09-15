@@ -18,13 +18,12 @@
         </Style>
         <converters:StringFormatConverter x:Key="Format"/>
     </UserControl.Resources>
-    <Grid ColumnSpacing="5" Height="100">
+    <Grid ColumnSpacing="5" Height="100" Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="3*"/>
             <ColumnDefinition Width="1.25*"/>
-            <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
