@@ -179,6 +179,11 @@ namespace MicroCLib.Models
             }
             return HttpDecode(decoded);
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 
 

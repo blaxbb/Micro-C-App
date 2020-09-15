@@ -13,6 +13,7 @@ using Xamarin.Forms.Xaml;
 using ZXing;
 using ZXing.Mobile;
 using ZXing.Net.Mobile.Forms;
+using static micro_c_lib.Models.Search;
 
 namespace micro_c_app.Views
 {
@@ -38,14 +39,6 @@ namespace micro_c_app.Views
 
         public static readonly BindableProperty OrderByProperty = BindableProperty.Create(nameof(OrderBy), typeof(OrderByMode), typeof(SearchView), null);
         public OrderByMode OrderBy { get { return (OrderByMode)GetValue(OrderByProperty); } set { SetValue(OrderByProperty, value); } }
-        public enum OrderByMode
-        {
-            match,
-            rating,
-            numreviews,
-            pricelow,
-            pricehigh
-        }
 
         public bool Busy
         {
@@ -153,11 +146,6 @@ namespace micro_c_app.Views
                 default:
                     return result.Text;
             }
-        }
-
-        public static string GetSearchUrl(string query, string storeId, string categoryFilter, OrderByMode orderBy, int resultsPerPage, int page)
-        {
-            return $"https://www.microcenter.com/search/search_results.aspx?Ntt={query}&storeid={storeId}&myStore=false&Ntk=all&N={categoryFilter}&sortby={orderBy}&rpp={resultsPerPage}&page={page}";
         }
 
         public async Task OnSubmit(string searchValue)

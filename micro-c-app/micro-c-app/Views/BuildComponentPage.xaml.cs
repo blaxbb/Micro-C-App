@@ -4,6 +4,7 @@ using MicroCLib.Models.Reference;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using static micro_c_lib.Models.Search;
 
 namespace micro_c_app.Views
 {
@@ -24,7 +25,7 @@ namespace micro_c_app.Views
             {
                 if(vm.Component.AutoSearch() && vm.Component.Item == null)
                 {
-                    SearchView.OrderBy = SearchView.OrderByMode.pricelow;
+                    SearchView.OrderBy = OrderByMode.pricelow;
                     Task.Run(() => SearchView.OnSubmit(""));
                 }
             }

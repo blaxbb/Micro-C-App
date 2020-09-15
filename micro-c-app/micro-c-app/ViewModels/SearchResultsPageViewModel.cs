@@ -1,4 +1,5 @@
 ﻿using micro_c_app.Models;
+using micro_c_lib.Models;
 using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
@@ -10,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using static micro_c_app.Views.SearchView;
+using static micro_c_lib.Models.Search;
 
 namespace micro_c_app.ViewModels
 {
@@ -74,13 +76,23 @@ namespace micro_c_app.ViewModels
 
         private async Task LoadQuery()
         {
-            var response = await client.GetAsync(GetSearchUrl(SearchQuery, StoreID, CategoryFilter, OrderBy, RESULTS_PER_PAGE, page));
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            var result = await Search.LoadQuery(SearchQuery, StoreID, CategoryFilter, OrderBy, page);
+            await Device.InvokeOnMainThreadAsync(() =>
             {
-                var body = response.Content.ReadAsStringAsync().Result;
+                TotalResults = result.TotalResults;
+                foreach (var item in result.Items)
+                {
+                    Items.Add(item);
+                }
+            });
 
-                await ParseBody(body);
-            }
+            //var response = await client.GetAsync(GetSearchUrl(SearchQuery, StoreID, CategoryFilter, OrderBy, RESULTS_PER_PAGE, page));
+            //if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            //{
+            //    var body = response.Content.ReadAsStringAsync().Result;
+
+            //    await ParseBody(body);
+            //}
         }
 
         public async Task ParseBody(string body)
