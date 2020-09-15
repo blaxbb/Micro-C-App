@@ -34,9 +34,10 @@
             </AppBarButton>
             <AppBarButton Icon="Save" Label="Save" Command="{Binding Save}"/>
             <AppBarButton Icon="OpenFile" Label="Load" Command="{Binding Load}"/>
-            <AppBarButton Icon="Clear" Label="Reset" Command="{Binding Reset}"/>
             <AppBarButton Icon="Print" Label="Print" Click="PrintButton_Click"/>
+            <AppBarButton Icon="Remove" Label="Remove" Command="{Binding Remove}" CommandParameter="{Binding ElementName=ComponentListView, Path=SelectedItem}"/>
             <CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Clear" Label="Reset" Command="{Binding Reset}"/>
                 <AppBarButton Icon="Setting" Label="Settings">
                     <AppBarButton.KeyboardAccelerators>
                         <KeyboardAccelerator Modifiers="Control" Key="I" />

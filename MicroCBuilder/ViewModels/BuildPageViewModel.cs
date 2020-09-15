@@ -28,6 +28,7 @@ namespace MicroCBuilder.ViewModels
         public ICommand Load { get; }
         public ICommand Reset { get; }
         public ICommand Add { get; }
+        public ICommand Remove { get; }
         public Item SelectedItem { get => selectedItem; set => SetProperty(ref selectedItem, value); }
 
         public BuildPageViewModel()
@@ -40,7 +41,21 @@ namespace MicroCBuilder.ViewModels
             Load = new Command(DoLoad);
 
             Reset = new Command(DoReset);
+
+            Remove = new Command<BuildComponent>(DoRemove);
             Add = new Command<BuildComponent.ComponentType>(AddItem);
+        }
+
+        private void DoRemove(BuildComponent comp)
+        {
+            if(comp != null && comp.Item != null)
+            {
+                comp.Item = null;
+            }
+            if(Components.Count(c => c.Type == comp.Type) > 1)
+            {
+                Components.Remove(comp);
+            }
         }
 
         private void AddItem(BuildComponent.ComponentType type)
@@ -51,7 +66,7 @@ namespace MicroCBuilder.ViewModels
         private BuildComponent InsertAtEndByType(BuildComponent.ComponentType type)
         {
             int index = Components.Count;
-            for (int i = Components.Count - 1; i > 0; i--)
+            for (int i = Components.Count - 1; i >= 0; i--)
             {
                 var existing = Components[i];
                 if (existing.Type == type)
