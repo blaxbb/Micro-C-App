@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text.Json;
+using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -38,6 +39,19 @@ namespace MicroCBuilder.Views
 
         public List<Item> Items => BuildComponentCache.Current.FromType(Component.Type);
 
+        public ICommand QueryChanged
+        {
+            get { return (ICommand)GetValue(QueryChangedProperty); }
+            set { SetValue(QueryChangedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for Query.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty QueryChangedProperty =
+            DependencyProperty.Register("QueryChanged", typeof(ICommand), typeof(BuildComponentControl), new PropertyMetadata(null));
+
+        public delegate void QueryUpdatedEventHandler(BuildComponentControl sender, string query);
+        public event QueryUpdatedEventHandler QueryUpdated;
+
         public BuildComponentControl()
         {
             this.InitializeComponent();
@@ -47,6 +61,11 @@ namespace MicroCBuilder.Views
 
         private void textBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
+            if(QueryChanged != null)
+            {
+                QueryChanged.Execute(sender.Text);
+            }
+            QueryUpdated?.Invoke(this, sender.Text);
             if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
             {
                 var matches = FuzzySharp.Process.ExtractTop(sender.Text, Items.Select(i => $"{i.Brand} {i.SKU} {i.Name}"), scorer: ScorerCache.Get<TokenDifferenceScorer>(), limit: 10).ToList();

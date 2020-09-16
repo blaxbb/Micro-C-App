@@ -18,24 +18,26 @@ namespace MicroCBuilder.ViewModels
 {
     public class BuildPageViewModel : BaseViewModel
     {
-        private Item selectedItem;
+        private BuildComponent selectedItem;
 
         public string Test { get; set; } = "AFASFSF";
         public ObservableCollection<BuildComponent> Components { get; }
         public BuildComponent.ComponentType ttt = BuildComponent.ComponentType.GPU;
+        private string query;
 
         public ICommand Save { get; }
         public ICommand Load { get; }
         public ICommand Reset { get; }
         public ICommand Add { get; }
         public ICommand Remove { get; }
-        public Item SelectedItem { get => selectedItem; set => SetProperty(ref selectedItem, value); }
+        public BuildComponent SelectedComponent { get => selectedItem; set => SetProperty(ref selectedItem, value); }
+
+        public string Query { get => query; set => SetProperty(ref query, value); }
 
         public BuildPageViewModel()
         {
             Components = new ObservableCollection<BuildComponent>();
             Enum.GetValues(typeof(BuildComponent.ComponentType)).Cast<BuildComponent.ComponentType>().ToList().ForEach(c => Components.Add(new BuildComponent() { Type = c }));
-
             Save = new Command(DoSave);
 
             Load = new Command(DoLoad);
@@ -48,11 +50,11 @@ namespace MicroCBuilder.ViewModels
 
         private void DoRemove(BuildComponent comp)
         {
-            if(comp != null && comp.Item != null)
+            if (comp != null && comp.Item != null)
             {
                 comp.Item = null;
             }
-            if(Components.Count(c => c.Type == comp.Type) > 1)
+            if (Components.Count(c => c.Type == comp.Type) > 1)
             {
                 Components.Remove(comp);
             }
@@ -121,7 +123,7 @@ namespace MicroCBuilder.ViewModels
             foreach (var loadedComp in fromFile)
             {
                 bool found = false;
-                foreach(var oldComp in Components)
+                foreach (var oldComp in Components)
                 {
                     if (oldComp.Type == loadedComp.Type && oldComp.Item == null)
                     {

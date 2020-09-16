@@ -49,6 +49,13 @@ namespace MicroCBuilder.Views
             }
         }
 
+        public void QueryUpdated (BuildComponentControl control, string query)
+        {
+            vm.SelectedComponent = control.Component;
+            vm.Query = query;
+        }
+
+
         private async void PrintButton_Click(object sender, RoutedEventArgs e)
         {
             MainGrid.Children.Remove(PrintContent);

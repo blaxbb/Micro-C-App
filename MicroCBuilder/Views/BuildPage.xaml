@@ -1,5 +1,6 @@
 ﻿<Page
     x:Class="MicroCBuilder.Views.BuildPage"
+    x:Name="page"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MicroCBuilder"
@@ -48,36 +49,43 @@
             </CommandBar.SecondaryCommands>
 
         </CommandBar>
-        <Grid Grid.Row="1" x:Name="PrintContent">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="4*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="1" Text="Name"/>
-                <TextBlock Grid.Column="2" Text="Price"/>
-                <TextBlock Grid.Column="3" Text="Qty"/>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" x:Name="PrintContent">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="1" Text="Name"/>
+                    <TextBlock Grid.Column="2" Text="Price"/>
+                    <TextBlock Grid.Column="3" Text="Qty"/>
+                </Grid>
+                <ListView x:Name="ComponentListView" Grid.Row="1" ItemsSource="{Binding Components}" SelectedItem="{Binding SelectedComponent}" CanReorderItems="True" AllowDrop="True" ScrollViewer.IsVerticalRailEnabled="False">
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="ListViewItem">
+                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            <Setter Property="Padding" Value="0" />
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <views:BuildComponentControl Component="{Binding }" QueryUpdated="QueryUpdated"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
             </Grid>
-            <ListView x:Name="ComponentListView" Grid.Row="1" ItemsSource="{Binding Components}" CanReorderItems="True" AllowDrop="True" ScrollViewer.IsVerticalRailEnabled="False">
-                <ListView.ItemContainerStyle>
-                    <Style TargetType="ListViewItem">
-                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                        <Setter Property="Padding" Value="0" />
-                    </Style>
-                </ListView.ItemContainerStyle>
-                <ListView.ItemTemplate>
-                    <DataTemplate>
-                        <views:BuildComponentControl Component="{Binding }"/>
-                    </DataTemplate>
-                </ListView.ItemTemplate>
-            </ListView>
+            <views:SearchResults Grid.Column="2" Queryy="{Binding DataContext.Query, ElementName=page}" ComponentType="{Binding DataContext.SelectedComponent.Type, ElementName=page}"/>
         </Grid>
     </Grid>
 </Page>
