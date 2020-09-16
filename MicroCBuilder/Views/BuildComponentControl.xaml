@@ -33,14 +33,15 @@
         <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding Component.Item.PictureUrls[0]}" Margin="5"/>
         <TextBlock Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Component.Item.Name}" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
         <TextBox Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"
-                        x:Name="textBox"
-                        HorizontalAlignment="Stretch"
-                        HorizontalContentAlignment="Stretch"
-                        TextChanged="textBox_TextChanged"
-                        VerticalAlignment="Center"
-                        PlaceholderText="{Binding Component.Type}"
-                        Visibility="{Binding Component.Item, Converter={StaticResource ShowIfNull}}">
-        </TextBox>
+                x:Name="textBox"
+                HorizontalAlignment="Stretch"
+                HorizontalContentAlignment="Stretch"
+                TextChanged="textBox_TextChanged"
+                VerticalAlignment="Center"
+                PlaceholderText="{Binding Component.Type}"
+                Visibility="{Binding Component.Item, Converter={StaticResource ShowIfNull}}"
+                KeyDown="textBox_KeyDown"/>
+        
         <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Component.Item.Brand}"/>
         <TextBox Grid.Column="3" Text="{Binding Component.Item.Price, Mode=TwoWay}" VerticalAlignment="Center" TextAlignment="End" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
         <TextBlock Grid.Column="3" Grid.Row="1" Text="{Binding Component.Item.SKU}"/>

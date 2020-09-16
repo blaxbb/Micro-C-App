@@ -71,21 +71,22 @@
                     <TextBlock Grid.Column="2" Text="Price"/>
                     <TextBlock Grid.Column="3" Text="Qty"/>
                 </Grid>
-                <ListView x:Name="ComponentListView" Grid.Row="1" ItemsSource="{Binding Components}" SelectedItem="{Binding SelectedComponent}" CanReorderItems="True" AllowDrop="True" ScrollViewer.IsVerticalRailEnabled="False">
+                <ListView x:Name="ComponentListView" Grid.Row="1" ItemsSource="{Binding Components}" SelectedItem="{Binding SelectedComponent}" CanReorderItems="True" AllowDrop="True" ScrollViewer.IsVerticalRailEnabled="False" IsTabStop="False" TabNavigation="Cycle">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                             <Setter Property="Padding" Value="0" />
+                            <Setter Property="IsTabStop" Value="False"/>
                         </Style>
                     </ListView.ItemContainerStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <views:BuildComponentControl Component="{Binding }" QueryUpdated="QueryUpdated"/>
+                            <views:BuildComponentControl Component="{Binding }" QueryUpdated="QueryUpdated" QuerySubmitted="QuerySubmitted"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
             </Grid>
-            <views:SearchResults Grid.Column="2" Queryy="{Binding DataContext.Query, ElementName=page}" ComponentType="{Binding DataContext.SelectedComponent.Type, ElementName=page}" ItemSelected="{Binding DataContext.ItemSelected, ElementName=page}"/>
+            <views:SearchResults x:Name="SearchView" Grid.Column="2" Query="{Binding DataContext.Query, ElementName=page}" ComponentType="{Binding DataContext.SelectedComponent.Type, ElementName=page}" ItemSelected="{Binding DataContext.ItemSelected, ElementName=page}" OnItemSelected="SearchView_OnItemSelected"/>
         </Grid>
     </Grid>
 </Page>

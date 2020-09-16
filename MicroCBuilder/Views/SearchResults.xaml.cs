@@ -28,7 +28,7 @@ namespace MicroCBuilder.Views
     {
         public ObservableCollection<Item> Results { get; }
         public int Count => Results?.Count ?? 0;
-        public string Queryy
+        public string Query
         {
             get { return (string)GetValue(QueryProperty); }
             set { SetValue(QueryProperty, value); HandleQuery(value); }
@@ -36,7 +36,7 @@ namespace MicroCBuilder.Views
 
         // Using a DependencyProperty as the backing store for Query.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty QueryProperty =
-            DependencyProperty.Register("Queryy", typeof(string), typeof(SearchResults), new PropertyMetadata("", new PropertyChangedCallback(QueryChanged)));
+            DependencyProperty.Register("Query", typeof(string), typeof(SearchResults), new PropertyMetadata("", new PropertyChangedCallback(QueryChanged)));
 
 
 
@@ -63,6 +63,8 @@ namespace MicroCBuilder.Views
         public static readonly DependencyProperty ItemSelectedProperty =
             DependencyProperty.Register("ItemSelected", typeof(ICommand), typeof(SearchResults), new PropertyMetadata(null));
 
+        public delegate void ItemSelectedEventArgs(object sender, Item item);
+        public event ItemSelectedEventArgs OnItemSelected;
 
 
 
@@ -81,7 +83,7 @@ namespace MicroCBuilder.Views
         {
             if (d is SearchResults s)
             {
-                s.HandleQuery(s.Queryy);
+                s.HandleQuery(s.Query);
             }
         }
 
@@ -140,6 +142,16 @@ namespace MicroCBuilder.Views
             var item = Results?[i];
             System.Diagnostics.Debug.WriteLine(Results?[i]?.Name);
             ItemSelected?.Execute(item);
+            OnItemSelected?.Invoke(this, item);
+        }
+
+        private void dataGrid_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                e.Handled = true;
+                dataGrid_DoubleTapped(sender, new DoubleTappedRoutedEventArgs());
+            }
         }
     }
 }

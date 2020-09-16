@@ -18,9 +18,8 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="{Binding Count}" Grid.Row="0" TextAlignment="Center"/>
         <controls:DataGrid x:Name="dataGrid"
-                           Grid.Row="1"
+                           Grid.Row="0"
                            CanUserReorderColumns="True"
                            CanUserResizeColumns="True"
                            CanUserSortColumns="True"
@@ -30,12 +29,12 @@
                            MaxColumnWidth="800"
                            DoubleTapped="dataGrid_DoubleTapped"
                            AlternatingRowBackground="{ThemeResource SystemControlBackgroundListLowBrush}"
-                           IsReadOnly="True">
+                           IsReadOnly="True"
+                           PreviewKeyDown="dataGrid_KeyDown">
             <controls:DataGrid.Columns>
                 <controls:DataGridTemplateColumn Header="">
                     <controls:DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <!--<TextBlock Text=""/>-->
                             <Image Source="{Binding PictureUrls[0]}" Height="100"/>
                         </DataTemplate>
                     </controls:DataGridTemplateColumn.CellTemplate>
@@ -43,6 +42,7 @@
                 <controls:DataGridTextColumn Header="Brand" Binding="{Binding Brand}"/>
                 <controls:DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="400"/>
                 <controls:DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
+                <controls:DataGridTextColumn Header="Stock" Binding="{Binding Stock}"/>
             </controls:DataGrid.Columns>
         </controls:DataGrid>
     </Grid>

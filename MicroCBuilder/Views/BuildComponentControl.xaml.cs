@@ -52,6 +52,8 @@ namespace MicroCBuilder.Views
         public delegate void QueryUpdatedEventHandler(BuildComponentControl sender, string query);
         public event QueryUpdatedEventHandler QueryUpdated;
 
+        public event QueryUpdatedEventHandler QuerySubmitted;
+
         public BuildComponentControl()
         {
             this.InitializeComponent();
@@ -61,10 +63,7 @@ namespace MicroCBuilder.Views
 
         private void textBox_TextChanged(object sender, TextChangedEventArgs args)
         {
-            if(QueryChanged != null)
-            {
-                QueryChanged.Execute(textBox.Text);
-            }
+            QueryChanged?.Execute(textBox.Text);
             QueryUpdated?.Invoke(this, textBox.Text);
 
             //var matches = FuzzySharp.Process.ExtractTop(sender.Text, Items.Select(i => $"{i.Brand} {i.SKU} {i.Name}"), scorer: ScorerCache.Get<TokenDifferenceScorer>(), limit: 10).ToList();
@@ -93,6 +92,15 @@ namespace MicroCBuilder.Views
             }
             textBox.Text = "";
             Suggestions.Clear();
+        }
+
+
+        private void textBox_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if (e.Key == Windows.System.VirtualKey.Enter)
+            {
+                QuerySubmitted?.Invoke(this, textBox.Text);
+            }
         }
 
         private Item Clone(Item item)
@@ -138,10 +146,5 @@ namespace MicroCBuilder.Views
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-
-        private void textBox_TextChanged_1(object sender, TextChangedEventArgs e)
-        {
-
-        }
     }
 }

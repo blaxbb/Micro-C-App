@@ -56,6 +56,22 @@ namespace MicroCBuilder.Views
             vm.Query = query;
         }
 
+        public void QuerySubmitted(BuildComponentControl control, string query)
+        {
+            SearchView.Focus(FocusState.Keyboard);
+        }
+
+        private void SearchView_OnItemSelected(object sender, Item item)
+        {
+            int index = ComponentListView.SelectedIndex + 1;
+            if(index == ComponentListView.Items.Count)
+            {
+                index = 0;
+            }
+            var container = ComponentListView.ContainerFromIndex(index) as Control;
+            container?.Focus(FocusState.Keyboard);
+            //ComponentListView.Focus(FocusState.Keyboard);
+        }
 
         private async void PrintButton_Click(object sender, RoutedEventArgs e)
         {
@@ -66,17 +82,6 @@ namespace MicroCBuilder.Views
             }
 
             _printHelper = new PrintHelper(Container);
-
-            //for (int i = 0; i < Lists.Count; i = i + 4)
-            //{
-            //    var grid = new Grid();
-            //    // Main content with layout from data template
-            //    var listView = new ListView();
-            //    listView.ItemTemplate = CustomPrintTemplate;
-            //    listView.ItemsSource = Lists.Skip(i).Take(4);
-            //    grid.Children.Add(listView);
-            //    _printHelper.AddFrameworkElementToPrint(grid);
-            //}
 
             const int ITEMS_PER_PAGE = 13;
             
