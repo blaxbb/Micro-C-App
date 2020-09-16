@@ -17,6 +17,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.UI;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -58,7 +59,11 @@ namespace MicroCBuilder.Views
 
         private async void PrintButton_Click(object sender, RoutedEventArgs e)
         {
-            MainGrid.Children.Remove(PrintContent);
+            var itemsCount = vm.Components.Count(c => c.Item != null);
+            if (itemsCount == 0)
+            {
+                return;
+            }
 
             _printHelper = new PrintHelper(Container);
 
@@ -72,7 +77,67 @@ namespace MicroCBuilder.Views
             //    grid.Children.Add(listView);
             //    _printHelper.AddFrameworkElementToPrint(grid);
             //}
-            _printHelper.AddFrameworkElementToPrint(PrintContent);
+
+            const int ITEMS_PER_PAGE = 13;
+            
+            for(int i = 0; i < itemsCount; i += ITEMS_PER_PAGE)
+            {
+                //create a new page
+                Grid page = new Grid();
+                page.Padding = new Thickness(40, 10, 40, 10);
+
+                //
+                //force grid to full width
+                //
+                page.Children.Add(new Canvas() { Width = 1000 });
+                TextBlock header = new TextBlock();
+                header.TextAlignment = TextAlignment.Center;
+                header.Text = "";
+
+                TextBlock footer = new TextBlock();
+                footer.TextAlignment = TextAlignment.Center;
+                footer.Text = "";
+
+                page.Children.Add(header);
+                page.Children.Add(footer);
+
+                Grid.SetRow(header, 0);
+                Grid.SetRow(footer, 2);
+
+                page.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                page.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+                page.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+
+                var contents = new Grid();
+                var comps = vm.Components.Where(c => c.Item != null).Skip(i).Take(ITEMS_PER_PAGE).ToList();
+                for (int j = 0; j < comps.Count; j++)
+                {
+                    var comp = comps[j];
+
+                    //get element from usercontrol
+                    var pv = new PrintView();
+                    var item = pv.printGrid;
+                    pv.Content = null;
+                    item.DataContext = comp;
+
+                    //stick it in a border
+                    var border = new Border();
+                    border.BorderThickness = new Thickness(0, 0, 0, 1);
+                    border.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black);
+                    border.Child = item;
+
+                    //add it to the grid
+                    contents.Children.Add(border);
+                    contents.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                    Grid.SetRow(border, j);
+                }
+
+                page.Children.Add(contents);
+                Grid.SetRow(contents, 1);
+
+                //add full grid as new page
+                _printHelper.AddFrameworkElementToPrint(page);
+            }
 
             _printHelper.OnPrintCanceled += PrintHelper_OnPrintCanceled;
             _printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
@@ -106,10 +171,6 @@ namespace MicroCBuilder.Views
         private void ReleasePrintHelper()
         {
             _printHelper.Dispose();
-            if (!MainGrid.Children.Contains(PrintContent))
-            {
-                MainGrid.Children.Add(PrintContent);
-            }
         }
     }
 }

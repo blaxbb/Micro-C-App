@@ -151,6 +151,9 @@
     <Compile Include="Views\BuildComponentControl.xaml.cs">
       <DependentUpon>BuildComponentControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\PrintView.xaml.cs">
+      <DependentUpon>PrintView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SearchResults.xaml.cs">
       <DependentUpon>SearchResults.xaml</DependentUpon>
     </Compile>
@@ -188,6 +191,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\BuildComponentControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\PrintView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
