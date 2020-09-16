@@ -85,7 +85,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
             </Grid>
-            <views:SearchResults Grid.Column="2" Queryy="{Binding DataContext.Query, ElementName=page}" ComponentType="{Binding DataContext.SelectedComponent.Type, ElementName=page}"/>
+            <views:SearchResults Grid.Column="2" Queryy="{Binding DataContext.Query, ElementName=page}" ComponentType="{Binding DataContext.SelectedComponent.Type, ElementName=page}" ItemSelected="{Binding DataContext.ItemSelected, ElementName=page}"/>
         </Grid>
     </Grid>
 </Page>

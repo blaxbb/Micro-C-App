@@ -30,6 +30,7 @@ namespace MicroCBuilder.ViewModels
         public ICommand Reset { get; }
         public ICommand Add { get; }
         public ICommand Remove { get; }
+        public ICommand ItemSelected { get; }
         public BuildComponent SelectedComponent { get => selectedItem; set => SetProperty(ref selectedItem, value); }
 
         public string Query { get => query; set => SetProperty(ref query, value); }
@@ -46,6 +47,7 @@ namespace MicroCBuilder.ViewModels
 
             Remove = new Command<BuildComponent>(DoRemove);
             Add = new Command<BuildComponent.ComponentType>(AddItem);
+            ItemSelected = new Command<Item>((Item item) => { if(SelectedComponent != null) SelectedComponent.Item = item; });
         }
 
         private void DoRemove(BuildComponent comp)

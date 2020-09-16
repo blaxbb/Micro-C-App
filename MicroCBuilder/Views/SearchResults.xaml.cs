@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -26,7 +27,7 @@ namespace MicroCBuilder.Views
     public sealed partial class SearchResults : UserControl, INotifyPropertyChanged
     {
         public ObservableCollection<Item> Results { get; }
-        public string DEBUG { get; set; } = "AAAA";
+        public int Count => Results?.Count ?? 0;
         public string Queryy
         {
             get { return (string)GetValue(QueryProperty); }
@@ -49,6 +50,18 @@ namespace MicroCBuilder.Views
         // Using a DependencyProperty as the backing store for ComponentType.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty ComponentTypeProperty =
             DependencyProperty.Register("ComponentType", typeof(BuildComponent.ComponentType), typeof(SearchResults), new PropertyMetadata(BuildComponent.ComponentType.CaseFan));
+
+
+
+        public ICommand ItemSelected
+        {
+            get { return (ICommand)GetValue(ItemSelectedProperty); }
+            set { SetValue(ItemSelectedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ItemSelected.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ItemSelectedProperty =
+            DependencyProperty.Register("ItemSelected", typeof(ICommand), typeof(SearchResults), new PropertyMetadata(null));
 
 
 
@@ -80,7 +93,7 @@ namespace MicroCBuilder.Views
                 return;
             }
 
-            var matches = FuzzySharp.Process.ExtractTop(query, Items.Select(i => $"{i.Brand} {i.SKU} {i.Name}")/*, scorer: ScorerCache.Get<TokenDifferenceScorer>()*/, limit: 100, cutoff: 40).ToList();
+            var matches = FuzzySharp.Process.ExtractTop(query, Items.Select(i => $"{i.Brand} {i.SKU} {i.Name}"), scorer: ScorerCache.Get<TokenDifferenceScorer>(), limit: 100).ToList();
 
             Results.Clear();
             for (int i = 0; i < matches.Count; i++)
@@ -89,8 +102,8 @@ namespace MicroCBuilder.Views
                 var item = Items[match.Index];
                 Results.Add(item);
             }
-
-            list.ItemsSource = Results;
+            OnPropertyChanged(nameof(Count));
+            //list.ItemsSource = Results;
             //dataGrid.ItemsSource = Results;
         }
 
@@ -116,5 +129,17 @@ namespace MicroCBuilder.Views
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
+
+        private void dataGrid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            var i = dataGrid.SelectedIndex;
+            if(i == -1)
+            {
+                return;
+            }
+            var item = Results?[i];
+            System.Diagnostics.Debug.WriteLine(Results?[i]?.Name);
+            ItemSelected?.Execute(item);
+        }
     }
 }

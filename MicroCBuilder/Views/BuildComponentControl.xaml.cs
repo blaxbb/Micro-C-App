@@ -59,27 +59,23 @@ namespace MicroCBuilder.Views
             var children = VisualTreeHelper.GetChildrenCount(textBox);
         }
 
-        private void textBox_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        private void textBox_TextChanged(object sender, TextChangedEventArgs args)
         {
             if(QueryChanged != null)
             {
-                QueryChanged.Execute(sender.Text);
+                QueryChanged.Execute(textBox.Text);
             }
-            QueryUpdated?.Invoke(this, sender.Text);
-            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
-            {
-                var matches = FuzzySharp.Process.ExtractTop(sender.Text, Items.Select(i => $"{i.Brand} {i.SKU} {i.Name}"), scorer: ScorerCache.Get<TokenDifferenceScorer>(), limit: 10).ToList();
-                Suggestions = new List<Item>();
+            QueryUpdated?.Invoke(this, textBox.Text);
 
-                for (int i = 0; i < matches.Count; i++)
-                {
-                    var match = matches[i];
-                    var item = Items[match.Index];
-                    Suggestions.Add(item);
-                }
+            //var matches = FuzzySharp.Process.ExtractTop(sender.Text, Items.Select(i => $"{i.Brand} {i.SKU} {i.Name}"), scorer: ScorerCache.Get<TokenDifferenceScorer>(), limit: 10).ToList();
+            //Suggestions = new List<Item>();
 
-                textBox.ItemsSource = Suggestions;
-            }
+            //for (int i = 0; i < matches.Count; i++)
+            //{
+            //    var match = matches[i];
+            //    var item = Items[match.Index];
+            //    Suggestions.Add(item);
+            //}
         }
 
         private void textBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
@@ -142,5 +138,10 @@ namespace MicroCBuilder.Views
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
+
+        private void textBox_TextChanged_1(object sender, TextChangedEventArgs e)
+        {
+
+        }
     }
 }

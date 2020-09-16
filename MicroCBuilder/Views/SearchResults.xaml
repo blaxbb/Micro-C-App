@@ -18,17 +18,7 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Text="{Binding Queryy}" Grid.Row="0" TextAlignment="Center"/>
-        <ListView x:Name="list" Grid.Row="1" ItemsSource="{Binding Results}" Opacity="0">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <Grid>
-                        <TextBlock Text="Item"/>
-                        <TextBlock Text="{Binding Name}"/>
-                    </Grid>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
+        <TextBlock Text="{Binding Count}" Grid.Row="0" TextAlignment="Center"/>
         <controls:DataGrid x:Name="dataGrid"
                            Grid.Row="1"
                            CanUserReorderColumns="True"
@@ -37,7 +27,10 @@
                            ItemsSource="{Binding Results}"
                            AutoGenerateColumns="False"
                            GridLinesVisibility="Horizontal"
-                           MaxColumnWidth="800">
+                           MaxColumnWidth="800"
+                           DoubleTapped="dataGrid_DoubleTapped"
+                           AlternatingRowBackground="{ThemeResource SystemControlBackgroundListLowBrush}"
+                           IsReadOnly="True">
             <controls:DataGrid.Columns>
                 <controls:DataGridTemplateColumn Header="">
                     <controls:DataGridTemplateColumn.CellTemplate>
@@ -48,7 +41,7 @@
                     </controls:DataGridTemplateColumn.CellTemplate>
                 </controls:DataGridTemplateColumn>
                 <controls:DataGridTextColumn Header="Brand" Binding="{Binding Brand}"/>
-                <controls:DataGridTextColumn Header="Name" Binding="{Binding Name}"/>
+                <controls:DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="400"/>
                 <controls:DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
             </controls:DataGrid.Columns>
         </controls:DataGrid>
