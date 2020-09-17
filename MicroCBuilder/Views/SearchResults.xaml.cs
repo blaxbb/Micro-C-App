@@ -85,17 +85,22 @@ namespace MicroCBuilder.Views
         {
             if (d is SearchResults s)
             {
-                s.HandleQuery(s.Query);
+                s.Update();
             }
+        }
+
+        public void Update()
+        {
+            HandleQuery(Query);
         }
 
         private void HandleQuery(string query)
         {
-            if (string.IsNullOrWhiteSpace(query))
-            {
-                Results.Clear();
-                return;
-            }
+            //if (string.IsNullOrWhiteSpace(query))
+            //{
+            //    Results.Clear();
+            //    return;
+            //}
 
             var matches = FuzzySharp.Process.ExtractTop(query, Items.Select(i => $"{i.Brand} {i.SKU} {i.Name}"), scorer: ScorerCache.Get<TokenDifferenceScorer>(), limit: 100).ToList();
 

@@ -58,6 +58,10 @@ namespace MicroCBuilder.Views
 
         public void QuerySubmitted(BuildComponentControl control, string query)
         {
+            vm.SelectedComponent = control.Component;
+            vm.Query = query;
+            SearchView.Update();
+
             SearchView.Focus(FocusState.Keyboard);
             SearchView.dataGrid.SelectedIndex = 0;
         }
@@ -84,7 +88,7 @@ namespace MicroCBuilder.Views
 
             _printHelper = new PrintHelper(Container);
 
-            const int ITEMS_PER_PAGE = 13;
+            const int ITEMS_PER_PAGE = 12;
             
             for(int i = 0; i < itemsCount; i += ITEMS_PER_PAGE)
             {
@@ -100,9 +104,8 @@ namespace MicroCBuilder.Views
                 header.TextAlignment = TextAlignment.Center;
                 header.Text = "";
 
-                TextBlock footer = new TextBlock();
-                footer.TextAlignment = TextAlignment.Center;
-                footer.Text = "";
+                var footer = new BuildSummaryControl();
+                footer.SubTotal = vm.SubTotal;
 
                 page.Children.Add(header);
                 page.Children.Add(footer);
@@ -128,7 +131,7 @@ namespace MicroCBuilder.Views
 
                     //stick it in a border
                     var border = new Border();
-                    border.BorderThickness = new Thickness(0, 0, 0, 1);
+                    border.BorderThickness = new Thickness(1, 0, 1, 1);
                     border.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black);
                     border.Child = item;
 
@@ -138,8 +141,9 @@ namespace MicroCBuilder.Views
                     Grid.SetRow(border, j);
                 }
 
-                page.Children.Add(contents);
-                Grid.SetRow(contents, 1);
+                var border2 = new Border() { Child = contents, BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black), BorderThickness = new Thickness(0, 1, 0, 0) };
+                page.Children.Add(border2);
+                Grid.SetRow(border2, 1);
 
                 //add full grid as new page
                 _printHelper.AddFrameworkElementToPrint(page);

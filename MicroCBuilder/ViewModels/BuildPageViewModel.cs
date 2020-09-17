@@ -13,6 +13,7 @@ using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
+using static MicroCLib.Models.BuildComponent.ComponentType;
 
 namespace MicroCBuilder.ViewModels
 {
@@ -35,10 +36,21 @@ namespace MicroCBuilder.ViewModels
 
         public string Query { get => query; set => SetProperty(ref query, value); }
 
+        public float SubTotal => Components.Where(c => c.Item != null).Sum(c => c.Item.Price);
+
         public BuildPageViewModel()
         {
             Components = new ObservableCollection<BuildComponent>();
-            Enum.GetValues(typeof(BuildComponent.ComponentType)).Cast<BuildComponent.ComponentType>().ToList().ForEach(c => Components.Add(new BuildComponent() { Type = c }));
+
+            DefaultComponentTypes().ToList().ForEach(c => {
+                var comp = new BuildComponent() { Type = c };
+                comp.PropertyChanged += (sender, args) =>
+                {
+                    Debug.WriteLine("ZZ");
+                    OnPropertyChanged(nameof(Components));
+                };
+                Components.Add(comp);
+            });
             Save = new Command(DoSave);
 
             Load = new Command(DoLoad);
@@ -47,7 +59,25 @@ namespace MicroCBuilder.ViewModels
 
             Remove = new Command<BuildComponent>(DoRemove);
             Add = new Command<BuildComponent.ComponentType>(AddItem);
-            ItemSelected = new Command<Item>((Item item) => { if(SelectedComponent != null) SelectedComponent.Item = item; });
+            ItemSelected = new Command<Item>((Item item) => { if(SelectedComponent != null) SelectedComponent.Item = item; OnPropertyChanged(nameof(SubTotal)); });
+        }
+
+        private static IEnumerable<BuildComponent.ComponentType> DefaultComponentTypes()
+        {
+            yield return BuildService;
+            yield return BuildComponent.ComponentType.OperatingSystem;
+            yield return CPU;
+            yield return Motherboard;
+            yield return RAM;
+            yield return Case;
+            yield return PowerSupply;
+            yield return GPU;
+            yield return SSD;
+            yield return HDD;
+            yield return CPUCooler;
+            yield return CaseFan;
+        
+
         }
 
         private void DoRemove(BuildComponent comp)
@@ -60,6 +90,7 @@ namespace MicroCBuilder.ViewModels
             {
                 Components.Remove(comp);
             }
+            OnPropertyChanged(nameof(SubTotal));
         }
 
         private void AddItem(BuildComponent.ComponentType type)
@@ -82,6 +113,7 @@ namespace MicroCBuilder.ViewModels
 
             var comp = new BuildComponent() { Type = type };
             Components.Insert(index, comp);
+            OnPropertyChanged(nameof(SubTotal));
             return comp;
         }
 
@@ -91,6 +123,7 @@ namespace MicroCBuilder.ViewModels
             {
                 c.Item = null;
             }
+            OnPropertyChanged(nameof(SubTotal));
         }
 
         private async void DoLoad(object obj)
@@ -140,6 +173,8 @@ namespace MicroCBuilder.ViewModels
                     comp.Item = loadedComp.Item;
                 }
             }
+
+            OnPropertyChanged(nameof(SubTotal));
         }
 
         private async void DoSave(object obj)

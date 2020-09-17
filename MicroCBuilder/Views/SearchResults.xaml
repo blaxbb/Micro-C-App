@@ -46,5 +46,6 @@
                 <controls:DataGridTextColumn Header="Stock" Binding="{Binding Stock}"/>
             </controls:DataGrid.Columns>
         </controls:DataGrid>
+        <TextBlock Text="{Binding ComponentType}"/>
     </Grid>
 </UserControl>
