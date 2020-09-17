@@ -62,14 +62,14 @@
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="4*"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="1.25*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="1" Text="Name"/>
-                    <TextBlock Grid.Column="2" Text="Price"/>
-                    <TextBlock Grid.Column="3" Text="Qty"/>
+                    <TextBlock Grid.Column="1" Text="Name" Grid.ColumnSpan="2"/>
+                    <TextBlock Grid.Column="3" Text="Price"/>
+                    <TextBlock Grid.Column="4" Text="Qty"/>
                 </Grid>
                 <ListView x:Name="ComponentListView" Grid.Row="1" ItemsSource="{Binding Components}" SelectedItem="{Binding SelectedComponent}" CanReorderItems="True" AllowDrop="True" ScrollViewer.IsVerticalRailEnabled="False" IsTabStop="False" TabNavigation="Cycle">
                     <ListView.ItemContainerStyle>

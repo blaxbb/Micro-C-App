@@ -18,7 +18,7 @@
         </Style>
         <converters:StringFormatConverter x:Key="Format"/>
     </UserControl.Resources>
-    <Grid ColumnSpacing="5" Height="100" Margin="10">
+    <Grid ColumnSpacing="5" Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>
@@ -30,7 +30,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding Component.Item.PictureUrls[0]}" Margin="5"/>
+        <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding Component.Item.PictureUrls[0]}" Margin="5"  Height="100" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
         <TextBlock Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Component.Item.Name}" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
         <TextBox Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="2"
                 x:Name="textBox"

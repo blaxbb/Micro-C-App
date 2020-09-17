@@ -59,6 +59,7 @@ namespace MicroCBuilder.Views
         public void QuerySubmitted(BuildComponentControl control, string query)
         {
             SearchView.Focus(FocusState.Keyboard);
+            SearchView.dataGrid.SelectedIndex = 0;
         }
 
         private void SearchView_OnItemSelected(object sender, Item item)

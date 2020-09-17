@@ -77,46 +77,12 @@ namespace MicroCBuilder.Views
             //}
         }
 
-        private void textBox_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
-        {
-            if (args.ChosenSuggestion is Item item)
-            {
-                Component.Item = Clone(item);
-            }
-            else
-            {
-                if (Suggestions != null && Suggestions.Count > 0)
-                {
-                    Component.Item = Clone(Suggestions.First());
-                }
-            }
-            textBox.Text = "";
-            Suggestions.Clear();
-        }
-
-
         private void textBox_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             if (e.Key == Windows.System.VirtualKey.Enter)
             {
                 QuerySubmitted?.Invoke(this, textBox.Text);
             }
-        }
-
-        private Item Clone(Item item)
-        {
-            var json = JsonSerializer.Serialize(item);
-            var ret = JsonSerializer.Deserialize<Item>(json);
-            ret.Quantity = 1;
-            return ret;
-        }
-
-        private void textBox_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
-        {
-            //if(args.SelectedItem is Item item)
-            //{
-            //    textBox.Text = item.Name;
-            //}
         }
 
         public void SetTextBox(string text)

@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.Json;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -79,6 +80,7 @@ namespace MicroCBuilder.Views
             dataGrid.ItemsSource = collection.View;
             dataGrid.CanUserSortColumns = true;
         }
+
         private static void QueryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             if (d is SearchResults s)
@@ -132,6 +134,14 @@ namespace MicroCBuilder.Views
         }
         #endregion
 
+        private Item Clone(Item item)
+        {
+            var json = JsonSerializer.Serialize(item);
+            var ret = JsonSerializer.Deserialize<Item>(json);
+            ret.Quantity = 1;
+            return ret;
+        }
+
         private void dataGrid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             var i = dataGrid.SelectedIndex;
@@ -139,7 +149,7 @@ namespace MicroCBuilder.Views
             {
                 return;
             }
-            var item = Results?[i];
+            var item = Clone(Results?[i]);
             System.Diagnostics.Debug.WriteLine(Results?[i]?.Name);
             ItemSelected?.Execute(item);
             OnItemSelected?.Invoke(this, item);

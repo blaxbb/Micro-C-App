@@ -15,10 +15,11 @@
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <controls:DataGrid x:Name="dataGrid"
+                           x:FieldModifier="public"
                            Grid.Row="0"
                            CanUserReorderColumns="True"
                            CanUserResizeColumns="True"
