@@ -50,7 +50,7 @@
             </AppBarButton>
             <AppBarButton Icon="Remove" Label="Remove" Command="{Binding Remove}" CommandParameter="{Binding ElementName=ComponentListView, Path=SelectedItem}"/>
             <CommandBar.SecondaryCommands>
-                <AppBarButton Icon="Clear" Label="Reset" Command="{Binding Reset}"/>
+                <AppBarButton Icon="Clear" Label="Reset" Command="{Binding Reset}" Click="ResetClicked"/>
                 <AppBarButton Icon="Share" Label="Export to Microcenter.com" Command="{Binding ExportToMCOL}"/>
                 <AppBarButton Icon="Mail"  Label="Email"/>
             </CommandBar.SecondaryCommands>

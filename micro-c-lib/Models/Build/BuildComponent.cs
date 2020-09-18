@@ -31,7 +31,8 @@ namespace MicroCLib.Models
             CaseFan,
             OperatingSystem,
             Miscellaneous,
-            Plan
+            Plan,
+            WaterCoolingKit
         }
         public ComponentType Type { get; set; }
         [JsonIgnore]
@@ -89,6 +90,7 @@ namespace MicroCLib.Models
                 case ComponentType.GPU:
                 case ComponentType.BuildService:
                 case ComponentType.Miscellaneous:
+                case ComponentType.WaterCoolingKit:
                 default:
                     return true;
                 case ComponentType.OperatingSystem:
@@ -114,6 +116,7 @@ namespace MicroCLib.Models
                 case ComponentType.GPU:
                 case ComponentType.Miscellaneous:
                 case ComponentType.Plan:
+                case ComponentType.WaterCoolingKit:
                 default:
                     return false;
                 case ComponentType.OperatingSystem:
@@ -141,6 +144,7 @@ namespace MicroCLib.Models
                 ComponentType.CaseFan => "4294966926",
                 ComponentType.OperatingSystem => "4294967276",
                 ComponentType.BuildService => "4294809201",
+                ComponentType.WaterCoolingKit => "4294966904",
                 _ => "",
             };
         }
@@ -160,6 +164,7 @@ namespace MicroCLib.Models
                 case ComponentType.BuildService:
                     return 1;
                 case ComponentType.GPU:
+                case ComponentType.WaterCoolingKit:
                     return 4;
                 case ComponentType.RAM:
                 case ComponentType.CaseFan:
@@ -201,6 +206,8 @@ namespace MicroCLib.Models
                 case ComponentType.Plan:
                 case ComponentType.OperatingSystem:
                     return "12";
+                case ComponentType.WaterCoolingKit:
+                    return "84";
                 case ComponentType.Miscellaneous:
                 default:
                     return "19";

@@ -98,8 +98,10 @@ namespace MicroCBuilder.ViewModels
             yield return SSD;
             yield return HDD;
             yield return CPUCooler;
+            yield return WaterCoolingKit;
             yield return CaseFan;
-        
+
+
 
         }
 

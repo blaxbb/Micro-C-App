@@ -182,5 +182,17 @@ namespace MicroCBuilder.Views
         {
             _printHelper.Dispose();
         }
+
+        private void ResetClicked(object sender, RoutedEventArgs e)
+        {
+            for(int i = 0; i < vm.Components.Count; i++)
+            {
+                var li = ComponentListView.ContainerFromIndex(i) as ListViewItem;
+                if(li.ContentTemplateRoot is BuildComponentControl control)
+                {
+                    control.SetTextBox("");
+                }
+            }
+        }
     }
 }
