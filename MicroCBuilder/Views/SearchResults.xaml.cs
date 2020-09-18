@@ -1,10 +1,12 @@
 ﻿using FuzzySharp.SimilarityRatio;
 using FuzzySharp.SimilarityRatio.Scorer.StrategySensitive;
 using MicroCLib.Models;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -27,8 +29,9 @@ namespace MicroCBuilder.Views
 {
     public sealed partial class SearchResults : UserControl, INotifyPropertyChanged
     {
-        public ObservableCollection<Item> Results { get; }
-        public int Count => Results?.Count ?? 0;
+        private List<Item> Results { get; set; }
+
+        public int Count => Results.Count;
         public string Query
         {
             get { return (string)GetValue(QueryProperty); }
@@ -73,11 +76,8 @@ namespace MicroCBuilder.Views
         public SearchResults()
         {
             this.InitializeComponent();
+            Results = new List<Item>();
             DataContext = this;
-            Results = new ObservableCollection<Item>();
-            var collection = new CollectionViewSource();
-            collection.Source = Results;
-            dataGrid.ItemsSource = collection.View;
             dataGrid.CanUserSortColumns = true;
         }
 
@@ -96,24 +96,25 @@ namespace MicroCBuilder.Views
 
         private void HandleQuery(string query)
         {
-            //if (string.IsNullOrWhiteSpace(query))
-            //{
-            //    Results.Clear();
-            //    return;
-            //}
-
-            var matches = FuzzySharp.Process.ExtractTop(query, Items.Select(i => $"{i.Brand} {i.SKU} {i.Name}"), scorer: ScorerCache.Get<TokenDifferenceScorer>(), limit: 100).ToList();
-
             Results.Clear();
-            for (int i = 0; i < matches.Count; i++)
+            if (string.IsNullOrWhiteSpace(query))
             {
-                var match = matches[i];
-                var item = Items[match.Index];
-                Results.Add(item);
+                Results = new List<Item>(Items);
             }
+            else
+            {
+
+                var matches = FuzzySharp.Process.ExtractTop(query, Items.Select(i => $"{i.Brand} {i.SKU} {i.Name}"), scorer: ScorerCache.Get<PartialTokenDifferenceScorer>(), limit: 100).ToList();
+
+                for (int i = 0; i < matches.Count; i++)
+                {
+                    var match = matches[i];
+                    var item = Items[match.Index];
+                    Results.Add(item);
+                }
+            }
+            dataGrid.ItemsSource = new ObservableCollection<Item>(Results);
             OnPropertyChanged(nameof(Count));
-            //list.ItemsSource = Results;
-            //dataGrid.ItemsSource = Results;
         }
 
         private bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action? onChanged = null)
@@ -154,8 +155,9 @@ namespace MicroCBuilder.Views
             {
                 return;
             }
-            var item = Clone(Results?[i]);
-            System.Diagnostics.Debug.WriteLine(Results?[i]?.Name);
+            var source = dataGrid.ItemsSource as ObservableCollection<Item>;
+            var item = Clone(source[i]);
+            System.Diagnostics.Debug.WriteLine(item.Name);
             ItemSelected?.Execute(item);
             OnItemSelected?.Invoke(this, item);
         }
@@ -167,6 +169,52 @@ namespace MicroCBuilder.Views
                 e.Handled = true;
                 dataGrid_DoubleTapped(sender, new DoubleTappedRoutedEventArgs());
             }
+        }
+
+        private void dataGrid_Sorting(object sender, Microsoft.Toolkit.Uwp.UI.Controls.DataGridColumnEventArgs e)
+        {
+            if (e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Ascending)
+            {
+                e.Column.SortDirection = DataGridSortDirection.Descending;
+            }
+            else
+            {
+                e.Column.SortDirection = DataGridSortDirection.Ascending;
+            }
+
+            foreach(var column in dataGrid.Columns)
+            {
+                if(column != e.Column)
+                {
+                    column.SortDirection = null;
+                }
+            }
+
+            var asc = e.Column.SortDirection == DataGridSortDirection.Ascending;
+            Func<Item, object> sort = null;
+            switch (e.Column.Header.ToString())
+            {
+                case "SKU":
+                    sort = (i) => i.SKU;
+                    break;
+                case "Stock":
+                    sort = (i) => i.Stock;
+                    break;
+                case "Price":
+                    sort = (i) => i.Price;
+                    break;
+                case "Name":
+                    sort = (i) => i.Name;
+                    break;
+                case "Brand":
+                    sort = (i) => i.Brand;
+                    break;
+                default:
+                    Debug.WriteLine($"column not sorted {e.Column.Tag}");
+                    break;
+            }
+
+            dataGrid.ItemsSource = asc ? new ObservableCollection<Item>(Results.OrderBy(sort)) : new ObservableCollection<Item>(Results.OrderByDescending(sort));
         }
     }
 }
