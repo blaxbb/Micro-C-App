@@ -6,7 +6,7 @@
     xmlns:local="using:MicroCBuilder"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:vm="using:MicroCBuilder.ViewModels" xmlns:views="using:MicroCBuilder.Views"
+    xmlns:vm="using:MicroCBuilder.ViewModels" xmlns:views="using:MicroCBuilder.Views" xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     NavigationCacheMode="Required">
@@ -82,7 +82,7 @@
                     </ListView.ItemContainerStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <views:BuildComponentControl Component="{Binding }" QueryUpdated="QueryUpdated" QuerySubmitted="QuerySubmitted"/>
+                            <views:BuildComponentControl Component="{Binding }" QueryUpdated="QueryUpdated" QuerySubmitted="QuerySubmitted" Margin="10,0,10,0"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -91,6 +91,19 @@
                 </Border>
             </Grid>
             <views:SearchResults x:Name="SearchView" Grid.Column="2" Query="{Binding DataContext.Query, ElementName=page}" ComponentType="{Binding DataContext.SelectedComponent.Type, ElementName=page}" ItemSelected="{Binding DataContext.ItemSelected, ElementName=page}" OnItemSelected="SearchView_OnItemSelected"/>
+            <!--Column Grid Splitter-->
+            <controls:GridSplitter
+                GripperCursor="Default"
+                HorizontalAlignment="Left"
+                Grid.Column="1"
+                ResizeDirection="Auto"
+                ResizeBehavior="BasedOnAlignment"
+                CursorBehavior="ChangeOnSplitterHover"
+                Width="1">
+                    <controls:GridSplitter.RenderTransform>
+                        <TranslateTransform X="-8" />
+                    </controls:GridSplitter.RenderTransform>
+            </controls:GridSplitter>
         </Grid>
     </Grid>
 </Page>

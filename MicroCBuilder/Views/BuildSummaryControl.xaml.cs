@@ -33,12 +33,12 @@ namespace MicroCBuilder.Views
         // Using a DependencyProperty as the backing store for SubTotal.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SubTotalProperty =
             DependencyProperty.Register("SubTotal", typeof(float), typeof(BuildSummaryControl), new PropertyMetadata(0f, new PropertyChangedCallback(PropChanged)));
+        public double TaxRate { get; set; }
 
-        const float TAX = .075f;
-        public float TaxAmt => SubTotal * TAX;
-        public float Total => SubTotal * (1 + TAX);
-        public float CCDiscount => Total * .05f;
-        public float CCTotal => Total * .95f;
+        public double TaxAmt => SubTotal * TaxRate;
+        public double Total => SubTotal * (1 + TaxRate);
+        public double CCDiscount => Total * .05f;
+        public double CCTotal => Total * .95f;
 
 
         private static void PropChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -51,12 +51,21 @@ namespace MicroCBuilder.Views
 
         public BuildSummaryControl()
         {
+            SettingsUpdated("", 0);
             this.InitializeComponent();
             DataContext = this;
+            Settings.SettingsUpdated += SettingsUpdated;
+        }
+
+        private void SettingsUpdated(string key, object value)
+        {
+            TaxRate = Settings.TaxRate() / 100;
+            UpdateProperties();
         }
 
         private void UpdateProperties()
         {
+            OnPropertyChanged(nameof(TaxRate));
             OnPropertyChanged(nameof(TaxAmt));
             OnPropertyChanged(nameof(Total));
             OnPropertyChanged(nameof(CCDiscount));

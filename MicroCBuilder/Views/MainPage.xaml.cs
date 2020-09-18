@@ -25,11 +25,45 @@ namespace MicroCBuilder.Views
     /// </summary>
     public sealed partial class MainPage : Page
     {
+
         public MainPage()
         {
             this.InitializeComponent();
             ApplicationView.PreferredLaunchViewSize = new Size(1920, 1080);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
+            InitCache();
+            MicroCBuilder.ViewModels.SettingsPageViewModel.ForceUpdate += async () => UpdateCache();
+
+
+            Navigation.SelectedItem = Navigation.MenuItems.FirstOrDefault();
+            Navigate(Navigation.SelectedItem as NavigationViewItemBase);
+            //ContentFrame.Navigate(typeof(TestPage));
+        }
+
+        public void UpdateCache()
+        {
+            var progress = new Progress<int>((int p) =>
+            {
+                CacheProgress.Value = p;
+            });
+            var dispatcher = Window.Current.Dispatcher;
+
+            CacheProgressContainer.Visibility = Visibility.Visible;
+
+            Task.Run(async () =>
+            {
+                await BuildComponentCache.Current.PopulateCache(progress);
+            }).ContinueWith(async (_) =>
+            {
+                await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
+                {
+                    CacheProgressContainer.Visibility = Visibility.Collapsed;
+                });
+            });
+        }
+
+        public void InitCache()
+        {
             var progress = new Progress<int>((int p) =>
             {
                 CacheProgress.Value = p;
@@ -59,11 +93,6 @@ namespace MicroCBuilder.Views
             {
                 CacheProgressContainer.Visibility = Visibility.Collapsed;
             }
-
-
-            Navigation.SelectedItem = Navigation.MenuItems.FirstOrDefault();
-            Navigate(Navigation.SelectedItem as NavigationViewItemBase);
-            //ContentFrame.Navigate(typeof(TestPage));
         }
 
         private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
@@ -94,7 +123,6 @@ namespace MicroCBuilder.Views
             if (pageType != null)
             {
                 ContentFrame.Navigate(pageType);
-                Navigation.PaneTitle = item?.Content.ToString();
             }
         }
 

@@ -39,6 +39,7 @@ namespace MicroCBuilder
 
         public async Task PopulateCache(IProgress<int> progress)
         {
+            Cache.Clear();
             var types = Enum.GetValues(typeof(BuildComponent.ComponentType)).Cast<BuildComponent.ComponentType>().ToList();
             for(int i = 0; i < types.Count; i++)
             {
@@ -46,7 +47,7 @@ namespace MicroCBuilder
                 var category = BuildComponent.CategoryFilterForType(type);
                 if (!string.IsNullOrWhiteSpace(category))
                 {
-                    var items = await Search.LoadAll(null, "141", category, Search.OrderByMode.pricelow);
+                    var items = await Search.LoadAll(null, Settings.StoreID(), category, Search.OrderByMode.pricelow);
                     Cache[category] = items.Items;
                 }
                 var percent = (int)Math.Round(((float)(i+1) / types.Count) * 100);
