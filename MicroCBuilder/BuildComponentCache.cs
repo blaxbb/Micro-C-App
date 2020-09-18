@@ -57,6 +57,7 @@ namespace MicroCBuilder
             var file = await Windows.Storage.ApplicationData.Current.LocalFolder.CreateFileAsync(FILENAME, Windows.Storage.CreationCollisionOption.ReplaceExisting);
             await Windows.Storage.FileIO.WriteTextAsync(file, json);
 
+            Settings.LastUpdated(DateTimeOffset.Now);
         }
 
         public List<Item> FromType(BuildComponent.ComponentType type)

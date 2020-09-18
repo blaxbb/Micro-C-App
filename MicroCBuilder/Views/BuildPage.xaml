@@ -33,17 +33,24 @@
                 </AppBarButton.Flyout>
 
             </AppBarButton>
-            <AppBarButton Icon="Save" Label="Save" Command="{Binding Save}"/>
-            <AppBarButton Icon="OpenFile" Label="Load" Command="{Binding Load}"/>
-            <AppBarButton Icon="Print" Label="Print" Click="PrintButton_Click"/>
+            <AppBarButton Icon="Save" Label="Save" Command="{Binding Save}">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="S" Modifiers="Control"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
+            <AppBarButton Icon="OpenFile" Label="Open" Command="{Binding Load}">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="O" Modifiers="Control"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
+            <AppBarButton Icon="Print" Label="Print" Click="PrintButton_Click">
+                <AppBarButton.KeyboardAccelerators>
+                    <KeyboardAccelerator Key="P" Modifiers="Control"/>
+                </AppBarButton.KeyboardAccelerators>
+            </AppBarButton>
             <AppBarButton Icon="Remove" Label="Remove" Command="{Binding Remove}" CommandParameter="{Binding ElementName=ComponentListView, Path=SelectedItem}"/>
             <CommandBar.SecondaryCommands>
                 <AppBarButton Icon="Clear" Label="Reset" Command="{Binding Reset}"/>
-                <AppBarButton Icon="Setting" Label="Settings">
-                    <AppBarButton.KeyboardAccelerators>
-                        <KeyboardAccelerator Modifiers="Control" Key="I" />
-                    </AppBarButton.KeyboardAccelerators>
-                </AppBarButton>
                 <AppBarButton Icon="Share" Label="Export to Microcenter.com" Command="{Binding ExportToMCOL}"/>
                 <AppBarButton Icon="Mail"  Label="Email"/>
             </CommandBar.SecondaryCommands>

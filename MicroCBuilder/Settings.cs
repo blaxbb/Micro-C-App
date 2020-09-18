@@ -28,10 +28,10 @@ namespace MicroCBuilder
         public static string Store()  => Exists(STORE_KEY) ? Value<string>(STORE_KEY) : Stores.AllStores.Keys.FirstOrDefault();
         public static string StoreID() => Stores.AllStores[Store()];
         public static double TaxRate() => Exists(TAXRATE_KEY) ? Value<double>(TAXRATE_KEY) : 7.5d;
-        public static DateTime LastUpdated() => Exists(LASTUPDATE_KEY) ? Value<DateTime>(LASTUPDATE_KEY) : DateTime.Now;
+        public static DateTimeOffset LastUpdated() => Exists(LASTUPDATE_KEY) ? Value<DateTimeOffset>(LASTUPDATE_KEY) : DateTimeOffset.Now;
 
         public static void Store(string store) => Set(STORE_KEY, store);
         public static void TaxRate(double tax) => Set(TAXRATE_KEY, tax);
-        public static void LastUpdated(DateTime time) => Set(LASTUPDATE_KEY, time);
+        public static void LastUpdated(DateTimeOffset time) => Set(LASTUPDATE_KEY, time);
     }
 }

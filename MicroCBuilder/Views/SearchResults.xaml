@@ -45,6 +45,7 @@
                 <controls:DataGridTextColumn Header="Name" Binding="{Binding Name}" Width="400"/>
                 <controls:DataGridTextColumn Header="Price" Binding="{Binding Price}"/>
                 <controls:DataGridTextColumn Header="Stock" Binding="{Binding Stock}"/>
+                <controls:DataGridTextColumn Header="Stock" Binding="{Binding SKU}"/>
             </controls:DataGrid.Columns>
         </controls:DataGrid>
     </Grid>

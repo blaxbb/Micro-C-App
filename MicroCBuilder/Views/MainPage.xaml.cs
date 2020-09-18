@@ -83,8 +83,9 @@ namespace MicroCBuilder.Views
             {
                 await DisplayProgress(async (progress) =>
                 {
+                    var ts = DateTime.Now - Settings.LastUpdated();
                     var cached = await cache.LoadCache();
-                    if (!cached)
+                    if (!cached || ts.TotalHours >= 20)
                     {
                         await cache.PopulateCache(progress);
                     }
