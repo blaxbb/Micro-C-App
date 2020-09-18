@@ -1,4 +1,5 @@
 ﻿using micro_c_lib.Models;
+using MicroCBuilder.Views;
 using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
@@ -32,11 +33,13 @@ namespace MicroCBuilder.ViewModels
         public ICommand Add { get; }
         public ICommand Remove { get; }
         public ICommand ItemSelected { get; }
+        public ICommand ExportToMCOL { get; }
+        public ICommand ItemValuesUpdated { get; }
         public BuildComponent SelectedComponent { get => selectedItem; set => SetProperty(ref selectedItem, value); }
 
         public string Query { get => query; set => SetProperty(ref query, value); }
 
-        public float SubTotal => Components.Where(c => c.Item != null).Sum(c => c.Item.Price);
+        public float SubTotal => Components.Where(c => c.Item != null).Sum(c => c.Item.Price * c.Item.Quantity);
 
         public BuildPageViewModel()
         {
@@ -60,6 +63,26 @@ namespace MicroCBuilder.ViewModels
             Remove = new Command<BuildComponent>(DoRemove);
             Add = new Command<BuildComponent.ComponentType>(AddItem);
             ItemSelected = new Command<Item>((Item item) => { if(SelectedComponent != null) SelectedComponent.Item = item; OnPropertyChanged(nameof(SubTotal)); });
+
+            ExportToMCOL = new Command(async (_) =>
+            {
+                var total = Components.Count(comp => comp != null && comp.Item != null);
+                await MainPage.Instance.DisplayProgress(async (progress) =>
+                {
+                    var result = await BuildComponent.ExportToMCOL(Components.ToList(), progress);
+                    Debug.WriteLine(result);
+                    var success = await Windows.System.Launcher.LaunchUriAsync(new Uri(result));
+                    if (!success)
+                    {
+                        //todo: show dialog with URL
+                    }
+                }, "Exporting to MCOL", total);
+            });
+
+            ItemValuesUpdated = new Command((_) =>
+            {
+                OnPropertyChanged(nameof(SubTotal));
+            });
         }
 
         private static IEnumerable<BuildComponent.ComponentType> DefaultComponentTypes()

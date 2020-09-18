@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text.Json.Serialization;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace MicroCLib.Models
 {
@@ -202,6 +205,46 @@ namespace MicroCLib.Models
                 default:
                     return "19";
             }
+        }
+
+        public static async Task<string> ExportToMCOL(List<BuildComponent> Components, IProgress<int> progress)
+        {
+            string BuildURL = "";
+            using (var client = new HttpClient())
+            {
+                List<string> hitCategories = new List<string>();
+                int cnt = 0;
+                for (int i = 0; i < Components.Count; i++)
+                {
+                    var comp = Components[i];
+                    if (comp.Item == null || comp.Item.ID == null)
+                    {
+                        continue;
+                    }
+
+                    cnt++;
+                    progress.Report(cnt);
+
+
+                    var selectorID = BuildComponent.MCOLSelectorIDForType(comp.Type);
+                    bool duplicateSelector = hitCategories.Contains(selectorID);
+                    var url = $"https://www.microcenter.com/site/content/custom-pc-builder.aspx?toselectorId={selectorID}&configuratorId=1&productId={comp.Item.ID}&productName={comp.Item.Name}&newItem={(duplicateSelector ? "true" : "false")}";
+                    if (!duplicateSelector)
+                    {
+                        hitCategories.Add(selectorID);
+                    }
+
+                    var result = await client.GetAsync(url);
+                    var body = await result.Content.ReadAsStringAsync();
+                    var match = Regex.Match(body, "value=\"(.*?)\" name=\"shareURL\" id=\"shareURL\">");
+                    if (match.Success)
+                    {
+                        BuildURL = match.Groups[1].Value;
+                    }
+                }
+            }
+
+            return BuildURL;
         }
     }
 }

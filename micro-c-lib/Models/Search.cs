@@ -96,13 +96,22 @@ namespace micro_c_lib.Models
                     sku = skuMatch.Groups[1].Value ?? "000000";
                 }
 
+                var url = m.Groups[5].Value;
+                string id = "000000";
+                Match m_id = Regex.Match(url, "/product/(\\d+)/");
+                if (m_id.Success)
+                {
+                    id = m_id.Groups[1].Value;
+                }
+
                 float.TryParse(m.Groups[3].Value, out float price);
                 var item = new Item()
                 {
                     Name = Item.HttpDecode(m.Groups[1].Value),
+                    ID = id,
                     Price = price,
                     Brand = m.Groups[4].Value,
-                    URL = m.Groups[5].Value,
+                    URL = url,
                     PictureUrls = new List<string>() { m.Groups[6].Value },
                     Stock = stock,
                     SKU = sku,

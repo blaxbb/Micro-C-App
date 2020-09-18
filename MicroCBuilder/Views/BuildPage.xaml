@@ -44,7 +44,7 @@
                         <KeyboardAccelerator Modifiers="Control" Key="I" />
                     </AppBarButton.KeyboardAccelerators>
                 </AppBarButton>
-                <AppBarButton Icon="Share" Label="Export to Microcenter.com"/>
+                <AppBarButton Icon="Share" Label="Export to Microcenter.com" Command="{Binding ExportToMCOL}"/>
                 <AppBarButton Icon="Mail"  Label="Email"/>
             </CommandBar.SecondaryCommands>
 
@@ -54,7 +54,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0" x:Name="PrintContent">
+            <Grid Grid.Column="0" x:Name="PrintContent" Margin="0,0,8,0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -82,7 +82,7 @@
                     </ListView.ItemContainerStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <views:BuildComponentControl Component="{Binding }" QueryUpdated="QueryUpdated" QuerySubmitted="QuerySubmitted" Margin="10,0,10,0"/>
+                            <views:BuildComponentControl Component="{Binding }" ValuesUpdated="{Binding DataContext.ItemValuesUpdated, ElementName=page}" QueryUpdated="QueryUpdated" QuerySubmitted="QuerySubmitted" Margin="10,0,10,0"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
@@ -99,7 +99,7 @@
                 ResizeDirection="Auto"
                 ResizeBehavior="BasedOnAlignment"
                 CursorBehavior="ChangeOnSplitterHover"
-                Width="1">
+                Width="16">
                     <controls:GridSplitter.RenderTransform>
                         <TranslateTransform X="-8" />
                     </controls:GridSplitter.RenderTransform>

@@ -25,9 +25,10 @@ namespace MicroCBuilder.Views
     /// </summary>
     public sealed partial class MainPage : Page
     {
-
+        public static MainPage Instance { get; private set; }
         public MainPage()
         {
+            Instance = this;
             this.InitializeComponent();
             ApplicationView.PreferredLaunchViewSize = new Size(1920, 1080);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
@@ -40,33 +41,39 @@ namespace MicroCBuilder.Views
             //ContentFrame.Navigate(typeof(TestPage));
         }
 
-        public void UpdateCache()
+        public async Task DisplayProgress(Func<IProgress<int>, Task> action, string title, int itemCount)
         {
-            var progress = new Progress<int>((int p) =>
-            {
-                CacheProgress.Value = p;
-            });
+            ProgressTitle.Text = title;
             var dispatcher = Window.Current.Dispatcher;
-
-            CacheProgressContainer.Visibility = Visibility.Visible;
-
-            Task.Run(async () =>
+            var progress = new Progress<int>((i) =>
             {
-                await BuildComponentCache.Current.PopulateCache(progress);
-            }).ContinueWith(async (_) =>
+                PorgressBar.Value = 100 * i / (float)itemCount;
+            });
+
+            ProgressContainer.Visibility = Visibility.Visible;
+            await action(progress)
+                .ContinueWith(async (_) =>
             {
                 await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    CacheProgressContainer.Visibility = Visibility.Collapsed;
+                    ProgressContainer.Visibility = Visibility.Collapsed;
                 });
             });
         }
 
-        public void InitCache()
+        public async Task UpdateCache()
+        {
+            await DisplayProgress(async (progress) =>
+            {
+                await BuildComponentCache.Current.PopulateCache(progress);
+            }, "Updating cache", 100);
+        }
+
+        public async void InitCache()
         {
             var progress = new Progress<int>((int p) =>
             {
-                CacheProgress.Value = p;
+                PorgressBar.Value = p;
             });
 
 
@@ -74,24 +81,18 @@ namespace MicroCBuilder.Views
             var cache = new BuildComponentCache();
             if (cache.Cache.Count == 0)
             {
-                Task.Run(async () =>
+                await DisplayProgress(async (progress) =>
                 {
                     var cached = await cache.LoadCache();
                     if (!cached)
                     {
                         await cache.PopulateCache(progress);
                     }
-                }).ContinueWith(async (_) =>
-                {
-                    await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
-                    {
-                        CacheProgressContainer.Visibility = Visibility.Collapsed;
-                    });
-                });
+                }, "Updating cache", 100);
             }
             else
             {
-                CacheProgressContainer.Visibility = Visibility.Collapsed;
+                ProgressContainer.Visibility = Visibility.Collapsed;
             }
         }
 

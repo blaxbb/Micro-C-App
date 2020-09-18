@@ -43,9 +43,9 @@
                 KeyDown="textBox_KeyDown"/>
         
         <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding Component.Item.Brand}"/>
-        <TextBox Grid.Column="3" Text="{Binding Component.Item.Price, Mode=TwoWay}" VerticalAlignment="Center" TextAlignment="End" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
+        <TextBox Grid.Column="3" Text="{Binding Price, Mode=TwoWay}" VerticalAlignment="Center" TextAlignment="End" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
         <TextBlock Grid.Column="3" Grid.Row="1" Text="{Binding Component.Item.SKU}"/>
-        <muxc:NumberBox Grid.Column="4" Value="{Binding Component.Item.Quantity, Mode=TwoWay}"  VerticalAlignment="Center" SpinButtonPlacementMode="Compact" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
+        <muxc:NumberBox Grid.Column="4" Value="{Binding Quantity, Mode=TwoWay}"  VerticalAlignment="Center" SpinButtonPlacementMode="Compact" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
         <TextBlock Grid.Column="4" Grid.Row="1" Text="{Binding Component.Item.Stock, Converter={StaticResource Format}, ConverterParameter='Stock {0}'}" HorizontalAlignment="Center"/>
     </Grid>
 </UserControl>

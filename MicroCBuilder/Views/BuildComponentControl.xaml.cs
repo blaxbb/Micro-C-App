@@ -31,11 +31,37 @@ namespace MicroCBuilder.Views
         public BuildComponent Component
         {
             get { return (BuildComponent)GetValue(ComponentProperty); }
-            set { SetValue(ComponentProperty, value); }
+            set {
+                SetValue(ComponentProperty, value);
+            }
         }
 
         public static readonly DependencyProperty ComponentProperty =
-            DependencyProperty.Register("Component", typeof(BuildComponent), typeof(BuildComponentControl), new PropertyMetadata(new BuildComponent()));
+            DependencyProperty.Register("Component", typeof(BuildComponent), typeof(BuildComponentControl), new PropertyMetadata(new BuildComponent(), new PropertyChangedCallback(ComponentChanged)));
+
+        private static void ComponentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is BuildComponentControl control)
+            {
+                if (e.OldValue is BuildComponent oldItem)
+                {
+                    oldItem.PropertyChanged -= control.UpdateFields;
+                }
+                if (e.NewValue is BuildComponent newItem)
+                {
+                    newItem.PropertyChanged += control.UpdateFields;
+                }
+            }
+        }
+
+        void UpdateFields(object sender, PropertyChangedEventArgs e)
+        {
+            OnPropertyChanged(nameof(Price));
+            OnPropertyChanged(nameof(Quantity));
+        }
+
+        public float Price { get => Component?.Item?.Price ?? 0; set { Component.Item.Price = value; ValuesUpdated?.Execute(null); } }
+        public int Quantity { get => Component?.Item?.Quantity ?? 1; set { Component.Item.Quantity = value; ValuesUpdated?.Execute(null); } }
 
         public List<Item> Items => BuildComponentCache.Current.FromType(Component.Type);
 
@@ -53,6 +79,20 @@ namespace MicroCBuilder.Views
         public event QueryUpdatedEventHandler QueryUpdated;
 
         public event QueryUpdatedEventHandler QuerySubmitted;
+
+
+
+        public ICommand ValuesUpdated
+        {
+            get { return (ICommand)GetValue(ValuesUpdatedProperty); }
+            set { SetValue(ValuesUpdatedProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ValuesUpdated.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ValuesUpdatedProperty =
+            DependencyProperty.Register("ValuesUpdated", typeof(ICommand), typeof(BuildComponentControl), new PropertyMetadata(0));
+
+
 
         public BuildComponentControl()
         {

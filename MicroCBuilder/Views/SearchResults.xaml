@@ -31,7 +31,8 @@
                            DoubleTapped="dataGrid_DoubleTapped"
                            AlternatingRowBackground="{ThemeResource SystemControlBackgroundListLowBrush}"
                            IsReadOnly="True"
-                           PreviewKeyDown="dataGrid_KeyDown">
+                           PreviewKeyDown="dataGrid_KeyDown"
+                           Margin="8, 0, 5, 0">
             <controls:DataGrid.Columns>
                 <controls:DataGridTemplateColumn Header="">
                     <controls:DataGridTemplateColumn.CellTemplate>

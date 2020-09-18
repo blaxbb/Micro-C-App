@@ -29,11 +29,11 @@
         </NavigationView.MenuItems>
         <Grid>
             <Frame Grid.Column="0" x:Name="ContentFrame"/>
-            <Grid Grid.Column="0" x:Name="CacheProgressContainer">
-                <Grid Grid.Column="0" Background="Black" Opacity=".5"/>
+            <Grid Grid.Column="0" x:Name="ProgressContainer" Background="{ThemeResource SystemControlAcrylicElementBrush}">
+                <Grid Grid.Column="0"/>
                 <StackPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                    <TextBlock Text="Populating item cache" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                    <ProgressBar x:Name="CacheProgress" Margin="20"/>
+                    <TextBlock x:Name="ProgressTitle" Text="" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,10"/>
+                    <ProgressBar x:Name="PorgressBar" Margin="20"/>
                 </StackPanel>
             </Grid>
         </Grid>
