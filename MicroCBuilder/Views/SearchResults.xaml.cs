@@ -96,18 +96,7 @@ namespace MicroCBuilder.Views
             DataContext = this;
             dataGrid.CanUserSortColumns = true;
 
-            // Ensures index backwards compatibility
-            var AppLuceneVersion = LuceneVersion.LUCENE_48;
-            
-            var indexDir = $"{Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path}/Index";
-            var dir = FSDirectory.Open(indexDir);
-
-            //create an analyzer to process the text
-            var analyzer = new StandardAnalyzer(AppLuceneVersion);
-
-            //create an index writer
-            var indexConfig = new IndexWriterConfig(AppLuceneVersion, analyzer);
-            writer = new IndexWriter(dir, indexConfig);
+            LocalSearch.Init();
         }
 
         private void ComponentUpdated()
@@ -115,22 +104,7 @@ namespace MicroCBuilder.Views
             Results.Clear();
             dataGrid.ItemsSource = null;
 
-            writer.DeleteAll();
-            writer.Flush(triggerMerge: false, applyAllDeletes: false);
-            writer.Commit();
-            for (int i = 0; i < Items.Count; i++)
-            {
-                var item = Items[i];
-                var doc = new Document()
-                {
-                    new TextField("Name", item.Name, Field.Store.YES),
-                    new TextField("Brand", item.Brand, Field.Store.YES),
-                    new Int32Field("index", i, Field.Store.YES)
-                };
-                writer.AddDocument(doc);
-            }
-            writer.Flush(triggerMerge: false, applyAllDeletes: false);
-            writer.Commit();
+            LocalSearch.ReplaceItems(Items);
         }
 
         private static void QueryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -164,27 +138,8 @@ namespace MicroCBuilder.Views
                     }
                 }
 
-                var phrase = new FuzzyLikeThisQuery(10, new StandardAnalyzer(LuceneVersion.LUCENE_48));
-                //var phrase = parser.Parse($"{query}");
-                //var phrase = new Lucene.Net.Search.WildcardQuery(new Term("Name", query));
-                var parts = query.Split(' ');
-                foreach (var part in parts)
-                {
-                    phrase.AddTerms(part, "Name", 0, 20);
-                }
-                phrase.AddTerms(parts[0], "Brand", 0, 5);
-
-                var searcher = new IndexSearcher(writer.GetReader(true));
-
-                var hits = searcher.Search(phrase, 50).ScoreDocs;
-                Debug.WriteLine($"Hit :{hits.Count()}");
-                foreach(var hit in hits)
-                {
-                    var doc = searcher.Doc(hit.Doc);
-                    var index = doc.GetField<StoredField>("index").GetInt32Value().Value;
-                    var item = Items[index];
-                    Results.Add(item);
-                }
+                Results.AddRange(LocalSearch.Search(query, Items));
+                
             }
             dataGrid.ItemsSource = new ObservableCollection<Item>(Results);
             OnPropertyChanged(nameof(Count));

@@ -115,7 +115,7 @@ namespace MicroCBuilder.Views
             switch (item?.Tag?.ToString())
             {
                 case "BuildPage":
-                    pageType = typeof(BuildPage);
+                    pageType = typeof(BuildPageTabContainer);
                     break;
                 default:
                     pageType = null;
