@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.ServiceModel.Channels;
 using System.Threading.Tasks;
@@ -80,6 +81,24 @@ namespace MicroCBuilder.Views
 
         private async void PrintButton_Click(object sender, RoutedEventArgs e)
         {
+            var tb = new TextBox() { PlaceholderText = "Sales ID" };
+            var dialog = new ContentDialog()
+            {
+                Title = "Print options",
+                Content = tb,
+                PrimaryButtonText = "Print",
+                SecondaryButtonText = "Cancel"
+            };
+            var result = await dialog.ShowAsync();
+            var name = tb.Text;
+            if (result == ContentDialogResult.Primary)
+            {
+                await DoPrint(name);
+            }
+        }
+        private async Task DoPrint(string salesID = "")
+        { 
+
             var itemsCount = vm.Components.Count(c => c.Item != null);
             if (itemsCount == 0)
             {
@@ -101,8 +120,16 @@ namespace MicroCBuilder.Views
                 //
                 page.Children.Add(new Canvas() { Width = 1000 });
                 TextBlock header = new TextBlock();
+                header.TextWrapping = TextWrapping.WrapWholeWords;
                 header.TextAlignment = TextAlignment.Center;
-                header.Text = "";
+                if (string.IsNullOrWhiteSpace(salesID))
+                {
+                    header.Text = $"Order created on {DateTime.Now.ToString("yyyy-MM-dd")}.";
+                }
+                else
+                {
+                    header.Text = $"Order created on {DateTime.Now.ToString("yyyy-MM-dd")} at the {Settings.Store()} MicroCenter Location.\nContact {salesID}@microcenter.com with additional questions.";
+                }
 
                 var footer = new BuildSummaryControl();
                 footer.SubTotal = vm.SubTotal;

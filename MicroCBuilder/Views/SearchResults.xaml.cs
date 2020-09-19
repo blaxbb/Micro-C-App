@@ -125,7 +125,6 @@ namespace MicroCBuilder.Views
                 {
                     new TextField("Name", item.Name, Field.Store.YES),
                     new TextField("Brand", item.Brand, Field.Store.YES),
-                    new StringField("SKU", item.SKU, Field.Store.YES),
                     new Int32Field("index", i, Field.Store.YES)
                 };
                 writer.AddDocument(doc);
@@ -156,6 +155,15 @@ namespace MicroCBuilder.Views
             }
             else
             {
+                if(query.Length == 6)
+                {
+                    var skuMatch = Items.FirstOrDefault(i => i.SKU == query);
+                    if(skuMatch != null)
+                    {
+                        Results.Add(skuMatch);
+                    }
+                }
+
                 var phrase = new FuzzyLikeThisQuery(10, new StandardAnalyzer(LuceneVersion.LUCENE_48));
                 //var phrase = parser.Parse($"{query}");
                 //var phrase = new Lucene.Net.Search.WildcardQuery(new Term("Name", query));
@@ -165,7 +173,6 @@ namespace MicroCBuilder.Views
                     phrase.AddTerms(part, "Name", 0, 20);
                 }
                 phrase.AddTerms(parts[0], "Brand", 0, 5);
-                phrase.AddTerms(parts[0], "SKU", 0, 0);
 
                 var searcher = new IndexSearcher(writer.GetReader(true));
 
