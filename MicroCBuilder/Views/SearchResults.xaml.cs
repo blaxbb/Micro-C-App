@@ -168,14 +168,6 @@ namespace MicroCBuilder.Views
         }
         #endregion
 
-        private Item Clone(Item item)
-        {
-            var json = JsonSerializer.Serialize(item);
-            var ret = JsonSerializer.Deserialize<Item>(json);
-            ret.Quantity = 1;
-            return ret;
-        }
-
         private void dataGrid_DoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
         {
             var i = dataGrid.SelectedIndex;
@@ -184,7 +176,7 @@ namespace MicroCBuilder.Views
                 return;
             }
             var source = dataGrid.ItemsSource as ObservableCollection<Item>;
-            var item = Clone(source[i]);
+            var item = source[i].CloneAndResetQuantity();
             System.Diagnostics.Debug.WriteLine(item.Name);
             ItemSelected?.Execute(item);
             OnItemSelected?.Invoke(this, item);

@@ -18,7 +18,20 @@
         </Style>
         <converters:StringFormatConverter x:Key="Format"/>
     </UserControl.Resources>
-    <Grid ColumnSpacing="5" Margin="10">
+    <Grid ColumnSpacing="5" Margin="10" Background="Transparent">
+        <Grid.ContextFlyout>
+            <MenuFlyout>
+                <MenuFlyoutItem Text="Info" Click="InfoItemClick"/>
+                <MenuFlyoutSubItem  Text="Add Another">
+                    <MenuFlyoutItem Text="Empty"  Click="AddEmptyClick"/>
+                    <MenuFlyoutItem Text="Duplicate" Click="AddDuplicateClick"/>
+                </MenuFlyoutSubItem>
+                <MenuFlyoutItem Text="Remove" Click="RemoveItemClick"/>
+            </MenuFlyout>
+            <!--<CommandBarFlyout>
+                <AppBarButton Content="ABC"/>
+            </CommandBarFlyout>-->
+        </Grid.ContextFlyout>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="*"/>

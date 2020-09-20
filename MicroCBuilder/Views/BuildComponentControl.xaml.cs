@@ -50,7 +50,9 @@ namespace MicroCBuilder.Views
                 if (e.NewValue is BuildComponent newItem)
                 {
                     newItem.PropertyChanged += control.UpdateFields;
+                    control.UpdateFields(null, null);
                 }
+                
             }
         }
 
@@ -79,6 +81,56 @@ namespace MicroCBuilder.Views
         public event QueryUpdatedEventHandler QueryUpdated;
 
         public event QueryUpdatedEventHandler QuerySubmitted;
+
+
+
+        public ICommand RemoveCommand
+        {
+            get { return (ICommand)GetValue(RemoveCommandProperty); }
+            set { SetValue(RemoveCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for RemoveCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty RemoveCommandProperty =
+            DependencyProperty.Register("RemoveCommand", typeof(ICommand), typeof(BuildComponentControl), new PropertyMetadata(null));
+
+
+
+        public ICommand AddEmptyCommand
+        {
+            get { return (ICommand)GetValue(AddEmptyCommandProperty); }
+            set { SetValue(AddEmptyCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AddAnotherCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AddEmptyCommandProperty =
+            DependencyProperty.Register("AddEmptyCommand", typeof(ICommand), typeof(BuildComponentControl), new PropertyMetadata(null));
+        public ICommand AddDuplicateCommand
+        {
+            get { return (ICommand)GetValue(AddDuplicateCommandProperty); }
+            set { SetValue(AddDuplicateCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for AddAnotherCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AddDuplicateCommandProperty =
+            DependencyProperty.Register("AddDuplicateCommand", typeof(ICommand), typeof(BuildComponentControl), new PropertyMetadata(null));
+
+
+        public ICommand InfoCommand
+        {
+            get { return (ICommand)GetValue(InfoCommandProperty); }
+            set { SetValue(InfoCommandProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for InfoCommand.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty InfoCommandProperty =
+            DependencyProperty.Register("InfoCommand", typeof(ICommand), typeof(BuildComponentControl), new PropertyMetadata(null));
+
+
+
+
+
+
 
 
 
@@ -130,6 +182,26 @@ namespace MicroCBuilder.Views
             textBox.Text = text;
         }
 
+        private void RemoveItemClick(object sender, RoutedEventArgs e)
+        {
+            RemoveCommand?.Execute(Component);
+        }
+
+        private void AddEmptyClick(object sender, RoutedEventArgs e)
+        {
+            AddEmptyCommand?.Execute(Component.Type);
+        }
+
+        private void AddDuplicateClick(object sender, RoutedEventArgs e)
+        {
+            AddDuplicateCommand?.Execute(Component);
+        }
+
+        private void InfoItemClick(object sender, RoutedEventArgs e)
+        {
+            InfoCommand?.Execute(Component);
+        }
+
         private bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action? onChanged = null)
         {
             if (EqualityComparer<T>.Default.Equals(backingStore, value))
@@ -152,5 +224,6 @@ namespace MicroCBuilder.Views
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
+       
     }
 }

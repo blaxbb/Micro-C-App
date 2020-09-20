@@ -89,7 +89,16 @@
                     </ListView.ItemContainerStyle>
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <views:BuildComponentControl Component="{Binding }" ValuesUpdated="{Binding DataContext.ItemValuesUpdated, ElementName=page}" QueryUpdated="QueryUpdated" QuerySubmitted="QuerySubmitted" Margin="10,0,10,0"/>
+                            <views:BuildComponentControl 
+                                Component="{Binding }"
+                                ValuesUpdated="{Binding DataContext.ItemValuesUpdated, ElementName=page}"
+                                QueryUpdated="QueryUpdated"
+                                QuerySubmitted="QuerySubmitted"
+                                RemoveCommand="{Binding DataContext.RemoveFlyoutCommand, ElementName=page}"
+                                AddEmptyCommand="{Binding DataContext.AddEmptyFlyoutCommand, ElementName=page}"
+                                AddDuplicateCommand="{Binding DataContext.AddDuplicateFlyoutCommand, ElementName=page}"
+                                InfoCommand="{Binding DataContext.InfoFlyoutCommand, ElementName=page}"
+                                Margin="10,0,10,0"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

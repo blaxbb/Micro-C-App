@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Web;
@@ -183,6 +184,13 @@ namespace MicroCLib.Models
         public override string ToString()
         {
             return Name;
+        }
+        public Item CloneAndResetQuantity()
+        {
+            var json = JsonSerializer.Serialize(this);
+            var ret = JsonSerializer.Deserialize<Item>(json);
+            ret.Quantity = 1;
+            return ret;
         }
     }
 

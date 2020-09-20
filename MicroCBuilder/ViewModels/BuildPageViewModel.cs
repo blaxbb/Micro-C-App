@@ -35,6 +35,11 @@ namespace MicroCBuilder.ViewModels
         public ICommand ItemSelected { get; }
         public ICommand ExportToMCOL { get; }
         public ICommand ItemValuesUpdated { get; }
+        public ICommand RemoveFlyoutCommand { get; }
+        public ICommand AddEmptyFlyoutCommand { get; }
+        public ICommand AddDuplicateFlyoutCommand { get; }
+        public ICommand InfoFlyoutCommand { get; }
+
         public BuildComponent SelectedComponent { get => selectedItem; set => SetProperty(ref selectedItem, value); }
 
         public string Query { get => query; set => SetProperty(ref query, value); }
@@ -63,6 +68,11 @@ namespace MicroCBuilder.ViewModels
             Remove = new Command<BuildComponent>(DoRemove);
             Add = new Command<BuildComponent.ComponentType>(AddItem);
             ItemSelected = new Command<Item>((Item item) => { if(SelectedComponent != null) SelectedComponent.Item = item; OnPropertyChanged(nameof(SubTotal)); });
+
+            RemoveFlyoutCommand = new Command<BuildComponent>(DoRemove);
+            InfoFlyoutCommand = null;
+            AddEmptyFlyoutCommand = new Command<BuildComponent.ComponentType>(AddItem);
+            AddDuplicateFlyoutCommand = new Command<BuildComponent>(AddDuplicate);
 
             ExportToMCOL = new Command(async (_) =>
             {
@@ -100,17 +110,16 @@ namespace MicroCBuilder.ViewModels
             yield return CPUCooler;
             yield return WaterCoolingKit;
             yield return CaseFan;
-
-
-
         }
 
         private void DoRemove(BuildComponent comp)
         {
-            if (comp != null && comp.Item != null)
+            if(comp == null)
             {
-                comp.Item = null;
+                return;
             }
+
+            comp.Item = null;
             if (Components.Count(c => c.Type == comp.Type) > 1)
             {
                 Components.Remove(comp);
@@ -120,7 +129,15 @@ namespace MicroCBuilder.ViewModels
 
         private void AddItem(BuildComponent.ComponentType type)
         {
-            InsertAtEndByType(type);
+            SelectedComponent = InsertAtEndByType(type);
+        }
+
+        private void AddDuplicate(BuildComponent orig)
+        {
+            var comp = InsertAtEndByType(orig.Type);
+            comp.Item = orig.Item.CloneAndResetQuantity();
+            SelectedComponent = comp;
+            OnPropertyChanged(nameof(SubTotal));
         }
 
         private BuildComponent InsertAtEndByType(BuildComponent.ComponentType type)
