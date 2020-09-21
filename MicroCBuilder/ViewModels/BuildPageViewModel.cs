@@ -73,6 +73,13 @@ namespace MicroCBuilder.ViewModels
             InfoFlyoutCommand = null;
             AddEmptyFlyoutCommand = new Command<BuildComponent.ComponentType>(AddItem);
             AddDuplicateFlyoutCommand = new Command<BuildComponent>(AddDuplicate);
+            InfoFlyoutCommand = new Command<BuildComponent>(async (comp) =>
+            {
+                if (comp.Item != null && !string.IsNullOrWhiteSpace(comp.Item.URL))
+                {
+                    var success = await Windows.System.Launcher.LaunchUriAsync(new Uri($"https://microcenter.com{comp.Item.URL}"));
+                }
+            });
 
             ExportToMCOL = new Command(async (_) =>
             {
