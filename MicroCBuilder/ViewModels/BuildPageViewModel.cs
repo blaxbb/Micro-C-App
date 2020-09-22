@@ -1,6 +1,7 @@
 ﻿using micro_c_lib.Models;
 using MicroCBuilder.Views;
 using MicroCLib.Models;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -41,6 +42,7 @@ namespace MicroCBuilder.ViewModels
         public ICommand AddDuplicateFlyoutCommand { get; }
         public ICommand InfoFlyoutCommand { get; }
         public ICommand AddSearchItem { get; }
+        public ICommand AddCustomItem { get; }
 
         public BuildComponent SelectedComponent { get => selectedItem; set => SetProperty(ref selectedItem, value); }
 
@@ -103,6 +105,39 @@ namespace MicroCBuilder.ViewModels
             });
 
             AddSearchItem = new Command(DoAddSearchItem);
+            AddCustomItem = new Command(DoAddCustomItem);
+        }
+
+        private async void DoAddCustomItem(object obj)
+        {
+            var name = new TextBox() { PlaceholderText = "Name" };
+            var price = new NumberBox() { PlaceholderText = "Price" };
+            var panel = new StackPanel() { Orientation = Orientation.Vertical };
+            panel.Children.Add(name);
+            panel.Children.Add(price);
+            var dialog = new ContentDialog
+            {
+                Title = "Add - Search",
+                Content = panel,
+                PrimaryButtonText = "Submit",
+                SecondaryButtonText = "Cancel"
+            };
+            name.KeyDown += (sender, args) => { if (args.Key == Windows.System.VirtualKey.Enter) dialog.Hide(); };
+            price.KeyDown += (sender, args) => { if (args.Key == Windows.System.VirtualKey.Enter) dialog.Hide(); };
+
+            var dialogResult = await dialog.ShowAsync();
+            if(dialogResult != ContentDialogResult.Secondary)
+            {
+                AddDuplicate(new BuildComponent()
+                {
+                    Type = BuildComponent.ComponentType.Miscellaneous,
+                    Item = new Item()
+                    {
+                        Name = name.Text,
+                        Price = (float)price.Value
+                    }
+                });
+            }
         }
 
         private async void DoAddSearchItem(object obj)

@@ -51,7 +51,7 @@ namespace MicroCBuilder.Views
             }
             ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutSeparator());
             ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = "Search", Command = vm.AddSearchItem });
-            ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = "Custom", Command = vm.AddSearchItem });
+            ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = "Custom", Command = vm.AddCustomItem });
 
         }
 
