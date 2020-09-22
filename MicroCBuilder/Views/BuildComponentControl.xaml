@@ -26,6 +26,11 @@
                     <MenuFlyoutItem Text="Empty"  Click="AddEmptyClick"/>
                     <MenuFlyoutItem Text="Duplicate" Click="AddDuplicateClick"/>
                 </MenuFlyoutSubItem>
+                <MenuFlyoutSubItem Text="Plans">
+                    <MenuFlyoutItem Text="2 Year" Click="AddPlan2Year"/>
+                    <MenuFlyoutItem Text="3 Year" Click="AddPlan3Year"/>
+                </MenuFlyoutSubItem>
+                <MenuFlyoutSeparator/>
                 <MenuFlyoutItem Text="Remove" Click="RemoveItemClick"/>
             </MenuFlyout>
             <!--<CommandBarFlyout>

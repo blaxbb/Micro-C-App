@@ -2,6 +2,7 @@
 using FuzzySharp.SimilarityRatio.Scorer.StrategySensitive;
 using MicroCBuilder.ViewModels;
 using MicroCLib.Models;
+using MicroCLib.Models.Reference;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -126,14 +127,6 @@ namespace MicroCBuilder.Views
         public static readonly DependencyProperty InfoCommandProperty =
             DependencyProperty.Register("InfoCommand", typeof(ICommand), typeof(BuildComponentControl), new PropertyMetadata(null));
 
-
-
-
-
-
-
-
-
         public ICommand ValuesUpdated
         {
             get { return (ICommand)GetValue(ValuesUpdatedProperty); }
@@ -144,7 +137,15 @@ namespace MicroCBuilder.Views
         public static readonly DependencyProperty ValuesUpdatedProperty =
             DependencyProperty.Register("ValuesUpdated", typeof(ICommand), typeof(BuildComponentControl), new PropertyMetadata(0));
 
+        public ICommand AddPlan
+        {
+            get { return (ICommand)GetValue(AddPlanProperty); }
+            set { SetValue(AddPlanProperty, value); }
+        }
 
+        // Using a DependencyProperty as the backing store for AddPlan.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty AddPlanProperty =
+            DependencyProperty.Register("AddPlan", typeof(ICommand), typeof(BuildComponentControl), new PropertyMetadata(null));
 
         public BuildComponentControl()
         {
@@ -200,6 +201,51 @@ namespace MicroCBuilder.Views
         private void InfoItemClick(object sender, RoutedEventArgs e)
         {
             InfoCommand?.Execute(Component);
+        }
+
+        private BuildComponent? GetPlan(int duration)
+        {
+            var price = Component.Item.Price;
+            var type = price >= 500 ? PlanReference.PlanType.Carry_In : PlanReference.PlanType.Replacement;
+            var plan = PlanReference.Get(type, price);
+            if (plan == null)
+            {
+                return null;
+            }
+
+            var tier = plan.Tiers.FirstOrDefault(p => p.Duration == duration);
+            var comp = new BuildComponent()
+            {
+                Type = BuildComponent.ComponentType.Plan,
+                Item = new Item()
+                {
+                    Name = $"{duration} Year Plan",
+                    Price = tier.Price,
+                    OriginalPrice = tier.Price,
+                    Brand = "Micro Center",
+                    Quantity = 1,
+                },
+            };
+
+            return comp;
+        }
+
+        private void AddPlan2Year(object sender, RoutedEventArgs e)
+        {
+            var comp = GetPlan(2);
+            if (comp != null)
+            {
+                AddPlan?.Execute(comp);
+            }
+        }
+
+        private void AddPlan3Year(object sender, RoutedEventArgs e)
+        {
+            var comp = GetPlan(3);
+            if (comp != null)
+            {
+                AddPlan?.Execute(comp);
+            }
         }
 
         private bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action? onChanged = null)
