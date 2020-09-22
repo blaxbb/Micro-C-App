@@ -14,6 +14,7 @@ using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using static MicroCLib.Models.BuildComponent.ComponentType;
 
 namespace MicroCBuilder.ViewModels
@@ -39,6 +40,7 @@ namespace MicroCBuilder.ViewModels
         public ICommand AddEmptyFlyoutCommand { get; }
         public ICommand AddDuplicateFlyoutCommand { get; }
         public ICommand InfoFlyoutCommand { get; }
+        public ICommand AddSearchItem { get; }
 
         public BuildComponent SelectedComponent { get => selectedItem; set => SetProperty(ref selectedItem, value); }
 
@@ -54,7 +56,6 @@ namespace MicroCBuilder.ViewModels
                 var comp = new BuildComponent() { Type = c };
                 comp.PropertyChanged += (sender, args) =>
                 {
-                    Debug.WriteLine("ZZ");
                     OnPropertyChanged(nameof(Components));
                 };
                 Components.Add(comp);
@@ -100,6 +101,96 @@ namespace MicroCBuilder.ViewModels
             {
                 OnPropertyChanged(nameof(SubTotal));
             });
+
+            AddSearchItem = new Command(DoAddSearchItem);
+        }
+
+        private async void DoAddSearchItem(object obj)
+        {
+            var dispatcher = Window.Current.Dispatcher;
+
+            var tb = new TextBox() { PlaceholderText = "Search query" };
+            var dialog = new ContentDialog
+            {
+                Title = "Add - Search",
+                Content = tb,
+                PrimaryButtonText = "Submit",
+                SecondaryButtonText = "Cancel"
+            };
+
+            tb.KeyDown += (sender, args) => { if(args.Key == Windows.System.VirtualKey.Enter) dialog.Hide(); };
+
+            var dialogResult = await dialog.ShowAsync();
+            var query = tb.Text;
+
+            micro_c_lib.Models.SearchResults? results = null;
+            if (dialogResult != ContentDialogResult.Secondary && !string.IsNullOrWhiteSpace(query))
+            {
+                await MainPage.Instance.DisplayProgress(async (progress) =>
+                {
+                    results = await Search.LoadAll(query, Settings.StoreID(), null, Search.OrderByMode.match);
+                }, $"Searching for {query}", 1);
+            }
+
+            if (results != null)
+            {
+                Debug.WriteLine($"{results.Items.Count} RESULTS");
+                Item? item = null;
+                if (results.Items.Count == 1)
+                {
+                    item = results.Items.First();
+                }
+                else if(results.Items.Count > 0)
+                {
+                    item = await DisplaySearchResults(results.Items);
+                }
+                else
+                {
+                    var msg = new ContentDialog()
+                    {
+                        Title = "No results found.",
+                        PrimaryButtonText = "Ok"
+                    };
+                    await msg.ShowAsync();
+                }
+
+                if (item != null)
+                {
+                    AddDuplicate(new BuildComponent() { Type = BuildComponent.ComponentType.Miscellaneous, Item = item });
+                }
+            }
+        }
+
+        private static async Task<Item?> DisplaySearchResults(List<Item> items)
+        {
+            var listView = new ListView()
+            {
+                ItemsSource = items
+            };
+
+            var dialog = new ContentDialog
+            {
+                Title = "Search Results",
+                PrimaryButtonText = "Submit",
+                SecondaryButtonText = "Cancel",
+                Content = listView
+            };
+
+            listView.PreviewKeyDown += (sender, args) =>
+            {
+                if (args.Key == Windows.System.VirtualKey.Enter)
+                {
+                    dialog.Hide();
+                    args.Handled = true;
+                }
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result != ContentDialogResult.Secondary)
+            {
+                return listView.SelectedItem as Item;
+            }
+            return null;
         }
 
         private static IEnumerable<BuildComponent.ComponentType> DefaultComponentTypes()
@@ -127,7 +218,7 @@ namespace MicroCBuilder.ViewModels
             }
 
             comp.Item = null;
-            if (Components.Count(c => c.Type == comp.Type) > 1)
+            if (comp.Type == BuildComponent.ComponentType.Miscellaneous || comp.Type == BuildComponent.ComponentType.Plan || Components.Count(c => c.Type == comp.Type) > 1)
             {
                 Components.Remove(comp);
             }

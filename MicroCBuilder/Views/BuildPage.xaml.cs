@@ -44,11 +44,15 @@ namespace MicroCBuilder.Views
         {
             this.InitializeComponent();
             var addCommand = vm.Add;
-            var componentTypes = Enum.GetValues(typeof(BuildComponent.ComponentType)).Cast<BuildComponent.ComponentType>();
+            var componentTypes = Enum.GetValues(typeof(BuildComponent.ComponentType)).Cast<BuildComponent.ComponentType>().Where(t => t != BuildComponent.ComponentType.Miscellaneous && t != BuildComponent.ComponentType.Plan);
             foreach (var type in componentTypes)
             {
                 ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = type.ToString(), Command = addCommand, CommandParameter = type });
             }
+            ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutSeparator());
+            ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = "Search", Command = vm.AddSearchItem });
+            ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = "Custom", Command = vm.AddSearchItem });
+
         }
 
         public void QueryUpdated (BuildComponentControl control, string query)
@@ -89,9 +93,10 @@ namespace MicroCBuilder.Views
                 PrimaryButtonText = "Print",
                 SecondaryButtonText = "Cancel"
             };
+            tb.KeyDown += (sender, args) => { if (args.Key == Windows.System.VirtualKey.Enter) dialog.Hide(); };
             var result = await dialog.ShowAsync();
             var name = tb.Text;
-            if (result == ContentDialogResult.Primary)
+            if (result != ContentDialogResult.Secondary)
             {
                 await DoPrint(name);
             }
