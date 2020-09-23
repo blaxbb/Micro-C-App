@@ -12,7 +12,7 @@ namespace MicroCBuilder
     public class BuildComponentCache
     {
         private const string FILENAME = "componentcache.json";
-        public static BuildComponentCache Current;
+        public static BuildComponentCache? Current;
         public Dictionary<string, List<Item>> Cache = new Dictionary<string, List<Item>>();
 
         public BuildComponentCache()

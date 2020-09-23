@@ -86,9 +86,6 @@ namespace MicroCBuilder.Views
         public delegate void ItemSelectedEventArgs(object sender, Item item);
         public event ItemSelectedEventArgs OnItemSelected;
 
-
-        IndexWriter writer;
-
         public SearchResults()
         {
             this.InitializeComponent();
@@ -211,7 +208,7 @@ namespace MicroCBuilder.Views
             }
 
             var asc = e.Column.SortDirection == DataGridSortDirection.Ascending;
-            Func<Item, object> sort = null;
+            Func<Item, object>? sort = null;
             switch (e.Column.Header.ToString())
             {
                 case "SKU":
@@ -231,6 +228,7 @@ namespace MicroCBuilder.Views
                     break;
                 default:
                     Debug.WriteLine($"column not sorted {e.Column.Tag}");
+                    dataGrid.ItemsSource = new ObservableCollection<Item>(Results);
                     break;
             }
 

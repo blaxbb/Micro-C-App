@@ -37,7 +37,7 @@ namespace MicroCBuilder.Views
     /// </summary>
     public sealed partial class BuildPage : Page
     {
-        BuildPageViewModel vm => DataContext as BuildPageViewModel;
+        BuildPageViewModel? vm => DataContext as BuildPageViewModel;
         private PrintHelper _printHelper;
 
         public BuildPage()
@@ -117,27 +117,33 @@ namespace MicroCBuilder.Views
             for(int i = 0; i < itemsCount; i += ITEMS_PER_PAGE)
             {
                 //create a new page
-                Grid page = new Grid();
-                page.Padding = new Thickness(40, 10, 40, 10);
+                Grid page = new Grid
+                {
+                    Padding = new Thickness(40, 10, 40, 10)
+                };
 
                 //
                 //force grid to full width
                 //
                 page.Children.Add(new Canvas() { Width = 1000 });
-                TextBlock header = new TextBlock();
-                header.TextWrapping = TextWrapping.WrapWholeWords;
-                header.TextAlignment = TextAlignment.Center;
+                TextBlock header = new TextBlock
+                {
+                    TextWrapping = TextWrapping.WrapWholeWords,
+                    TextAlignment = TextAlignment.Center
+                };
                 if (string.IsNullOrWhiteSpace(salesID))
                 {
-                    header.Text = $"Order created on {DateTime.Now.ToString("yyyy-MM-dd")}.";
+                    header.Text = $"Order created on {DateTime.Now:yyyy-MM-dd}.";
                 }
                 else
                 {
-                    header.Text = $"Order created on {DateTime.Now.ToString("yyyy-MM-dd")} at the {Settings.Store()} MicroCenter Location.\nContact {salesID}@microcenter.com with additional questions.";
+                    header.Text = $"Order created on {DateTime.Now:yyyy-MM-dd} at the {Settings.Store()} MicroCenter Location.\nContact {salesID}@microcenter.com with additional questions.";
                 }
 
-                var footer = new BuildSummaryControl();
-                footer.SubTotal = vm.SubTotal;
+                var footer = new BuildSummaryControl
+                {
+                    SubTotal = vm.SubTotal
+                };
 
                 page.Children.Add(header);
                 page.Children.Add(footer);
@@ -162,10 +168,12 @@ namespace MicroCBuilder.Views
                     item.DataContext = comp;
 
                     //stick it in a border
-                    var border = new Border();
-                    border.BorderThickness = new Thickness(1, 0, 1, 1);
-                    border.BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black);
-                    border.Child = item;
+                    var border = new Border
+                    {
+                        BorderThickness = new Thickness(1, 0, 1, 1),
+                        BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black),
+                        Child = item
+                    };
 
                     //add it to the grid
                     contents.Children.Add(border);
@@ -173,7 +181,13 @@ namespace MicroCBuilder.Views
                     Grid.SetRow(border, j);
                 }
 
-                var border2 = new Border() { Child = contents, BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black), BorderThickness = new Thickness(0, 1, 0, 0) };
+                var border2 = new Border()
+                {
+                    Child = contents,
+                    BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black),
+                    BorderThickness = new Thickness(0, 1, 0, 0)
+                };
+
                 page.Children.Add(border2);
                 Grid.SetRow(border2, 1);
 
@@ -185,8 +199,10 @@ namespace MicroCBuilder.Views
             _printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
             _printHelper.OnPrintSucceeded += PrintHelper_OnPrintSucceeded;
 
-            var printHelperOptions = new PrintHelperOptions(true);
-            printHelperOptions.Orientation = Windows.Graphics.Printing.PrintOrientation.Portrait;
+            var printHelperOptions = new PrintHelperOptions(true)
+            {
+                Orientation = Windows.Graphics.Printing.PrintOrientation.Portrait
+            };
 
             await _printHelper.ShowPrintUIAsync("Windows Community Toolkit Sample App", printHelperOptions);
         }

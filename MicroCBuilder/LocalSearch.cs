@@ -21,7 +21,7 @@ namespace MicroCBuilder
         static bool Initialized = false;
         static LuceneVersion AppLuceneVersion = LuceneVersion.LUCENE_48;
         static string Path => $"{Windows.Storage.ApplicationData.Current.LocalCacheFolder.Path}/Index";
-        static IndexWriter writer;
+        static IndexWriter? writer;
         public static void Init()
         {
             if(Initialized)
@@ -42,6 +42,11 @@ namespace MicroCBuilder
 
         public static void ReplaceItems(List<Item> items)
         {
+            if(writer == null)
+            {
+                return;
+            }
+
             writer.DeleteAll();
             writer.Flush(triggerMerge: false, applyAllDeletes: false);
             writer.Commit();

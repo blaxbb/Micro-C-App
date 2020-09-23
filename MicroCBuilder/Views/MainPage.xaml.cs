@@ -33,7 +33,7 @@ namespace MicroCBuilder.Views
             ApplicationView.PreferredLaunchViewSize = new Size(1920, 1080);
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
             InitCache();
-            MicroCBuilder.ViewModels.SettingsPageViewModel.ForceUpdate += async () => UpdateCache();
+            MicroCBuilder.ViewModels.SettingsPageViewModel.ForceUpdate += async () => await UpdateCache();
 
 
             Navigation.SelectedItem = Navigation.MenuItems.FirstOrDefault();
@@ -111,17 +111,11 @@ namespace MicroCBuilder.Views
 
         void Navigate(NavigationViewItemBase item)
         {
-            Type? pageType;
-            switch (item?.Tag?.ToString())
+            Type pageType = (item?.Tag?.ToString()) switch
             {
-                case "BuildPage":
-                    pageType = typeof(BuildPageTabContainer);
-                    break;
-                default:
-                    pageType = null;
-                    break;
-            }
-
+                "BuildPage" => typeof(BuildPageTabContainer),
+                _ => null,
+            };
             if (pageType != null)
             {
                 ContentFrame.Navigate(pageType);

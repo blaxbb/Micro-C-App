@@ -7,7 +7,7 @@ namespace MicroCBuilder.Converters
 {
     public class StringFormatConverter : IValueConverter
     {
-        public string Format { get; set; }
+        public string? Format { get; set; }
         public object Convert(object value, Type targetType, object parameter, string language)
         {
             if (!string.IsNullOrWhiteSpace(Format))

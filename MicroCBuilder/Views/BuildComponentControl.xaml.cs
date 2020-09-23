@@ -28,7 +28,6 @@ namespace MicroCBuilder.Views
 {
     public sealed partial class BuildComponentControl : UserControl, INotifyPropertyChanged
     {
-        List<Item> Suggestions = new List<Item>();
         public BuildComponent Component
         {
             get { return (BuildComponent)GetValue(ComponentProperty); }
@@ -51,7 +50,7 @@ namespace MicroCBuilder.Views
                 if (e.NewValue is BuildComponent newItem)
                 {
                     newItem.PropertyChanged += control.UpdateFields;
-                    control.UpdateFields(null, null);
+                    control.UpdateFields(control, new PropertyChangedEventArgs(e.Property.ToString()));
                 }
                 
             }
@@ -63,8 +62,8 @@ namespace MicroCBuilder.Views
             OnPropertyChanged(nameof(Quantity));
         }
 
-        public float Price { get => Component?.Item?.Price ?? 0; set { Component.Item.Price = value; ValuesUpdated?.Execute(null); } }
-        public int Quantity { get => Component?.Item?.Quantity ?? 1; set { Component.Item.Quantity = value; ValuesUpdated?.Execute(null); } }
+        public float Price { get => Component?.Item?.Price ?? 0; set { if (Component.Item != null) { Component.Item.Price = value; ValuesUpdated?.Execute(null); } } }
+        public int Quantity { get => Component?.Item?.Quantity ?? 1; set { if (Component.Item != null) { Component.Item.Quantity = value; ValuesUpdated?.Execute(null); } } }
 
         public List<Item> Items => BuildComponentCache.Current.FromType(Component.Type);
 
@@ -151,7 +150,6 @@ namespace MicroCBuilder.Views
         {
             this.InitializeComponent();
             (this.Content as FrameworkElement).DataContext = this;
-            var children = VisualTreeHelper.GetChildrenCount(textBox);
         }
 
         private void textBox_TextChanged(object sender, TextChangedEventArgs args)

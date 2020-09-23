@@ -48,7 +48,7 @@ namespace MicroCBuilder.ViewModels
 
         public string Query { get => query; set => SetProperty(ref query, value); }
 
-        public float SubTotal => Components.Where(c => c.Item != null).Sum(c => c.Item.Price * c.Item.Quantity);
+        public float SubTotal => Components.Where(c => c?.Item != null).Sum(c => c.Item.Price * c.Item.Quantity);
 
         public BuildPageViewModel()
         {
@@ -268,7 +268,7 @@ namespace MicroCBuilder.ViewModels
         private void AddDuplicate(BuildComponent orig)
         {
             var comp = InsertAtEndByType(orig.Type);
-            comp.Item = orig.Item.CloneAndResetQuantity();
+            comp.Item = orig.Item?.CloneAndResetQuantity();
             SelectedComponent = comp;
             OnPropertyChanged(nameof(SubTotal));
         }
@@ -306,9 +306,12 @@ namespace MicroCBuilder.ViewModels
             //
             //Get a collection of BuildComponents from a .build file
             //
-            FileOpenPicker openPicker = new FileOpenPicker();
-            openPicker.ViewMode = PickerViewMode.Thumbnail;
-            openPicker.SuggestedStartLocation = PickerLocationId.DocumentsLibrary;
+            FileOpenPicker openPicker = new FileOpenPicker
+            {
+                ViewMode = PickerViewMode.Thumbnail,
+                SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+            };
+
             openPicker.FileTypeFilter.Add(".build");
             StorageFile file = await openPicker.PickSingleFileAsync();
             if (file != null)
@@ -356,13 +359,15 @@ namespace MicroCBuilder.ViewModels
         {
             var json = System.Text.Json.JsonSerializer.Serialize(Components.Where(c => c.Item != null), new System.Text.Json.JsonSerializerOptions() { WriteIndented = true });
 
-            var savePicker = new Windows.Storage.Pickers.FileSavePicker();
-            savePicker.SuggestedStartLocation =
-                Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary;
+            var savePicker = new Windows.Storage.Pickers.FileSavePicker
+            {
+                SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary,
+                SuggestedFileName = "New Build"
+            };
+
             // Dropdown of file types the user can save the file as
             savePicker.FileTypeChoices.Add("MCBuild", new List<string>() { ".build" });
             // Default file name if the user does not type one in or select a file to replace
-            savePicker.SuggestedFileName = "New Build";
 
             var file = await savePicker.PickSaveFileAsync();
             if (file != null)
