@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -34,6 +35,8 @@ namespace MicroCBuilder.Views
             ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
             InitCache();
             MicroCBuilder.ViewModels.SettingsPageViewModel.ForceUpdate += async () => await UpdateCache();
+            MicroCBuilder.ViewModels.SettingsPageViewModel.ForceDeepUpdate += async () => await DeepUpdateCache();
+
 
 
             Navigation.SelectedItem = Navigation.MenuItems.FirstOrDefault();
@@ -45,9 +48,37 @@ namespace MicroCBuilder.Views
         {
             ProgressTitle.Text = title;
             var dispatcher = Window.Current.Dispatcher;
+
+            var lastPercentCheck = 0f;
+            TimeSpanRollingAverage average = new TimeSpanRollingAverage();
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
+
+
+
             var progress = new Progress<int>((i) =>
             {
-                PorgressBar.Value = 100 * i / (float)itemCount;
+                var deltaTime = sw.Elapsed;
+                var percent = 100 * i / (float)itemCount;
+                var deltaPercent = percent - lastPercentCheck;
+                var percentRemaining = 100 - percent;
+                lastPercentCheck = percent;
+
+                TimeSpan estimation;
+                if (deltaPercent > 0)
+                {
+                    estimation = deltaTime * (percentRemaining / deltaPercent);
+                }
+                else
+                {
+                    estimation = TimeSpan.Zero;
+                }
+                average.Push(estimation);
+
+
+                ProgressBar.Value = percent;
+                ProgressElapsed.Text = $"{i} / {itemCount}  Estimated time remaining {average.Average:hh\\:mm\\:ss}";
+                sw.Restart();
             });
 
             ProgressContainer.Visibility = Visibility.Visible;
@@ -69,11 +100,19 @@ namespace MicroCBuilder.Views
             }, "Updating cache", 100);
         }
 
+        public async Task DeepUpdateCache()
+        {
+            await DisplayProgress(async (progress) =>
+            {
+                await BuildComponentCache.Current.DeepPopulateCache(progress);
+            }, "Updating cache", BuildComponentCache.Current?.TotalItems ?? 100);
+        }
+
         public async void InitCache()
         {
             var progress = new Progress<int>((int p) =>
             {
-                PorgressBar.Value = p;
+                ProgressBar.Value = p;
             });
 
 

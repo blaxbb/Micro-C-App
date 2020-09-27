@@ -18,6 +18,7 @@ namespace MicroCBuilder.ViewModels
         public double TaxRate { get => taxRate; set { SetProperty(ref taxRate, value); Settings.TaxRate(value); } }
         public TimeSpan LastUpdated { get => lastUpdated; set => SetProperty(ref lastUpdated, value); }
         public ICommand ForceUpdateCommand { get; }
+        public ICommand ForceDeepUpdateCommand { get; }
 
         private string selectedStore;
         private double taxRate;
@@ -25,6 +26,7 @@ namespace MicroCBuilder.ViewModels
 
         public delegate void ForceUpdateEvent();
         public static event ForceUpdateEvent ForceUpdate;
+        public static event ForceUpdateEvent ForceDeepUpdate;
 
         public SettingsPageViewModel()
         {
@@ -36,6 +38,12 @@ namespace MicroCBuilder.ViewModels
             ForceUpdateCommand = new Command((_) =>
             {
                 ForceUpdate?.Invoke();
+                Debug.WriteLine("UPDATE");
+            });
+
+            ForceDeepUpdateCommand = new Command((_) =>
+            {
+                ForceDeepUpdate?.Invoke();
                 Debug.WriteLine("UPDATE");
             });
         }

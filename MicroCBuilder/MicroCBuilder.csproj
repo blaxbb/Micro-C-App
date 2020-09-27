@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Nullable>enable</Nullable>
-	<NullableReferenceTypes>true</NullableReferenceTypes>
+    <NullableReferenceTypes>true</NullableReferenceTypes>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
     <ProjectGuid>{FF6DDCBD-418B-43D7-B726-D6C34340D79C}</ProjectGuid>
@@ -139,6 +139,7 @@
     <Compile Include="Converters\NullVisibilityConverter.cs" />
     <Compile Include="LocalSearch.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="TimeSpanRollingAverage.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
     <Compile Include="Views\BuildPageTabContainer.xaml.cs">
       <DependentUpon>BuildPageTabContainer.xaml</DependentUpon>
