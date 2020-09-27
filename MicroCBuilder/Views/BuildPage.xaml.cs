@@ -67,7 +67,7 @@ namespace MicroCBuilder.Views
             vm.Query = query;
             SearchView.Update();
 
-            SearchView.Focus(FocusState.Keyboard);
+            SearchView.dataGrid.Focus(FocusState.Keyboard);
             SearchView.dataGrid.SelectedIndex = 0;
         }
 

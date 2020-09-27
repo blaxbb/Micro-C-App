@@ -12,6 +12,7 @@ using Lucene.Net.Store;
 using Lucene.Net.Util;
 using MicroCLib.Models;
 using Microsoft.Toolkit.Uwp.UI.Controls;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -86,12 +87,15 @@ namespace MicroCBuilder.Views
         public delegate void ItemSelectedEventArgs(object sender, Item item);
         public event ItemSelectedEventArgs OnItemSelected;
 
+        public ObservableCollection<SearchFilter> Filters { get; } = new ObservableCollection<SearchFilter>();
+
         public SearchResults()
         {
             this.InitializeComponent();
             Results = new List<Item>();
             DataContext = this;
             dataGrid.CanUserSortColumns = true;
+            Filters.CollectionChanged += (sender, args) => UpdateFilter();
 
             LocalSearch.Init();
         }
@@ -102,6 +106,59 @@ namespace MicroCBuilder.Views
             dataGrid.ItemsSource = null;
 
             LocalSearch.ReplaceItems(Items);
+            Dictionary<string, List<string>> specs = new Dictionary<string, List<string>>();
+            foreach (var i in Items)
+            {
+                foreach(var s in i.Specs)
+                {
+                    if (!specs.ContainsKey(s.Key))
+                    {
+                        specs.Add(s.Key, new List<string>());
+                    }
+                    var splitSpec = s.Value.Split(',', '\n');
+                    foreach (var specValue in splitSpec)
+                    {
+                        if (!specs[s.Key].Contains(specValue))
+                        {
+                            specs[s.Key].Add(specValue);
+                        }
+                    }
+                }
+            }
+
+            Filters.Clear();
+            foreach(var i in FilterMenuBar.Items.ToList())
+            {
+                FilterMenuBar.Items.Remove(i);
+            }
+
+            var checkedChangedCallback = new DependencyPropertyChangedCallback((obj, prop) =>
+            {
+                if(obj is RadioMenuFlyoutItem radio)
+                {
+                    if (radio.IsChecked)
+                    {
+                        Filters.Add(radio.Tag as SearchFilter);
+                    }
+                    else
+                    {
+                        Filters.Remove(radio.Tag as SearchFilter);
+                    }
+                }
+            });
+
+            foreach (var kvp in specs)
+            {
+                var root = new MenuFlyoutSubItem() { Text = kvp.Key };
+                
+                foreach(var s in kvp.Value)
+                {
+                    var radio = new RadioMenuFlyoutItem() { Text = s, Tag = new SearchFilter(kvp.Key, s) };
+                    radio.RegisterPropertyChangedCallback(RadioMenuFlyoutItem.IsCheckedProperty, checkedChangedCallback);
+                    root.Items.Add(radio);
+                }
+                FilterMenuBar.Items.Add(root);
+            }
         }
 
         private static void QueryChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -232,7 +289,57 @@ namespace MicroCBuilder.Views
                     break;
             }
 
-            dataGrid.ItemsSource = asc ? new ObservableCollection<Item>(Results.OrderBy(sort)) : new ObservableCollection<Item>(Results.OrderByDescending(sort));
+            dataGrid.ItemsSource = asc ? new ObservableCollection<Item>(Results.Where(FilterPredicate).OrderBy(sort)) : new ObservableCollection<Item>(Results.Where(FilterPredicate).OrderByDescending(sort));
+        }
+
+        private void UpdateFilter()
+        {
+            dataGrid.ItemsSource = new ObservableCollection<Item>(Results.Where(FilterPredicate));
+        }
+
+        private Func<Item, bool> FilterPredicate => item => Filters.All(f => item.Specs.ContainsKey(f.Category) && item.Specs[f.Category].Contains(f.Value));
+
+        private void FilterRemoveButtonClick(object sender, RoutedEventArgs e)
+        {
+            if(sender is Button b && b.DataContext is SearchFilter filter)
+            {
+                Filters.Remove(filter);
+            }
+        }
+    }
+
+    public class SearchFilter : INotifyPropertyChanged
+    {
+        private string category;
+        private string value;
+
+        public SearchFilter(string category, string value)
+        {
+            Category = category;
+            Value = value;
+        }
+
+        public string Category { get => category; set => SetProperty(ref category, value); }
+        public string Value { get => value; set => SetProperty(ref this.value, value); }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            var changed = PropertyChanged;
+            if (changed == null)
+                return;
+
+            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        private bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action? onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(backingStore, value))
+                return false;
+
+            backingStore = value;
+            onChanged?.Invoke();
+            OnPropertyChanged(propertyName);
+            return true;
         }
     }
 }
