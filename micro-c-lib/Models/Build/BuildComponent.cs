@@ -137,7 +137,7 @@ namespace MicroCLib.Models
                 ComponentType.RAM => "4294966965",
                 ComponentType.Case => "4294964318",
                 ComponentType.PowerSupply => "4294966654",
-                ComponentType.GPU => "4294966938",
+                ComponentType.GPU => "4294966937",
                 ComponentType.SSD => "4294945779",
                 ComponentType.HDD => "4294945772",
                 ComponentType.CPUCooler => "4294966927",

@@ -11,35 +11,48 @@
     d:DesignWidth="400"
     >
 
-    <Grid HorizontalAlignment="Stretch" Margin="8, 0, 5, 0">
+    <Grid HorizontalAlignment="Stretch" Margin="8, 0, 5, 0" Background="{ThemeResource SystemControlAcrylicElementBrush}">
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <MenuBar Grid.Row="0">
-            <MenuBarItem Title="Filter" x:Name="FilterMenuBar" IsTabStop="False">
-                <controls:RadioMenuFlyoutItem Text="A" GroupName="Group1"/>
-                <controls:RadioMenuFlyoutItem Text="B" GroupName="Group1"/>
+        <MenuBar Grid.Row="0" Grid.Column="0">
+            <MenuBarItem Title="Filters" x:Name="FilterMenuBar" IsTabStop="False">
             </MenuBarItem>
         </MenuBar>
-        <ScrollViewer Grid.Row="1"  HorizontalScrollBarVisibility="Auto">
+        <ScrollViewer Grid.Row="0" Grid.Column="1"  HorizontalScrollBarVisibility="Auto">
             <controls:ItemsRepeater ItemsSource="{Binding Filters}">
                 <controls:ItemsRepeater.ItemTemplate>
                     <DataTemplate>
-                        <Grid x:Name="filterGrid" Background="{ThemeResource SystemControlAcrylicElementBrush}" Padding="5" Margin="5" ColumnSpacing="10">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="Auto"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Grid.Column="0" Text="{Binding Category}" VerticalAlignment="Center"/>
-                            <TextBlock Grid.Column="1" Text="{Binding Value}"  VerticalAlignment="Center"/>
-                            <Button Grid.Column="2" Content="X" Click="FilterRemoveButtonClick"/>
-                        </Grid>
+                        <Border BorderThickness="0,0,1,0" BorderBrush="Black">
+                            <Grid x:Name="filterGrid" Padding="5" Margin="5" ColumnSpacing="10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Grid.Column="0" Text="{Binding Category}" VerticalAlignment="Center"/>
+                                <Button Grid.Column="1" Content="{Binding Value}" Style="{ThemeResource ButtonRevealStyle}">
+                                    <Button.Flyout>
+                                        <Flyout>
+                                            <ListView ItemsSource="{Binding Options}" SelectedItem="{Binding Value, Mode=TwoWay}">
+                                                <ListView.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBlock Text="{Binding}"/>
+                                                    </DataTemplate>
+                                                </ListView.ItemTemplate>
+                                            </ListView>
+                                        </Flyout>
+                                    </Button.Flyout>
+                                </Button>
+                                <Button Grid.Column="2" Content="X" Click="FilterRemoveButtonClick" Style="{ThemeResource ButtonRevealStyle}"/>
+                            </Grid>
+                        </Border>
                     </DataTemplate>
                 </controls:ItemsRepeater.ItemTemplate>
                 <controls:ItemsRepeater.Layout>
@@ -48,19 +61,20 @@
             </controls:ItemsRepeater>
         </ScrollViewer>
         <toolkit:DataGrid x:Name="dataGrid"
-                           x:FieldModifier="public"
-                           Grid.Row="2"
-                           CanUserReorderColumns="True"
-                           CanUserResizeColumns="True"
-                           CanUserSortColumns="True"
-                           AutoGenerateColumns="False"
-                           GridLinesVisibility="Horizontal"
-                           MaxColumnWidth="800"
-                           DoubleTapped="dataGrid_DoubleTapped"
-                           AlternatingRowBackground="{ThemeResource SystemControlBackgroundListLowBrush}"
-                           IsReadOnly="True"
-                           PreviewKeyDown="dataGrid_KeyDown"
-                           Sorting="dataGrid_Sorting">
+                          x:FieldModifier="public"
+                          Grid.Row="1"
+                          Grid.ColumnSpan="2"
+                          CanUserReorderColumns="True"
+                          CanUserResizeColumns="True"
+                          CanUserSortColumns="True"
+                          AutoGenerateColumns="False"
+                          GridLinesVisibility="Horizontal"
+                          MaxColumnWidth="800"
+                          DoubleTapped="dataGrid_DoubleTapped"
+                          AlternatingRowBackground="{ThemeResource SystemControlBackgroundListLowBrush}"
+                          IsReadOnly="True"
+                          PreviewKeyDown="dataGrid_KeyDown"
+                          Sorting="dataGrid_Sorting">
             <toolkit:DataGrid.Columns>
                 <toolkit:DataGridTemplateColumn Header="">
                     <toolkit:DataGridTemplateColumn.CellTemplate>

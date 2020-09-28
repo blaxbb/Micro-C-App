@@ -100,6 +100,14 @@ namespace MicroCBuilder.Views
             LocalSearch.Init();
         }
 
+        protected override void OnPreviewKeyDown(KeyRoutedEventArgs e)
+        {
+            if(e.Key == Windows.System.VirtualKey.Escape)
+            {
+                dataGrid.SelectedItem = null;
+            }
+        }
+
         private void ComponentUpdated()
         {
             Results.Clear();
@@ -107,10 +115,25 @@ namespace MicroCBuilder.Views
 
             LocalSearch.ReplaceItems(Items);
             Dictionary<string, List<string>> specs = new Dictionary<string, List<string>>();
+            specs.Add("Brand", new List<string>());
+
+            string[] ignoredspecs = { "SKU", "UPC", "Mfr Part#" };
+
             foreach (var i in Items)
             {
+                i.Specs["Brand"] = i.Brand;
+                if (!specs["Brand"].Contains(i.Brand))
+                {
+                    specs["Brand"].Add(i.Brand);
+                }
+
                 foreach(var s in i.Specs)
                 {
+                    if (ignoredspecs.Contains(s.Key))
+                    {
+                        continue;
+                    }
+
                     if (!specs.ContainsKey(s.Key))
                     {
                         specs.Add(s.Key, new List<string>());
@@ -153,11 +176,27 @@ namespace MicroCBuilder.Views
                 
                 foreach(var s in kvp.Value)
                 {
-                    var radio = new RadioMenuFlyoutItem() { Text = s, Tag = new SearchFilter(kvp.Key, s) };
-                    radio.RegisterPropertyChangedCallback(RadioMenuFlyoutItem.IsCheckedProperty, checkedChangedCallback);
-                    root.Items.Add(radio);
+                    var filter = new SearchFilter(kvp.Key, s) { Options = kvp.Value };
+                    filter.PropertyChanged += (sender, args) => UpdateFilter();
+
+                    var menuItem = new MenuFlyoutItem() { Text = s, Tag =  filter};
+                    menuItem.Click += MenuItem_Click;
+
+                    root.Items.Add(menuItem);
                 }
                 FilterMenuBar.Items.Add(root);
+            }
+
+            HandleQuery("");
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if(sender is MenuFlyoutItem item && item.Tag is SearchFilter filter)
+            {
+                var toRemove = Filters.Where(f => f.Category == filter.Category);
+                toRemove.ToList().ForEach(f => Filters.Remove(f));
+                Filters.Add(filter);
             }
         }
 
@@ -195,7 +234,7 @@ namespace MicroCBuilder.Views
                 Results.AddRange(LocalSearch.Search(query, Items));
                 
             }
-            dataGrid.ItemsSource = new ObservableCollection<Item>(Results);
+            UpdateFilter();
             OnPropertyChanged(nameof(Count));
         }
 
@@ -312,6 +351,7 @@ namespace MicroCBuilder.Views
     {
         private string category;
         private string value;
+        private List<string> options;
 
         public SearchFilter(string category, string value)
         {
@@ -321,6 +361,7 @@ namespace MicroCBuilder.Views
 
         public string Category { get => category; set => SetProperty(ref category, value); }
         public string Value { get => value; set => SetProperty(ref this.value, value); }
+        public List<string> Options { get => options; set => SetProperty(ref options, value); }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")
