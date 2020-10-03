@@ -40,12 +40,5 @@ namespace micro_c_app.Views
                 searchView.Orientation = "Horizontal";
             }
         }
-
-        //private void StorePicker_SelectedIndexChanged(object sender, EventArgs e)
-        //{
-
-        //    var storeId = SearchViewModel.Stores[(string)StorePicker.SelectedItem];
-        //    Preferences.Set(SearchViewModel.PREF_SELECTED_STORE, storeId);
-        //}
     }
 }

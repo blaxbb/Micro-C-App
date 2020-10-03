@@ -18,17 +18,10 @@ namespace micro_c_app.ViewModels
         public SearchViewModel()
         {
             Title = "Search";
-            Item = new Item()
-            {
-                Name = "AJFKLJSKLF"
-            };
 
             OnProductFound = new Command<Item>(async (Item item) =>
             {
                 Item = item;
-                return;
-                var detailsPage = new ItemDetailsPageViewModel() { Item = item };
-                await Navigation?.PushAsync(new ItemDetailsPage() { BindingContext = detailsPage });
             });
 
             OnProductError = new Command<string>(async (string message) =>

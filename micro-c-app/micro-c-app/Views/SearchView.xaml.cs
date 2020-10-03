@@ -154,74 +154,58 @@ namespace micro_c_app.Views
             {
                 return;
             }
-
             Busy = true;
-
-            await Task.Run(async () =>
+            var storeId = SettingsPage.StoreID();
+            var results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1);
+            switch (results.Items.Count)
             {
-                var storeId = SettingsPage.StoreID();
-                var response = await client.GetAsync(GetSearchUrl(searchValue, storeId, CategoryFilter, OrderBy, SearchResultsPageViewModel.RESULTS_PER_PAGE, 1));
-                if (response.StatusCode == System.Net.HttpStatusCode.OK)
-                {
-                    var body = response.Content.ReadAsStringAsync().Result;
-
-                    var matches = Regex.Matches(body, "href=\"/quickView/(\\d{6}/.*?)\"");
-
-                    if (matches.Count == 0)
+                case 0:
+                    DoError($"Failed to find product with query {searchValue}");
+                    break;
+                case 1:
+                    var stub = results.Items.First();
+                    var item = await Item.FromUrl(stub.URL, storeId);
+                    DoProductFound(item);
+                    break;
+                default:
+                    //count > 1
+                    var page = new SearchResultsPage()
                     {
-                        //await DisplayAlert("Scanned Barcode", "Match failed", "OK");
-                        DoError($"Failed to find product with query {searchValue}");
-                    }
-                    else
-                    {
-                        if (matches.Count == 1)
+                        BindingContext = new SearchResultsPageViewModel()
                         {
-                            var item = await Item.FromUrl($"/product/{matches[0].Groups[1].Value}", storeId);
-                            DoProductFound(item);
-
+                            SearchQuery = searchValue,
+                            StoreID = storeId,
+                            CategoryFilter = CategoryFilter,
+                            OrderBy = OrderBy,
                         }
-                        else
+                    };
+                    page.AutoPop = AutoPopSearchPage;
+                    page.ItemTapped += (sender, args) =>
+                    {
+                        Task.Run(async () =>
                         {
-                            var page = new SearchResultsPage()
+                            if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
                             {
-                                BindingContext = new SearchResultsPageViewModel()
-                                {
-                                    SearchQuery = searchValue,
-                                    StoreID = storeId,
-                                    CategoryFilter = CategoryFilter,
-                                    OrderBy = OrderBy,
-                                }
-                            };
-                            page.AutoPop = AutoPopSearchPage;
-                            page.ItemTapped += (sender, args) =>
-                            {
-                                Task.Run(async () =>
-                                {
-                                    if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
-                                    {
-                                        var item = await Item.FromUrl(shortItem.URL, storeId);
-                                        DoProductFound(item);
-                                    }
-                                });
-                            };
-
-                            await Device.InvokeOnMainThreadAsync(async () =>
-                            {
-                                await Shell.Current.Navigation.PushAsync(page);
-                            });
-
-                            if (page.BindingContext is SearchResultsPageViewModel vm)
-                            {
-                                await vm.ParseBody(body);
+                                var item = await Item.FromUrl(shortItem.URL, storeId);
+                                DoProductFound(item);
                             }
+                        });
+                    };
+
+                    await Device.InvokeOnMainThreadAsync(async () =>
+                    {
+                        await Shell.Current.Navigation.PushAsync(page);
+                    });
+
+                    if (page.BindingContext is SearchResultsPageViewModel vm)
+                    {
+                        foreach(var i in results.Items)
+                        {
+                            vm.Items.Add(i);
                         }
                     }
-                }
-                else
-                {
-                    DoError($"webrequest returned error {response.StatusCode}");
-                }
-            });
+                    break;
+            }
 
             Busy = false;
         }
