@@ -25,7 +25,7 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <views:ItemDetailsView x:Name="detailView" Grid.Row="0" Item="{Binding BindingContext.Item, Mode=TwoWay, Source={Reference Name=page}}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+        <views:ItemDetailsView x:Name="detailView" Grid.Row="0" Item="{Binding BindingContext.Item, Mode=TwoWay, Source={Reference Name=page}}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}"/>
         <views:SearchView x:Name="searchView" Grid.Row="1" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" HeightRequest="100" WidthRequest="200" HorizontalOptions="FillAndExpand" Margin="20" AutoPopSearchPage="True"/>
     </Grid>
 </ContentPage>
