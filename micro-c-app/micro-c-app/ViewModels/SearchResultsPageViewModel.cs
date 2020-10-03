@@ -95,61 +95,15 @@ namespace micro_c_app.ViewModels
             //}
         }
 
-        public async Task ParseBody(string body)
+        public void ParseResults(SearchResults results)
         {
-            var shortMatches = Regex.Matches(body, "class=\"image\" data-name=\"(.*?)\" data-id=\"(.*?)\"(?:.*?)price=\"(.*?)\"(?:.*?)data-brand=\"(.*?)\"(?:.*?)href=\"(.*?)\"(?:.*?)src=\"(.*?)\"");
-            var stockMatches = Regex.Matches(body, "<div class=\"stock\">(?:.*?)>([\\d+ ]*?)<", RegexOptions.Singleline);
-            var skuMatches = Regex.Matches(body, "<p class=\"sku\">SKU: (\\d{6})</p>");
-            var newItems = new List<Item>();
-
-            var match = Regex.Match(body, "(\\d+) items found");
-            if (match.Success)
+            foreach (var i in results.Items)
             {
-                if (int.TryParse(match.Groups[1].Value, out int totalResults))
-                {
-                    TotalResults = totalResults;
-                }
+                Items.Add(i);
             }
 
-            for (int i = 0; i < shortMatches.Count; i++)
-            {
-                Match m = shortMatches[i];
-                string stock = "0";
-                if (i < stockMatches.Count)
-                {
-                    Match stockMatch = stockMatches[i];
-                    stock = string.IsNullOrWhiteSpace(stockMatch.Groups[1].Value) ? "0" : stockMatch.Groups[1].Value;
-                }
-
-                string sku = "000000";
-                if (i < skuMatches.Count)
-                {
-                    var skuMatch = skuMatches[i];
-                    sku = skuMatch.Groups[1].Value ?? "000000";
-                }
-
-                float.TryParse(m.Groups[3].Value, out float price);
-                var item = new Item()
-                {
-                    Name = Item.HttpDecode(m.Groups[1].Value),
-                    Price = price,
-                    Brand = m.Groups[4].Value,
-                    URL = m.Groups[5].Value,
-                    PictureUrls = new List<string>() { m.Groups[6].Value },
-                    Stock = stock,
-                    SKU = sku,
-                };
-
-                newItems.Add(item);
-            }
-
-            await Device.InvokeOnMainThreadAsync(() =>
-            {
-                foreach (var item in newItems)
-                {
-                    Items.Add(item);
-                }
-            });
+            TotalResults = results.TotalResults;
+            page = results.Page;
         }
     }
 }

@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:v="clr-namespace:micro_c_app.Views"
+             x:Class="micro_c_app.Views.ItemDetailsView">
+  <ContentView.Content>
+        <ScrollView>
+            <StackLayout Padding="10">
+                <Label Text="{Binding Item.Name, FallbackValue=NAME}" FontSize="24"/>
+                <v:SelectableLabel Grid.Column="0" Text="{Binding Item.Brand}"/>
+                <StackLayout Orientation="Horizontal" HeightRequest="150">
+                    <Button Text="&lt;" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding BackPicture}"/>
+                    <Image Source="{Binding ActivePicture, FallbackValue=https://aka.ms/campus.jpg}" HorizontalOptions="FillAndExpand" Aspect="AspectFit" />
+                    <Button Text=">" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding ForwardPicture}"/>
+                </StackLayout>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <v:SelectableLabel Grid.Column="0" Grid.Row="0" Text="{Binding Item.Specs[SKU], FallbackValue=123456}" HorizontalTextAlignment="Start"/>
+                    <v:SelectableLabel Grid.Column="1" Grid.Row="0" Text="{Binding Item.Specs[UPC], FallbackValue=123456}" HorizontalTextAlignment="End"/>
+                    <v:SelectableLabel Grid.Column="0" Grid.Row="1" Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
+                    <v:SelectableLabel Grid.Column="1" Grid.Row="1" Text="{Binding Item.Location, FallbackValue=Section 000}" FontSize="Large" HorizontalTextAlignment="End"/>
+                </Grid>
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <v:SelectableLabel Grid.Column="0" Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Start"/>
+                    <v:SelectableLabel Grid.Column="1" Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Center"/>
+                    <v:SelectableLabel Grid.Column="2" Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" HorizontalTextAlignment="End"/>
+                </Grid>
+                <StackLayout x:Name="PlansStackLayout"/>
+                <StackLayout x:Name="SpecsStackLayout"/>
+            </StackLayout>
+        </ScrollView>
+    </ContentView.Content>
+</ContentView>

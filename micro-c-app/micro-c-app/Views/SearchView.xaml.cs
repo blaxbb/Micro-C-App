@@ -179,6 +179,13 @@ namespace micro_c_app.Views
                             OrderBy = OrderBy,
                         }
                     };
+                    
+
+                    if (page.BindingContext is SearchResultsPageViewModel vm)
+                    {
+                        vm.ParseResults(results);
+                    }
+
                     page.AutoPop = AutoPopSearchPage;
                     page.ItemTapped += (sender, args) =>
                     {
@@ -197,13 +204,6 @@ namespace micro_c_app.Views
                         await Shell.Current.Navigation.PushAsync(page);
                     });
 
-                    if (page.BindingContext is SearchResultsPageViewModel vm)
-                    {
-                        foreach(var i in results.Items)
-                        {
-                            vm.Items.Add(i);
-                        }
-                    }
                     break;
             }
 
