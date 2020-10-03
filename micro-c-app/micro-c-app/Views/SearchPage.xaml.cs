@@ -18,6 +18,29 @@ namespace micro_c_app.Views
             }
         }
 
+        protected override void OnSizeAllocated(double width, double height)
+        {
+            base.OnSizeAllocated(width, height);
+            if(width > height)
+            {
+                Grid.SetRow(detailView, 0);
+                Grid.SetRow(searchView, 0);
+
+                Grid.SetColumn(detailView, 0);
+                Grid.SetColumn(searchView, 1);
+                searchView.Orientation = "Vertical";
+            }
+            else
+            {
+                Grid.SetRow(detailView, 0);
+                Grid.SetRow(searchView, 1);
+
+                Grid.SetColumn(detailView, 0);
+                Grid.SetColumn(searchView, 0);
+                searchView.Orientation = "Horizontal";
+            }
+        }
+
         //private void StorePicker_SelectedIndexChanged(object sender, EventArgs e)
         //{
 

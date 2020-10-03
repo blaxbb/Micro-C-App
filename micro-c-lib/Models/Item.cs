@@ -84,7 +84,7 @@ namespace MicroCLib.Models
                     item.URL = match.Groups[1].Value;
                 }
 
-                match = Regex.Match(body, "data-price=\"(.*?)\"");
+                match = Regex.Match(body, "\"savings\"><span>\\$([\\d\\.]+)");
                 if (match.Success)
                 {
                     if (float.TryParse(match.Groups[1].Value, out float price))

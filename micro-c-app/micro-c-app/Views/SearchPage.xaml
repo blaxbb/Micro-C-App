@@ -4,8 +4,9 @@
              x:Class="micro_c_app.Views.SearchPage"
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
              xmlns:views="clr-namespace:micro_c_app.Views"
-             Title="{Binding Title}">
-    
+             Title="{Binding Title}"
+             x:Name="page">
+
     <ContentPage.BindingContext>
         <vm:SearchViewModel />
     </ContentPage.BindingContext>
@@ -15,6 +16,16 @@
             <Color x:Key="Accent">#96d1ff</Color>
         </ResourceDictionary>
     </ContentPage.Resources>
-    <views:SearchView ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" Margin="40"/>
-
+    <Grid x:Name="grid">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <views:ItemDetailsView x:Name="detailView" Grid.Row="0" Item="{Binding BindingContext.Item, Mode=TwoWay, Source={Reference Name=page}}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+        <views:SearchView x:Name="searchView" Grid.Row="1" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" HeightRequest="100" WidthRequest="200" HorizontalOptions="FillAndExpand" Margin="20"/>
+    </Grid>
 </ContentPage>

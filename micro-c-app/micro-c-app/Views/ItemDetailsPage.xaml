@@ -13,36 +13,6 @@
         <ToolbarItem Order="Secondary" Text="Add Reminder" Command="{Binding AddReminder}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout x:Name="FlipStack" Orientation="Horizontal">
-            <ScrollView>
-                <StackLayout Padding="10">
-                    <v:SelectableLabel Text="{Binding Item.Name, FallbackValue=NAME}" FontSize="32"/>
-                    <StackLayout x:Name="PortraitPicture" Orientation="Horizontal" HeightRequest="200">
-                        <Button Text="&lt;" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding BackPicture}"/>
-                        <Image Source="{Binding ActivePicture, FallbackValue=https://aka.ms/campus.jpg}" HorizontalOptions="FillAndExpand" Aspect="AspectFit" />
-                        <Button Text=">" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding ForwardPicture}"/>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal">
-                        <v:SelectableLabel Text="{Binding Item.Brand}" HorizontalOptions="StartAndExpand"/>
-                        <v:SelectableLabel Text="{Binding Item.Specs[SKU], FallbackValue=123456}" HorizontalOptions="Center"/>
-                        <v:SelectableLabel Text="{Binding Item.Specs[UPC], FallbackValue=123456}" HorizontalOptions="EndAndExpand"/>
-                    </StackLayout>
-                    <v:SelectableLabel Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
-                    <v:SelectableLabel x:Name="zzz" Text="{Binding Item.Location, FallbackValue=Section 000}" FontSize="Large"/>
-                    <StackLayout Orientation="Horizontal">
-                        <v:SelectableLabel Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}"/>
-                        <v:SelectableLabel Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}"/>
-                        <v:SelectableLabel Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large"/>
-                    </StackLayout>
-                    <StackLayout x:Name="PlansStackLayout"/>
-                    <StackLayout x:Name="SpecsStackLayout"/>
-                </StackLayout>
-            </ScrollView>
-            <StackLayout x:Name="LandscapePicture" Orientation="Horizontal" HeightRequest="200" WidthRequest="400" IsVisible="False" HorizontalOptions="EndAndExpand"  Margin="5,0,5,0">
-                <Button Text="&#xf04a;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding BackPicture}"/>
-                <Image Source="{Binding ActivePicture, FallbackValue=https://aka.ms/campus.jpg}" HeightRequest="300" WidthRequest="300" HorizontalOptions="CenterAndExpand" Aspect="AspectFit" />
-                <Button Text="&#xf04e;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding ForwardPicture}"/>
-            </StackLayout>
-        </StackLayout>
+        <v:ItemDetailsView x:Name="detailView" Item="{Binding Item}" />
     </ContentPage.Content>
 </ContentPage>
