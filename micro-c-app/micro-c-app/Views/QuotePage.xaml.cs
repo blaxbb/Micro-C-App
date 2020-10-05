@@ -15,6 +15,12 @@ namespace micro_c_app.Views
         {
             InitializeComponent();
             this.SetupActionButton();
+            KeyboardHelper.KeyboardChanged += KeyboardHelper_KeyboardChanged;
+        }
+
+        private void KeyboardHelper_KeyboardChanged(object sender, KeyboardHelperEventArgs e)
+        {
+            grid.RowDefinitions[2].Height = e.Visible ? e.Height : 0;
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -29,26 +35,25 @@ namespace micro_c_app.Views
 
             if (width > height)
             {
-                FlipStack.Direction = FlexDirection.RowReverse;
-                //SecondaryStack.VerticalOptions = LayoutOptions.FillAndExpand;
+                Grid.SetRow(listView, 0);
+                Grid.SetRow(SecondaryStack, 0);
+
+                Grid.SetColumn(listView, 0);
+                Grid.SetColumn(SecondaryStack, 1);
                 SearchView.Orientation = "Vertical";
-                SecondaryStack.WidthRequest = 300;
-                SecondaryStack.HeightRequest = -1;
+                grid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+                grid.RowDefinitions[2].Height = 0;
             }
             else
             {
-                if(Device.RuntimePlatform == Device.iOS)
-                {
-                    FlipStack.Direction = FlexDirection.Column;
-                }
-                else
-                {
-                    FlipStack.Direction = FlexDirection.ColumnReverse;
-                }
+                Grid.SetRow(listView, 0);
+                Grid.SetRow(SecondaryStack, 1);
 
+                Grid.SetColumn(listView, 0);
+                Grid.SetColumn(SecondaryStack, 0);
                 SearchView.Orientation = "Horizontal";
-                SecondaryStack.WidthRequest = -1;
-                SecondaryStack.HeightRequest = 400;
+
+                grid.ColumnDefinitions[1].Width = new GridLength(0);
             }
         }
 

@@ -17,16 +17,18 @@
         <ToolbarItem Text="Import" Order="Secondary" Command="{Binding ImportQuote}"/>-->
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <FlexLayout Direction="ColumnReverse" x:Name="FlipStack" IsEnabled="{Binding NotBusy}">
-            <StackLayout x:Name="SecondaryStack" Orientation="Vertical" HeightRequest="400" WidthRequest="-1" Margin="10,5,10,5">
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="{Binding Subtotal, StringFormat='Subtotal ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand"/>
-                    <Label Text="{Binding TaxedTotal, StringFormat='Total {0}', FallbackValue=(7.5%) $123.45}" HorizontalOptions="EndAndExpand" VerticalOptions="CenterAndExpand"/>
-                </StackLayout>
-                <views:SearchView x:Name="SearchView" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" AutoPopSearchPage="True" Orientation="Horizontal"/>
-            </StackLayout>
-            
-            <ListView x:Name="listView" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" ItemTapped="listView_ItemTapped" HasUnevenRows="True" FlexLayout.Grow="1" HeightRequest="-1">
+        <Grid x:Name="grid" IsEnabled="{Binding NotBusy}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="0"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ListView Grid.Column="0"  x:Name="listView" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" ItemTapped="listView_ItemTapped" HasUnevenRows="True">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
@@ -62,6 +64,17 @@
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-        </FlexLayout>
+            <Grid Grid.Column="1" x:Name="SecondaryStack" Margin="10,5,10,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <StackLayout x:Name="priceSummary" Orientation="Horizontal" Grid.Row="0">
+                    <Label Text="{Binding Subtotal, StringFormat='Subtotal ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand"/>
+                    <Label Text="{Binding TaxedTotal, StringFormat='Total {0}', FallbackValue=(7.5%) $123.45}" HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" VerticalOptions="CenterAndExpand"/>
+                </StackLayout>
+                <views:SearchView x:Name="SearchView" Grid.Row="1" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" AutoPopSearchPage="True" VerticalOptions="Start"/>
+            </Grid>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>
