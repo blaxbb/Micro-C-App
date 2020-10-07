@@ -16,6 +16,12 @@
             <Color x:Key="Accent">#96d1ff</Color>
         </ResourceDictionary>
     </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Order="Secondary" Text="Webpage" Command="{Binding GoToWebpage}"/>
+        <ToolbarItem Order="Secondary" Text="Add Reminder" Command="{Binding AddReminder}"/>
+    </ContentPage.ToolbarItems>
+    
     <Grid x:Name="grid">
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>

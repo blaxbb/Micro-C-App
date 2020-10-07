@@ -17,6 +17,7 @@ namespace micro_c_app.Views
                 vm.Navigation = Navigation;
             }
             KeyboardHelper.KeyboardChanged += KeyboardHelper_KeyboardChanged;
+            this.SetupActionButton();
         }
 
         private void KeyboardHelper_KeyboardChanged(object sender, KeyboardHelperEventArgs e)
