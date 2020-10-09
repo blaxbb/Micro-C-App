@@ -1,0 +1,148 @@
+# Universal Windows Platform
+# Build a Universal Windows Platform project using Visual Studio.
+# Add steps that test and distribute an app, save build artifacts, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'x86|x64|ARM'
+  buildConfiguration: 'Release'
+  appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
+
+stages:
+- stage: Build
+  jobs:
+  - job: Android
+    steps:
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+
+    - task: XamarinAndroid@1
+      inputs:
+        projectFile: '**/*Android*.csproj'
+        outputDirectory: '$(outputDirectory)'
+        configuration: '$(buildConfiguration)'
+
+    - task: AndroidSigning@3
+      inputs:
+        apkFiles: '**/*.apk'
+        apksignerKeystoreFile: 'bbarrett_keystore.keystore'
+        apksignerKeyPassword: '$(android_keystore_password)'
+        apksignerKeystorePassword: '$(android_keystore_password)'
+        apksignerKeystoreAlias: 'bbarrett_keystore'
+        
+    - task: CopyFiles@2
+      inputs:
+        contents: '**/*.apk'
+        targetFolder: '$(build.artifactStagingDirectory)'
+        flattenFolders: true
+
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: android'
+      inputs:
+        ArtifactName: android
+        PathtoPublish: '$(build.artifactstagingdirectory)'
+
+  - job: MicroCBuilder
+    steps:
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+    - task: DownloadSecureFile@1
+      name: signingCert
+      displayName: 'Download CA certificate from library'
+      inputs:
+        secureFile: 'MicroCBuilder.pfx'
+
+    - task: VSBuild@1
+      inputs:
+        platform: 'x86'
+        solution: '**\MicroCBuilder.csproj'
+        configuration: '$(buildConfiguration)'
+        msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)"
+                      /p:AppxPackageDir="$(appxPackageDir)"
+                      /p:AppxBundle=Always
+                      /p:UapAppxPackageBuildMode=StoreUpload
+                      /p:AppxPackageSigningEnabled=true
+                      /p:PackageCertificateThumbprint="" 
+                      /p:PackageCertificateKeyFile="$(signingCert.secureFilePath)"'
+
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+      inputs:
+        SourceFolder: '$(system.defaultworkingdirectory)'
+        Contents: '**\bin\$(BuildConfiguration)\**'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+    - task: PublishBuildArtifacts@1
+      displayName: 'Publish Artifact: MicroCBuilder'
+      inputs:
+        ArtifactName: MicroCBuilder
+        PathtoPublish: '$(build.artifactstagingdirectory)'
+
+  - job: iOS
+    pool:
+      vmimage: 'macOS-latest'
+    steps:
+    
+    - task: InstallAppleCertificate@2
+      inputs:
+        keychain: 'temp'
+        certSecureFile: 'ios_cert.p12'
+        certPwd: '$(mac_cert_password)'
+        deleteCert: true
+
+    - task: InstallAppleProvisioningProfile@1
+      inputs:
+        provisioningProfileLocation: 'secureFiles'
+        provProfileSecureFile: 'micro_c_app_provisioning.mobileprovision'
+        removeProfile: true
+    - task: NuGetToolInstaller@1
+
+    - task: NuGetCommand@2
+      inputs:
+        restoreSolution: '$(solution)'
+
+    - task: XamariniOS@2
+      inputs:
+        solutionFile: '**/*.sln'
+        configuration: 'Release'
+        packageApp: true
+        buildForSimulator: false
+        runNugetRestore: false
+        signingIdentity: $(APPLE_CERTIFICATE_SIGNING_IDENTITY)
+        signingProvisioningProfileID: $(APPLE_PROV_PROFILE_UUID)
+
+    - task: CopyFiles@2
+      displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
+      inputs:
+        SourceFolder: '$(build.SourcesDirectory)'
+        Contents: '**/*.ipa'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+        flattenFolders: true
+
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(build.artifactstagingdirectory)'
+        ArtifactName: 'ios'
+        publishLocation: 'Container'
+
+# - stage: Deploy
+#   jobs:
+#   - job: Deploy
+#     steps:
+#     - task: GooglePlayRelease@3
+#       inputs:
+#         serviceConnection: 'google play'
+#         apkFile: '**/*.apk'
+#         track: 'internal'
