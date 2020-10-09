@@ -21,8 +21,8 @@
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <LangVersion>8.0</LangVersion>
-    <PackageCertificateThumbprint>04DFC0DCD8428B465F1BC6290B380C27456DBC55</PackageCertificateThumbprint>
-    <PackageCertificateKeyFile />
+    <PackageCertificateThumbprint>86450EF0364AAF40163B9F93FEF6054E694B614E</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>MicroCBuilder.pfx</PackageCertificateKeyFile>
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
@@ -260,6 +260,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <None Include="MicroCBuilder.pfx" />
     <None Include="MicroCBuilder_TemporaryKey.pfx" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
