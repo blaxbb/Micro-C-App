@@ -1,12 +1,14 @@
-Projects
-
 # Micro-C-App
 Unofficial Micro Center Android and iOS app primarily intended for employees.
 
 App includes functions for looking up product information, creating customer quotes, and creating system builds.  Uses Xamarin Forms as a application framework.
 
+![android screenshot](https://raw.githubusercontent.com/blaxbb/Micro-C-App/master/screenshots/android.png) ![iOS screenshot](https://raw.githubusercontent.com/blaxbb/Micro-C-App/master/screenshots/ios.png)
+
 # MicroCBuilder
-UWP application for creating custom PC builds.  Caches component information from MicroCenter.com for fast access.  Used for quickly assembling parts lists for customer builds.
+Windows UWP desktop application for creating custom PC builds.  Caches component information from MicroCenter.com for fast access.  Used for quickly assembling parts lists for customer builds.
+
+![builder screenshot](https://raw.githubusercontent.com/blaxbb/Micro-C-App/master/screenshots/builder.png)
 
 # Build Status
 
