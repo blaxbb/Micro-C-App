@@ -14,8 +14,8 @@ Windows UWP desktop application for creating custom PC builds.  Caches component
 
 | Project | Status | Release |
 | ------- | ------ | ------- |
-| Android |[![Build Status](https://dev.azure.com/bbarrett0780/micro-c-app/_apis/build/status/blaxbb.Micro-C-App?branchName=master&jobName=Android)](https://dev.azure.com/bbarrett0780/micro-c-app/_build/latest?definitionId=1&branchName=master) | ![Google Play](https://play.google.com/store/apps/details?id=com.bbarrett.micro_c_app) |
-| iOS | [![Build Status](https://dev.azure.com/bbarrett0780/micro-c-app/_apis/build/status/blaxbb.Micro-C-App?branchName=master&jobName=iOS)](https://dev.azure.com/bbarrett0780/micro-c-app/_build/latest?definitionId=1&branchName=master) | ![TestFlight](https://testflight.apple.com/join/z7dweftj) |
+| Android |[![Build Status](https://dev.azure.com/bbarrett0780/micro-c-app/_apis/build/status/blaxbb.Micro-C-App?branchName=master&jobName=Android)](https://dev.azure.com/bbarrett0780/micro-c-app/_build/latest?definitionId=1&branchName=master) | [Google Play](https://play.google.com/store/apps/details?id=com.bbarrett.micro_c_app) |
+| iOS | [![Build Status](https://dev.azure.com/bbarrett0780/micro-c-app/_apis/build/status/blaxbb.Micro-C-App?branchName=master&jobName=iOS)](https://dev.azure.com/bbarrett0780/micro-c-app/_build/latest?definitionId=1&branchName=master) | [TestFlight](https://testflight.apple.com/join/z7dweftj) |
 | Builder | [![Build Status](https://dev.azure.com/bbarrett0780/micro-c-app/_apis/build/status/blaxbb.Micro-C-App?branchName=master&jobName=MicroCBuilder)](https://dev.azure.com/bbarrett0780/micro-c-app/_build/latest?definitionId=1&branchName=master) | |
 
 
