@@ -7,11 +7,11 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="MicroCBuilder"
-    Publisher="CN=bbarrett"
-    Version="1.0.13.0" />
+    Name="31565bbarrett.MicroCBuilder"
+    Publisher="CN=B7B9E680-1285-4B36-A966-F5340FDA15CA"
+    Version="1.0.21.0" />
 
-  <mp:PhoneIdentity PhoneProductId="e7668c60-15f0-4e80-966c-bd3606a3659f" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="2fa55d91-3d32-470a-9f0f-ac2682d05cf1" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
     <DisplayName>MicroCBuilder</DisplayName>
@@ -37,7 +37,7 @@
         Square44x44Logo="Assets\Square44x44Logo.png"
         Description="Custom PC configuration tool for MicroCenter.com"
         BackgroundColor="transparent">
-        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
       </uap:VisualElements>
     </Application>

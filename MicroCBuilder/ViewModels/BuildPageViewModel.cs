@@ -134,7 +134,7 @@ namespace MicroCBuilder.ViewModels
                     Item = new Item()
                     {
                         Name = name.Text,
-                        Price = (float)price.Value
+                        Price = (float)(double.IsNaN(price.Value) ? 0d : price.Value)
                     }
                 });
             }

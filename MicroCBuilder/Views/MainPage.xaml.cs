@@ -31,8 +31,6 @@ namespace MicroCBuilder.Views
         {
             Instance = this;
             this.InitializeComponent();
-            ApplicationView.PreferredLaunchViewSize = new Size(1920, 1080);
-            ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.PreferredLaunchViewSize;
             InitCache();
             MicroCBuilder.ViewModels.SettingsPageViewModel.ForceUpdate += async () => await UpdateCache();
             MicroCBuilder.ViewModels.SettingsPageViewModel.ForceDeepUpdate += async () => await DeepUpdateCache();
