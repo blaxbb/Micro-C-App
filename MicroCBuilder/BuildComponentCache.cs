@@ -54,33 +54,34 @@ namespace MicroCBuilder
                     {
                         Debug.WriteLine($"REFRESHING {category}");
                         var existing = Cache[category];
-                        List<Item> toRemove = new List<Item>();
+                        List<Item> toAdd = new List<Item>();
                         foreach (var item in items.Items)
                         {
-                            var newItem = items.Items.FirstOrDefault(i => i.ID == item.ID);
-                            if (newItem == null)
+                            var existingItem = existing.FirstOrDefault(i => i.ID == item.ID);
+                            if (existingItem == null)
                             {
-                                toRemove.Add(item);
+                                toAdd.Add(item);
                             }
                             else
                             {
-                                item.Price = newItem.Price;
-                                item.OriginalPrice = newItem.OriginalPrice;
-                                item.SKU = newItem.SKU;
-                                item.Name = newItem.Name;
-                                item.PictureUrls = newItem.PictureUrls;
-                                item.Brand = newItem.Brand;
-                                item.URL = newItem.URL;
-                                item.Stock = newItem.Stock;
+                                existingItem.Price = item.Price;
+                                existingItem.OriginalPrice = item.OriginalPrice;
+                                existingItem.SKU = item.SKU;
+                                existingItem.Name = item.Name;
+                                existingItem.PictureUrls = item.PictureUrls;
+                                existingItem.Brand = item.Brand;
+                                existingItem.URL = item.URL;
+                                existingItem.Stock = item.Stock;
                             }
                         }
 
-                        toRemove.ForEach(i => existing.Remove(i));
-                        Debug.WriteLine($"REMOVED {toRemove.Count} from {category}");
+                        toAdd.ForEach(i => existing.Add(i));
+                        Debug.WriteLine($"Added {toAdd.Count} from {category}");
                     }
                     else
                     {
                         Cache[category] = items.Items;
+                        Debug.WriteLine($"Created {category} with {items.Items.Count}");
                     }
                 }
                 var percent = (int)Math.Round(((float)(i + 1) / types.Count) * 100);
