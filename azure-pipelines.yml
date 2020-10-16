@@ -137,6 +137,16 @@ stages:
         ArtifactName: 'ios'
         publishLocation: 'Container'
 
+  - job: Test
+    steps:
+    - task: DotNetCoreCLI@2
+      inputs:
+        command: 'test'
+        projects: '**\*Tests.csproj'
+        arguments: '--collect "Code coverage"'
+      continueOnError: true
+
+
 # - stage: Deploy
 #   jobs:
 #   - job: Deploy

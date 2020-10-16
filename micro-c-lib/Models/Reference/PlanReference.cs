@@ -164,8 +164,8 @@ namespace MicroCLib.Models.Reference
             AllPlans.Add(new PlanReference(PlanType.Laptop_Extension, 2000.00f, 2999.99f, new PlanTier(1, 199.99f), new PlanTier(2, 299.99f)));
             AllPlans.Add(new PlanReference(PlanType.Laptop_Extension, 3000.00f, 4999.99f, new PlanTier(1, 199.99f), new PlanTier(2, 299.99f)));
 
-            AllPlans.Add(new PlanReference(PlanType.Desktop_ADH, 0.00f, 99.99f,  new PlanTier(2, 79.99f), new PlanTier(3, 0)));
-            AllPlans.Add(new PlanReference(PlanType.Desktop_ADH, 100.00f, 199.99f, new PlanTier(2, 79.99f), new PlanTier(3, 0)));
+            AllPlans.Add(new PlanReference(PlanType.Desktop_ADH, 0.00f, 99.99f,  new PlanTier(2, 79.99f), new PlanTier(3, 99.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Desktop_ADH, 100.00f, 199.99f, new PlanTier(2, 79.99f), new PlanTier(3, 199.99f)));
             AllPlans.Add(new PlanReference(PlanType.Desktop_ADH, 200.00f, 299.99f, new PlanTier(2, 89.99f), new PlanTier(3, 139.99f)));
             AllPlans.Add(new PlanReference(PlanType.Desktop_ADH, 300.00f, 399.99f, new PlanTier(2, 99.99f), new PlanTier(3, 149.99f)));
             AllPlans.Add(new PlanReference(PlanType.Desktop_ADH, 400.00f, 499.99f, new PlanTier(2, 139.99f), new PlanTier(3, 169.99f)));
@@ -230,7 +230,8 @@ namespace MicroCLib.Models.Reference
             AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_13, 0.00f, 0.00f, new PlanTier(3, 319.99f), new PlanTier(2, 239.99f)));
             AllPlans.Add(new PlanReference(PlanType.Apple_Plans_13, 0.00f, 0.00f, new PlanTier(3, 149.99f)));
             AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_15_and_16, 0.00f, 0.00f, new PlanTier(3, 429.99f), new PlanTier(2, 349.99f)));
-            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_15_and_16, 0.00f, 0.00f, new PlanTier(3, 149.99f)));AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_Mac_Mini, 0.00f, 0.00f, new PlanTier(2, 119.99f), new PlanTier(3, 149.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_15_and_16, 0.00f, 0.00f, new PlanTier(3, 149.99f)));
+            AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_Mac_Mini, 0.00f, 0.00f, new PlanTier(2, 119.99f), new PlanTier(3, 149.99f)));
             AllPlans.Add(new PlanReference(PlanType.Apple_Plans_Mac_Mini, 0.00f, 0.00f, new PlanTier(3, 74.99f)));
             AllPlans.Add(new PlanReference(PlanType.Apple_Plans_ADH_Mac_Pro, 0.00f, 0.00f, new PlanTier(3, 299.99f), new PlanTier(2, 219.99f)));
             AllPlans.Add(new PlanReference(PlanType.Apple_Plans_Mac_Pro, 0.00f, 0.00f, new PlanTier(3, 149.99f)));

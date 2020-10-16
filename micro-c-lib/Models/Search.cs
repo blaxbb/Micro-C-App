@@ -110,6 +110,7 @@ namespace micro_c_lib.Models
                     Name = Item.HttpDecode(m.Groups[1].Value),
                     ID = id,
                     Price = price,
+                    OriginalPrice = price,
                     Brand = m.Groups[4].Value,
                     URL = url,
                     PictureUrls = new List<string>() { m.Groups[6].Value },
