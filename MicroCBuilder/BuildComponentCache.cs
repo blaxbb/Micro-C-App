@@ -75,8 +75,25 @@ namespace MicroCBuilder
                             }
                         }
 
+                        var toRemove = new List<Item>();
+                        foreach(var existingItem in existing)
+                        {
+                            if(!items.Items.Any(i => i.ID == existingItem.ID))
+                            {
+                                toRemove.Add(existingItem);
+                            }
+                        }
+
+                        toRemove.ForEach(i => existing.Remove(i));
                         toAdd.ForEach(i => existing.Add(i));
-                        Debug.WriteLine($"Added {toAdd.Count} from {category}");
+                        if (toAdd.Count > 0)
+                        {
+                            Debug.WriteLine($"Added {toAdd.Count} from {category}");
+                        }
+                        if(toRemove.Count > 0)
+                        {
+                            Debug.WriteLine($"Removed {toRemove.Count} from {category}");
+                        }
                     }
                     else
                     {

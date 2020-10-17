@@ -66,7 +66,7 @@ namespace micro_c_lib.Models
         {
             var result = new SearchResults();
             var shortMatches = Regex.Matches(body, "class=\"image\" data-name=\"(.*?)\" data-id=\"(.*?)\"(?:.*?)price=\"(.*?)\"(?:.*?)data-brand=\"(.*?)\"(?:.*?)href=\"(.*?)\"(?:.*?)src=\"(.*?)\"");
-            var stockMatches = Regex.Matches(body, "<div class=\"stock\">(?:.+?)(\\d[\\d+]*?) <", RegexOptions.Singleline);
+            var stockMatches = Regex.Matches(body, "<div class=\"stock\">(?:.+?)strong>\\s*(.*?)<span", RegexOptions.Singleline);
             var skuMatches = Regex.Matches(body, "<p class=\"sku\">SKU: (\\d{6})</p>");
             var newItems = new List<Item>();
 
