@@ -53,123 +53,208 @@ namespace MicroCLib.Models
                 }
 
                 var body = await response.Content.ReadAsStringAsync();
-                //body = body.Replace("\r", "");
-                //body = body.Replace("\n", "");
-                var matches = Regex.Matches(body, "<div class=\"spec-body\"><div(?: class=)?[a-zA-Z\"=]*?>(.*?)(.*?)</div>.?<div(?: class=)?[a-zA-Z\"=]*?>(.*?)</div", RegexOptions.Singleline);
-                if (matches.Count > 0)
-                {
-                    foreach (Match m in matches)
-                    {
-                        item.Specs[HttpDecode(m.Groups[2].Value)] = HttpDecode(m.Groups[3].Value.Replace("<br /> ", "\n"));
-                    }
-                }
 
-                if (item.Specs != null && item.Specs.ContainsKey("SKU"))
-                {
-                    item.SKU = item.Specs["SKU"] ?? "000000";
-                }
+                item.ID = ParseIDFromURL(url);
+                item.URL = ParseURL(body);
 
-                var match = Regex.Match(body, "'productPrice':'(.*?)',");
-                if (match.Success)
-                {
-                    if (float.TryParse(match.Groups[1].Value, out float price))
-                    {
-                        item.Price = price;
-                    }
-                }
+                item.Name = ParseName(body);
+                item.Brand = ParseBrand(body);
+                item.Specs = ParseSpecs(body);
+                item.SKU = ParseSKU(item);
 
-                match = Regex.Match(body, "'pageUrl':'(.*?)',");
-                if (match.Success)
-                {
-                    item.URL = match.Groups[1].Value;
-                }
+                item.Stock = ParseStock(body);
+                item.Price = ParsePrice(body);
+                item.OriginalPrice = ParseOriginalPrice(body, item);
 
-                match = Regex.Match(body, "\"savings\"><span>\\$([\\d\\.]+)");
-                if (match.Success)
-                {
-                    if (float.TryParse(match.Groups[1].Value, out float price))
-                    {
-                        item.OriginalPrice = price;
-                    }
-                }
-                else
-                {
-                    item.OriginalPrice = item.Price;
-                }
+                item.Location = ParseLocations(body);
+                item.PictureUrls = ParsePictures(body);
 
-                match = Regex.Match(body, "<span class=\"inventoryCnt\">(.*?)</span>");
-                if (match.Success)
-                {
-                    item.Stock = match.Groups[1].Value;
-                }
-
-                match = Regex.Match(body, "data-name=\"(.*?)\"");
-                if (match.Success)
-                {
-                    item.Name = HttpDecode(match.Groups[1].Value);
-                }
-
-                matches = Regex.Matches(body, "<img class= ?\"productImageZoom\" src=\"(.*?)\"");
-                if (matches.Count > 0)
-                {
-                    item.PictureUrls = new List<string>();
-                    foreach (Match m in matches)
-                    {
-                        item.PictureUrls.Add(m.Groups[1].Value);
-                    }
-                }
-
-                match = Regex.Match(body, "class=\"findItLink\"(?:.*?)>(.*?)<");
-                if (match.Success)
-                {
-                    StringBuilder b = new StringBuilder();
-                    b.Append(match.Groups[1]);
-                    matches = Regex.Matches(body, "class=\"otherLocation\">(.*?)<");
-                    //
-                    // There is an invisible element with another findit panel in the html, so only grab the first half...
-                    //
-                    for (int i = 0; i < matches.Count / 2; i++)
-                    {
-                        var m = matches[i];
-                        b.Append(m.Groups[1]);
-                    }
-
-                    item.Location = b.ToString();
-                }
-
-                matches = Regex.Matches(body, "#planDetails(?:.*?)>(.*?)<(?:.*?)pricing\"> \\$(.*?)<");
-                if (matches.Count > 0)
-                {
-                    item.Plans = new List<Plan>();
-                    foreach (Match m in matches)
-                    {
-                        if (float.TryParse(m.Groups[2].Value, out float price))
-                        {
-                            item.Plans.Add(new Plan()
-                            {
-                                Name = m.Groups[1].Value,
-                                Price = price
-                            });
-                        }
-                    }
-                }
-
-                match = Regex.Match(url, "\\/product\\/(\\d+?)\\/");
-                if (match.Success)
-                {
-                    item.ID = match.Groups[1].Value;
-                }
-
-                match = Regex.Match(body, "data-brand=\"(.*?)\"");
-                if (match.Success)
-                {
-                    item.Brand = match.Groups[1].Value;
-                }
+                item.Plans = ParsePlans(body);
 
             }
 
             return item;
         }
+
+        public static Dictionary<string, string> ParseSpecs(string body)
+        {
+            var results = new Dictionary<string, string>();
+            var matches = GetSpecs.Matches(body);
+            if (matches.Count > 0)
+            {
+                foreach (Match m in matches)
+                {
+                    results[HttpDecode(m.Groups[2].Value)] = HttpDecode(m.Groups[3].Value.Replace("<br /> ", "\n"));
+                }
+            }
+
+            return results;
+        }
+        public static string ParseSKU(Item item)
+        {
+            if (item.Specs != null && item.Specs.ContainsKey("SKU"))
+            {
+                return item.Specs["SKU"] ?? "";
+            }
+
+            return "";
+        }
+
+        public static float ParsePrice(string body)
+        {
+            var match = GetPrice.Match(body);
+            if (match.Success)
+            {
+                if (float.TryParse(match.Groups[1].Value, out float price))
+                {
+                    return price;
+                }
+            }
+
+            return 0f;
+        }
+
+        public static float ParseOriginalPrice(string body, Item item)
+        {
+            var match = GetOriginalPrice.Match(body);
+            if (match.Success)
+            {
+                if (float.TryParse(match.Groups[1].Value, out float price))
+                {
+                    return price;
+                }
+                {
+                    return item.price;
+                }
+            }
+            else
+            {
+                return item.Price;
+            }
+        }
+
+        public static string ParseURL(string body)
+        {
+            var match = GetURL.Match(body);
+            if (match.Success)
+            {
+                return match.Groups[1].Value;
+            }
+
+            return "";
+        }
+        public static string ParseStock(string body)
+        {
+            var match = GetStock.Match(body);
+            if (match.Success)
+            {
+                return match.Groups[1].Value;
+            }
+            return "";
+        }
+        public static string ParseName(string body)
+        {
+            var match = GetName.Match(body);
+            if (match.Success)
+            {
+                return HttpDecode(match.Groups[1].Value);
+            }
+            return "";
+        }
+
+        public static List<string> ParsePictures(string body)
+        {
+            var matches = GetPictures.Matches(body);
+            var result = new List<string>();
+            if (matches.Count > 0)
+            {
+                foreach (Match m in matches)
+                {
+                    result.Add(m.Groups[1].Value);
+                }
+            }
+
+            return result;
+        }
+
+        public static string ParseLocations(string body)
+        {
+            var match = GetFirstLocation.Match(body);
+            if (match.Success)
+            {
+                StringBuilder b = new StringBuilder();
+                b.Append(match.Groups[1]);
+                var matches = GetOtherLocations.Matches(body);
+                //
+                // There is an invisible element with another findit panel in the html, so only grab the first half...
+                //
+                for (int i = 0; i < matches.Count / 2; i++)
+                {
+                    var m = matches[i];
+                    b.Append(m.Groups[1]);
+                }
+
+                return b.ToString();
+            }
+
+            return "";
+        }
+        public static List<Plan> ParsePlans(string body)
+        {
+            var matches = GetPlans.Matches(body);
+            var result = new List<Plan>();
+            if (matches.Count > 0)
+            {
+                foreach (Match m in matches)
+                {
+                    if (float.TryParse(m.Groups[2].Value, out float price))
+                    {
+                        result.Add(new Plan()
+                        {
+                            Name = m.Groups[1].Value,
+                            Price = price
+                        });
+                    }
+                }
+            }
+
+            return result;
+        }
+
+        public static string ParseBrand(string body)
+        {
+            var match = GetBrand.Match(body);
+            if (match.Success)
+            {
+                return match.Groups[1].Value;
+            }
+
+            return "";
+        }
+
+        public static string ParseIDFromURL(string url)
+        {
+            var match = GetIDFromURL.Match(url);
+            if (match.Success)
+            {
+                return match.Groups[1].Value;
+            }
+
+            return "";
+        }
+
+        private static Regex GetSpecs => new Regex("<div class=\"spec-body\"><div(?: class=)?[a-zA-Z\"=]*?>(.*?)(.*?)</div>.?<div(?: class=)?[a-zA-Z\"=]*?>(.*?)</div", RegexOptions.Singleline);
+        private static Regex GetPrice => new Regex("'productPrice':'(.*?)',");
+        private static Regex GetURL => new Regex("'pageUrl':'(.*?)',");
+        private static Regex GetOriginalPrice => new Regex("\"savings\"><span>\\$([\\d\\.]+)");
+        private static Regex GetStock => new Regex("<span class=\"inventoryCnt\">(.*?)</span>");
+        private static Regex GetName => new Regex("data-name=\"(.*?)\"");
+        private static Regex GetPictures => new Regex("<img class= ?\"productImageZoom\" src=\"(.*?)\"");
+        private static Regex GetFirstLocation => new Regex("class=\"findItLink\"(?:.*?)>(.*?)<");
+        private static Regex GetOtherLocations => new Regex("class=\"otherLocation\">(.*?)<");
+        private static Regex GetPlans => new Regex("#planDetails(?:.*?)>(.*?)<(?:.*?)pricing\"> \\$(.*?)<");
+        private static Regex GetIDFromURL => new Regex("\\/product\\/(\\d+?)\\/");
+        private static Regex GetBrand => new Regex("data-brand=\"(.*?)\"");
 
         public static string HttpDecode(string s)
         {
