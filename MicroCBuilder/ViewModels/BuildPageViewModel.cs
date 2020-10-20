@@ -54,7 +54,17 @@ namespace MicroCBuilder.ViewModels
         {
             Components = new ObservableCollection<BuildComponent>();
 
-            DefaultComponentTypes().ToList().ForEach(c => {
+            //DefaultComponentTypes().ToList().ForEach(c => {
+            //    var comp = new BuildComponent() { Type = c };
+            //    comp.PropertyChanged += (sender, args) =>
+            //    {
+            //        OnPropertyChanged(nameof(Components));
+            //    };
+            //    Components.Add(comp);
+            //});
+
+            Settings.Categories().ForEach(c =>
+            {
                 var comp = new BuildComponent() { Type = c };
                 comp.PropertyChanged += (sender, args) =>
                 {
@@ -62,6 +72,8 @@ namespace MicroCBuilder.ViewModels
                 };
                 Components.Add(comp);
             });
+
+
             Save = new Command(DoSave);
 
             Load = new Command(DoLoad);
