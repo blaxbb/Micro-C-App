@@ -1,8 +1,11 @@
-﻿using System;
+﻿using MicroCLib.Models;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -24,17 +27,28 @@ namespace MicroCBuilder.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class MainPage : Page, INotifyPropertyChanged
     {
+        private string progressTitleText;
+        private string progressElapsedText;
+        private double progressElapsedValue;
+        private Visibility progressVisibility;
+
         public static MainPage Instance { get; private set; }
+        public string ProgressTitleText { get => progressTitleText; set => SetProperty(ref progressTitleText, value); }
+        public string ProgressElapsedText { get => progressElapsedText; set => SetProperty(ref progressElapsedText, value); }
+        public double ProgressElapsedValue { get => progressElapsedValue; set => SetProperty(ref progressElapsedValue, value); }
+        public Visibility ProgressVisibility { get => progressVisibility; set => SetProperty(ref progressVisibility, value); }
+
         public MainPage()
         {
             Instance = this;
             this.InitializeComponent();
+            this.DataContext = this;
+            ProgressVisibility = Visibility.Collapsed;
             InitCache();
             MicroCBuilder.ViewModels.SettingsPageViewModel.ForceUpdate += async () => await UpdateCache();
             MicroCBuilder.ViewModels.SettingsPageViewModel.ForceDeepUpdate += async () => await DeepUpdateCache();
-
 
 
             Navigation.SelectedItem = Navigation.MenuItems.FirstOrDefault();
@@ -44,15 +58,14 @@ namespace MicroCBuilder.Views
 
         public async Task DisplayProgress(Func<IProgress<int>, Task> action, string title, int itemCount)
         {
-            ProgressTitle.Text = title;
+            //ProgressTitle.Text = title;
+            ProgressTitleText = title;
             var dispatcher = Window.Current.Dispatcher;
 
             var lastPercentCheck = 0f;
             TimeSpanRollingAverage average = new TimeSpanRollingAverage();
             Stopwatch sw = new Stopwatch();
             sw.Start();
-
-
 
             var progress = new Progress<int>((i) =>
             {
@@ -74,18 +87,18 @@ namespace MicroCBuilder.Views
                 average.Push(estimation);
 
 
-                ProgressBar.Value = percent;
-                ProgressElapsed.Text = $"{i} / {itemCount}  Estimated time remaining {average.Average:hh\\:mm\\:ss}";
+                ProgressElapsedValue = percent;
+                ProgressElapsedText = $"{i} / {itemCount} {average.Average:hh\\:mm\\:ss} remaining";
                 sw.Restart();
             });
 
-            ProgressContainer.Visibility = Visibility.Visible;
+            ProgressVisibility = Visibility.Visible;
             await action(progress)
                 .ContinueWith(async (_) =>
             {
                 await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () =>
                 {
-                    ProgressContainer.Visibility = Visibility.Collapsed;
+                    ProgressVisibility = Visibility.Collapsed;
                 });
             });
         }
@@ -100,17 +113,18 @@ namespace MicroCBuilder.Views
 
         public async Task DeepUpdateCache()
         {
+            var categoryStrings = Settings.Categories().Select(c => BuildComponent.CategoryFilterForType(c)).ToList();
             await DisplayProgress(async (progress) =>
             {
                 await BuildComponentCache.Current.DeepPopulateCache(progress);
-            }, "Updating cache", BuildComponentCache.Current?.TotalItems ?? 100);
+            }, "Updating cache", BuildComponentCache.Current?.Cache.Where(kvp => categoryStrings.Contains(kvp.Key)).Sum(kvp => kvp.Value.Count) ?? 100);
         }
 
         public async void InitCache()
         {
             var progress = new Progress<int>((int p) =>
             {
-                ProgressBar.Value = p;
+                ProgressElapsedValue = p;
             });
 
 
@@ -130,7 +144,7 @@ namespace MicroCBuilder.Views
             }
             else
             {
-                ProgressContainer.Visibility = Visibility.Collapsed;
+                ProgressVisibility = Visibility.Collapsed;
             }
         }
 
@@ -163,5 +177,27 @@ namespace MicroCBuilder.Views
         {
             ContentFrame.GoBack();
         }
+        protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action? onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(backingStore, value))
+                return false;
+
+            backingStore = value;
+            onChanged?.Invoke();
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            var changed = PropertyChanged;
+            if (changed == null)
+                return;
+
+            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
     }
 }

@@ -122,9 +122,9 @@ namespace MicroCBuilder
             TimeSpan totalElapsed = TimeSpan.Zero;
             int totalParsed = 0;
             int index = -1;
-            var count = Cache.Sum(kvp => kvp.Value.Count);
-
-            foreach(var kvp in Cache)
+            var categoryStrings = Settings.Categories().Select(c => BuildComponent.CategoryFilterForType(c)).ToList();
+            var count = Cache.Where(kvp => categoryStrings.Contains(kvp.Key)).Sum(kvp => kvp.Value.Count);
+            foreach(var kvp in Cache.Where(kvp => categoryStrings.Contains(kvp.Key)))
             {
                 var category = kvp.Key;
                 var items = kvp.Value;
@@ -134,7 +134,7 @@ namespace MicroCBuilder
                 {
                     index++;
 
-                    if(item.Specs == null || item.Specs.Count == 0)
+                    if(item.Specs == null || item.Specs.Count <= 1)
                     {
                         var deepItem = await Item.FromUrl(item.URL, Settings.StoreID());
                         item.Specs = deepItem.Specs;
@@ -147,6 +147,8 @@ namespace MicroCBuilder
                             //var percent = (int)Math.Round(((float)(index + 1) / count) * 100);
                             progress?.Report(index);
                         }
+
+                        await SaveCache();
                     }
                 }
                 sw.Stop();

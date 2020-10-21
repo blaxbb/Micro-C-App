@@ -30,13 +30,23 @@
         </NavigationView.MenuItems>
         <Grid>
             <Frame Grid.Column="0" x:Name="ContentFrame"/>
-            <Grid Grid.Column="0" x:Name="ProgressContainer" Background="{ThemeResource SystemControlAcrylicElementBrush}">
-                <Grid Grid.Column="0"/>
-                <StackPanel Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                    <TextBlock x:Name="ProgressTitle" Text="" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                    <TextBlock x:Name="ProgressElapsed" FontSize="24" HorizontalAlignment="Center" Margin="0,0,0,10"/>
-                    <ProgressBar x:Name="ProgressBar" Margin="20"/>
-                </StackPanel>
+            <Grid Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="400" Height="75" Margin="5" Padding="10" ColumnSpacing="10" Visibility="{Binding ProgressVisibility}">
+                <Grid.Background>
+                    <AcrylicBrush BackgroundSource="Backdrop"
+                                TintColor="DarkCyan"
+                                TintOpacity="0.2"/>
+                </Grid.Background>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="{Binding ProgressTitleText}" VerticalAlignment="Center" TextWrapping="WrapWholeWords" MaxLines="3"/>
+                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ProgressElapsedText}" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWholeWords" MaxLines="2"/>
+                <ProgressBar Grid.Column="1" Grid.Row="1" Value="{Binding ProgressElapsedValue}"/>
             </Grid>
         </Grid>
     </NavigationView>
