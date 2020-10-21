@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using static MicroCLib.Models.BuildComponent;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -53,10 +54,51 @@ namespace MicroCBuilder.Views
             MicroCBuilder.ViewModels.SettingsPageViewModel.ForceUpdate += async () => await UpdateCache();
             MicroCBuilder.ViewModels.SettingsPageViewModel.ForceDeepUpdate += async () => await DeepUpdateCache();
 
+            Settings.SettingsUpdated += (sender, args) => SetupAddButtons();
+            SetupAddButtons();
+
             var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.ExtendViewIntoTitleBar = true;
             coreTitleBar.LayoutMetricsChanged += CoreTitleBar_LayoutMetricsChanged;
             Window.Current.SetTitleBar(CustomDragRegion);
+        }
+
+        private void SetupAddButtons()
+        {
+            var flyoutItems = ((MenuFlyout)AddButton.Flyout).Items;
+            flyoutItems.Clear();
+
+            var componentTypes = Settings.Categories();
+            foreach (var type in componentTypes)
+            {
+                flyoutItems.Add(new MenuFlyoutItem() { Text = type.ToString(), Command = new Command<ComponentType>(type => AddComponent(type)), CommandParameter = type });
+            }
+
+            flyoutItems.Add(new MenuFlyoutSeparator());
+            flyoutItems.Add(new MenuFlyoutItem() { Text = "Search", Command = new Command((_) => SearchClicked()) });
+            flyoutItems.Add(new MenuFlyoutItem() { Text = "Custom", Command = new Command((_) => CustomItemClicked()) });
+        }
+
+        private void AddComponent(ComponentType type)
+        {
+            if(CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            {
+                vm.Add.Execute(type);
+            }
+        }
+        private void SearchClicked()
+        {
+            if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            {
+                vm.AddSearchItem.Execute(null);
+            }
+        }
+        private void CustomItemClicked()
+        {
+            if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            {
+                vm.AddCustomItem.Execute(null);
+            }
         }
 
         private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
