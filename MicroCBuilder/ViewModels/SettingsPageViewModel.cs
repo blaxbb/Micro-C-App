@@ -62,7 +62,10 @@ namespace MicroCBuilder.ViewModels
             Presets = new Dictionary<string, List<ComponentType>>()
             {
                 { "Preset categories", null },
-                { "BYO",  PresetBYO().ToList() }
+                { "BYO",  PresetBYO().ToList() },
+                { "Systems", PresetSystems().ToList() },
+                { "CE", PresetCE().ToList() },
+                { "GS", PresetGS().ToList() }
             };
             PresetNames = new ObservableCollection<string>(Presets.Keys);
 
@@ -161,6 +164,61 @@ namespace MicroCBuilder.ViewModels
             yield return CPUCooler;
             yield return WaterCoolingKit;
             yield return CaseFan;
+        }
+        private static IEnumerable<ComponentType> PresetSystems()
+        {
+            yield return Desktop;
+            yield return Laptop;
+            yield return Monitor;
+            yield return Keyboard;
+            yield return Mouse;
+            yield return Printer;
+        }
+
+        private static IEnumerable<ComponentType> PresetGS()
+        {
+            yield return WirelessRouter;
+            yield return WiredRouter;
+            yield return WiredNetworkAdapter;
+            yield return NetworkingPowerline;
+            yield return POENetworkAdapter;
+            yield return NetworkSwitch;
+            yield return WirelessAdapter;
+            yield return WirelessAccessPoint;
+            yield return WirelessBoosters;
+            yield return NetworkingBridge;
+            yield return NetworkingCable;
+            yield return NetworkingAccessory;
+            yield return NetworkAttachedStorage;
+            yield return BluetoothAdapter;
+            yield return Keyboard;
+            yield return Mouse;
+            yield return Headphones;
+            yield return Speakers;
+            yield return ExternalDrives;
+            yield return UninteruptablePowerSupply;
+            yield return GameAccessories;
+            yield return GameControllers;
+            yield return Xbox;
+            yield return Playstation;
+            yield return Nintendo;
+            yield return InkAndToner;
+        }
+
+        private static IEnumerable<ComponentType> PresetCE()
+        {
+            yield return Television;
+            yield return HomeTheaterAudio;
+            yield return HomeTheaterWireless;
+            yield return StreamingMedia;
+            yield return Printer;
+            yield return InkAndToner;
+            yield return SecurityCamera;
+            yield return SecurityCameraKit;
+            yield return HomeAutomation;
+            yield return Projectors;
+            yield return DigitalCamera;
+            yield return FlashMemory;
         }
     }
 }
