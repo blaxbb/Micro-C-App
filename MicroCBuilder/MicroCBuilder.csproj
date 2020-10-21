@@ -142,9 +142,6 @@
     <Compile Include="Settings.cs" />
     <Compile Include="TimeSpanRollingAverage.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
-    <Compile Include="Views\BuildPageTabContainer.xaml.cs">
-      <DependentUpon>BuildPageTabContainer.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\BuildSummaryControl.xaml.cs">
       <DependentUpon>BuildSummaryControl.xaml</DependentUpon>
     </Compile>
@@ -237,10 +234,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="Views\BuildPageTabContainer.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Views\BuildSummaryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
