@@ -42,7 +42,7 @@ namespace MicroCBuilder
         public async Task PopulateCache(IProgress<int> progress)
         {
             //Cache.Clear();
-            var types = Enum.GetValues(typeof(BuildComponent.ComponentType)).Cast<BuildComponent.ComponentType>().ToList();
+            var types = Settings.Categories();
             for (int i = 0; i < types.Count; i++)
             {
                 var type = types[i];

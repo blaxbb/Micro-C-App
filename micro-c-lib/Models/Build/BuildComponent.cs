@@ -32,7 +32,38 @@ namespace MicroCLib.Models
             OperatingSystem,
             Miscellaneous,
             Plan,
-            WaterCoolingKit
+            WaterCoolingKit,
+            Desktop,
+            Laptop,
+            Monitor,
+            Printer,
+            Keyboard,
+            Mouse,
+            Television,
+            CellPhone,
+            DigitalCamera,
+            Webcam,
+            FlashMemory,
+            HomeAutomation,
+            SecurityCamera,
+            SecurityCameraKit,
+            WirelessRouter,
+            WiredRouter,
+            WiredNetworkAdapter,
+            NetworkingPowerline,
+            POENetworkAdapter,
+            NetworkSwitch,
+            WirelessAdapter,
+            WirelessAccessPoint,
+            WirelessBoosters,
+            BluetoothAdapter,
+            NetworkingBridge,
+            NetworkingCable,
+            NetworkingAccessory,
+            NetworkAttachedStorage,
+            UninteruptablePowerSupply,
+            InkAndToner,
+            Printer3D,
         }
         public ComponentType Type { get; set; }
         [JsonIgnore]
@@ -78,24 +109,14 @@ namespace MicroCLib.Models
         {
             switch (Type)
             {
-                case ComponentType.CPU:
-                case ComponentType.Motherboard:
-                case ComponentType.RAM:
-                case ComponentType.Case:
-                case ComponentType.PowerSupply:
-                case ComponentType.SSD:
-                case ComponentType.CPUCooler:
-                case ComponentType.HDD:
-                case ComponentType.CaseFan:
-                case ComponentType.GPU:
-                case ComponentType.BuildService:
-                case ComponentType.Miscellaneous:
-                case ComponentType.WaterCoolingKit:
-                default:
-                    return true;
                 case ComponentType.OperatingSystem:
                 case ComponentType.Plan:
+                case ComponentType.CellPhone:
+                case ComponentType.UninteruptablePowerSupply:
+                case ComponentType.InkAndToner:
                     return false;
+                default:
+                    return true;
             }
 
         }
@@ -104,24 +125,11 @@ namespace MicroCLib.Models
         {
             switch (Type)
             {
-                case ComponentType.CPU:
-                case ComponentType.Motherboard:
-                case ComponentType.RAM:
-                case ComponentType.Case:
-                case ComponentType.PowerSupply:
-                case ComponentType.SSD:
-                case ComponentType.CPUCooler:
-                case ComponentType.HDD:
-                case ComponentType.CaseFan:
-                case ComponentType.GPU:
-                case ComponentType.Miscellaneous:
-                case ComponentType.Plan:
-                case ComponentType.WaterCoolingKit:
-                default:
-                    return false;
                 case ComponentType.OperatingSystem:
                 case ComponentType.BuildService:
                     return true;
+                default:
+                    return false;
             }
 
         }
@@ -145,6 +153,37 @@ namespace MicroCLib.Models
                 ComponentType.OperatingSystem => "4294967276",
                 ComponentType.BuildService => "4294809201",
                 ComponentType.WaterCoolingKit => "4294966904",
+                ComponentType.Desktop => "4294967292",
+                ComponentType.Laptop => "4294967288",
+                ComponentType.Monitor => "4294966896",
+                ComponentType.Printer => "4294966830",
+                ComponentType.Keyboard => "4294966800",
+                ComponentType.Mouse => "4294966799",
+                ComponentType.Television => "4294966839",
+                ComponentType.CellPhone => "4294939905",
+                ComponentType.DigitalCamera => "4294966817",
+                ComponentType.Webcam => "4294966765",
+                ComponentType.FlashMemory => "4294966791",
+                ComponentType.HomeAutomation => "4294966669",
+                ComponentType.SecurityCamera => "4294966674",
+                ComponentType.SecurityCameraKit => "4294966672",
+                ComponentType.WirelessRouter => "4294966869",
+                ComponentType.WiredRouter => "4294966883",
+                ComponentType.WiredNetworkAdapter => "4294966885",
+                ComponentType.NetworkingPowerline => "4294966880",
+                ComponentType.POENetworkAdapter => "4294966879",
+                ComponentType.NetworkSwitch => "4294966884",
+                ComponentType.WirelessAdapter => "4294966871",
+                ComponentType.WirelessAccessPoint => "4294966873",
+                ComponentType.WirelessBoosters => "4294966876",
+                ComponentType.BluetoothAdapter => "4294966875",
+                ComponentType.NetworkingBridge => "4294966874",
+                ComponentType.NetworkingCable => "4294966745",
+                ComponentType.NetworkingAccessory => "4294966692",
+                ComponentType.NetworkAttachedStorage => "4294945770",
+                ComponentType.UninteruptablePowerSupply => "4294966640",
+                ComponentType.InkAndToner => "4294961538",
+                ComponentType.Printer3D => "4294828445",
                 _ => "",
             };
         }
