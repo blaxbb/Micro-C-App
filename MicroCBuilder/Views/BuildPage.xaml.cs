@@ -45,13 +45,13 @@ namespace MicroCBuilder.Views
             this.InitializeComponent();
             var addCommand = vm.Add;
             var componentTypes = Enum.GetValues(typeof(BuildComponent.ComponentType)).Cast<BuildComponent.ComponentType>().Where(t => t != BuildComponent.ComponentType.Miscellaneous && t != BuildComponent.ComponentType.Plan);
-            foreach (var type in componentTypes)
-            {
-                ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = type.ToString(), Command = addCommand, CommandParameter = type });
-            }
-            ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutSeparator());
-            ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = "Search", Command = vm.AddSearchItem });
-            ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = "Custom", Command = vm.AddCustomItem });
+            //foreach (var type in componentTypes)
+            //{
+            //    ((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = type.ToString(), Command = addCommand, CommandParameter = type });
+            //}
+            //((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutSeparator());
+            //((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = "Search", Command = vm.AddSearchItem });
+            //((MenuFlyout)AddButton.Flyout).Items.Add(new MenuFlyoutItem() { Text = "Custom", Command = vm.AddCustomItem });
 
         }
 
@@ -83,7 +83,7 @@ namespace MicroCBuilder.Views
             //ComponentListView.Focus(FocusState.Keyboard);
         }
 
-        private async void PrintButton_Click(object sender, RoutedEventArgs e)
+        public async Task PrintClicked()
         {
             var tb = new TextBox() { PlaceholderText = "Sales ID" };
             var dialog = new ContentDialog()
@@ -204,14 +204,12 @@ namespace MicroCBuilder.Views
                 Orientation = Windows.Graphics.Printing.PrintOrientation.Portrait
             };
 
-            await _printHelper.ShowPrintUIAsync("Windows Community Toolkit Sample App", printHelperOptions);
+            await _printHelper.ShowPrintUIAsync("Print Quote", printHelperOptions);
         }
 
-        private async void PrintHelper_OnPrintSucceeded()
+        private void PrintHelper_OnPrintSucceeded()
         {
             ReleasePrintHelper();
-            var dialog = new MessageDialog("Printing done.");
-            await dialog.ShowAsync();
         }
 
         private async void PrintHelper_OnPrintFailed()
@@ -231,7 +229,7 @@ namespace MicroCBuilder.Views
             _printHelper.Dispose();
         }
 
-        private void ResetClicked(object sender, RoutedEventArgs e)
+        public void Reset()
         {
             for(int i = 0; i < vm.Components.Count; i++)
             {

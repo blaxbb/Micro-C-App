@@ -1,4 +1,6 @@
-﻿using MicroCLib.Models;
+﻿using MicroCBuilder.ViewModels;
+using MicroCLib.Models;
+using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -8,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.ViewManagement;
@@ -50,10 +53,28 @@ namespace MicroCBuilder.Views
             MicroCBuilder.ViewModels.SettingsPageViewModel.ForceUpdate += async () => await UpdateCache();
             MicroCBuilder.ViewModels.SettingsPageViewModel.ForceDeepUpdate += async () => await DeepUpdateCache();
 
+            var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
+            coreTitleBar.ExtendViewIntoTitleBar = true;
+            coreTitleBar.LayoutMetricsChanged += CoreTitleBar_LayoutMetricsChanged;
+            Window.Current.SetTitleBar(CustomDragRegion);
+        }
 
-            Navigation.SelectedItem = Navigation.MenuItems.FirstOrDefault();
-            Navigate(Navigation.SelectedItem as NavigationViewItemBase);
-            //ContentFrame.Navigate(typeof(TestPage));
+        private void CoreTitleBar_LayoutMetricsChanged(CoreApplicationViewTitleBar sender, object args)
+        {
+            if (FlowDirection == FlowDirection.LeftToRight)
+            {
+                CustomDragRegion.MinWidth = sender.SystemOverlayRightInset;
+                CustomDragRegion.Margin = new Thickness(0, 0, sender.SystemOverlayLeftInset, 0);
+                ShellTitlebarInset.MinWidth = sender.SystemOverlayLeftInset;
+            }
+            else
+            {
+                CustomDragRegion.MinWidth = sender.SystemOverlayLeftInset;
+                CustomDragRegion.Margin = new Thickness(sender.SystemOverlayLeftInset, 0, 0, 0);
+                ShellTitlebarInset.MinWidth = sender.SystemOverlayRightInset;
+            }
+
+            CustomDragRegion.Height = ShellTitlebarInset.Height = sender.Height;
         }
 
         public async Task DisplayProgress(Func<IProgress<int>, Task> action, string title, int itemCount)
@@ -148,35 +169,96 @@ namespace MicroCBuilder.Views
             }
         }
 
-        private void NavigationView_ItemInvoked(NavigationView sender, NavigationViewItemInvokedEventArgs args)
+        private object? CurrentTabContent
         {
-            if (args.IsSettingsInvoked)
+            get
             {
-                Navigation.PaneTitle = "Settings";
-                ContentFrame.Navigate(typeof(SettingsPage), null, new EntranceNavigationTransitionInfo());
-                return;
-            }
+                if(Tabs.SelectedItem is TabViewItem tabView && tabView.Content is Frame frame)
+                {
+                    return frame.Content;
+                }
 
-            Navigate(args.InvokedItemContainer);
+                return null;
+            }
         }
 
-        void Navigate(NavigationViewItemBase item)
+        private void PushTab(string title, Type pageType)
         {
-            Type pageType = (item?.Tag?.ToString()) switch
+            var tab = new TabViewItem()
             {
-                "BuildPage" => typeof(BuildPageTabContainer),
-                _ => null,
+                Header = title,
             };
-            if (pageType != null)
+
+            var frame = new Frame();
+            frame.HorizontalAlignment = HorizontalAlignment.Stretch;
+            frame.VerticalAlignment = VerticalAlignment.Stretch;
+            tab.Content = frame;
+            frame.Navigate(pageType);
+
+            Tabs.TabItems.Add(tab);
+            Tabs.SelectedItem = tab;
+        }
+
+        private void Tabs_AddTabButtonClick(Microsoft.UI.Xaml.Controls.TabView sender, object args)
+        {
+            PushTab("Build", typeof(BuildPage));
+        }
+
+        private void Tabs_TabCloseRequested(Microsoft.UI.Xaml.Controls.TabView sender, Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs args)
+        {
+            sender.TabItems.Remove(args.Tab);
+        }
+
+        private void LoadClicked(object sender, RoutedEventArgs e)
+        {
+            if(CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
             {
-                ContentFrame.Navigate(pageType);
+                vm.Load.Execute(null);
             }
         }
 
-        private void NavigationView_BackRequested(NavigationView sender, NavigationViewBackRequestedEventArgs args)
+        private void SaveClicked(object sender, RoutedEventArgs e)
         {
-            ContentFrame.GoBack();
+            if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            {
+                vm.Save.Execute(null);
+            }
         }
+
+        private void PrintClicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            {
+                page.PrintClicked();
+            }
+        }
+
+        private void ResetClicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            {
+                page.Reset();
+                vm.Reset.Execute(null);
+            }
+        }
+
+        private void ExportClicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            {
+                vm.ExportToMCOL.Execute(null);
+            }
+        }
+
+        private void MailClicked(object sender, RoutedEventArgs e)
+        {
+
+        }
+        private void SettingsClick(object sender, RoutedEventArgs e)
+        {
+            PushTab("Settings", typeof(SettingsPage));
+        }
+
         protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action? onChanged = null)
         {
             if (EqualityComparer<T>.Default.Equals(backingStore, value))

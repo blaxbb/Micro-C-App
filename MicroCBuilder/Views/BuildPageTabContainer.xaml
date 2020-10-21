@@ -16,7 +16,39 @@
             </Frame>
         </controls:TabViewItem>
         <controls:TabView.TabStripFooter>
-            <Grid x:Name="CustomDragRegion" Background="Transparent" />
+            <Grid x:Name="CustomDragRegion" Background="Transparent" HorizontalAlignment="Right">
+                <CommandBar DefaultLabelPosition="Right">
+                    <AppBarButton Icon="Add" Label="Add" x:Name="AddButton">
+                        <AppBarButton.Flyout>
+                            <MenuFlyout>
+                            </MenuFlyout>
+                        </AppBarButton.Flyout>
+
+                    </AppBarButton>
+                    <AppBarButton Icon="Save" Label="Save" Click="SaveClicked">
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="S" Modifiers="Control"/>
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+                    <AppBarButton Icon="OpenFile" Label="Open" Click="LoadClicked">
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="O" Modifiers="Control"/>
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+                    <AppBarButton Icon="Print" Label="Print" Click="PrintClicked">
+                        <AppBarButton.KeyboardAccelerators>
+                            <KeyboardAccelerator Key="P" Modifiers="Control"/>
+                        </AppBarButton.KeyboardAccelerators>
+                    </AppBarButton>
+                    <CommandBar.SecondaryCommands>
+                        <AppBarButton Icon="Clear" Label="Reset" Click="ResetClicked"/>
+                        <AppBarButton Icon="Share" Label="Export to Microcenter.com" Click="ExportClicked"/>
+                        <AppBarButton Icon="Mail"  Label="Email" Click="MailClicked"/>
+                        <AppBarButton Icon="Setting" Label="Settings" Click="SettingsClick"/>
+                    </CommandBar.SecondaryCommands>
+
+                </CommandBar>
+            </Grid>
         </controls:TabView.TabStripFooter>
     </controls:TabView>
 </Page>

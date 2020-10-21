@@ -5,49 +5,80 @@
     xmlns:local="using:MicroCBuilder"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.UI.Xaml.Controls"
+    xmlns:views="using:MicroCBuilder.Views"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     RequestedTheme="Default">
 
-    <NavigationView
-        x:Name="Navigation"
-        PaneDisplayMode="LeftCompact"
-        ItemInvoked="NavigationView_ItemInvoked"
-        BackRequested="NavigationView_BackRequested"
-        IsBackEnabled="{Binding ElementName=ContentFrame, Path=CanGoBack}">
-        <NavigationView.MenuItemContainerStyle>
-            <Style TargetType="NavigationViewItem">
-                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                <Setter Property="Padding" Value="0" />
-            </Style>
-        </NavigationView.MenuItemContainerStyle>
-        <NavigationView.MenuItems>
-            <NavigationViewItem Content="System Build" Tag="BuildPage">
-                <NavigationViewItem.Icon>
-                    <SymbolIcon Symbol="Repair"/>
-                </NavigationViewItem.Icon>
-            </NavigationViewItem>
-        </NavigationView.MenuItems>
-        <Grid>
-            <Frame Grid.Column="0" x:Name="ContentFrame"/>
-            <Grid Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="400" Height="75" Margin="5" Padding="10" ColumnSpacing="10" Visibility="{Binding ProgressVisibility}">
-                <Grid.Background>
-                    <AcrylicBrush BackgroundSource="Backdrop"
+    <Grid>
+        <controls:TabView Grid.Column="0" x:Name="Tabs" AddTabButtonClick="Tabs_AddTabButtonClick" TabCloseRequested="Tabs_TabCloseRequested" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <controls:TabViewItem Header="Build">
+                <Frame>
+                    <views:BuildPage/>
+                </Frame>
+            </controls:TabViewItem>
+            <controls:TabView.TabStripHeader>
+                <Grid x:Name="ShellTitlebarInset" Background="Transparent" />
+            </controls:TabView.TabStripHeader>
+            <controls:TabView.TabStripFooter>
+                <Grid Background="Transparent" HorizontalAlignment="Stretch">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="1" x:Name="CustomDragRegion"/>
+                    <CommandBar Grid.Column="0" DefaultLabelPosition="Right" HorizontalAlignment="Right">
+                        <AppBarButton Icon="Add" Label="Add" x:Name="AddButton">
+                            <AppBarButton.Flyout>
+                                <MenuFlyout>
+                                </MenuFlyout>
+                            </AppBarButton.Flyout>
+
+                        </AppBarButton>
+                        <AppBarButton Icon="Save" Label="Save" Click="SaveClicked">
+                            <AppBarButton.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="S" Modifiers="Control"/>
+                            </AppBarButton.KeyboardAccelerators>
+                        </AppBarButton>
+                        <AppBarButton Icon="OpenFile" Label="Open" Click="LoadClicked">
+                            <AppBarButton.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="O" Modifiers="Control"/>
+                            </AppBarButton.KeyboardAccelerators>
+                        </AppBarButton>
+                        <AppBarButton Icon="Print" Label="Print" Click="PrintClicked">
+                            <AppBarButton.KeyboardAccelerators>
+                                <KeyboardAccelerator Key="P" Modifiers="Control"/>
+                            </AppBarButton.KeyboardAccelerators>
+                        </AppBarButton>
+                        <CommandBar.SecondaryCommands>
+                            <AppBarButton Icon="Clear" Label="Reset" Click="ResetClicked"/>
+                            <AppBarButton Icon="Share" Label="Export to Microcenter.com" Click="ExportClicked"/>
+                            <AppBarButton Icon="Mail"  Label="Email" Click="MailClicked"/>
+                            <AppBarButton Icon="Setting" Label="Settings" Click="SettingsClick"/>
+                        </CommandBar.SecondaryCommands>
+
+                    </CommandBar>
+                </Grid>
+            </controls:TabView.TabStripFooter>
+        </controls:TabView>
+        <Grid Grid.Column="0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Width="400" Height="75" Margin="5" Padding="10" ColumnSpacing="10" Visibility="{Binding ProgressVisibility}">
+            <Grid.Background>
+                <AcrylicBrush BackgroundSource="Backdrop"
                                 TintColor="DarkCyan"
                                 TintOpacity="0.2"/>
-                </Grid.Background>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="{Binding ProgressTitleText}" VerticalAlignment="Center" TextWrapping="WrapWholeWords" MaxLines="3"/>
-                <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ProgressElapsedText}" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWholeWords" MaxLines="2"/>
-                <ProgressBar Grid.Column="1" Grid.Row="1" Value="{Binding ProgressElapsedValue}"/>
-            </Grid>
+            </Grid.Background>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" Text="{Binding ProgressTitleText}" VerticalAlignment="Center" TextWrapping="WrapWholeWords" MaxLines="3"/>
+            <TextBlock Grid.Row="0" Grid.Column="1" Text="{Binding ProgressElapsedText}" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="WrapWholeWords" MaxLines="2"/>
+            <ProgressBar Grid.Column="1" Grid.Row="1" Value="{Binding ProgressElapsedValue}"/>
         </Grid>
-    </NavigationView>
+    </Grid>
 </Page>
