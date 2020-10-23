@@ -71,7 +71,7 @@ namespace MicroCBuilder.Views
             var coreTitleBar = CoreApplication.GetCurrentView().TitleBar;
             coreTitleBar.ExtendViewIntoTitleBar = true;
             coreTitleBar.LayoutMetricsChanged += CoreTitleBar_LayoutMetricsChanged;
-            Window.Current.SetTitleBar(CustomDragRegion);
+            Window.Current.SetTitleBar(TabDragArea);
         }
 
         private void SetupAddButtons()
@@ -116,18 +116,16 @@ namespace MicroCBuilder.Views
         {
             if (FlowDirection == FlowDirection.LeftToRight)
             {
-                CustomDragRegion.MinWidth = sender.SystemOverlayRightInset;
-                CustomDragRegion.Margin = new Thickness(0, 0, sender.SystemOverlayLeftInset, 0);
-                ShellTitlebarInset.MinWidth = sender.SystemOverlayLeftInset;
+                TabRightMargin.MinWidth = sender.SystemOverlayRightInset;
+                TabLeftMargin.MinWidth = sender.SystemOverlayLeftInset;
             }
             else
             {
-                CustomDragRegion.MinWidth = sender.SystemOverlayLeftInset;
-                CustomDragRegion.Margin = new Thickness(sender.SystemOverlayLeftInset, 0, 0, 0);
-                ShellTitlebarInset.MinWidth = sender.SystemOverlayRightInset;
+                TabRightMargin.MinWidth = sender.SystemOverlayLeftInset;
+                TabLeftMargin.MinWidth = sender.SystemOverlayRightInset;
             }
 
-            CustomDragRegion.Height = ShellTitlebarInset.Height = sender.Height;
+            TabRightMargin.Height = TabLeftMargin.Height = sender.Height;
         }
 
         public async Task DisplayProgress(Func<IProgress<int>, Task> action, string title, int itemCount)

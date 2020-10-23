@@ -14,16 +14,18 @@
     <Grid>
         <controls:TabView Grid.Column="0" x:Name="Tabs" AddTabButtonClick="Tabs_AddTabButtonClick" TabCloseRequested="Tabs_TabCloseRequested" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
             <controls:TabView.TabStripHeader>
-                <Grid x:Name="ShellTitlebarInset" Background="Transparent" />
+                <Grid x:Name="TabLeftMargin" Background="Transparent" />
             </controls:TabView.TabStripHeader>
             <controls:TabView.TabStripFooter>
-                <Grid Background="Transparent" HorizontalAlignment="Stretch">
+                <Grid HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="1" x:Name="CustomDragRegion"/>
-                    <CommandBar Grid.Column="0" DefaultLabelPosition="Right" HorizontalAlignment="Right">
+                    <Grid Grid.Column="0" MinWidth="50" x:Name="TabDragArea" Background="Transparent"/>
+                    <Grid Grid.Column="2" x:Name="TabRightMargin"/>
+                    <CommandBar Grid.Column="1" DefaultLabelPosition="Right" HorizontalAlignment="Right">
                         <CommandBar.SecondaryCommands>
                             <AppBarButton Icon="Clear" Label="Reset" Click="ResetClicked"/>
                             <AppBarButton Icon="Share" Label="Export to Microcenter.com" Click="ExportClicked"/>
