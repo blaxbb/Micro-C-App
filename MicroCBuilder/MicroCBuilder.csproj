@@ -22,8 +22,9 @@
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <LangVersion>8.0</LangVersion>
-    <PackageCertificateThumbprint>6631173EB804443038FB026A588B97F541F4DAFA</PackageCertificateThumbprint>
-    <PackageCertificateKeyFile>MicroCBuilder_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>04DFC0DCD8428B465F1BC6290B380C27456DBC55</PackageCertificateThumbprint>
+    <PackageCertificateKeyFile>
+    </PackageCertificateKeyFile>
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>

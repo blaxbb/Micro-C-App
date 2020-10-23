@@ -28,7 +28,6 @@
 
             <TextBlock Text="{Binding LastUpdated, Converter={StaticResource Format}, ConverterParameter='The product cache was last updated {0:%h} hours ago'}"/>
             <Button Content="Force Update" Style="{ThemeResource ButtonRevealStyle}" Command="{Binding ForceUpdateCommand}"/>
-            <Button Content="Force Deep Update" Style="{ThemeResource ButtonRevealStyle}" Command="{Binding ForceDeepUpdateCommand}"/>
             <Grid Margin="0,10,0,0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>

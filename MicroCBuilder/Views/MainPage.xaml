@@ -1,5 +1,4 @@
 ﻿<Page
-    x:Class="MicroCBuilder.Views.MainPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MicroCBuilder"
@@ -7,17 +6,13 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:views="using:MicroCBuilder.Views"
+    xmlns:Custom="using:Microsoft.UI.Xaml.Controls.Primitives"
+    x:Class="MicroCBuilder.Views.MainPage"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     RequestedTheme="Default">
-
     <Grid>
         <controls:TabView Grid.Column="0" x:Name="Tabs" AddTabButtonClick="Tabs_AddTabButtonClick" TabCloseRequested="Tabs_TabCloseRequested" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-            <controls:TabViewItem Header="Build">
-                <Frame>
-                    <views:BuildPage/>
-                </Frame>
-            </controls:TabViewItem>
             <controls:TabView.TabStripHeader>
                 <Grid x:Name="ShellTitlebarInset" Background="Transparent" />
             </controls:TabView.TabStripHeader>
@@ -29,12 +24,17 @@
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="1" x:Name="CustomDragRegion"/>
                     <CommandBar Grid.Column="0" DefaultLabelPosition="Right" HorizontalAlignment="Right">
+                        <CommandBar.SecondaryCommands>
+                            <AppBarButton Icon="Clear" Label="Reset" Click="ResetClicked"/>
+                            <AppBarButton Icon="Share" Label="Export to Microcenter.com" Click="ExportClicked"/>
+                            <AppBarButton Icon="Mail"  Label="Email" Click="MailClicked"/>
+                            <AppBarButton Icon="Setting" Label="Settings" Click="SettingsClick"/>
+                        </CommandBar.SecondaryCommands>
+
                         <AppBarButton Icon="Add" Label="Add" x:Name="AddButton">
                             <AppBarButton.Flyout>
-                                <MenuFlyout>
-                                </MenuFlyout>
+                                <MenuFlyout/>
                             </AppBarButton.Flyout>
-
                         </AppBarButton>
                         <AppBarButton Icon="Save" Label="Save" Click="SaveClicked">
                             <AppBarButton.KeyboardAccelerators>
@@ -51,12 +51,6 @@
                                 <KeyboardAccelerator Key="P" Modifiers="Control"/>
                             </AppBarButton.KeyboardAccelerators>
                         </AppBarButton>
-                        <CommandBar.SecondaryCommands>
-                            <AppBarButton Icon="Clear" Label="Reset" Click="ResetClicked"/>
-                            <AppBarButton Icon="Share" Label="Export to Microcenter.com" Click="ExportClicked"/>
-                            <AppBarButton Icon="Mail"  Label="Email" Click="MailClicked"/>
-                            <AppBarButton Icon="Setting" Label="Settings" Click="SettingsClick"/>
-                        </CommandBar.SecondaryCommands>
 
                     </CommandBar>
                 </Grid>

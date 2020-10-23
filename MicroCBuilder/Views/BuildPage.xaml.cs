@@ -43,6 +43,14 @@ namespace MicroCBuilder.Views
         public BuildPage()
         {
             this.InitializeComponent();
+            var dispatcher = Window.Current.Dispatcher;
+
+            Task.Run(async () => {
+                await dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+                {
+                    await MainPage.Instance.UpdateCache();
+                });
+            });
         }
 
         public void QueryUpdated (BuildComponentControl control, string query)

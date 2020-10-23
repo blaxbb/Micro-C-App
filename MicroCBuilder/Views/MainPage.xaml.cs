@@ -44,6 +44,8 @@ namespace MicroCBuilder.Views
         public double ProgressElapsedValue { get => progressElapsedValue; set => SetProperty(ref progressElapsedValue, value); }
         public Visibility ProgressVisibility { get => progressVisibility; set => SetProperty(ref progressVisibility, value); }
 
+        private bool UpdateRunningLock = false;
+
         public MainPage()
         {
             Instance = this;
@@ -51,8 +53,17 @@ namespace MicroCBuilder.Views
             this.DataContext = this;
             ProgressVisibility = Visibility.Collapsed;
             InitCache();
+
+            if (Settings.Categories().Count == 0)
+            {
+                PushTab("Settings", typeof(SettingsPage));
+            }
+            else
+            {
+                PushTab("Quote", typeof(BuildPage));
+            }
+
             MicroCBuilder.ViewModels.SettingsPageViewModel.ForceUpdate += async () => await UpdateCache();
-            MicroCBuilder.ViewModels.SettingsPageViewModel.ForceDeepUpdate += async () => await DeepUpdateCache();
 
             Settings.SettingsUpdated += (sender, args) => SetupAddButtons();
             SetupAddButtons();
@@ -121,7 +132,6 @@ namespace MicroCBuilder.Views
 
         public async Task DisplayProgress(Func<IProgress<int>, Task> action, string title, int itemCount)
         {
-            //ProgressTitle.Text = title;
             ProgressTitleText = title;
             var dispatcher = Window.Current.Dispatcher;
 
@@ -132,6 +142,7 @@ namespace MicroCBuilder.Views
 
             var progress = new Progress<int>((i) =>
             {
+                ProgressVisibility = Visibility.Visible;
                 var deltaTime = sw.Elapsed;
                 var percent = 100 * i / (float)itemCount;
                 var deltaPercent = percent - lastPercentCheck;
@@ -168,19 +179,24 @@ namespace MicroCBuilder.Views
 
         public async Task UpdateCache()
         {
+            if (UpdateRunningLock)
+            {
+                return;
+            }
+            UpdateRunningLock = true;
+
             await DisplayProgress(async (progress) =>
             {
                 await BuildComponentCache.Current.PopulateCache(progress);
             }, "Updating cache", 100);
-        }
 
-        public async Task DeepUpdateCache()
-        {
             var categoryStrings = Settings.Categories().Select(c => BuildComponent.CategoryFilterForType(c)).ToList();
             await DisplayProgress(async (progress) =>
             {
                 await BuildComponentCache.Current.DeepPopulateCache(progress);
             }, "Updating cache", BuildComponentCache.Current?.Cache.Where(kvp => categoryStrings.Contains(kvp.Key)).Sum(kvp => kvp.Value.Count) ?? 100);
+
+            UpdateRunningLock = false;
         }
 
         public async void InitCache()

@@ -42,7 +42,6 @@ namespace MicroCBuilder.ViewModels
 
         public delegate void ForceUpdateEvent();
         public static event ForceUpdateEvent ForceUpdate;
-        public static event ForceUpdateEvent ForceDeepUpdate;
 
         public Dictionary<string, List<ComponentType>> Presets { get; set; }
 
@@ -76,11 +75,6 @@ namespace MicroCBuilder.ViewModels
             ForceUpdateCommand = new Command((_) =>
             {
                 ForceUpdate?.Invoke();
-            });
-
-            ForceDeepUpdateCommand = new Command((_) =>
-            {
-                ForceDeepUpdate?.Invoke();
             });
 
             RemoveCategory = new Command<ComponentType>((cat) =>
