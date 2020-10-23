@@ -9,7 +9,7 @@
   <Identity
     Name="31565bbarrett.MicroCBuilder"
     Publisher="CN=bbarrett"
-    Version="1.0.23.0" />
+    Version="1.0.24.0" />
 
   <mp:PhoneIdentity PhoneProductId="38a777dd-f560-4465-b46d-90f641ce67d5" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
