@@ -164,7 +164,7 @@ namespace MicroCLib.Models
                 ComponentType.CPUCooler => "4294966927",
                 ComponentType.CaseFan => "4294966926",
                 ComponentType.OperatingSystem => "4294967276",
-                ComponentType.BuildService => "4294809201",
+                ComponentType.BuildService => "4294812275",
                 ComponentType.WaterCoolingKit => "4294966904",
                 ComponentType.Desktop => "4294967292",
                 ComponentType.Laptop => "4294967288",
