@@ -25,22 +25,29 @@ namespace micro_c_app.Views
 
         private static void ItemChanged(BindableObject bindable, object oldValue, object newValue)
         {
-            if(bindable is ItemDetailsView view && view.BindingContext is ItemDetailsViewViewModel vm)
+            if (bindable is ItemDetailsView view && view.BindingContext is ItemDetailsViewViewModel vm)
             {
                 vm.Item = newValue as Item;
                 view.UpdatePlansAndSpecs();
             }
         }
-        
+
         public void UpdatePlansAndSpecs()
         {
             SetPlanItems();
-            SetSpecItems();
         }
 
         private static void AddSpacer(StackLayout stack, Color color)
         {
             stack.Children.Add(new BoxView() { Color = color, WidthRequest = 100, HeightRequest = 2, HorizontalOptions = LayoutOptions.FillAndExpand });
+        }
+
+        private static void AddSpacer(Grid grid, Color color)
+        {
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            var spacer = new BoxView() { Color = color, WidthRequest = 100, HeightRequest = 2, HorizontalOptions = LayoutOptions.FillAndExpand };
+            grid.Children.Add(spacer);
+            Grid.SetRow(spacer, grid.Children.Count - 1);
         }
 
         private void SetPlanItems()
@@ -64,37 +71,25 @@ namespace micro_c_app.Views
             }
         }
 
-        private void SetSpecItems()
+        private void SpecsList_ItemTapped(object sender, ItemTappedEventArgs e)
         {
-            SpecsStackLayout.Children.Clear();
-            if (BindingContext is ItemDetailsViewViewModel vm && vm.Item != null)
+            if (e.Item is KeyValuePair<string, string> kvp)
             {
-                if (vm.Item.Specs != null)
-                {
-                    foreach (var spec in vm.Item.Specs)
-                    {
-                        AddSpacer(SpecsStackLayout, Color.LightGray);
-                        var stack = new StackLayout() { Orientation = StackOrientation.Horizontal };
-                        stack.Children.Add(new SelectableLabel()
-                        {
-                            Text = spec.Key,
-                            HorizontalOptions = LayoutOptions.Start,
-                            VerticalTextAlignment = TextAlignment.Center,
-                            HorizontalTextAlignment = TextAlignment.Start,
-                            MinimumWidthRequest = 200,
-                            WidthRequest = 200
-                        });
-                        stack.Children.Add(new SelectableLabel()
-                        {
-                            Text = spec.Value,
-                            HorizontalOptions = LayoutOptions.Fill,
-                            VerticalTextAlignment = TextAlignment.Center,
-                            HorizontalTextAlignment = TextAlignment.Start
-                        });
-                        SpecsStackLayout.Children.Add(stack);
-                    }
-                }
+                System.Diagnostics.Debug.WriteLine(kvp.Value);
+                Xamarin.Essentials.Clipboard.SetTextAsync(kvp.Value);
+                DependencyService.Get<IToastMessage>().ShortAlert("Copied to clipboard.");
             }
+        }
+    }
+
+    public class SpecInfo{
+        public string Name;
+        public string Value;
+
+        public SpecInfo(string name, string value)
+        {
+            Name = name;
+            Value = value;
         }
     }
 }

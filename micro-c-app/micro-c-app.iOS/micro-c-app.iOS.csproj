@@ -78,6 +78,7 @@
     <Compile Include="Renderer\CustomListViewRenderer.cs" />
     <Compile Include="Renderer\CustomViewCellRenderer.cs" />
     <Compile Include="Renderer\SelectableLabelRenderer.cs" />
+    <Compile Include="ToastMessage.cs" />
     <None Include="Entitlements.plist" />
     <None Include="Info.plist" />
     <Compile Include="Properties\AssemblyInfo.cs" />
