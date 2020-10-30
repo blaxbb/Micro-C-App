@@ -1,6 +1,7 @@
 ﻿using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -81,12 +82,18 @@ namespace micro_c_lib.Models
 
             for (int i = 0; i < shortMatches.Count; i++)
             {
+                bool comingSoon = false;
                 Match m = shortMatches[i];
                 string stock = "0";
                 if (i < stockMatches.Count)
                 {
                     Match stockMatch = stockMatches[i];
                     stock = string.IsNullOrWhiteSpace(stockMatch.Groups[1].Value) ? "0" : stockMatch.Groups[1].Value;
+                    if (stock.Contains("<"))
+                    {
+                        stock = "Soon";
+                        comingSoon = true;
+                    }
                 }
 
                 string sku = "000000";
@@ -103,6 +110,11 @@ namespace micro_c_lib.Models
                 {
                     id = m_id.Groups[1].Value;
                 }
+                else
+                {
+                    Debug.WriteLine("ID NOT FOUND FOR SEARCH RESULT");
+                    Debug.WriteLine(m.Value);
+                }
 
                 float.TryParse(m.Groups[3].Value, out float price);
                 var item = new Item()
@@ -116,6 +128,7 @@ namespace micro_c_lib.Models
                     PictureUrls = new List<string>() { m.Groups[6].Value },
                     Stock = stock,
                     SKU = sku,
+                    ComingSoon = comingSoon
                 };
 
                 result.Items.Add(item);

@@ -31,6 +31,7 @@ namespace MicroCLib.Models
         public List<Plan> Plans { get; set; }
         public string ID { get; set; } = "";
         public string Brand { get => brand; set => SetProperty(ref brand, value); }
+        public bool ComingSoon { get; set; }
 
         public Item()
         {
@@ -70,6 +71,11 @@ namespace MicroCLib.Models
                 item.PictureUrls = ParsePictures(body);
 
                 item.Plans = ParsePlans(body);
+                item.ComingSoon = ParseComingSoon(body);
+                if (item.ComingSoon)
+                {
+                    item.Stock = "Soon";
+                }
 
             }
 
@@ -152,6 +158,7 @@ namespace MicroCLib.Models
             }
             return "";
         }
+
         public static string ParseName(string body)
         {
             var match = GetName.Match(body);
@@ -231,6 +238,16 @@ namespace MicroCLib.Models
 
             return "";
         }
+        public static bool ParseComingSoon(string body)
+        {
+            var match = GetComingSoon.Match(body);
+            if (match.Success)
+            {
+                return true;
+            }
+
+            return false;
+        }
 
         public static string ParseIDFromURL(string url)
         {
@@ -242,6 +259,7 @@ namespace MicroCLib.Models
 
             return "";
         }
+
 
         private static Regex GetSpecs => new Regex("<div class=\"spec-body\"><div(?: class=)?[a-zA-Z\"=]*?>(.*?)(.*?)</div>.?<div(?: class=)?[a-zA-Z\"=]*?>(.*?)</div", RegexOptions.Singleline);
         private static Regex GetPrice => new Regex("'productPrice':'(.*?)',");
@@ -255,6 +273,7 @@ namespace MicroCLib.Models
         private static Regex GetPlans => new Regex("#planDetails(?:.*?)>(.*?)<(?:.*?)pricing\"> \\$(.*?)<");
         private static Regex GetIDFromURL => new Regex("\\/product\\/(\\d+?)\\/");
         private static Regex GetBrand => new Regex("data-brand=\"(.*?)\"");
+        private static Regex GetComingSoon => new Regex("<div class=\"comingsoon\"");
 
         public static string HttpDecode(string s)
         {

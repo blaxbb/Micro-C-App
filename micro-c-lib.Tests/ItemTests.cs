@@ -12,7 +12,7 @@ namespace micro_c_lib.Tests
     {
         private Item item;
         private string body;
-        private const string URL = "/product/622100/asus-rt-ax3000-ax3000-dual-band-gigabit-wireless-ax-router---w--aimesh-support";
+        private const string URL = "/product/630285/amd-ryzen-5-5600x-vermeer-37ghz-6-core-am4-boxed-processor-with-wraith-stealth-cooler";
         private const string STORE_ID = "141";
         public ItemTests()
         {
@@ -126,6 +126,13 @@ namespace micro_c_lib.Tests
             Assert.IsTrue(!string.IsNullOrWhiteSpace(item.Brand));
         }
 
+        [TestCategory("FromUrl")]
+        [TestMethod("Item has Coming Soon")]
+        public void FromUrlHasComingSoon()
+        {
+            Assert.IsTrue(item.ComingSoon);
+        }
+
         [TestMethod]
         public void CloneVerification()
         {
@@ -233,6 +240,14 @@ namespace micro_c_lib.Tests
             var plans = Item.ParsePlans(body);
             Assert.IsNotNull(plans);
             Assert.IsTrue(plans.Count > 0);
+        }
+
+        [TestCategory("Regex")]
+        [TestMethod("Regex Coming Soon")]
+        public void RegexComingSoon()
+        {
+            var comingSoon = Item.ParseComingSoon(body);
+            Assert.IsTrue(comingSoon);
         }
     }
 }
