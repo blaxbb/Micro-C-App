@@ -12,7 +12,10 @@ namespace micro_c_lib.Tests
     {
         private Item item;
         private string body;
-        private const string URL = "/product/630285/amd-ryzen-5-5600x-vermeer-37ghz-6-core-am4-boxed-processor-with-wraith-stealth-cooler";
+        //
+        //should have a list of different products that hit different conditions
+        //
+        private const string URL = "/product/622100/asus-rt-ax3000-ax3000-dual-band-gigabit-wireless-ax-router---w--aimesh-support";
         private const string STORE_ID = "141";
         public ItemTests()
         {
@@ -130,7 +133,7 @@ namespace micro_c_lib.Tests
         [TestMethod("Item has Coming Soon")]
         public void FromUrlHasComingSoon()
         {
-            Assert.IsTrue(item.ComingSoon);
+            Assert.IsFalse(item.ComingSoon);
         }
 
         [TestMethod]
@@ -247,7 +250,7 @@ namespace micro_c_lib.Tests
         public void RegexComingSoon()
         {
             var comingSoon = Item.ParseComingSoon(body);
-            Assert.IsTrue(comingSoon);
+            Assert.IsFalse(comingSoon);
         }
     }
 }
