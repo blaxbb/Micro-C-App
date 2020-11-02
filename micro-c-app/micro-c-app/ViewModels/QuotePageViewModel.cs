@@ -44,7 +44,8 @@ namespace micro_c_app.ViewModels
             {"Send", SendQuote },
             {"Reset", Reset },
             {"Save", Save },
-            {"Load", Load }
+            {"Load", Load },
+            {"Import", ImportWeb }
         };
 
         public bool NotBusy { get => notBusy; set { SetProperty(ref notBusy, value); } }
@@ -189,7 +190,7 @@ namespace micro_c_app.ViewModels
 
             ImportWeb = new Command(async () =>
             {
-                var shortCode = await Shell.Current.DisplayPromptAsync("Import", "Enter the code from Micro-C-Builder to import a quote");
+                var shortCode = await Shell.Current.DisplayPromptAsync("Import", "Enter the code from Micro-C-Builder to import a quote", keyboard:Keyboard.Numeric);
                 if (string.IsNullOrWhiteSpace(shortCode))
                 {
                     return;
