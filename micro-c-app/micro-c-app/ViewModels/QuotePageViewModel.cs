@@ -1,4 +1,5 @@
-﻿using micro_c_app.Models;
+﻿using DataFlareClient;
+using micro_c_app.Models;
 using micro_c_app.Views;
 using micro_c_app.Views.CollectionFile;
 using MicroCLib.Models;
@@ -8,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
@@ -35,6 +37,7 @@ namespace micro_c_app.ViewModels
         public ICommand Reset { get; }
         public ICommand Save { get; }
         public ICommand Load { get; }
+        public ICommand ImportWeb { get; }
 
         protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
         {
@@ -183,6 +186,55 @@ namespace micro_c_app.ViewModels
                 MessagingCenter.Subscribe<CollectionLoadPageViewModel<Item>>(this, "load", DoLoad, vm);
                 await Shell.Current.Navigation.PushModalAsync(new CollectionLoadPage() { BindingContext = vm });
             });
+
+            ImportWeb = new Command(async () =>
+            {
+                var shortCode = await Shell.Current.DisplayPromptAsync("Import", "Enter the code from Micro-C-Builder to import a quote");
+                if (string.IsNullOrWhiteSpace(shortCode))
+                {
+                    return;
+                }
+
+                var flare = await GetShortCode("https://dataflare.bbarrettnas.duckdns.org/api/Flare", shortCode);
+                if(flare == null || string.IsNullOrWhiteSpace(flare.Data))
+                {
+                    return;
+                }
+
+                Items.Clear();
+
+                var components = JsonSerializer.Deserialize<List<BuildComponent>>(flare.Data);
+                foreach(var comp in components)
+                {
+                    if (comp.Item != null)
+                    {
+                        Items.Add(comp.Item);
+                    }
+                }
+            });
+        }
+
+        public static async Task<Flare> GetShortCode(string baseUrl, string shortCode)
+        {
+            try
+            {
+                using (var handler = new System.Net.Http.HttpClientHandler())
+                {
+                    handler.ClientCertificateOptions = System.Net.Http.ClientCertificateOption.Manual;
+                    handler.ServerCertificateCustomValidationCallback = (request, cert, chain, policyErrors) => { return true; };
+                    using (var client = new System.Net.Http.HttpClient(handler))
+                    {
+                        var result = await client.GetAsync($"{baseUrl}/shortcode/{shortCode}");
+                        var json = await result.Content.ReadAsStringAsync();
+                        return JsonSerializer.Deserialize<Flare>(json);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                System.Diagnostics.Debug.WriteLine(e.ToString());
+                return null;
+            }
         }
 
         private void DoLoad(CollectionLoadPageViewModel<Item> obj)

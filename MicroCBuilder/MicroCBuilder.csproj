@@ -25,7 +25,6 @@
     <PackageCertificateThumbprint>40DBD69723B2D8DEC4F8AFB49E4CEE85DD3D14CE</PackageCertificateThumbprint>
     <PackageCertificateKeyFile>
     </PackageCertificateKeyFile>
-	
     <GenerateAppInstallerFile>True</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>
     <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
@@ -266,6 +265,9 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="DataFlareClient">
+      <Version>1.0.5</Version>
+    </PackageReference>
     <PackageReference Include="FuzzySharp">
       <Version>2.0.2</Version>
     </PackageReference>

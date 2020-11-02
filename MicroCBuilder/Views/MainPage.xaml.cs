@@ -9,6 +9,8 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.ServiceModel;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -22,6 +24,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
+using Windows.Web.Http;
 using static MicroCLib.Models.BuildComponent;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -313,6 +316,14 @@ namespace MicroCBuilder.Views
         private void SettingsClick(object sender, RoutedEventArgs e)
         {
             PushTab("Settings", typeof(SettingsPage));
+        }
+
+        private void SendToPhoneClicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            {
+                vm.ExportToPhone.Execute(null);
+            }
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value, [CallerMemberName] string propertyName = "", Action? onChanged = null)

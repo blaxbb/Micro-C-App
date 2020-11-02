@@ -53,6 +53,7 @@
                                 <KeyboardAccelerator Key="P" Modifiers="Control"/>
                             </AppBarButton.KeyboardAccelerators>
                         </AppBarButton>
+                        <AppBarButton Icon="CellPhone" Label="Send To Phone" Click="SendToPhoneClicked"/>
 
                     </CommandBar>
                 </Grid>

@@ -8,14 +8,18 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
+using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using DataFlareClient;
+
 using static MicroCLib.Models.BuildComponent.ComponentType;
 
 namespace MicroCBuilder.ViewModels
@@ -28,6 +32,7 @@ namespace MicroCBuilder.ViewModels
         public ObservableCollection<BuildComponent> Components { get; }
         public BuildComponent.ComponentType ttt = BuildComponent.ComponentType.GPU;
         private string query;
+        private Flare flare;
 
         public ICommand Save { get; }
         public ICommand Load { get; }
@@ -43,12 +48,15 @@ namespace MicroCBuilder.ViewModels
         public ICommand InfoFlyoutCommand { get; }
         public ICommand AddSearchItem { get; }
         public ICommand AddCustomItem { get; }
+        public ICommand ExportToPhone { get; }
 
         public BuildComponent SelectedComponent { get => selectedItem; set => SetProperty(ref selectedItem, value); }
 
         public string Query { get => query; set => SetProperty(ref query, value); }
 
         public float SubTotal => Components.Where(c => c?.Item != null).Sum(c => c.Item.Price * c.Item.Quantity);
+
+        public Flare Flare { get => flare; set => SetProperty(ref flare, value); }
 
         public BuildPageViewModel()
         {
@@ -82,7 +90,7 @@ namespace MicroCBuilder.ViewModels
 
             Remove = new Command<BuildComponent>(DoRemove);
             Add = new Command<BuildComponent.ComponentType>(AddItem);
-            ItemSelected = new Command<Item>((Item item) => { if(SelectedComponent != null) SelectedComponent.Item = item; OnPropertyChanged(nameof(SubTotal)); });
+            ItemSelected = new Command<Item>((Item item) => { if (SelectedComponent != null) SelectedComponent.Item = item; OnPropertyChanged(nameof(SubTotal)); });
 
             RemoveFlyoutCommand = new Command<BuildComponent>(DoRemove);
             InfoFlyoutCommand = null;
@@ -118,6 +126,23 @@ namespace MicroCBuilder.ViewModels
 
             AddSearchItem = new Command(DoAddSearchItem);
             AddCustomItem = new Command(DoAddCustomItem);
+            ExportToPhone = new Command(DoExportToPhone);
+        }
+
+        private async void DoExportToPhone(object obj)
+        {
+            var flare = new Flare(JsonSerializer.Serialize(Components.Where(c => c.Item != null).ToList()));
+            flare.Tag = $"micro-c-{Settings.StoreID()}";
+            var success = await flare.Post($"https://dataflare.bbarrettnas.duckdns.org/api/Flare");
+
+            if (!success)
+            {
+                flare = new Flare("") { ShortCode = 0000 };
+            }
+
+            Flare = flare;
+            await Task.Delay(20 * 1000);
+            Flare = null;
         }
 
         private async void DoAddCustomItem(object obj)
@@ -138,7 +163,7 @@ namespace MicroCBuilder.ViewModels
             price.KeyDown += (sender, args) => { if (args.Key == Windows.System.VirtualKey.Enter) dialog.Hide(); };
 
             var dialogResult = await dialog.ShowAsync();
-            if(dialogResult != ContentDialogResult.Secondary)
+            if (dialogResult != ContentDialogResult.Secondary)
             {
                 AddDuplicate(new BuildComponent()
                 {
@@ -165,7 +190,7 @@ namespace MicroCBuilder.ViewModels
                 SecondaryButtonText = "Cancel"
             };
 
-            tb.KeyDown += (sender, args) => { if(args.Key == Windows.System.VirtualKey.Enter) dialog.Hide(); };
+            tb.KeyDown += (sender, args) => { if (args.Key == Windows.System.VirtualKey.Enter) dialog.Hide(); };
 
             var dialogResult = await dialog.ShowAsync();
             var query = tb.Text;
@@ -187,7 +212,7 @@ namespace MicroCBuilder.ViewModels
                 {
                     item = results.Items.First();
                 }
-                else if(results.Items.Count > 0)
+                else if (results.Items.Count > 0)
                 {
                     item = await DisplaySearchResults(results.Items);
                 }
@@ -259,7 +284,7 @@ namespace MicroCBuilder.ViewModels
 
         private void DoRemove(BuildComponent comp)
         {
-            if(comp == null)
+            if (comp == null)
             {
                 return;
             }
