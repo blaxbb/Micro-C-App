@@ -38,6 +38,7 @@ namespace micro_c_app.ViewModels
         public ICommand Save { get; }
         public ICommand Load { get; }
         public ICommand ImportWeb { get; }
+        public ICommand ExportWeb { get; }
 
         protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
         {
@@ -45,7 +46,8 @@ namespace micro_c_app.ViewModels
             {"Reset", Reset },
             {"Save", Save },
             {"Load", Load },
-            {"Import", ImportWeb }
+            {"Import", ImportWeb },
+            {"Export", ExportWeb }
         };
 
         public bool NotBusy { get => notBusy; set { SetProperty(ref notBusy, value); } }
@@ -196,7 +198,7 @@ namespace micro_c_app.ViewModels
                     return;
                 }
 
-                var flare = await GetShortCode("https://dataflare.bbarrettnas.duckdns.org/api/Flare", shortCode);
+                var flare = await Flare.GetShortCode("https://dataflare.bbarrettnas.duckdns.org/api/Flare", shortCode);
                 if(flare == null || string.IsNullOrWhiteSpace(flare.Data))
                 {
                     return;
@@ -213,29 +215,22 @@ namespace micro_c_app.ViewModels
                     }
                 }
             });
-        }
 
-        public static async Task<Flare> GetShortCode(string baseUrl, string shortCode)
-        {
-            try
+            ExportWeb = new Command(async () =>
             {
-                using (var handler = new System.Net.Http.HttpClientHandler())
+                var components = Items.Select(i => new BuildComponent() { Item = i }).ToList();
+                var flare = new Flare(JsonSerializer.Serialize(components));
+                flare.Tag = $"micro-c-{SettingsPage.StoreID()}";
+                var success = await flare.Post("https://dataflare.bbarrettnas.duckdns.org/api/Flare");
+                if (success)
                 {
-                    handler.ClientCertificateOptions = System.Net.Http.ClientCertificateOption.Manual;
-                    handler.ServerCertificateCustomValidationCallback = (request, cert, chain, policyErrors) => { return true; };
-                    using (var client = new System.Net.Http.HttpClient(handler))
-                    {
-                        var result = await client.GetAsync($"{baseUrl}/shortcode/{shortCode}");
-                        var json = await result.Content.ReadAsStringAsync();
-                        return JsonSerializer.Deserialize<Flare>(json);
-                    }
+                    await Shell.Current.DisplayAlert("Import using code", $"{flare.ShortCode}", "Ok");
                 }
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Debug.WriteLine(e.ToString());
-                return null;
-            }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Error", "Failed to export to DataFlare server.", "Ok");
+                }
+            });
         }
 
         private void DoLoad(CollectionLoadPageViewModel<Item> obj)

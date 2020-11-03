@@ -171,5 +171,20 @@ namespace MicroCBuilder
 
             return new List<Item>();
         }
+
+        public BuildComponent.ComponentType FindType(string sku)
+        {
+            foreach(var kvp in Cache)
+            {
+                var categoryFilter = kvp.Key;
+                var items = kvp.Value;
+                if(items.Any(i => i.SKU == sku))
+                {
+                    return BuildComponent.TypeForCategoryFilter(categoryFilter);
+                }
+            }
+
+            return BuildComponent.ComponentType.None;
+        }
     }
 }

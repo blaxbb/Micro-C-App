@@ -318,11 +318,19 @@ namespace MicroCBuilder.Views
             PushTab("Settings", typeof(SettingsPage));
         }
 
-        private void SendToPhoneClicked(object sender, RoutedEventArgs e)
+        private void ExportToWebClicked(object sender, RoutedEventArgs e)
         {
             if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
             {
-                vm.ExportToPhone.Execute(null);
+                vm.ExportToWeb.Execute(null);
+            }
+        }
+
+        private void ImportFromWebClicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            {
+                vm.ImportFromWeb.Execute(null);
             }
         }
 

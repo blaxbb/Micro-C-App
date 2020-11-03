@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.Networking.Vpn;
 
 namespace MicroCLib.Models
 {
@@ -77,8 +78,9 @@ namespace MicroCLib.Models
             HomeTheaterWireless,
             Projectors,
             StreamingMedia,
+            None,
         }
-        public ComponentType Type { get; set; }
+        public ComponentType Type { get; set; } = ComponentType.None;
         [JsonIgnore]
         public string CategoryFilter => CategoryFilterForType(Type);
         [JsonIgnore]
@@ -212,6 +214,20 @@ namespace MicroCLib.Models
                 ComponentType.StreamingMedia => "4294936345",
                 _ => "",
             };
+        }
+
+        public static ComponentType TypeForCategoryFilter(string filter)
+        {
+            foreach(ComponentType val in Enum.GetValues(typeof(ComponentType)))
+            {
+                var check = CategoryFilterForType(val);
+                if(check == filter)
+                {
+                    return val;
+                }
+            }
+
+            return ComponentType.None;
         }
 
         public static int MaxNumberPerType(ComponentType type)

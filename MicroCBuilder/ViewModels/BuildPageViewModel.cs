@@ -48,7 +48,8 @@ namespace MicroCBuilder.ViewModels
         public ICommand InfoFlyoutCommand { get; }
         public ICommand AddSearchItem { get; }
         public ICommand AddCustomItem { get; }
-        public ICommand ExportToPhone { get; }
+        public ICommand ExportToWeb { get; }
+        public ICommand ImportFromWeb { get; }
 
         public BuildComponent SelectedComponent { get => selectedItem; set => SetProperty(ref selectedItem, value); }
 
@@ -126,10 +127,11 @@ namespace MicroCBuilder.ViewModels
 
             AddSearchItem = new Command(DoAddSearchItem);
             AddCustomItem = new Command(DoAddCustomItem);
-            ExportToPhone = new Command(DoExportToPhone);
+            ExportToWeb = new Command(DoExportToWeb);
+            ImportFromWeb = new Command(DoImportFromWeb);
         }
 
-        private async void DoExportToPhone(object obj)
+        private async void DoExportToWeb(object obj)
         {
             var flare = new Flare(JsonSerializer.Serialize(Components.Where(c => c.Item != null).ToList()));
             flare.Tag = $"micro-c-{Settings.StoreID()}";
@@ -143,6 +145,67 @@ namespace MicroCBuilder.ViewModels
             Flare = flare;
             await Task.Delay(20 * 1000);
             Flare = null;
+        }
+
+        private async void DoImportFromWeb(object obj)
+        {
+
+            var tb = new TextBox() { PlaceholderText = "Code" };
+            var dialog = new ContentDialog()
+            {
+                Title = "Import From Phone",
+                Content = tb,
+                PrimaryButtonText = "Import",
+                SecondaryButtonText = "Cancel"
+            };
+            tb.KeyDown += (sender, args) => { if (args.Key == Windows.System.VirtualKey.Enter) dialog.Hide(); };
+            var result = await dialog.ShowAsync();
+            var shortCode = tb.Text;
+            if (result == ContentDialogResult.Secondary)
+            {
+                return;
+            }
+
+            var flare = await Flare.GetShortCode("https://dataflare.bbarrettnas.duckdns.org/api/Flare", shortCode);
+
+            if (flare != null && flare.ShortCode.ToString() == shortCode)
+            {
+                var json = flare.Data;
+                var imported = JsonSerializer.Deserialize<List<BuildComponent>>(json);
+                if (imported.Count > 0)
+                {
+                    DoReset(null);
+                    foreach(var comp in imported)
+                    {
+                        if(comp.Item == null)
+                        {
+                            continue;
+                        }
+
+                        if (string.IsNullOrWhiteSpace(comp.CategoryFilter))
+                        {
+                            comp.Type = BuildComponentCache.Current.FindType(comp.Item.SKU);
+                        }
+
+                        var existing = Components.FirstOrDefault(c => c.Type == comp.Type);
+                        if(existing == null)
+                        {
+                            Components.Add(comp);
+                        }
+                        else
+                        {
+                            if (existing.Item == null)
+                            {
+                                existing.Item = comp.Item;
+                            }
+                            else
+                            {
+                                Components.Insert(Components.IndexOf(existing) + 1, comp);
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private async void DoAddCustomItem(object obj)
@@ -263,23 +326,6 @@ namespace MicroCBuilder.ViewModels
                 return listView.SelectedItem as Item;
             }
             return null;
-        }
-
-        private static IEnumerable<BuildComponent.ComponentType> DefaultComponentTypes()
-        {
-            yield return BuildService;
-            yield return BuildComponent.ComponentType.OperatingSystem;
-            yield return CPU;
-            yield return Motherboard;
-            yield return RAM;
-            yield return Case;
-            yield return PowerSupply;
-            yield return GPU;
-            yield return SSD;
-            yield return HDD;
-            yield return CPUCooler;
-            yield return WaterCoolingKit;
-            yield return CaseFan;
         }
 
         private void DoRemove(BuildComponent comp)

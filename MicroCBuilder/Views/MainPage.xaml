@@ -30,6 +30,7 @@
                             <AppBarButton Icon="Clear" Label="Reset" Click="ResetClicked"/>
                             <AppBarButton Icon="Share" Label="Export to Microcenter.com" Click="ExportClicked"/>
                             <AppBarButton Icon="Mail"  Label="Email" Click="MailClicked"/>
+                            <AppBarButton Icon="CellPhone" Label="Import From Phone" Click="ImportFromWebClicked"/>
                             <AppBarButton Icon="Setting" Label="Settings" Click="SettingsClick"/>
                         </CommandBar.SecondaryCommands>
 
@@ -53,7 +54,7 @@
                                 <KeyboardAccelerator Key="P" Modifiers="Control"/>
                             </AppBarButton.KeyboardAccelerators>
                         </AppBarButton>
-                        <AppBarButton Icon="CellPhone" Label="Send To Phone" Click="SendToPhoneClicked"/>
+                        <AppBarButton Icon="CellPhone" Label="Send To Phone" Click="ExportToWebClicked"/>
 
                     </CommandBar>
                 </Grid>
