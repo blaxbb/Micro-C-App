@@ -42,6 +42,7 @@ namespace micro_c_app.ViewModels
         public ICommand Cancel { get; }
         public ICommand LocatorLogin { get; }
         public ICommand LocatorLogout { get; }
+        public ICommand LocatorRegister { get; }
 
         public const string SETTINGS_UPDATED_MESSAGE = "updated";
         private string locatorCookie;
@@ -69,6 +70,8 @@ namespace micro_c_app.ViewModels
 
             Vibrate = SettingsPage.Vibrate();
             LocatorCookie = SettingsPage.LocatorCookie();
+
+            LocatorRegister = new Command(() => { Xamarin.Essentials.Launcher.OpenAsync($"{ SettingsPage.LOCATOR_BASE_URL}Identity/Account/Register"); });
 
         }
 

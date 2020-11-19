@@ -53,13 +53,16 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0" Text="Login to Locator Service"/>
-                    <Entry Grid.Row="1" Placeholder="Username" Text="{Binding LocatorUsername}"/>
-                    <Entry Grid.Row="2" Placeholder="Password" IsPassword="True" Text="{Binding LocatorPassword}"/>
-                    <Button Grid.Row="3" Text="Login" Command="{Binding LocatorLogin}"/>
-                    <Label Grid.Row="4" Text="{Binding LocatorCookie}"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Row="0" Grid.ColumnSpan="2" Text="Login to Locator Service"/>
+                    <Entry Grid.Row="1" Grid.ColumnSpan="2" Placeholder="Username" Text="{Binding LocatorUsername}"/>
+                    <Entry Grid.Row="2" Grid.ColumnSpan="2" Placeholder="Password" IsPassword="True" Text="{Binding LocatorPassword}"/>
+                    <Button Grid.Row="3" Grid.Column="0" Text="Register" Command="{Binding LocatorRegister}"/>
+                    <Button Grid.Row="3" Grid.Column="1" Text="Login" Command="{Binding LocatorLogin}"/>
                 </Grid>
                 <Grid IsVisible="{Binding LocatorCookie, Converter={StaticResource StringNullOrEmptyConverter}}">
                     <Grid.RowDefinitions>
