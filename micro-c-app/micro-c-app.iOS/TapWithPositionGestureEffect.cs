@@ -52,6 +52,7 @@ namespace micro_c_app.iOS
             var control = Control ?? Container;
 
             control.AddGestureRecognizer(tapDetector);
+            control.UserInteractionEnabled = true;
             tapDetector.Enabled = true;
 
             OnElementPropertyChanged(new PropertyChangedEventArgs(String.Empty));

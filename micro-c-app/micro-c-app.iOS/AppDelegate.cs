@@ -24,7 +24,7 @@ namespace micro_c_app.iOS
         //
         public override bool FinishedLaunching(UIApplication app, NSDictionary options)
         {
-            global::Xamarin.Forms.Forms.SetFlags("CollectionView_Experimental");
+            global::Xamarin.Forms.Forms.SetFlags(new string[] { "CollectionView_Experimental", "Shapes_Experimental" });
             global::Xamarin.Forms.Forms.Init();
 
             UNUserNotificationCenter.Current.Delegate = new iOSNotificationReceiver();
