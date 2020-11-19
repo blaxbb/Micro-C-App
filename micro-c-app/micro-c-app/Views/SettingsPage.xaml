@@ -25,6 +25,10 @@
                     <Label Text="Include CSV with Quote" WidthRequest="100" VerticalTextAlignment="Center"/>
                     <CheckBox IsChecked="{Binding IncludeCSVWithQuote}" HorizontalOptions="FillAndExpand"/>
                 </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Vibrate on Scan" WidthRequest="100" VerticalTextAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding Vibrate}" HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
                 <ContentView>
                     <OnPlatform x:TypeArguments="ContentView">
                         <On Platform="Android">
@@ -37,11 +41,33 @@
                         </On>
                     </OnPlatform>
                 </ContentView>
-            
-                <StackLayout Orientation="Horizontal">
+                
+                <StackLayout Orientation="Horizontal" IsVisible="True">
                     <Button Text="Cancel" WidthRequest="100" HorizontalOptions="StartAndExpand" Margin="0,30,30,0" Command="{Binding Cancel}" BackgroundColor="Red"/>
                     <Button Text="Save" WidthRequest="100" HorizontalOptions="End" Margin="0,30,30,0" Command="{Binding Save}" BackgroundColor="Green"/>
                 </StackLayout>
+
+                <Grid IsVisible="{Binding LocatorCookie, Converter={StaticResource StringNullOrEmptyConverter}, ConverterParameter=True}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Label Grid.Row="0" Text="Login to Locator Service"/>
+                    <Entry Grid.Row="1" Placeholder="Username" Text="{Binding LocatorUsername}"/>
+                    <Entry Grid.Row="2" Placeholder="Password" IsPassword="True" Text="{Binding LocatorPassword}"/>
+                    <Button Grid.Row="3" Text="Login" Command="{Binding LocatorLogin}"/>
+                    <Label Grid.Row="4" Text="{Binding LocatorCookie}"/>
+                </Grid>
+                <Grid IsVisible="{Binding LocatorCookie, Converter={StaticResource StringNullOrEmptyConverter}}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Button Text="Logout of Locator Service" Command="{Binding LocatorLogout}"/>
+                </Grid>
+
             </StackLayout>
         </ScrollView>
     </ContentPage.Content>

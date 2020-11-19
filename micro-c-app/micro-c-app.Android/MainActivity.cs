@@ -3,6 +3,8 @@ using Android.App;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
+using Google.Android.Material.Internal;
+using Xamarin.Essentials;
 
 namespace micro_c_app.Droid
 {
@@ -15,7 +17,7 @@ namespace micro_c_app.Droid
             ToolbarResource = Resource.Layout.Toolbar;
 
             base.OnCreate(savedInstanceState);
-
+            Xamarin.Forms.Forms.SetFlags("Shapes_Experimental");
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);

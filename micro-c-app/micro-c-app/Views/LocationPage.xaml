@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewmodels="clr-namespace:micro_c_app.ViewModels"
+             xmlns:views="clr-namespace:micro_c_app.Views"
+             xmlns:forms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
+             xmlns:local="clr-namespace:micro_c_app"
+             x:Class="micro_c_app.Views.LocationPage">
+    <ContentPage.BindingContext>
+        <viewmodels:LocationPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid x:Name="grid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Frame Grid.Row="0" x:Name="mapContainer" Padding="0" IsVisible="{Binding ScanMode}">
+                <views:StoreMapControl Grid.Row="0" x:Name="map"/>
+            </Frame>
+            <Frame Grid.Row="0" Padding="0" x:Name="mapResultsContainer" IsVisible="{Binding SearchMode}">
+                <views:StoreMapResultsControl Grid.Row="0" x:Name="mapResults" />
+            </Frame>
+            <Grid x:Name="modeStack" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Text="Search" Grid.Column="0" IsEnabled="{Binding ScanMode, FallbackValue=True}" Command="{Binding DoSearchMode}"/>
+                <Button Text="Scan" Grid.Column="1" IsEnabled="{Binding SearchMode, FallbackValue=False}" Command="{Binding DoScanMode}"/>
+            </Grid>
+            <views:SearchView x:Name="searchView" Grid.Row="2" HeightRequest="100" WidthRequest="250" Margin="20" BatchScan="{Binding ScanMode}" ProductFound="{Binding ProductFound}"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

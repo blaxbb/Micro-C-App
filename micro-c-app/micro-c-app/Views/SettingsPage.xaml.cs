@@ -12,7 +12,11 @@ namespace micro_c_app.Views
         public const string PREF_TAX_RATE = "tax_rate";
         public const string PREF_CSV_QUOTE = "csv_with_quote";
         public const string PREF_THEME = "theme";
+        public const string PREF_VIBRATE = "vibarte";
         public const string PREF_VERSION_PROMPT = "version_prompt";
+        public const string PREF_LOCATOR_COOKIE = "locator_cookie";
+
+        public const string LOCATOR_BASE_URL = "https://locator.bbarrettnas.duckdns.org/";
 
         public const int CURRENT_VERSION_PROMPT = 1;
         public SettingsPage()
@@ -26,6 +30,8 @@ namespace micro_c_app.Views
         public static float TaxRateFactor() => (TaxRate() * .01f) + 1;
         public static bool IncludeCSVWithQuote() => Preferences.Get(PREF_CSV_QUOTE, true);
         public static OSAppTheme Theme() => (OSAppTheme)Preferences.Get(PREF_THEME, 0);
+        public static bool Vibrate() => Preferences.Get(PREF_VIBRATE, true);
+        public static string LocatorCookie() => Preferences.Get(PREF_LOCATOR_COOKIE, "");
         public static int VersionPrompt() => Preferences.Get(PREF_VERSION_PROMPT, 0);
 
 
@@ -36,6 +42,8 @@ namespace micro_c_app.Views
         public static void IncludeCSVWithQuote(bool include) => Preferences.Set(PREF_CSV_QUOTE, include);
 
         public static void Theme(OSAppTheme theme) => Preferences.Set(PREF_THEME, (int)theme);
+        public static void Vibrate(bool vibrate) => Preferences.Set(PREF_VIBRATE, vibrate);
+        public static void LocatorCookie(string cookie) => Preferences.Set(PREF_LOCATOR_COOKIE, cookie);
         public static void VersionPrompt(int value) => Preferences.Set(PREF_VERSION_PROMPT, value);
     }
 }

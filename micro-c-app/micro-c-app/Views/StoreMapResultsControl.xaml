@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:micro_c_app" xmlns:pinchzoomimage="clr-namespace:Xamarin.Forms.PinchZoomImage;assembly=Xamarin.Forms.PinchZoomImage"
+             x:Class="micro_c_app.Views.StoreMapResultsControl">
+  <ContentView.Content>
+        <Grid x:Name="grid" Padding="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Frame x:Name="imageFrame" Grid.Row="0" BackgroundColor="Green" Padding="0">
+                <Image BackgroundColor="Blue" x:Name="image" Aspect="AspectFit" Margin="0" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+            </Frame>
+        </Grid>
+  </ContentView.Content>
+</ContentView>

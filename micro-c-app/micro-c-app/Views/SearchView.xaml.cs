@@ -3,11 +3,13 @@ using micro_c_app.ViewModels;
 using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing;
@@ -39,6 +41,9 @@ namespace micro_c_app.Views
 
         public static readonly BindableProperty OrderByProperty = BindableProperty.Create(nameof(OrderBy), typeof(OrderByMode), typeof(SearchView), null);
         public OrderByMode OrderBy { get { return (OrderByMode)GetValue(OrderByProperty); } set { SetValue(OrderByProperty, value); } }
+
+        public static readonly BindableProperty BatchScanProperty = BindableProperty.Create("BatchScan", typeof(bool), typeof(SearchView), false);
+        public bool BatchScan { get { return (bool)GetValue(BatchScanProperty); } set { SetValue(BatchScanProperty, value); } }
 
         public bool Busy
         {
@@ -101,7 +106,8 @@ namespace micro_c_app.Views
                         BarcodeFormat.CODE_128,
                         BarcodeFormat.UPC_A
                     },
-                    UseNativeScanning = true
+                    UseNativeScanning = true,
+                    DelayBetweenContinuousScans = 1000
                 };
                 var scanPage = new ZXingScannerPage(options)
                 {
@@ -110,16 +116,31 @@ namespace micro_c_app.Views
                 // Navigate to our scanner page
                 scanPage.OnScanResult += (result) =>
                 {
-                    // Stop scanning
-                    scanPage.IsScanning = false;
-
-                    // Pop the page and show the result
-                    Device.BeginInvokeOnMainThread(async () =>
+                    Debug.WriteLine($"SCANNED {result}");
+                    if (SettingsPage.Vibrate())
                     {
-                        await Navigation.PopModalAsync();
-                        SKUField.Text = FilterBarcodeResult(result);
-                        await OnSubmit(SKUField.Text);
-                    });
+                        Vibration.Vibrate();
+                    }
+                    if (!BatchScan)
+                    {
+                        // Stop scanning
+                        scanPage.IsScanning = false;
+                        // Pop the page and show the result
+                        Device.BeginInvokeOnMainThread(async () =>
+                        {
+                            await Navigation.PopModalAsync();
+                            SKUField.Text = FilterBarcodeResult(result);
+                            await OnSubmit(SKUField.Text);
+                        });
+                    }
+                    else
+                    {
+                        Device.BeginInvokeOnMainThread(async () =>
+                        {
+                            SKUField.Text = FilterBarcodeResult(result);
+                            await OnSubmit(SKUField.Text);
+                        });
+                    }
                 };
 
                 var navPage = new NavigationPage(scanPage);
