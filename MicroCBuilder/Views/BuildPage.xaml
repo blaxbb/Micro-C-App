@@ -75,7 +75,7 @@
                     </ListView.ItemTemplate>
                 </ListView>
                 <Border Grid.Row="2" BorderThickness="0,1,0,0" BorderBrush="{ThemeResource ApplicationSecondaryForegroundThemeBrush}">
-                    <views:BuildSummaryControl SubTotal="{Binding DataContext.SubTotal, ElementName=page}" Margin="20"/>
+                    <views:BuildSummaryControl SubTotal="{Binding DataContext.SubTotal, ElementName=page}" MCOLUrl="{Binding DataContext.BuildContext.TinyBuildURL, ElementName=page}" Margin="20"/>
                 </Border>
             </Grid>
             <views:SearchResults x:Name="SearchView" Grid.Column="2" Query="{Binding DataContext.Query, ElementName=page}" ComponentType="{Binding DataContext.SelectedComponent.Type, ElementName=page}" ItemSelected="{Binding DataContext.ItemSelected, ElementName=page}" OnItemSelected="SearchView_OnItemSelected"/>

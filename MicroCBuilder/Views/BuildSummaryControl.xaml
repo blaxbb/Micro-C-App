@@ -19,6 +19,7 @@
             </Style>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
@@ -27,12 +28,13 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Column="0" Grid.Row="0" Text="{Binding SubTotal, Converter={StaticResource Format}, ConverterParameter='Sub ${0:#,#.00}'}"/>
-        <TextBlock Grid.Column="0" Grid.Row="1" Text="{Binding TaxAmt, Converter={StaticResource Format},   ConverterParameter='Tax ${0:#,#.00}'}"/>
-        <TextBlock Grid.Column="0" Grid.Row="3" Text="{Binding Total, Converter={StaticResource Format},    ConverterParameter='Total ${0:#,#.00}'}"/>
-        <TextBlock Grid.Column="1" Grid.Row="0" Text="Save 5% with the MC Credit Card" HorizontalAlignment="Right"/>
-        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding CCDiscount, Converter={StaticResource Format}, ConverterParameter='Save ${0:#,#.00}'}" TextAlignment="Right"/>
-        <TextBlock Grid.Column="1" Grid.Row="2" Text="{Binding CCTotal, Converter={StaticResource Format}, ConverterParameter='Total ${0:#,#.00}'}"  TextAlignment="Right"/>
+        <Image x:Name="qrImage" Source="{Binding Bitmap}" Grid.Column="0" Grid.RowSpan="3" Width="100" Height="100" Stretch="UniformToFill" Margin="0,0,10,0"/>
+        <TextBlock Grid.Column="1" Grid.Row="0" TextTrimming="None" Text="{Binding SubTotal, Converter={StaticResource Format}, ConverterParameter='Sub ${0:#,#.00}'}"/>
+        <TextBlock Grid.Column="1" Grid.Row="1" Text="{Binding TaxAmt, Converter={StaticResource Format},   ConverterParameter='Tax ${0:#,#.00}'}"/>
+        <TextBlock Grid.Column="1" Grid.Row="3" Text="{Binding Total, Converter={StaticResource Format},    ConverterParameter='Total ${0:#,#.00}'}"/>
+        <TextBlock Grid.Column="2" Grid.Row="0" Text="Save 5% with the MC Credit Card" HorizontalAlignment="Right"/>
+        <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding CCDiscount, Converter={StaticResource Format}, ConverterParameter='Save ${0:#,#.00}'}" TextAlignment="Right"/>
+        <TextBlock Grid.Column="2" Grid.Row="2" Text="{Binding CCTotal, Converter={StaticResource Format}, ConverterParameter='Total ${0:#,#.00}'}"  TextAlignment="Right"/>
 
     </Grid>
 </UserControl>

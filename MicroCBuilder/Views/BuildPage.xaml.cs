@@ -140,7 +140,8 @@ namespace MicroCBuilder.Views
 
                 var footer = new BuildSummaryControl
                 {
-                    SubTotal = vm.SubTotal
+                    SubTotal = vm.SubTotal,
+                    MCOLUrl = vm.BuildContext.TinyBuildURL
                 };
 
                 page.Children.Add(header);

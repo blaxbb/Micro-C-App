@@ -323,10 +323,26 @@ namespace MicroCLib.Models
 
                     var result = await client.GetAsync(url);
                     var body = await result.Content.ReadAsStringAsync();
+
+                    //Get url
                     var match = Regex.Match(body, "value=\"(.*?)\" name=\"shareURL\" id=\"shareURL\">");
                     if (match.Success)
                     {
                         BuildURL = match.Groups[1].Value;
+                    }
+
+                    //get section with component id
+                    match = Regex.Match(body, "id=\"selector_1\"(.*?)newItem", RegexOptions.Singleline);
+                    if (match.Success)
+                    {
+                        var componentText = match.Groups[1].Value;
+                        //collect all of the items in that section
+                        var matches = Regex.Matches(componentText, "id=\"selector_(.*?)\"");
+                        if(matches.Count > 0)
+                        {
+                            var selectors = matches.OfType<Match>().Select(m => m.Groups[1]);
+
+                        }
                     }
                 }
             }

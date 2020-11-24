@@ -30,9 +30,10 @@ namespace MicroCBuilder.ViewModels
 
         public string Test { get; set; } = "AFASFSF";
         public ObservableCollection<BuildComponent> Components { get; }
-        public BuildComponent.ComponentType ttt = BuildComponent.ComponentType.GPU;
+
         private string query;
         private Flare flare;
+        private MCOLBuildContext buildContext;
 
         public ICommand Save { get; }
         public ICommand Load { get; }
@@ -58,19 +59,12 @@ namespace MicroCBuilder.ViewModels
         public float SubTotal => Components.Where(c => c?.Item != null).Sum(c => c.Item.Price * c.Item.Quantity);
 
         public Flare Flare { get => flare; set => SetProperty(ref flare, value); }
+        public MCOLBuildContext BuildContext { get => buildContext; set => SetProperty(ref buildContext, value); }
 
         public BuildPageViewModel()
         {
+            BuildContext = new MCOLBuildContext();
             Components = new ObservableCollection<BuildComponent>();
-
-            //DefaultComponentTypes().ToList().ForEach(c => {
-            //    var comp = new BuildComponent() { Type = c };
-            //    comp.PropertyChanged += (sender, args) =>
-            //    {
-            //        OnPropertyChanged(nameof(Components));
-            //    };
-            //    Components.Add(comp);
-            //});
 
             Settings.Categories().ForEach(c =>
             {
@@ -89,11 +83,11 @@ namespace MicroCBuilder.ViewModels
 
             Reset = new Command(DoReset);
 
-            Remove = new Command<BuildComponent>(DoRemove);
+            Remove = new Command<BuildComponent>(async (comp) => await DoRemove(comp));
             Add = new Command<BuildComponent.ComponentType>(AddItem);
-            ItemSelected = new Command<Item>((Item item) => { if (SelectedComponent != null) SelectedComponent.Item = item; OnPropertyChanged(nameof(SubTotal)); });
+            ItemSelected = new Command<Item>(async (Item item) => { await DoItemSelected(item); });
 
-            RemoveFlyoutCommand = new Command<BuildComponent>(DoRemove);
+            RemoveFlyoutCommand = new Command<BuildComponent>(async (comp) => await DoRemove(comp));
             InfoFlyoutCommand = null;
             AddEmptyFlyoutCommand = new Command<BuildComponent.ComponentType>(AddItem);
             AddDuplicateFlyoutCommand = new Command<BuildComponent>(AddDuplicate);
@@ -107,21 +101,22 @@ namespace MicroCBuilder.ViewModels
 
             ExportToMCOL = new Command(async (_) =>
             {
-                var total = Components.Count(comp => comp != null && comp.Item != null);
-                await MainPage.Instance.DisplayProgress(async (progress) =>
+                var url = BuildContext.BuildURL;
+                if(string.IsNullOrWhiteSpace(url))
                 {
-                    var result = await BuildComponent.ExportToMCOL(Components.ToList(), progress);
-                    Debug.WriteLine(result);
-                    var success = await Windows.System.Launcher.LaunchUriAsync(new Uri(result));
-                    if (!success)
-                    {
-                        //todo: show dialog with URL
-                    }
-                }, "Exporting to MCOL", total);
+                    return;
+                }
+
+                await Windows.System.Launcher.LaunchUriAsync(new Uri(url));
             });
 
             ItemValuesUpdated = new Command((_) =>
             {
+                Task.Run(async () =>
+                {
+                    await BuildContext.RemoveComponent(SelectedComponent);
+                    await BuildContext.AddComponent(SelectedComponent);
+                });
                 OnPropertyChanged(nameof(SubTotal));
             });
 
@@ -129,6 +124,20 @@ namespace MicroCBuilder.ViewModels
             AddCustomItem = new Command(DoAddCustomItem);
             ExportToWeb = new Command(DoExportToWeb);
             ImportFromWeb = new Command(DoImportFromWeb);
+        }
+
+        private async Task DoItemSelected(Item item)
+        {
+            if (SelectedComponent != null)
+            {
+                if (SelectedComponent.Item != null)
+                {
+                    _ = BuildContext.RemoveComponent(SelectedComponent);
+                }
+                SelectedComponent.Item = item;
+                _ = BuildContext.AddComponent(SelectedComponent);
+            }
+            OnPropertyChanged(nameof(SubTotal));
         }
 
         private async void DoExportToWeb(object obj)
@@ -175,9 +184,9 @@ namespace MicroCBuilder.ViewModels
                 if (imported.Count > 0)
                 {
                     DoReset(null);
-                    foreach(var comp in imported)
+                    foreach (var comp in imported)
                     {
-                        if(comp.Item == null)
+                        if (comp.Item == null)
                         {
                             continue;
                         }
@@ -188,7 +197,7 @@ namespace MicroCBuilder.ViewModels
                         }
 
                         var existing = Components.FirstOrDefault(c => c.Type == comp.Type);
-                        if(existing == null)
+                        if (existing == null)
                         {
                             Components.Add(comp);
                         }
@@ -291,7 +300,9 @@ namespace MicroCBuilder.ViewModels
 
                 if (item != null)
                 {
-                    AddDuplicate(new BuildComponent() { Type = BuildComponent.ComponentType.Miscellaneous, Item = item });
+                    var comp = new BuildComponent() { Type = BuildComponent.ComponentType.Miscellaneous, Item = item };
+                    AddDuplicate(comp);
+
                 }
             }
         }
@@ -328,18 +339,21 @@ namespace MicroCBuilder.ViewModels
             return null;
         }
 
-        private void DoRemove(BuildComponent comp)
+        private async Task DoRemove(BuildComponent comp)
         {
             if (comp == null)
             {
                 return;
             }
 
+            await BuildContext.RemoveComponent(comp);
+
             comp.Item = null;
             if (comp.Type == BuildComponent.ComponentType.Miscellaneous || comp.Type == BuildComponent.ComponentType.Plan || Components.Count(c => c.Type == comp.Type) > 1)
             {
                 Components.Remove(comp);
             }
+
             OnPropertyChanged(nameof(SubTotal));
         }
 
@@ -353,6 +367,7 @@ namespace MicroCBuilder.ViewModels
             var comp = InsertAtEndByType(orig.Type);
             comp.Item = orig.Item?.CloneAndResetQuantity();
             SelectedComponent = comp;
+            _ = BuildContext.AddComponent(comp);
             OnPropertyChanged(nameof(SubTotal));
         }
 

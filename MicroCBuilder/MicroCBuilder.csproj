@@ -140,6 +140,7 @@
     <Compile Include="Command.cs" />
     <Compile Include="Converters\NullVisibilityConverter.cs" />
     <Compile Include="LocalSearch.cs" />
+    <Compile Include="MCOLBuildContext.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="TimeSpanRollingAverage.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
@@ -294,6 +295,9 @@
     </PackageReference>
     <PackageReference Include="Microsoft.UI.Xaml">
       <Version>2.4.3</Version>
+    </PackageReference>
+    <PackageReference Include="QRCoder">
+      <Version>1.4.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
