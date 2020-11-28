@@ -233,6 +233,7 @@ namespace micro_c_app.Views
             }
             catch(Exception e)
             {
+                client = new HttpClient();
                 DoError(e.Message);
             }
 
