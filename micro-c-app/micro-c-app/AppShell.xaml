@@ -102,7 +102,7 @@
                     Size="24"/>
             </ShellContent.Icon>
         </ShellContent>
-        <ShellContent Title="Location" Route="LocationPage" ContentTemplate="{DataTemplate local:LocationPage}">
+        <!--<ShellContent Title="Location" Route="LocationPage" ContentTemplate="{DataTemplate local:LocationPage}">
             <ShellContent.Icon>
                 <FontImageSource
                     FontFamily="{StaticResource FontAwesomeSolid}"
@@ -110,7 +110,7 @@
                     Color="{DynamicResource PrimaryTextColor}"
                     Size="24"/>
             </ShellContent.Icon>
-        </ShellContent>
+        </ShellContent>-->
         <ShellContent Title="References" Route="ReferencePage" ContentTemplate="{DataTemplate local:ReferencePage}">
             <ShellContent.Icon>
                 <FontImageSource

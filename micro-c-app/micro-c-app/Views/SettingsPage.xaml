@@ -47,7 +47,8 @@
                     <Button Text="Save" WidthRequest="100" HorizontalOptions="End" Margin="0,30,30,0" Command="{Binding Save}" BackgroundColor="Green"/>
                 </StackLayout>
 
-                <Grid IsVisible="{Binding LocatorCookie, Converter={StaticResource StringNullOrEmptyConverter}, ConverterParameter=True}">
+                <!--<Grid IsVisible="{Binding LocatorCookie, Converter={StaticResource StringNullOrEmptyConverter}, ConverterParameter=True}">-->
+                <Grid IsVisible="False">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>

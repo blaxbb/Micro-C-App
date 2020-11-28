@@ -177,55 +177,63 @@ namespace micro_c_app.Views
             }
             Busy = true;
             var storeId = SettingsPage.StoreID();
-            var results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1);
-            switch (results.Items.Count)
+            try
             {
-                case 0:
-                    DoError($"Failed to find product with query {searchValue}");
-                    break;
-                case 1:
-                    var stub = results.Items.First();
-                    var item = await Item.FromUrl(stub.URL, storeId);
-                    DoProductFound(item);
-                    break;
-                default:
-                    //count > 1
-                    var page = new SearchResultsPage()
-                    {
-                        BindingContext = new SearchResultsPageViewModel()
-                        {
-                            SearchQuery = searchValue,
-                            StoreID = storeId,
-                            CategoryFilter = CategoryFilter,
-                            OrderBy = OrderBy,
-                        }
-                    };
-                    
+                var results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1);
 
-                    if (page.BindingContext is SearchResultsPageViewModel vm)
-                    {
-                        vm.ParseResults(results);
-                    }
-
-                    page.AutoPop = AutoPopSearchPage;
-                    page.ItemTapped += (sender, args) =>
-                    {
-                        Task.Run(async () =>
+                switch (results.Items.Count)
+                {
+                    case 0:
+                        DoError($"Failed to find product with query {searchValue}");
+                        break;
+                    case 1:
+                        var stub = results.Items.First();
+                        var item = await Item.FromUrl(stub.URL, storeId);
+                        DoProductFound(item);
+                        break;
+                    default:
+                        //count > 1
+                        var page = new SearchResultsPage()
                         {
-                            if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
+                            BindingContext = new SearchResultsPageViewModel()
                             {
-                                var item = await Item.FromUrl(shortItem.URL, storeId);
-                                DoProductFound(item);
+                                SearchQuery = searchValue,
+                                StoreID = storeId,
+                                CategoryFilter = CategoryFilter,
+                                OrderBy = OrderBy,
                             }
+                        };
+
+
+                        if (page.BindingContext is SearchResultsPageViewModel vm)
+                        {
+                            vm.ParseResults(results);
+                        }
+
+                        page.AutoPop = AutoPopSearchPage;
+                        page.ItemTapped += (sender, args) =>
+                        {
+                            Task.Run(async () =>
+                            {
+                                if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
+                                {
+                                    var item = await Item.FromUrl(shortItem.URL, storeId);
+                                    DoProductFound(item);
+                                }
+                            });
+                        };
+
+                        await Device.InvokeOnMainThreadAsync(async () =>
+                        {
+                            await Shell.Current.Navigation.PushAsync(page);
                         });
-                    };
 
-                    await Device.InvokeOnMainThreadAsync(async () =>
-                    {
-                        await Shell.Current.Navigation.PushAsync(page);
-                    });
-
-                    break;
+                        break;
+                }
+            }
+            catch(Exception e)
+            {
+                DoError(e.Message);
             }
 
             Busy = false;
