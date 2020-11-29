@@ -177,6 +177,13 @@ namespace micro_c_app.Views
             }
             Busy = true;
             var storeId = SettingsPage.StoreID();
+            int queryAttempts = 0;
+
+            //go back here on error, so that we can retry the request a few times
+            const int NUM_RETRY_ATTEMPTS = 5;
+        startQuery:
+            queryAttempts++;
+
             try
             {
                 var results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1);
@@ -233,8 +240,16 @@ namespace micro_c_app.Views
             }
             catch(Exception e)
             {
-                client = new HttpClient();
-                DoError(e.Message);
+                if (queryAttempts > NUM_RETRY_ATTEMPTS)
+                {
+                    DoError(e.Message);
+                }
+                else
+                {
+                    await Task.Delay(100);
+                    client = new HttpClient();
+                    goto startQuery;
+                }
             }
 
             Busy = false;
