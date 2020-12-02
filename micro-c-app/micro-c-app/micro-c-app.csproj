@@ -10,6 +10,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\temp.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Assets\temp.txt" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="DataFlareClient" Version="1.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="SkiaSharp" Version="2.80.2" />
@@ -39,6 +47,9 @@
     <Compile Update="Views\ItemDetailsPage.xaml.cs">
       <DependentUpon>ItemDetailsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\Reference\ReferenceIndexPage.xaml.cs">
+      <DependentUpon>ReferenceIndexPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\SearchPage.xaml.cs">
       <DependentUpon>SearchPage.xaml</DependentUpon>
     </Compile>
@@ -52,6 +63,9 @@
 
   <ItemGroup>
     <EmbeddedResource Update="Themes\DarkTheme.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Reference\ReferencePlanPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\BuildComponentPage.xaml">
@@ -85,6 +99,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ReferencePage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Reference\ReferenceIndexPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ReminderEditPage.xaml">

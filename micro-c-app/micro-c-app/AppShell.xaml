@@ -111,6 +111,15 @@
                     Size="24"/>
             </ShellContent.Icon>
         </ShellContent>-->
+        <ShellContent Title="References" Route="ReferenceV2Page" ContentTemplate="{DataTemplate local:ReferenceIndexPage}">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="{StaticResource FontAwesomeSolid}"
+                    Glyph="&#xf02d;"
+                    Color="{DynamicResource PrimaryTextColor}"
+                    Size="24"/>
+            </ShellContent.Icon>
+        </ShellContent>
         <ShellContent Title="References" Route="ReferencePage" ContentTemplate="{DataTemplate local:ReferencePage}">
             <ShellContent.Icon>
                 <FontImageSource
