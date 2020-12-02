@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static MicroCLib.Models.Reference.PlanReference;
 
 namespace MicroCLib.Models.Reference
 {
@@ -337,6 +338,102 @@ namespace MicroCLib.Models.Reference
             AllPlans.Add(new PlanReference(PlanType.AppleCare_iPad_Pro, 0f, 0f, new PlanTier(2, 129.99f)));
             AllPlans.Add(new PlanReference(PlanType.AppleCare_HomePod, 0f, 0f, new PlanTier(2, 39.99f)));
             AllPlans.Add(new PlanReference(PlanType.AppleCare_Headphones, 0f, 0f, new PlanTier(2, 29.99f)));
+        }
+    }
+
+    public static class PlanReferenceExtension
+    {
+        public static string FriendlyName(this PlanType type)
+        {
+            switch (type)
+            {
+                case PlanType.Small_Electronic_ADH:
+                    return "Small Electronics ADH";
+                case PlanType.BYO_Replacement:
+                    return "BYO Replacement";
+                case PlanType.Build_Plan:
+                    return "BYO Build Plan";
+                case PlanType.Apple_Plans_iPad:
+                    return "iPad Date Of Purchase";
+                case PlanType.Apple_Plans_ADH_iPad:
+                    return "iPad Accidental Handling";
+                case PlanType.Apple_Plans_13:
+                    return "MacBook 13\" Date Of Purchase";
+                case PlanType.Apple_Plans_ADH_13:
+                    return "MacBook 13\" Accidental Handling";
+                case PlanType.Apple_Plans_15_and_16:
+                    return "MacBook 15/16\" Date Of Purchase";
+                case PlanType.Apple_Plans_ADH_15_and_16:
+                    return "MacBook 15-16\" Accidental Handling";
+                case PlanType.Apple_Plans_iMac:
+                    return "iMac Date Of Purchase";
+                case PlanType.Apple_Plans_ADH_iMac:
+                    return "iMac Accidental Handling";
+                case PlanType.Apple_Plans_Mac_Pro:
+                    return "MacPro Date Of Purchase";
+                case PlanType.Apple_Plans_ADH_Mac_Pro:
+                    return "MacPro Accidental Handling";
+                case PlanType.Apple_Plans_Mac_Mini:
+                    return "MacMini Date Of Purchase";
+                case PlanType.Apple_Plans_ADH_Mac_Mini:
+                    return "MacMini Accidental Handling";
+                case PlanType.Laptop_ADH:
+                    return "Laptop Accidental Handling";
+                case PlanType.Laptop_DOP:
+                    return "Laptop Date Of Purchase";
+                case PlanType.Laptop_Extension:
+                    return "Laptop Extension";
+                case PlanType.Desktop_ADH:
+                    return "Desktop Accidental Handling";
+                case PlanType.Desktop_DOP:
+                    return "Desktop Date Of Purchase";
+                case PlanType.Desktop_Extension:
+                    return "Desktop Extension";
+                case PlanType.Tablet_ADH:
+                    return "Tablet Accidental Handling";
+                case PlanType.Tablet_DOP:
+                    return "Tablet Date Of Purchase";
+                case PlanType.Tablet_Extension:
+                    return "Tablet Extension";
+                case PlanType.Carry_In:
+                    return "Carry In Protection";
+                case PlanType.AppleCare_13_MBP:
+                    return "AppleCare MBP 13\"";
+                case PlanType.AppleCare_13_MBA:
+                    return "AppleCare MBA 13\"";
+                case PlanType.AppleCare_15:
+                    return "AppleCare MacBook 15\"";
+                case PlanType.AppleCare_Mac_Mini:
+                    return "AppleCare Mac Mini";
+                case PlanType.AppleCare_iMac:
+                    return "AppleCare iMac";
+                case PlanType.AppleCare_Mac_Pro:
+                    return "AppleCare Mac Pro";
+                case PlanType.AppleCare_Apple_TV:
+                    return "AppleCare Apple TV";
+                case PlanType.AppleCare_Display:
+                    return "AppleCare Display";
+                case PlanType.AppleCare_iPod_Touch:
+                    return "AppleCare iPod Touch";
+                case PlanType.AppleCare_iPad:
+                    return "AppleCare iPad";
+                case PlanType.AppleCare_iPad_Pro:
+                    return "AppleCare iPad Pro";
+                case PlanType.AppleCare_iPhone:
+                    return "AppleCare iPhone";
+                case PlanType.AppleCare_Watch_S3:
+                    return "AppleCare Watch Series 3";
+                case PlanType.AppleCare_Watch_S4_S5:
+                    return "AppleCare Watch Series 4/5";
+                case PlanType.AppleCare_Watch_Stainless:
+                    return "AppleCare Watch Stainless";
+                case PlanType.AppleCare_HomePod:
+                    return "AppleCare HomePod";
+                case PlanType.AppleCare_Headphones:
+                    return "AppleCare Headphones";
+                    
+            }
+            return Enum.GetName(typeof(PlanType), type);
         }
     }
 }

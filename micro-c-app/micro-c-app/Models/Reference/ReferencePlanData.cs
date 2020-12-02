@@ -19,7 +19,7 @@ namespace micro_c_app.Models.Reference
 
         public ReferencePlanData(PlanType type)
         {
-            Name = Enum.GetName(typeof(PlanType), type);
+            Name = type.FriendlyName();
             Plans = AllPlans.Where(p => p.Type == type).ToList();
         }
     }
