@@ -1,0 +1,12 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels.Reference"
+             x:Class="micro_c_app.Views.Reference.ReferenceWebViewPage">
+    <ContentPage.BindingContext>
+        <vm:ReferenceWebViewPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <WebView x:Name="webView" WidthRequest="200" HeightRequest="200" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand"/>
+    </ContentPage.Content>
+</ContentPage>

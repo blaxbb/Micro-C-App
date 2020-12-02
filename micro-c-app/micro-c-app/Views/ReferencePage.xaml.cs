@@ -20,23 +20,6 @@ namespace micro_c_app.Views
         public ReferencePage()
         {
             InitializeComponent();
-
-            if (BindingContext is ReferencePageViewModel vm)
-            {
-                var assembly = IntrospectionExtensions.GetTypeInfo(typeof(App)).Assembly;
-                foreach (var res in assembly.GetManifestResourceNames())
-                {
-                    System.Diagnostics.Debug.WriteLine("found resource: " + res);
-                    if (Regex.IsMatch(res, "micro_c_app\\.Assets\\.(.*?)\\.txt"))
-                    {
-                        var stream = assembly.GetManifestResourceStream(res);
-                        using var reader = new StreamReader(stream);
-                        var text = reader.ReadToEnd();
-                        vm.Items.Add(new MicroCLib.Models.PriceReference($"/Ref/{res}", ("A", 0f)));
-                    }
-                }
-                vm.SetPath("/");
-            }
         }
 
         private void ListView_ItemTapped(object sender, ItemTappedEventArgs e)

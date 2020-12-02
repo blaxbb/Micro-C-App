@@ -1,6 +1,7 @@
 ﻿using micro_c_app.Models.Reference;
 using micro_c_app.ViewModels.Reference;
 using micro_c_app.Views;
+using micro_c_app.Views.Reference;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -45,7 +46,15 @@ namespace micro_c_app.ViewModels
                 {
                     await Device.InvokeOnMainThreadAsync(async () =>
                     {
-                        await Shell.Current.DisplayAlert("Alert", entry.Data, "Ok");
+                        var page = new ReferenceWebViewPage()
+                        {
+                            Title = node.Name,
+                        };
+                        if (page.BindingContext is ReferenceWebViewPageViewModel vm)
+                        {
+                            vm.Text = entry.Data;
+                        }
+                        await Shell.Current.Navigation.PushAsync(page);
                     });
                 }
                 else if(node is ReferencePlanData plans)

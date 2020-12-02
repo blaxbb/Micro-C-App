@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
+using Xamarin.Forms.Shapes;
 using Xamarin.Forms.Xaml;
 
 namespace micro_c_app.Views
@@ -53,7 +54,6 @@ namespace micro_c_app.Views
                         Grid.SetColumn(label, i + 1);
                     }
                 }
-
 
                 planGrid.Children.Clear();
                 planGrid.ColumnDefinitions.Clear();

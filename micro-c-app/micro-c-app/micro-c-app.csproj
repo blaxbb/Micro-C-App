@@ -10,10 +10,16 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\a.txt" />
+    <None Remove="Assets\b.txt" />
+    <None Remove="Assets\stuff\more stuff\c.txt" />
     <None Remove="Assets\temp.txt" />
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="Assets\stuff\a.txt" />
+    <EmbeddedResource Include="Assets\stuff\b.txt" />
+    <EmbeddedResource Include="Assets\stuff\more stuff\c.txt" />
     <EmbeddedResource Include="Assets\temp.txt" />
   </ItemGroup>
 
@@ -102,6 +108,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Reference\ReferenceIndexPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Reference\ReferenceWebViewPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ReminderEditPage.xaml">

@@ -2,8 +2,11 @@
 using micro_c_app.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
@@ -24,50 +27,47 @@ namespace micro_c_app.Views
             {
                 Initialized = true;
                 Tree = new ReferenceTree("Root");
-                Tree.Nodes.Add(new ReferenceTree("A")
-                {
-                    Nodes = new List<IReferenceItem>()
-                    {
-                        new ReferenceEntry() {
-                            Name = "1",
-                            Data = "1111 Page"
-                        },
-                        new ReferenceEntry() {
-                            Name = "2",
-                            Data = "22222 Page"
-                        },
-                        new ReferencePlanData(MicroCLib.Models.Reference.PlanReference.PlanType.Replacement)
-                        {
-                            Name = "Replacement"
-                        }
-                    }
-                });
-                Tree.Nodes.Add(new ReferenceTree("B")
-                {
-                    Nodes = new List<IReferenceItem>()
-                    {
-                        new ReferenceEntry() {
-                            Name = "Z",
-                            Data = "ZZZZZ Page"
-                        },
-                        new ReferenceEntry() {
-                            Name = "Y",
-                            Data = "YYYYY Page"
-                        },
-                    }
-                });
-
-
+                Tree.Nodes.Add(new ReferenceEntry() { Name = "Debug", Data = @"<html><body>
+  <h1>Xamarin.Forms</h1>
+  <p>Welcome to WebView.</p>
+  </body></html>" });
                 AddPlanItems();
 
-
-
+                AddPageItems();
 
                 if(BindingContext is ReferenceIndexPageViewModel vm)
                 {
                     foreach(var node in Tree.Nodes)
                     {
                         vm.Nodes.Add(node);
+                    }
+                }
+            }
+        }
+
+        private void AddPageItems()
+        {
+            if (BindingContext is ReferenceIndexPageViewModel vm)
+            {
+                var assembly = IntrospectionExtensions.GetTypeInfo(typeof(App)).Assembly;
+                foreach (var res in assembly.GetManifestResourceNames())
+                {
+                    System.Diagnostics.Debug.WriteLine("found resource: " + res);
+                    var match = Regex.Match(res, "micro_c_app\\.Assets\\.(.*?)\\.txt");
+                    if (match.Success)
+                    {
+                        var name = match.Groups[1].Value;
+                        var stream = assembly.GetManifestResourceStream(res);
+                        using var reader = new StreamReader(stream);
+                        var text = reader.ReadToEnd();
+
+                        var path = name.Split('.');
+                        var parent = Tree.CreateRoute(path);
+                        parent.Nodes.Add(new ReferenceEntry()
+                        {
+                            Name = path.Last(),
+                            Data = text
+                        });
                     }
                 }
             }
