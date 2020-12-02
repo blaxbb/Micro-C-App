@@ -21,7 +21,7 @@ namespace micro_c_app.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
-            //global::Android.Webkit.WebView.SetWebContentsDebuggingEnabled(true);
+            global::Android.Webkit.WebView.SetWebContentsDebuggingEnabled(true);
             LoadApplication(new App());
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)

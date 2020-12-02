@@ -39,9 +39,14 @@ namespace micro_c_app.Views.Reference
             if (BindingContext is ReferenceWebViewPageViewModel vm)
             {
                 //webView.Source = new HtmlWebViewSource() { Html = vm.Text };
+                var escaped = vm.Text.Replace("`", "\\`");
                 webView.Source = new HtmlWebViewSource()
                 {
-                    Html = $"<div id='content'></div> <script src=\"https://cdn.jsdelivr.net/npm/marked/marked.min.js\"></script> <script>document.getElementById('content').innerHTML = marked(`{vm.Text}`); </script>"
+                    Html = $"<div id='content'></div>" +
+                    $"<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">" +
+                    $"<script src=\"https://cdn.jsdelivr.net/npm/marked/marked.min.js\"></script>" +
+                    $"<script>document.getElementById('content').innerHTML = marked(`{escaped}`);</script>" +
+                    $"<script>var table = document.getElementsByTagName('table'); Array.from(table).forEach(function(t){{ t.classList.add('table-sm');t.classList.add('table-striped')}});</script>"
                 };
             }
         }

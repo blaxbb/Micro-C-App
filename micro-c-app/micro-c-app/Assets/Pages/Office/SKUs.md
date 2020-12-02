@@ -1,4 +1,4 @@
-|   | Microsoft 365 Family | Microsoft 365 Personal | Office Home and Student 2019 |
+|   | 365 Family | 365 Personal | Home and Student 2019 |
 | - | :------------------: | :--------------------: | :--------------------------: |
 | Price | $99.99 | $69.99 | $99.99 |
 | Subscription | ✔ | ✔ | ❌ |
