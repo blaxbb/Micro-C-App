@@ -12,15 +12,13 @@
   <ItemGroup>
     <None Remove="Assets\a.txt" />
     <None Remove="Assets\b.txt" />
-    <None Remove="Assets\stuff\more stuff\c.txt" />
-    <None Remove="Assets\temp.txt" />
+    <None Remove="Assets\Pages\stuff\more stuff\c.md" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\stuff\a.txt" />
-    <EmbeddedResource Include="Assets\stuff\b.txt" />
-    <EmbeddedResource Include="Assets\stuff\more stuff\c.txt" />
-    <EmbeddedResource Include="Assets\temp.txt" />
+    <EmbeddedResource Include="Assets\Pages\stuff\a.md" />
+    <EmbeddedResource Include="Assets\Pages\stuff\b.md" />
+    <EmbeddedResource Include="Assets\Pages\stuff\more stuff\c.md" />
   </ItemGroup>
 
   <ItemGroup>

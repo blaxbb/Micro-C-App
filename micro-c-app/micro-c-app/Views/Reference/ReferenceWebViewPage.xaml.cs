@@ -38,7 +38,11 @@ namespace micro_c_app.Views.Reference
         {
             if (BindingContext is ReferenceWebViewPageViewModel vm)
             {
-                webView.Source = new HtmlWebViewSource() { Html = vm.Text };
+                //webView.Source = new HtmlWebViewSource() { Html = vm.Text };
+                webView.Source = new HtmlWebViewSource()
+                {
+                    Html = $"<div id='content'></div> <script src=\"https://cdn.jsdelivr.net/npm/marked/marked.min.js\"></script> <script>document.getElementById('content').innerHTML = marked(`{vm.Text}`); </script>"
+                };
             }
         }
     }

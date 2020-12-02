@@ -27,12 +27,8 @@ namespace micro_c_app.Views
             {
                 Initialized = true;
                 Tree = new ReferenceTree("Root");
-                Tree.Nodes.Add(new ReferenceEntry() { Name = "Debug", Data = @"<html><body>
-  <h1>Xamarin.Forms</h1>
-  <p>Welcome to WebView.</p>
-  </body></html>" });
-                AddPlanItems();
 
+                AddPlanItems();
                 AddPageItems();
 
                 if(BindingContext is ReferenceIndexPageViewModel vm)
@@ -53,7 +49,7 @@ namespace micro_c_app.Views
                 foreach (var res in assembly.GetManifestResourceNames())
                 {
                     System.Diagnostics.Debug.WriteLine("found resource: " + res);
-                    var match = Regex.Match(res, "micro_c_app\\.Assets\\.(.*?)\\.txt");
+                    var match = Regex.Match(res, "micro_c_app\\.Assets\\.Pages\\.(.*?)\\.md");
                     if (match.Success)
                     {
                         var name = match.Groups[1].Value;
