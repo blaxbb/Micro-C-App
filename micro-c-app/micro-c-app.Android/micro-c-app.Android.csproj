@@ -83,6 +83,7 @@
     <Compile Include="AndroidNotificationManager.cs" />
     <Compile Include="MainActivity.cs" />
     <Compile Include="Renderer\SelectableLabelRenderer.cs" />
+    <Compile Include="Renderer\WebViewRenderer.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TapWithPositionGestureEffect.cs" />
