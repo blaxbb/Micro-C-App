@@ -10,17 +10,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Assets\a.txt" />
-    <None Remove="Assets\b.txt" />
-    <None Remove="Assets\Pages\Office\SKUs.md" />
-    <None Remove="Assets\Pages\stuff\more stuff\c.md" />
+	<None Remove="Assets\Pages\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="Assets\Pages\Office\SKUs.md" />
-    <EmbeddedResource Include="Assets\Pages\stuff\a.md" />
-    <EmbeddedResource Include="Assets\Pages\stuff\b.md" />
-    <EmbeddedResource Include="Assets\Pages\stuff\more stuff\c.md" />
+	<EmbeddedResource Include="Assets\Pages\**" />
   </ItemGroup>
 
   <ItemGroup>
