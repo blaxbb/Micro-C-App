@@ -18,6 +18,7 @@
                     </Setter.Value>
                 </Setter>-->
                 <Setter Property="FontSize" Value="12"/>
+                <Setter Property="TextColor" Value="{DynamicResource PrimaryTextColor}"/>
             </Style>
         </ResourceDictionary>
     </ContentPage.Resources>
