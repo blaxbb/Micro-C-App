@@ -6,19 +6,25 @@
     <ContentPage.BindingContext>
         <vm:ReferencePlanPageViewModel/>
     </ContentPage.BindingContext>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <Style TargetType="Label">
+                <!--<Setter Property="FontFamily">
+                    <Setter.Value>
+                        <OnPlatform x:TypeArguments="x:String">
+                            <OnPlatform.Android>monospace</OnPlatform.Android>
+                            <OnPlatform.iOS>Courier New</OnPlatform.iOS>
+                        </OnPlatform>
+                    </Setter.Value>
+                </Setter>-->
+                <Setter Property="FontSize" Value="12"/>
+            </Style>
+        </ResourceDictionary>
+    </ContentPage.Resources>
     <ContentPage.Content>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="*"/>
-            </Grid.RowDefinitions>
-            <Grid Grid.Row="0" x:Name="headerGrid">
-                
+        <ScrollView>
+            <Grid x:Name="planGrid">
             </Grid>
-            <ScrollView Grid.Row="1">
-                <Grid x:Name="planGrid">
-                </Grid>
-            </ScrollView>
-        </Grid>
+        </ScrollView>
     </ContentPage.Content>
 </ContentPage>
