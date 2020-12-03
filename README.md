@@ -10,6 +10,11 @@ Windows UWP desktop application for creating custom PC builds.  Caches component
 
 ![builder screenshot](https://raw.githubusercontent.com/blaxbb/Micro-C-App/master/screenshots/builder.png)
 
+# Contributions
+Any and all contributions are greatly appreciated.  If you need help navigating the project or help with how to implement an idea, feel free to open an issue or send me a message.
+
+If you don't know how to code, you can still contribute by adding [Reference Entries](https://github.com/blaxbb/Micro-C-App/blob/master/references.md)
+
 # Build Status
 
 | Project | Status | Release |
