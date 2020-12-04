@@ -1,8 +1,10 @@
 ﻿using micro_c_app.ViewModels.Reference;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
@@ -23,6 +25,32 @@ namespace micro_c_app.Views.Reference
                 {
                     UpdateWebView();
                 }
+            }
+
+            webView.Navigating += WebView_Navigating;
+        }
+
+        private void WebView_Navigating(object sender, WebNavigatingEventArgs e)
+        {
+            Debug.WriteLine(e.Url);
+            var match = Regex.Match(e.Url, "file:(?:.*?)/(search|reference)=(.*)?");
+            if (match.Success)
+            {
+                e.Cancel = true;
+                var command = match.Groups[1].Value.ToLower();
+                var argument = match.Groups[2].Value;
+
+                switch (command)
+                {
+                    case "search":
+                        Debug.WriteLine($"SEARCH {argument}");
+                        Shell.Current.GoToAsync($"//SearchPage?search={argument}");
+                        break;
+                    default:
+                        Debug.WriteLine($"Error: command {command} not found");
+                        break;
+                }
+
             }
         }
 
