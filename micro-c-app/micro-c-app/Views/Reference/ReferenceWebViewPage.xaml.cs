@@ -33,20 +33,25 @@ namespace micro_c_app.Views.Reference
         private void WebView_Navigating(object sender, WebNavigatingEventArgs e)
         {
             Debug.WriteLine(e.Url);
+
             var match = Regex.Match(e.Url, "file:(?:.*?)/(search|reference)=(.*)?");
             if (match.Success)
             {
                 e.Cancel = true;
                 var command = match.Groups[1].Value.ToLower();
                 var argument = match.Groups[2].Value;
+                argument = Uri.UnescapeDataString(argument);
 
                 switch (command)
                 {
                     case "search":
-                        Debug.WriteLine($"SEARCH {argument}");
                         Shell.Current.GoToAsync($"//SearchPage?search={argument}");
                         break;
+                    case "reference":
+                        ReferenceIndexPage.NavigateTo(argument);
+                        break;
                     default:
+                        //command names must be added to regex above
                         Debug.WriteLine($"Error: command {command} not found");
                         break;
                 }

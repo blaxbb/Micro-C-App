@@ -43,5 +43,29 @@ namespace micro_c_app.Models.Reference
 
             return this;
         }
+
+        public IReferenceItem GetNode(IEnumerable<string> path)
+        {
+            var part = path.FirstOrDefault();
+            if(part == null)
+            {
+                return this;
+            }
+
+            var node = Nodes.FirstOrDefault(n => n.Name == part);
+            if(node == null)
+            {
+                return this;
+            }
+
+            if (node is ReferenceTree tree)
+            {
+                return tree.GetNode(path.Skip(1));
+            }
+            else
+            {
+                return node;
+            }
+        }
     }
 }

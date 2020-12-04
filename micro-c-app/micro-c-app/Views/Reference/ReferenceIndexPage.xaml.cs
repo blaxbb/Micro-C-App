@@ -1,5 +1,7 @@
 ﻿using micro_c_app.Models.Reference;
 using micro_c_app.ViewModels;
+using micro_c_app.ViewModels.Reference;
+using micro_c_app.Views.Reference;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -41,6 +43,65 @@ namespace micro_c_app.Views
             }
         }
 
+        public static async void NavigateTo(string path)
+        {
+            var parts = path.Split('/').Skip(1);
+            var node = Tree.GetNode(parts);
+            await NavigateTo(node);
+        }
+
+        public static async Task NavigateTo(IReferenceItem node)
+        {
+            if (node is ReferenceTree tree)
+            {
+                if (tree.Nodes != null && tree.Nodes.Count > 0)
+                {
+                    await Device.InvokeOnMainThreadAsync(async () =>
+                    {
+                        var page = new ReferenceIndexPage()
+                        {
+                            Title = tree.Name,
+                        };
+                        if (page.BindingContext is ReferenceIndexPageViewModel vm)
+                        {
+                            vm.Nodes = tree.Nodes;
+                        }
+                        await Shell.Current.Navigation.PushAsync(page);
+                    });
+                }
+            }
+            else if (node is ReferenceEntry entry)
+            {
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    var page = new ReferenceWebViewPage()
+                    {
+                        Title = node.Name,
+                    };
+                    if (page.BindingContext is ReferenceWebViewPageViewModel vm)
+                    {
+                        vm.Text = entry.Data;
+                    }
+                    await Shell.Current.Navigation.PushAsync(page);
+                });
+            }
+            else if (node is ReferencePlanData plans)
+            {
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    var page = new ReferencePlanPage()
+                    {
+                        Title = node.Name,
+                    };
+                    if (page.BindingContext is ReferencePlanPageViewModel vm)
+                    {
+                        vm.Plans = plans.Plans;
+                    }
+                    await Shell.Current.Navigation.PushAsync(page);
+                });
+            }
+        }
+
         private void AddPageItems()
         {
             if (BindingContext is ReferenceIndexPageViewModel vm)
@@ -50,6 +111,7 @@ namespace micro_c_app.Views
                 {
                     System.Diagnostics.Debug.WriteLine("found resource: " + res);
                     var match = Regex.Match(res, "micro_c_app\\.Assets\\.Pages\\.(.*?)\\.md");
+                    //var match = Regex.Match(res, "micro_c_app\\.Assets\\.Pages\\.(.*?)\\.(?:md|dev)");
                     if (match.Success)
                     {
                         var name = match.Groups[1].Value;
