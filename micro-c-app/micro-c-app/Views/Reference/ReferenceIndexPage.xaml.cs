@@ -32,6 +32,7 @@ namespace micro_c_app.Views
 
                 AddPlanItems();
                 AddPageItems();
+                Tree.SortNodes();
 
                 if(BindingContext is ReferenceIndexPageViewModel vm)
                 {
@@ -140,16 +141,31 @@ namespace micro_c_app.Views
 
             Tree.Nodes.Add(planRoot);
 
-            planRoot.Nodes.Add(new ReferencePlanData(PlanType.Replacement));
-            planRoot.Nodes.Add(new ReferencePlanData(PlanType.Small_Electronic_ADH));
-            planRoot.Nodes.Add(new ReferencePlanData(PlanType.Carry_In));
-            planRoot.Nodes.Add(new ReferencePlanData(PlanType.Build_Plan));
-            planRoot.Nodes.Add(new ReferencePlanData(PlanType.BYO_Replacement));
-
             AddApplePlans(planRoot);
             AddDesktopPlans(planRoot);
             AddLaptopPlans(planRoot);
             AddTabletPlans(planRoot);
+            AddGeneralPlans(planRoot);
+            AddBuildYourOwnPlans(planRoot);
+        }
+
+        private void AddGeneralPlans(ReferenceTree planRoot)
+        {
+            var root = new ReferenceTree("General");
+            planRoot.Nodes.Add(root);
+
+            root.Nodes.Add(new ReferencePlanData(PlanType.Replacement));
+            root.Nodes.Add(new ReferencePlanData(PlanType.Small_Electronic_ADH));
+            root.Nodes.Add(new ReferencePlanData(PlanType.Carry_In));
+        }
+
+        private void AddBuildYourOwnPlans(ReferenceTree planRoot)
+        {
+            var root = new ReferenceTree("Build Your Own");
+            planRoot.Nodes.Add(root);
+
+            root.Nodes.Add(new ReferencePlanData(PlanType.Build_Plan));
+            root.Nodes.Add(new ReferencePlanData(PlanType.BYO_Replacement));
         }
 
         private void AddTabletPlans(ReferenceTree planRoot)

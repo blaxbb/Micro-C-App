@@ -20,6 +20,23 @@ namespace micro_c_app.Models.Reference
             Name = name;
         }
 
+        public void SortNodes()
+        {
+            var trees = Nodes.Where(n => n is ReferenceTree).OrderBy(n => n.Name).ToList();
+            var other = Nodes.Where(n => !(n is ReferenceTree)).OrderBy(n => n.Name).ToList();
+            Nodes.Clear();
+            Nodes.AddRange(trees);
+            Nodes.AddRange(other);
+
+            foreach(var t in trees)
+            {
+                if(t is ReferenceTree tree)
+                {
+                    tree.SortNodes();
+                }
+            }
+        }
+
         public ReferenceTree CreateRoute(IEnumerable<string> path)
         {
             if (path.Count() > 1)

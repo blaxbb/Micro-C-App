@@ -32,12 +32,12 @@ namespace micro_c_app.Views.Reference
 
         private void WebView_Navigating(object sender, WebNavigatingEventArgs e)
         {
+            e.Cancel = true;
             Debug.WriteLine(e.Url);
 
             var match = Regex.Match(e.Url, "file:(?:.*?)/(search|reference)=(.*)?");
             if (match.Success)
             {
-                e.Cancel = true;
                 var command = match.Groups[1].Value.ToLower();
                 var argument = match.Groups[2].Value;
                 argument = Uri.UnescapeDataString(argument);
@@ -55,8 +55,9 @@ namespace micro_c_app.Views.Reference
                         Debug.WriteLine($"Error: command {command} not found");
                         break;
                 }
-
             }
+
+            Task.Run(async() => await Xamarin.Essentials.Browser.OpenAsync(e.Url));
         }
 
         private void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
