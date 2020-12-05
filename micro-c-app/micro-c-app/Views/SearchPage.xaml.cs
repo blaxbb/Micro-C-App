@@ -4,9 +4,19 @@ using Xamarin.Forms;
 
 namespace micro_c_app.Views
 {
+    [QueryProperty(nameof(SearchRoute), "search")]
     public partial class SearchPage : ContentPage
     {
         HttpClient client;
+        public string SearchRoute {
+            set
+            {
+                Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    searchView.OnSubmit(value);
+                });
+            }
+        }
         public SearchPage()
         {
             client = new HttpClient();

@@ -70,6 +70,7 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BaseUrl.cs" />
     <Compile Include="iOSNotificationManager.cs" />
     <Compile Include="iOSNotificationReceiver.cs" />
     <Compile Include="KeyboardHelper.cs" />
@@ -78,6 +79,7 @@
     <Compile Include="Renderer\CustomListViewRenderer.cs" />
     <Compile Include="Renderer\CustomViewCellRenderer.cs" />
     <Compile Include="Renderer\SelectableLabelRenderer.cs" />
+    <Compile Include="Renderer\WebViewRenderer.cs" />
     <Compile Include="TapWithPositionGestureEffect.cs" />
     <Compile Include="ToastMessage.cs" />
     <None Include="Entitlements.plist" />
@@ -180,6 +182,19 @@
     <ImageAsset Include="Assets.xcassets\AppIcons.appiconset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\bootstrap.min.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\darkly.bootstrap.min.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\marked.min.js" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <BundleResource Include="Content\reference.html" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

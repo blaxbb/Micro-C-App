@@ -28,10 +28,7 @@ namespace micro_c_app.ViewModels
             {
                 SetProperty(ref selectedItem, value);
             }
-        
         }
-
-
 
         protected void SortPlans(PlanReference plan)
         {
@@ -161,39 +158,11 @@ namespace micro_c_app.ViewModels
                 case PlanReference.PlanType.AppleCare_Headphones:
                     Items.Add(new PriceReference($"/Plans/Apple/AppleCare Misc/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
                     break;
-
                 default:
                     Items.Add(new PriceReference($"/Plans/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
                     break;
             }
         }
-            
-            /* Old way of doing ^that
-            if (plan.Type.ToString().StartsWith("Apple_Plans_ADH"))   
-            {
-                //Items.Add(new PriceReference($"/Plans/Apple/ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ADH ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
-            }
-            else if (plan.Type.ToString().StartsWith("Apple_Plans"))
-            {
-                Items.Add(new PriceReference($"/Plans/Apple/Non-ADH/{plan.Type.ToString().Replace('_', ' ').Replace("Apple Plans ", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
-            }
-            else if (plan.Type.ToString().StartsWith("Laptop_ADH"))
-            {
-                Items.Add(new PriceReference($"/Plans/Laptops/{plan.Type.ToString().Replace('_', ' ').Replace("Laptop", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
-            }
-            else if (plan.Type.ToString().StartsWith("Laptop_DOP"))
-            {
-                Items.Add(new PriceReference($"/Plans/Laptops/{plan.Type.ToString().Replace('_', ' ').Replace("Laptop", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
-            }
-            else if (plan.Type.ToString().StartsWith("Laptop_Extension"))
-            {
-                Items.Add(new PriceReference($"/Plans/Laptops/{plan.Type.ToString().Replace('_', ' ').Replace("Laptop", "")}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
-            }
-            else
-            {
-                Items.Add(new PriceReference($"/Plans/{plan.Type.ToString().Replace('_', ' ')}/${plan.MinPrice:N2}-${plan.MaxPrice:N2}", plan.Tiers.Select(t => ($"{t.Duration} years", t.Price)).ToArray()));
-            }
-        } */
 
         public ICommand ItemTapped { get; }
 
@@ -225,7 +194,7 @@ namespace micro_c_app.ViewModels
             SetPath("/");
         }
 
-        private void SetPath(string path)
+        public void SetPath(string path)
         {
             //
             //this is awful and I apologize for it in advanced
