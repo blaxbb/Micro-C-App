@@ -3,7 +3,8 @@
 | Price | $99.99 | $69.99 | $99.99 |
 | Subscription | ✔ | ✔ | ❌ |
 | Users | 6 people | 1 person | 1 PC/Mac |
-| Devices | 5 devices simulataneous | 5 devices simultaneous | 1 device |
+| Simultaneous Devices | 5 devices | 5 devices | 1 device |
+| Installs | Unlimited | Unlimited | 1 device |
 | Cloud Storage | 1 TB per person | 1 TB | None |
 | Word | ✔ | ✔ | ✔ |
 | One Note | ✔ | ✔ | ❌ |

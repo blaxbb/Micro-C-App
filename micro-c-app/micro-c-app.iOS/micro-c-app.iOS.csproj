@@ -70,6 +70,7 @@
     <AppExtensionDebugBundleId />
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="BaseUrl.cs" />
     <Compile Include="iOSNotificationManager.cs" />
     <Compile Include="iOSNotificationReceiver.cs" />
     <Compile Include="KeyboardHelper.cs" />
@@ -181,6 +182,21 @@
     <ImageAsset Include="Assets.xcassets\AppIcons.appiconset\Contents.json">
       <Visible>false</Visible>
     </ImageAsset>
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\bootstrap.min.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\darkly.bootstrap.min.css" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\marked.min.js" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\resource_files\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Content\reference.html" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>

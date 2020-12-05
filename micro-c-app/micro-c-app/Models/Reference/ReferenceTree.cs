@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using static MicroCLib.Models.Reference.PlanReference;
 
 namespace micro_c_app.Models.Reference
 {
@@ -84,5 +85,10 @@ namespace micro_c_app.Models.Reference
                 return node;
             }
         }
+
+        //public IReferenceItem GetPlanNode(PlanType type)
+        //{
+
+        //}
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -15,6 +16,7 @@ namespace micro_c_app.Views.Reference
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ReferenceWebViewPage : ContentPage
     {
+        private string markdown;
         public ReferenceWebViewPage()
         {
             InitializeComponent();
@@ -26,18 +28,29 @@ namespace micro_c_app.Views.Reference
                     UpdateWebView();
                 }
             }
-
             webView.Navigating += WebView_Navigating;
+            webView.Navigated += WebView_Navigated;
+        }
+
+        private async void WebView_Navigated(object sender, WebNavigatedEventArgs e)
+        {
+            var sub = markdown.Substring(0, markdown.Length / 4);
+            var js = $"HandleMD(`{markdown}`);";
+            await webView.EvaluateJavaScriptAsync(js);
+            if (SettingsPage.Theme() == OSAppTheme.Dark || (SettingsPage.Theme() == OSAppTheme.Unspecified && Application.Current.RequestedTheme == OSAppTheme.Dark))
+            {
+                await webView.EvaluateJavaScriptAsync("var css = document.createElement('link'); css.href='darkly.bootstrap.min.css'; css.type = 'text/css'; css.rel='stylesheet'; document.getElementsByTagName('head')[0].appendChild(css);");
+            }
         }
 
         private void WebView_Navigating(object sender, WebNavigatingEventArgs e)
         {
-            e.Cancel = true;
             Debug.WriteLine(e.Url);
 
-            var match = Regex.Match(e.Url, "file:(?:.*?)/(search|reference)=(.*)?");
+            var match = Regex.Match(e.Url, "file:(?:.*?)/(search|reference|plan)=(.*)?");
             if (match.Success)
             {
+                e.Cancel = true;
                 var command = match.Groups[1].Value.ToLower();
                 var argument = match.Groups[2].Value;
                 argument = Uri.UnescapeDataString(argument);
@@ -50,14 +63,18 @@ namespace micro_c_app.Views.Reference
                     case "reference":
                         ReferenceIndexPage.NavigateTo(argument);
                         break;
+                    case "plan":
+                        break;
                     default:
                         //command names must be added to regex above
                         Debug.WriteLine($"Error: command {command} not found");
                         break;
                 }
             }
-
-            Task.Run(async() => await Xamarin.Essentials.Browser.OpenAsync(e.Url));
+            if(!e.Url.StartsWith("file:"))
+            {
+                Task.Run(async () => await Xamarin.Essentials.Browser.OpenAsync(e.Url, Xamarin.Essentials.BrowserLaunchMode.External));
+            }
         }
 
         private void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -72,25 +89,15 @@ namespace micro_c_app.Views.Reference
         {
             if (BindingContext is ReferenceWebViewPageViewModel vm)
             {
-                //webView.Source = new HtmlWebViewSource() { Html = vm.Text };
-                var escaped = vm.Text.Replace("`", "\\`");
-                string html = $"<meta name='viewport' content='width=device-width,height=device-height'>" +
-                    $"<div id='content'></div>" +
-                    $"<link rel=\"stylesheet\" href=\"https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css\" integrity=\"sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm\" crossorigin=\"anonymous\">" +
-                    $"<script src=\"https://cdn.jsdelivr.net/npm/marked/marked.min.js\"></script>" +
-                    $"<script>document.getElementById('content').innerHTML = marked(`{escaped}`);</script>" +
-                    $"<script>var table = document.getElementsByTagName('table'); Array.from(table).forEach(function(t){{ t.classList.add('table-sm');t.classList.add('table-striped')}});</script>" +
-                    $"<script>var table = document.getElementsByTagName('blockquote'); Array.from(table).forEach(function(t){{ t.classList.add('blockquote'); }});</script>" +
-                    $"<style>img {{ max-width: 100% }}</style>";
-
-                if(SettingsPage.Theme() == OSAppTheme.Dark || (SettingsPage.Theme() == OSAppTheme.Unspecified && Application.Current.RequestedTheme == OSAppTheme.Dark))
+                markdown = vm.Text.Replace("`", "\\`");
+                markdown = markdown.Replace("#", "\\#");
+                markdown = Regex.Replace(markdown, @"\r\n?|\n", "\\n");
+                
+                var baseUrl = DependencyService.Get<IBaseUrl>()?.Get ?? "/";
+                var p = Path.Combine(baseUrl, "Content/reference.html");
+                webView.Source = new UrlWebViewSource()
                 {
-                    html += $"<link rel=\"stylesheet\" href=\"https://bootswatch.com/4/darkly/bootstrap.min.css\" crossorigin=\"anonymous\">";
-                }
-
-                webView.Source = new HtmlWebViewSource()
-                {
-                    Html = html
+                    Url = p
                 };
             }
         }
