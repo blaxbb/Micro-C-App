@@ -24,7 +24,8 @@ There are some special urls you can use to link to other parts of the app.
 ## Guidelines
 * **No confidential information should be submitted.**  This is a public repository for a public app.
 * **No personal information for anyone should be submitted**  You may sign an entry you have worked on with your name and store at the bottom of the page.
-* Information should not be specific to any Micro Center location.
+* Cite sources where applicable, particularly if you are citing information from a reviewer, journalist, or other media source.
+* Information should not be specific to any one Micro Center location.
 * Good ideas for entries are write ups of frequently asked customer questions, such as compatibility issues between different products.
 * Images can be embeded using Markdown, but should be avoided when possible.  Usage rights should be looked at, and public domain images are prefered.  Unstable network conditions will also cause images to load slowly, or not at all.  Symbols and icons should be emoji 👍
 * Entries should be created with the limited screen size of mobile in mind.  Text will wrap correctly, but tables with many columns may require horizontal scrolling to view properly, which  is not ideal.
