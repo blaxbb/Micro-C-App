@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MicroCLib.Models.Reference;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -86,9 +87,24 @@ namespace micro_c_app.Models.Reference
             }
         }
 
-        //public IReferenceItem GetPlanNode(PlanType type)
-        //{
+        public IReferenceItem? SearchForNode(string name)
+        {
+            var hasNode = Nodes.FirstOrDefault(n => n.Name == name);
+            if(hasNode != null)
+            {
+                return hasNode;
+            }
 
-        //}
+            foreach(ReferenceTree tree in Nodes.Where(n => n is ReferenceTree))
+            {
+                var searchResult = tree.SearchForNode(name);
+                if(searchResult != null)
+                {
+                    return searchResult;
+                }
+            }
+
+            return null;
+        }
     }
 }

@@ -192,9 +192,7 @@
   <ItemGroup>
     <BundleResource Include="Content\marked.min.js" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Resources\resource_files\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <BundleResource Include="Content\reference.html" />
   </ItemGroup>

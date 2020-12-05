@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using static MicroCLib.Models.Reference.PlanReference;
 
 namespace micro_c_app.Views.Reference
 {
@@ -64,6 +65,10 @@ namespace micro_c_app.Views.Reference
                         ReferenceIndexPage.NavigateTo(argument);
                         break;
                     case "plan":
+                        if(Enum.TryParse<PlanType>(argument, out PlanType planType))
+                        {
+                            ReferenceIndexPage.NavigateTo(planType);
+                        }
                         break;
                     default:
                         //command names must be added to regex above
@@ -89,8 +94,11 @@ namespace micro_c_app.Views.Reference
         {
             if (BindingContext is ReferenceWebViewPageViewModel vm)
             {
+                //escape backtick for js string literal
                 markdown = vm.Text.Replace("`", "\\`");
+                //escape # for js comment
                 markdown = markdown.Replace("#", "\\#");
+                //iOS really doesn't like newlines in js
                 markdown = Regex.Replace(markdown, @"\r\n?|\n", "\\n");
                 
                 var baseUrl = DependencyService.Get<IBaseUrl>()?.Get ?? "/";

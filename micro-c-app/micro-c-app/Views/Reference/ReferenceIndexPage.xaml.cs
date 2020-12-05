@@ -2,6 +2,7 @@
 using micro_c_app.ViewModels;
 using micro_c_app.ViewModels.Reference;
 using micro_c_app.Views.Reference;
+using MicroCLib.Models.Reference;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -22,10 +23,11 @@ namespace micro_c_app.Views
     {
         static bool Initialized = false;
         public static ReferenceTree Tree { get; private set; }
+        public const string PLAN_TREE_NAME = "Plans";
         public ReferenceIndexPage()
         {
             InitializeComponent();
-            if(!Initialized)
+            if (!Initialized)
             {
                 Initialized = true;
                 Tree = new ReferenceTree("Root");
@@ -34,12 +36,26 @@ namespace micro_c_app.Views
                 AddPageItems();
                 Tree.SortNodes();
 
-                if(BindingContext is ReferenceIndexPageViewModel vm)
+                if (BindingContext is ReferenceIndexPageViewModel vm)
                 {
-                    foreach(var node in Tree.Nodes)
+                    foreach (var node in Tree.Nodes)
                     {
                         vm.Nodes.Add(node);
                     }
+                }
+            }
+        }
+
+        public static async void NavigateTo(PlanType planType)
+        {
+            var name = planType.FriendlyName();
+            var planNode = Tree.Nodes.FirstOrDefault(n => n.Name == PLAN_TREE_NAME);
+            if(planNode is ReferenceTree tree)
+            {
+                var node = tree.SearchForNode(name);
+                if(node != null)
+                {
+                    await NavigateTo(node);
                 }
             }
         }
@@ -136,7 +152,7 @@ namespace micro_c_app.Views
         {
             var planRoot = new ReferenceTree()
             {
-                Name = "Plans"
+                Name = PLAN_TREE_NAME
             };
 
             Tree.Nodes.Add(planRoot);
