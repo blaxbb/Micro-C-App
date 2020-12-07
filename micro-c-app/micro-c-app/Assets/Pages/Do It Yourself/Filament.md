@@ -40,4 +40,21 @@ Flexible, difficult to print, turn off your retraction and lower your speeds
 
 [Inland 1.75mm Black TPU](search=973271)
 
+#### PETG+
+Slightly higher temp resistance a bit more impact resistant less gummy and susceptible to errors while printing fast and has a longer shelf life (plus a considerable higher margin rate)
+
+#### Lite PLA
+Essentially matte fiber pla, God awful on the strength side of things but looks pretty and should be fully compostable?
+
+[Inland 1.75mm Black Lite PLA](search=141416)
+
+#### Glass PLA Translucent PLA
+Prints similarly to the silks, except a bit on the brittle side
+
+[Inland 1.75mm Glass Purple PLA](search=120782)
+
+#### TWINKLING PLA
+Very high glitter content pla composite, its shiny, its pretty ✨
+[Proto-Pasta 1.75mm Glitter Stardust Candy Apple Red HTPLA](search=787705)
+
 [Contributed by Alex, Columbus OH](#footer)
