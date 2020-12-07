@@ -17,7 +17,8 @@ namespace micro_c_app.Views.Reference
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ReferenceWebViewPage : ContentPage
     {
-        private string markdown;
+        private string contentMarkdown;
+        private string footerMarkdown;
         public ReferenceWebViewPage()
         {
             InitializeComponent();
@@ -35,9 +36,8 @@ namespace micro_c_app.Views.Reference
 
         private async void WebView_Navigated(object sender, WebNavigatedEventArgs e)
         {
-            var sub = markdown.Substring(0, markdown.Length / 4);
-            var js = $"HandleMD(`{markdown}`);";
-            await webView.EvaluateJavaScriptAsync(js);
+            await webView.EvaluateJavaScriptAsync($"HandleMD(`{contentMarkdown}`, 'content');");
+            await webView.EvaluateJavaScriptAsync($"HandleMD(`{footerMarkdown}`, 'footer');");
             if (SettingsPage.Theme() == OSAppTheme.Dark || (SettingsPage.Theme() == OSAppTheme.Unspecified && Application.Current.RequestedTheme == OSAppTheme.Dark))
             {
                 await webView.EvaluateJavaScriptAsync("var css = document.createElement('link'); css.href='darkly.bootstrap.min.css'; css.type = 'text/css'; css.rel='stylesheet'; document.getElementsByTagName('head')[0].appendChild(css);");
@@ -94,13 +94,24 @@ namespace micro_c_app.Views.Reference
         {
             if (BindingContext is ReferenceWebViewPageViewModel vm)
             {
+
                 //escape backtick for js string literal
-                markdown = vm.Text.Replace("`", "\\`");
+                contentMarkdown = vm.Text.Replace("`", "\\`");
                 //escape # for js comment
-                markdown = markdown.Replace("#", "\\#");
+                contentMarkdown = contentMarkdown.Replace("#", "\\#");
+
+                //there is a escape character before #footer because we added one above
+                var reg = "\\[(.*?)\\]\\(\\\\#footer\\)";
+                var match = Regex.Match(contentMarkdown, reg);
+                if (match.Success)
+                {
+                    footerMarkdown = match.Groups[1].Value;
+                }
+
                 //iOS really doesn't like newlines in js
-                markdown = Regex.Replace(markdown, @"\r\n?|\n", "\\n");
-                
+                contentMarkdown = Regex.Replace(contentMarkdown, @"\r\n?|\n", "\\n");
+
+
                 var baseUrl = DependencyService.Get<IBaseUrl>()?.Get ?? "/";
                 var p = Path.Combine(baseUrl, "Content/reference.html");
                 webView.Source = new UrlWebViewSource()

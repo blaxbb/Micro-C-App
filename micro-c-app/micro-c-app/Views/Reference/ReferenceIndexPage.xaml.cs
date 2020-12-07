@@ -38,6 +38,7 @@ namespace micro_c_app.Views
 
                 if (BindingContext is ReferenceIndexPageViewModel vm)
                 {
+                    Title = "References";
                     foreach (var node in Tree.Nodes)
                     {
                         vm.Nodes.Add(node);
@@ -127,15 +128,15 @@ namespace micro_c_app.Views
                 foreach (var res in assembly.GetManifestResourceNames())
                 {
                     System.Diagnostics.Debug.WriteLine("found resource: " + res);
-                    var match = Regex.Match(res, "micro_c_app\\.Assets\\.Pages\\.(.*?)\\.md");
-                    //var match = Regex.Match(res, "micro_c_app\\.Assets\\.Pages\\.(.*?)\\.(?:md|dev)");
+                    //var match = Regex.Match(res, "micro_c_app\\.Assets\\.Pages\\.(.*?)\\.md");
+                    var match = Regex.Match(res, "micro_c_app\\.Assets\\.Pages\\.(.*?)\\.(?:md|dev)");
                     if (match.Success)
                     {
                         var name = match.Groups[1].Value;
                         var stream = assembly.GetManifestResourceStream(res);
                         using var reader = new StreamReader(stream);
                         var text = reader.ReadToEnd();
-
+                        name = name.Replace('_', ' ');
                         var path = name.Split('.');
                         var parent = Tree.CreateRoute(path);
                         parent.Nodes.Add(new ReferenceEntry()

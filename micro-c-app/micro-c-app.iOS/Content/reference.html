@@ -4,13 +4,17 @@
     <link rel="stylesheet" href="bootstrap.min.css">
     <script src="marked.min.js"></script>
     <script>
-        function HandleMD(md) {
+
+    </script>
+    <script>
+        function HandleMD(md, element) {
             console.log(md);
-            document.getElementById('content').innerHTML = marked(md);
+            document.getElementById(element).innerHTML = marked(md);
 
             var table = document.getElementsByTagName('table');
             Array.from(table).forEach(
                 function (t) {
+                    t.classList.add('table');
                     t.classList.add('table-sm');
                     t.classList.add('table-striped');
                 });
@@ -23,12 +27,31 @@
         }
     </script>
     <style>
+        body {
+            min-height: 100%;
+        }
         img {
             max-width: 100%;
+        }
+        .table {
+            width: 100%;
+        }
+        .footer {
+            width: 100%;
+        }
+        .footer p {
+            text-align: right;
+            margin: 0;
+            border-top: solid grey 1px;
+            padding: .5em;
+        }
+        a[href="#footer"] {
+            display: none;
         }
     </style>
 </head>
 <body>
-    <div id="content" />
+    <div id="content"></div>
+    <footer id="footer" class="footer"></footer>
 </body>
 </html>

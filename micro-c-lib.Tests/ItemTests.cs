@@ -15,7 +15,7 @@ namespace micro_c_lib.Tests
         //
         //should have a list of different products that hit different conditions
         //
-        private const string URL = "/product/622100/asus-rt-ax3000-ax3000-dual-band-gigabit-wireless-ax-router---w--aimesh-support";
+        private const string URL = "/product/485989/inland-wireless-keyboard-and-mouse-combo";
         private const string STORE_ID = "141";
         public ItemTests()
         {
@@ -158,7 +158,7 @@ namespace micro_c_lib.Tests
         [TestMethod("Regex ID")]
         public void RegexID()
         {
-            Assert.AreEqual(Item.ParseIDFromURL(URL), "622100");
+            Assert.AreEqual(Item.ParseIDFromURL(URL), "485989");
         }
 
         [TestCategory("Regex")]
