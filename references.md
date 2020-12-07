@@ -20,6 +20,7 @@ There are some special urls you can use to link to other parts of the app.
 * `[Ryzen 5 3600 🔍](search=951970)` Will open up the search page and search for `951970` which will fetch the product page for the Ryzen 5 3600 processor.
 * `[Office SKUs 📕](reference=/Office/SKUs)` Will navigate to the reference page at the path `/Office/SKUs`.  The path is just the file path starting at [the pages folder](https://github.com/blaxbb/Micro-C-App/tree/master/micro-c-app/micro-c-app/Assets/Pages) ignoring the .md file extension.
 * `[Desktop Extended Warranty 🛠](plan=Desktop_Extension)` Will navigate to the reference page for the Plan Type `Desktop_Extension`  You can see the list of Plan Types [here](https://github.com/blaxbb/Micro-C-App/blob/master/micro-c-lib/Models/Reference/PlanReference.cs#L18)
+* `[Contributed by Brian, Columbus OH](#footer)` This url is intercepted before page rendering and the text is moved to create the footer.
 
 ## Guidelines
 * **No confidential information should be submitted.**  This is a public repository for a public app.
