@@ -37,53 +37,53 @@
 |Threadripper 1950X |16 |32 |3.4|4.0|64 (60+4) 	|DDR4 2667 Quad Channel|180W|
 
 ### Zen+ CPUs
-|                   | Cores | Threads | Base (GHz) | PB2 (GHz) | PCIe Lanes | Memory | TDP |
-| ----------------- |:-:|:-:|:-:|:-:|: ------- :|: ------------------ :|:--:|
-|Ryzen 3 1200AF		| 4 | 4 |3.1|3.4|24 (16+4+4)|DDR4 2933 Dual Channel|65W	|
-|					|       |	|	|			|					   |	|
-|Ryzen 5 1600 AF	| 6 |12 |3.2|3.6|24 (16+4+4)|DDR4 2933 Dual Channel|65W	|
-|Ryzen 5 2600		| 6 |12 |3.4|3.9|24 (16+4+4)|DDR4 2933 Dual Channel|65W	|
-|Ryzen 5 2600X		| 6 |12 |3.6|4.2|24 (16+4+4)|DDR4 2933 Dual Channel|95W	|
-|Ryzen 5 3200G (APU)| 4 | 4 |3.6|4.0|16 (8+4+4) |DDR4 2933 Dual Channel|65W |
-|Ryzen 5 3400G (APU)| 4 | 8 |3.7|4.2|16 (8+4+4) |DDR4 2933 Dual Channel|65W |
-|					|       |	|	|			|					   |	|
-|Ryzen 7 2700		| 8 |16 |3.2|4.1|24 (16+4+4)|DDR4 2933 Dual Channel|65W	|
-|Ryzen 7 2700X		| 8 |16 |3.7|4.3|24 (16+4+4)|DDR4 2933 Dual Channel|105W|
-|					|       |	|	|			|					   |	|
-|Threadripper 2920X	|12 |24 |3.5|4.3|64 (60 + 4)|DDR4 2933 Quad Channel|180W|
-|Threadripper 2950X	|16 |32 |3.5|4.4|64 (60 + 4)|DDR4 2933 Quad Channel|180W|
-|Threadripper 2970WX|24 |48 |3.0|4.2|64 (60 + 4)|DDR4 2933 Quad Channel|250W|
-|Threadripper 2990WX|32 |64 |3.0|4.2|64 (60 + 4)|DDR4 2933 Quad Channel|250W|
+|                                    | Cores | Threads | Base (GHz) | PB2 (GHz) | PCIe Lanes | Memory | TDP |
+| ---------------------------------- |:-:|:-:|:-:|:-:|: ------- :|: ------------------ :|:--:|
+|Ryzen 3 1200AF		                 | 4 | 4 |3.1|3.4|24 (16+4+4)|DDR4 2933 Dual Channel|65W |
+|				                     |       |	|	|			|					   |	 |
+|Ryzen 5 1600 AF                     | 6 |12 |3.2|3.6|24 (16+4+4)|DDR4 2933 Dual Channel|65W |
+|Ryzen 5 2600	                     | 6 |12 |3.4|3.9|24 (16+4+4)|DDR4 2933 Dual Channel|65W |
+|Ryzen 5 2600X	                     | 6 |12 |3.6|4.2|24 (16+4+4)|DDR4 2933 Dual Channel|95W |
+|[Ryzen 5 3200G (APU)](search=951897)| 4 | 4 |3.6|4.0|16 (8+4+4) |DDR4 2933 Dual Channel|65W |
+|[Ryzen 5 3400G (APU)](search=951889)| 4 | 8 |3.7|4.2|16 (8+4+4) |DDR4 2933 Dual Channel|65W |
+|					                 |       |	|	|			|					   |	 |
+|Ryzen 7 2700		                 | 8 |16 |3.2|4.1|24 (16+4+4)|DDR4 2933 Dual Channel|65W |
+|Ryzen 7 2700X		                 | 8 |16 |3.7|4.3|24 (16+4+4)|DDR4 2933 Dual Channel|105W|
+|					                 |       |	|	|			|					   |	 |
+|Threadripper 2920X	                 |12 |24 |3.5|4.3|64 (60 + 4)|DDR4 2933 Quad Channel|180W|
+|Threadripper 2950X	                 |16 |32 |3.5|4.4|64 (60 + 4)|DDR4 2933 Quad Channel|180W|
+|Threadripper 2970WX                 |24 |48 |3.0|4.2|64 (60 + 4)|DDR4 2933 Quad Channel|250W|
+|Threadripper 2990WX                 |32 |64 |3.0|4.2|64 (60 + 4)|DDR4 2933 Quad Channel|250W|
 
 ### Zen 2 CPUs
-|                   | Cores | Threads | Base (GHz) | Boost (GHz) | PCIe Lanes | Memory | TDP |
-| ----------------- |:-:|:-:|:-:|:-:|: ------- :|: ------------------ :|:--:|
-|Ryzen 3 3100	    | 4 | 8 |3.6|3.9|24 (16+4+4)|DDR4 3200 Dual Channel|65W	|
-|				    |		|	|	|			|							|
-|Ryzen 5 3600	    | 6 |12 |3.6|4.2|24 (16+4+4)|DDR4 3200 Dual Channel|65W	|
-|Ryzen 5 3600X	    | 6 |12 |3.8|4.4|24 (16+4+4)|DDR4 3200 Dual Channel|95W	|
-|Ryzen 5 3600XT	    | 6 |12 |3.8|4.5|24 (16+4+4)|DDR4 3200 Dual Channel|95W	|
-|				    |		|	|	|			|							|
-|Ryzen 7 3700X	    | 8 |16	|3.6|4.4|24 (16+4+4)|DDR4 3200 Dual Channel|65W	|
-|Ryzen 7 3800X	    | 8 |16	|3.9|4.5|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
-|Ryzen 7 3800XT	    | 8 |16	|3.9|4.7|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
-|				    |		|	|	|			|							|
-|Ryzen 9 3900X	    |12 |24 |3.8|4.6|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
-|Ryzen 9 3900XT	    |12 |24 |3.8|4.7|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
-|Ryzen 9 3950X	    |16 |32	|3.5|4.7|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
-|				    |		|	|	|			|							|
-|Threadripper 3960X |24 |48	|3.8|4.5|64 (60+4)	|DDR4 3200 Quad Channel|280W|
-|Threadripper 3970X |32 |64	|3.7|4.5|64 (60+4)	|DDR4 3200 Quad Channel|280W|
-|Threadripper 3990X |64 |128|2.9|4.3|64 (60+4)  |DDR4 3200 Quad Channel|280W|
+|                                   | Cores | Threads | Base (GHz) | Boost (GHz) | PCIe Lanes | Memory | TDP |
+| --------------------------------- |:-:|:-:|:-:|:-:|: ------- :|: ------------------ :|:--:|
+|Ryzen 3 3100	                    | 4 | 8 |3.6|3.9|24 (16+4+4)|DDR4 3200 Dual Channel|65W	|
+|			                 	    |		|	|	|			|							|
+|[Ryzen 5 3600](search=951970)	    | 6 |12 |3.6|4.2|24 (16+4+4)|DDR4 3200 Dual Channel|65W	|
+|[Ryzen 5 3600X](search=951947)	    | 6 |12 |3.8|4.4|24 (16+4+4)|DDR4 3200 Dual Channel|95W	|
+|[Ryzen 5 3600XT](search=131888)    | 6 |12 |3.8|4.5|24 (16+4+4)|DDR4 3200 Dual Channel|95W	|
+|			                 	    |		|	|	|			|							|
+|[Ryzen 7 3700X](search=952036)	    | 8 |16	|3.6|4.4|24 (16+4+4)|DDR4 3200 Dual Channel|65W	|
+|[Ryzen 7 3800X](search=951913)	    | 8 |16	|3.9|4.5|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
+|[Ryzen 7 3800XT](search=131862)    | 8 |16	|3.9|4.7|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
+|			                 	    |		|	|	|			|							|
+|[Ryzen 9 3900X](search=952028)	    |12 |24 |3.8|4.6|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
+|[Ryzen 9 3900XT](search=131854)    |12 |24 |3.8|4.7|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
+|[Ryzen 9 3950X](search=049361)	    |16 |32	|3.5|4.7|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
+|			                        |		|	|	|			|							|
+|[Threadripper 3960X](search=058537)|24 |48	|3.8|4.5|64 (60+4)	|DDR4 3200 Quad Channel|280W|
+|[Threadripper 3970X](search=058552)|32 |64	|3.7|4.5|64 (60+4)	|DDR4 3200 Quad Channel|280W|
+|[Threadripper 3990X](search=064055)|64 |128|2.9|4.3|64 (60+4)  |DDR4 3200 Quad Channel|280W|
 
 ### Zen 2 CPUs
 |              | Cores | Threads | Base (GHz) | Boost (GHz) | PCIe Lanes | Memory | TDP |
 | ------------ |:-:|:-:|:-:|:-:|: ------- :|: ------------------ :|:--:|
-|Ryzen 5 5600X | 6 |12 |3.7|4.6|24 (16+4+4)|DDR4 3200 Dual Channel|65W |
-|              |   |   |   |   |           |                      |    |
-|Ryzen 7 5800X | 8 |16 |3.8|4.7|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
-|              |   |   |   |   |           |                      |    |
-|Ryzen 9 5900X |12 |24 |3.7|4.8|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
-|Ryzen 9 5950X |16 |32 |3.4|4.9|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
+|[Ryzen 5 5600X](search=195073) | 6 |12 |3.7|4.6|24 (16+4+4)|DDR4 3200 Dual Channel|65W |
+|                               |   |   |   |   |           |                      |    |
+|[Ryzen 7 5800X](search=195081) | 8 |16 |3.8|4.7|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
+|                               |   |   |   |   |           |                      |    |
+|[Ryzen 9 5900X](search=195099) |12 |24 |3.7|4.8|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
+|[Ryzen 9 5950X](search=195107) |16 |32 |3.4|4.9|24 (16+4+4)|DDR4 3200 Dual Channel|105W|
 
 [Contributed by Brian, Columbus OH](#footer)
