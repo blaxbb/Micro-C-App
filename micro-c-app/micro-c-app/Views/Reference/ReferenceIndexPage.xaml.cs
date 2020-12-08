@@ -128,8 +128,8 @@ namespace micro_c_app.Views
                 foreach (var res in assembly.GetManifestResourceNames())
                 {
                     System.Diagnostics.Debug.WriteLine("found resource: " + res);
-                    //var match = Regex.Match(res, "micro_c_app\\.Assets\\.Pages\\.(.*?)\\.md");
-                    var match = Regex.Match(res, "micro_c_app\\.Assets\\.Pages\\.(.*?)\\.(?:md|dev)");
+                    var match = Regex.Match(res, "micro_c_app\\.Assets\\.Pages\\.(.*?)\\.md");
+                    //var match = Regex.Match(res, "micro_c_app\\.Assets\\.Pages\\.(.*?)\\.(?:md|dev)");
                     if (match.Success)
                     {
                         var name = match.Groups[1].Value;
