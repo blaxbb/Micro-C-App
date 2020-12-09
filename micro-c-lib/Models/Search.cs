@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace micro_c_lib.Models
@@ -31,13 +32,18 @@ namespace micro_c_lib.Models
             return $"https://www.microcenter.com/search/search_results.aspx?Ntt={query}&storeid={storeId}&myStore=false&Ntk=all&N={categoryFilter}&sortby={orderBy}&rpp={resultsPerPage}&page={page}";
         }
 
-        public static async Task<SearchResults> LoadAll(string searchQuery, string storeID, string categoryFilter, OrderByMode orderBy)
+        public static async Task<SearchResults> LoadAll(string searchQuery, string storeID, string categoryFilter, OrderByMode orderBy, CancellationToken? token = null)
         {
             int page = 1;
             var result = new SearchResults() { TotalResults = 1 };
             while(result.Items.Count < result.TotalResults)
             {
-                var addResult = await LoadQuery(searchQuery, storeID, categoryFilter, orderBy, page);
+                if(token != null && token.Value.IsCancellationRequested)
+                {
+                    return new SearchResults() { };
+                }
+
+                var addResult = await LoadQuery(searchQuery, storeID, categoryFilter, orderBy, page, token);
                 result.Items.AddRange(addResult.Items);
                 result.TotalResults = addResult.TotalResults;
                 page++;
@@ -48,14 +54,16 @@ namespace micro_c_lib.Models
 
         }
 
-        public static async Task<SearchResults> LoadQuery(string searchQuery, string storeID, string categoryFilter, OrderByMode orderBy, int page)
+        public static async Task<SearchResults> LoadQuery(string searchQuery, string storeID, string categoryFilter, OrderByMode orderBy, int page, CancellationToken? token = null)
         {
-            var response = await client.GetAsync(GetSearchUrl(searchQuery, storeID, categoryFilter, orderBy, RESULTS_PER_PAGE, page));
+            var url = GetSearchUrl(searchQuery, storeID, categoryFilter, orderBy, RESULTS_PER_PAGE, page);
+            var response = await (token != null ? client.GetAsync(url, token.Value) :  client.GetAsync(url));
+
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                var body = response.Content.ReadAsStringAsync().Result;
+                var body = await response.Content.ReadAsStringAsync();
 
-                var result = await ParseBody(body);
+                var result = await ParseBody(body, token);
                 result.Page = page;
                 return result;
             }
@@ -63,7 +71,7 @@ namespace micro_c_lib.Models
             return new SearchResults();
         }
 
-        public static async Task<SearchResults> ParseBody(string body)
+        public static async Task<SearchResults> ParseBody(string body, CancellationToken? token = null)
         {
             var result = new SearchResults();
             var shortMatches = Regex.Matches(body, "class=\"image\" data-name=\"(.*?)\" data-id=\"(.*?)\"(?:.*?)price=\"(.*?)\"(?:.*?)data-brand=\"(.*?)\"(?:.*?)href=\"(.*?)\"(?:.*?)src=\"(.*?)\"");
@@ -82,6 +90,12 @@ namespace micro_c_lib.Models
 
             for (int i = 0; i < shortMatches.Count; i++)
             {
+
+                if (token != null && token.Value.IsCancellationRequested)
+                {
+                    return new SearchResults();
+                }
+
                 bool comingSoon = false;
                 Match m = shortMatches[i];
                 string stock = "0";

@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 
@@ -41,13 +42,14 @@ namespace MicroCLib.Models
 
         }
 
-        public static async Task<Item> FromUrl(string url, string storeId)
+        public static async Task<Item> FromUrl(string urlIdStub, string storeId, CancellationToken? token = null)
         {
             var item = new Item();
 
             using (HttpClient client = new HttpClient())
             {
-                var response = await client.GetAsync($"https://www.microcenter.com{url}?storeid={storeId}");
+                var url = $"https://www.microcenter.com{urlIdStub}?storeid={storeId}";
+                var response = await (token == null ? client.GetAsync(url) : client.GetAsync(url, token.Value));
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     return new Item(){ Name = "Product not found", SKU = "000000" };
@@ -55,7 +57,7 @@ namespace MicroCLib.Models
 
                 var body = await response.Content.ReadAsStringAsync();
 
-                item.ID = ParseIDFromURL(url);
+                item.ID = ParseIDFromURL(urlIdStub);
                 item.URL = ParseURL(body);
 
                 item.Name = ParseName(body);

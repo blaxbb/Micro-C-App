@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
@@ -23,7 +24,11 @@ namespace micro_c_app.Views
     public partial class SearchView : ContentView
     {
         HttpClient client;
+        CancellationTokenSource tokenSource = new CancellationTokenSource();
+        CancellationToken cancellationToken;
+
         private bool busy;
+
         public static readonly BindableProperty ProductFoundProperty = BindableProperty.Create(nameof(ProductFound), typeof(ICommand), typeof(SearchView), null);
 
         public static readonly BindableProperty ErrorProperty = BindableProperty.Create(nameof(Error), typeof(ICommand), typeof(SearchView), null);
@@ -54,13 +59,7 @@ namespace micro_c_app.Views
             set
             {
                 busy = value;
-                BusyIndicator.IsRunning = Busy;
-                BusyIndicator.IsVisible = Busy;
-                ScanButton.IsEnabled = !Busy;
-                SKUField.IsEnabled = !Busy;
-                SearchField.IsEnabled = !Busy;
-                SKUSubmitButton.IsEnabled = !Busy;
-                SearchSubmitButton.IsEnabled = !Busy;
+                OnPropertyChanged(nameof(Busy));
             }
         }
 
@@ -186,57 +185,70 @@ namespace micro_c_app.Views
 
             try
             {
-                var results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1);
-
-                switch (results.Items.Count)
+                UpdateCancellationToken();
+                var results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1, cancellationToken);
+                if (results != null)
                 {
-                    case 0:
-                        DoError($"Failed to find product with query {searchValue}");
-                        break;
-                    case 1:
-                        var stub = results.Items.First();
-                        var item = await Item.FromUrl(stub.URL, storeId);
-                        DoProductFound(item);
-                        break;
-                    default:
-                        //count > 1
-                        var page = new SearchResultsPage()
-                        {
-                            BindingContext = new SearchResultsPageViewModel()
+
+                    switch (results.Items.Count)
+                    {
+                        case 0:
+                            DoError($"Failed to find product with query {searchValue}");
+                            break;
+                        case 1:
+                            var stub = results.Items.First();
+
+                            UpdateCancellationToken();
+                            var item = await Item.FromUrl(stub.URL, storeId, cancellationToken);
+                            DoProductFound(item);
+                            break;
+                        default:
+                            //count > 1
+                            var page = new SearchResultsPage()
                             {
-                                SearchQuery = searchValue,
-                                StoreID = storeId,
-                                CategoryFilter = CategoryFilter,
-                                OrderBy = OrderBy,
-                            }
-                        };
-
-
-                        if (page.BindingContext is SearchResultsPageViewModel vm)
-                        {
-                            vm.ParseResults(results);
-                        }
-
-                        page.AutoPop = AutoPopSearchPage;
-                        page.ItemTapped += (sender, args) =>
-                        {
-                            Task.Run(async () =>
-                            {
-                                if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
+                                BindingContext = new SearchResultsPageViewModel()
                                 {
-                                    var item = await Item.FromUrl(shortItem.URL, storeId);
-                                    DoProductFound(item);
+                                    SearchQuery = searchValue,
+                                    StoreID = storeId,
+                                    CategoryFilter = CategoryFilter,
+                                    OrderBy = OrderBy,
                                 }
+                            };
+
+
+                            if (page.BindingContext is SearchResultsPageViewModel vm)
+                            {
+                                vm.ParseResults(results);
+                            }
+
+                            page.AutoPop = AutoPopSearchPage;
+                            page.ItemTapped += (sender, args) =>
+                            {
+                                UpdateCancellationToken();
+                                Task.Run(async () =>
+                                {
+                                    if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
+                                    {
+                                        Busy = true;
+                                        var item = await Item.FromUrl(shortItem.URL, storeId, cancellationToken);
+                                        Busy = false;
+                                        DoProductFound(item);
+                                    }
+                                }, cancellationToken).ContinueWith((task) => { Busy = false; });
+                            };
+
+                            await Device.InvokeOnMainThreadAsync(async () =>
+                            {
+                                await Shell.Current.Navigation.PushAsync(page);
                             });
-                        };
 
-                        await Device.InvokeOnMainThreadAsync(async () =>
-                        {
-                            await Shell.Current.Navigation.PushAsync(page);
-                        });
-
-                        break;
+                            break;
+                    }
                 }
+            }
+            catch (TaskCanceledException e)
+            {
+                //triggered by user input, do nothing
             }
             catch(Exception e)
             {
@@ -255,6 +267,12 @@ namespace micro_c_app.Views
             Busy = false;
         }
 
+        private void UpdateCancellationToken()
+        {
+            tokenSource = new CancellationTokenSource();
+            cancellationToken = tokenSource.Token;
+        }
+
         private async void DoProductFound(Item item)
         {
             await Device.InvokeOnMainThreadAsync(() =>
@@ -269,6 +287,11 @@ namespace micro_c_app.Views
             {
                 Error?.Execute(message);
             });
+        }
+
+        private void CancelButton_Clicked(object sender, EventArgs e)
+        {
+            tokenSource.Cancel();
         }
     }
 }

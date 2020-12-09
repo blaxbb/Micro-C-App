@@ -2,33 +2,67 @@
 <ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:micro_c_app.Views"
-             x:Class="micro_c_app.Views.SearchView">
+             x:Class="micro_c_app.Views.SearchView"
+             x:Name="view">
   <ContentView.Content>
         <StackLayout x:Name="FlipStack" Orientation="Vertical" Spacing="20" VerticalOptions="CenterAndExpand">
             <Grid HorizontalOptions="FillAndExpand" RowSpacing="20">
                 <StackLayout Orientation="Horizontal" Grid.Row="0" VerticalOptions="FillAndExpand">
-                    <Entry x:Name="SKUField"
-                       Placeholder="Enter a SKU/UPC"
-                       HorizontalOptions="FillAndExpand"
-                           VerticalOptions="CenterAndExpand"
-                        Keyboard="Numeric"/>
-                    <Button x:Name="SKUSubmitButton" Margin="20,0,0,0" Text="&#xf002;" FontFamily="{StaticResource FontAwesomeSolid}"  VerticalOptions="CenterAndExpand" HorizontalOptions="End" WidthRequest="40"/>
+                    <Entry
+                        x:Name="SKUField"
+                        Placeholder="Enter a SKU/UPC"
+                        HorizontalOptions="FillAndExpand"
+                        VerticalOptions="CenterAndExpand"
+                        Keyboard="Numeric"
+                        IsEnabled="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"
+                        />
+                    <Button x:Name="SKUSubmitButton"
+                            Margin="20,0,0,0"
+                            Text="&#xf002;"
+                            FontFamily="{StaticResource FontAwesomeSolid}"
+                            VerticalOptions="CenterAndExpand"
+                            HorizontalOptions="End"
+                            WidthRequest="40"
+                            IsEnabled="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"/>
                 </StackLayout>
                 <StackLayout Orientation="Horizontal" Grid.Row="1">
                     <Entry x:Name="SearchField"
-                       Placeholder="Search"
-                       HorizontalOptions="FillAndExpand"
-                           VerticalOptions="CenterAndExpand"/>
-                    <Button x:Name="SearchSubmitButton" Margin="20,0,0,0" Text="&#xf002;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="End" WidthRequest="40"/>
+                           Placeholder="Search"
+                           HorizontalOptions="FillAndExpand"
+                           VerticalOptions="CenterAndExpand"
+                           IsEnabled="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"/>
+                    <Button x:Name="SearchSubmitButton"
+                            Margin="20,0,0,0" Text="&#xf002;"
+                            FontFamily="{StaticResource FontAwesomeSolid}"
+                            VerticalOptions="Center"
+                            HorizontalOptions="End"
+                            WidthRequest="40"
+                            IsEnabled="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"/>
                 </StackLayout>
-                <ActivityIndicator x:Name="BusyIndicator"  IsRunning="False" Scale="0.7"/>
+                <ActivityIndicator
+                    x:Name="BusyIndicator" 
+                    IsRunning="{Binding Busy, Source={x:Reference view}}"
+                    IsVisible="{Binding Busy, Source={x:Reference view}}"
+                    Scale="0.7"
+                    />
             </Grid>
             <Button x:Name="ScanButton"
                     Text="Scan"
                     Clicked="OnScanClicked"
                     HorizontalOptions="FillAndExpand"
                     HeightRequest="75"
-                    VerticalOptions="FillAndExpand"/>
+                    VerticalOptions="FillAndExpand"
+                    IsEnabled="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"
+                    IsVisible="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"/>
+            <Button x:Name="CancelButton"
+                    Text="&#xf410;"
+                    FontFamily="{StaticResource FontAwesomeSolid}"
+                    Clicked="CancelButton_Clicked"
+                    HorizontalOptions="FillAndExpand"
+                    HeightRequest="75"
+                    VerticalOptions="FillAndExpand"
+                    IsEnabled="{Binding Busy, Source={x:Reference view}}"
+                    IsVisible="{Binding Busy, Source={x:Reference view}}"/>
         </StackLayout>
   </ContentView.Content>
 </ContentView>

@@ -131,6 +131,7 @@
             <local:NullBoolConverter x:Key="NullBoolConverter"/>
             <local:StringNullOrEmptyBoolConverter x:Key="StringNullOrEmptyConverter"/>
             <local:EqualsConverter x:Key="EqualsConverter"/>
+            <local:NegateConverter x:Key="NegateConverter"/>
         </ResourceDictionary>
         <ResourceDictionary>
             <OnPlatform x:TypeArguments="x:String" 
