@@ -41,7 +41,7 @@ namespace micro_c_app
             {
                 theme = Current.RequestedTheme;
             }
-
+            Current.UserAppTheme = theme;
             switch (theme)
             {
                 case OSAppTheme.Light:

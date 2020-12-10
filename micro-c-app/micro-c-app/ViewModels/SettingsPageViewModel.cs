@@ -230,7 +230,7 @@ namespace micro_c_app.ViewModels
             SettingsPage.StoreID(storeId);
             SettingsPage.IncludeCSVWithQuote(IncludeCSVWithQuote);
 
-            if (Theme != SettingsPage.Theme())
+            if (Theme != Application.Current.UserAppTheme)
             {
                 Application.Current.UserAppTheme = Theme;
             }

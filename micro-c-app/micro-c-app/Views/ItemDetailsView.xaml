@@ -5,15 +5,25 @@
              x:Class="micro_c_app.Views.ItemDetailsView">
   <ContentView.Content>
         <ScrollView>
-            <StackLayout Padding="10">
-                <v:SelectableLabel Text="{Binding Item.Name, FallbackValue=NAME}" FontSize="24"/>
-                <v:SelectableLabel Grid.Column="0" Text="{Binding Item.Brand}"/>
-                <StackLayout Orientation="Horizontal" HeightRequest="150">
+            <Grid Padding="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0" Text="{Binding Item.Name, FallbackValue=NAME}" FontSize="24"/>
+                <Label Grid.Row="1" Text="{Binding Item.Brand}"/>
+                <StackLayout Grid.Row="2" Orientation="Horizontal" HeightRequest="150">
                     <Button Text="&lt;" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding BackPicture}"/>
                     <Image Source="{Binding ActivePicture, FallbackValue=https://aka.ms/campus.jpg}" HorizontalOptions="FillAndExpand" Aspect="AspectFit" />
                     <Button Text=">" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding ForwardPicture}"/>
                 </StackLayout>
-                <Grid>
+                <Grid Grid.Row="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
@@ -22,41 +32,29 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <v:SelectableLabel Grid.Column="0" Grid.Row="0" Text="{Binding Item.Specs[SKU], FallbackValue=123456}" HorizontalTextAlignment="Start"/>
-                    <v:SelectableLabel Grid.Column="1" Grid.Row="0" Text="{Binding Item.Specs[UPC], FallbackValue=123456}" HorizontalTextAlignment="End"/>
-                    <v:SelectableLabel Grid.Column="0" Grid.Row="1" Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
-                    <v:SelectableLabel Grid.Column="1" Grid.Row="1" Text="{Binding Item.Location, FallbackValue=Section 000}" FontSize="Large" HorizontalTextAlignment="End"/>
+                    <Label Grid.Column="0" Grid.Row="0" Text="{Binding Item.Specs[SKU], FallbackValue=123456}" HorizontalTextAlignment="Start"/>
+                    <Label Grid.Column="1" Grid.Row="0" Text="{Binding Item.Specs[UPC], FallbackValue=123456}" HorizontalTextAlignment="End"/>
+                    <Label Grid.Column="0" Grid.Row="1" Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
+                    <Label VerticalOptions="FillAndExpand" Grid.Column="1" Grid.Row="1" Text="{Binding Item.Location, FallbackValue=Section 000}" FontSize="Large" HorizontalTextAlignment="End"/>
                 </Grid>
-                
-                <Grid>
+
+                <Grid Grid.Row="4">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <v:SelectableLabel Grid.Column="0" Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Start"/>
-                    <v:SelectableLabel Grid.Column="1" Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Center"/>
-                    <v:SelectableLabel Grid.Column="2" Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" HorizontalTextAlignment="End"/>
+                    <Label Grid.Column="0" Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Start"/>
+                    <Label Grid.Column="1" Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Center"/>
+                    <Label Grid.Column="2" Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" HorizontalTextAlignment="End"/>
                 </Grid>
-                <StackLayout x:Name="PlansStackLayout"/>
-                <Grid x:Name="SpecsGrid"/>
-                <ListView x:Name="SpecsList" ItemTapped="SpecsList_ItemTapped" ItemsSource="{Binding Item.Specs}" HasUnevenRows="True" SelectionMode="None" VerticalOptions="EndAndExpand">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <ViewCell>
-                                <Grid Padding="0,10,0,10">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <v:SelectableLabel Grid.Column="0" Text="{Binding Key}" VerticalOptions="Center"/>
-                                    <Label Grid.Column="1" Text="{Binding Value}" HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" VerticalTextAlignment="Center"/>
-                                </Grid>
-                            </ViewCell>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </StackLayout>
+                <Grid x:Name="SpecsGrid" Grid.Row="6" RowSpacing="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+            </Grid>
         </ScrollView>
     </ContentView.Content>
 </ContentView>

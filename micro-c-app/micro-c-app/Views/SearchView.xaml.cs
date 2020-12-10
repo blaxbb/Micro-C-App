@@ -292,6 +292,7 @@ namespace micro_c_app.Views
         private void CancelButton_Clicked(object sender, EventArgs e)
         {
             tokenSource.Cancel();
+            Busy = false;
         }
     }
 }

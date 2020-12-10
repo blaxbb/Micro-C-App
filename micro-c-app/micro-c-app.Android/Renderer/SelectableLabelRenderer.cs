@@ -111,8 +111,6 @@ namespace micro_c_app.Droid.Renderer
                     break;
             }
 
-
-
             textView.TextSize = (float)label.FontSize;
 
             SetNativeControl(textView);

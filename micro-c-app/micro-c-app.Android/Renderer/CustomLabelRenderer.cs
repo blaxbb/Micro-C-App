@@ -12,13 +12,20 @@ using System.Text;
 using Xamarin.Forms;
 using Xamarin.Forms.Platform.Android;
 
-//[assembly: ExportRenderer(typeof(Label), typeof(CustomLabelRenderer))]
-//namespace micro_c_app.Droid.Renderer
-//{
-//    public class CustomLabelRenderer : LabelRenderer
-//    {
-//        public CustomLabelRenderer(Context context) : base(context)
-//        {
-//        }
-//    }
-//}
+[assembly: ExportRenderer(typeof(Label), typeof(CustomLabelRenderer))]
+namespace micro_c_app.Droid.Renderer
+{
+    public class CustomLabelRenderer : LabelRenderer
+    {
+        public CustomLabelRenderer(Context context) : base(context)
+        {
+
+        }
+        protected override void OnElementChanged(ElementChangedEventArgs<Label> e)
+        {
+            base.OnElementChanged(e);
+            Control.SetTextIsSelectable(true);
+            Control.SetScrollContainer(false);
+        }
+    }
+}

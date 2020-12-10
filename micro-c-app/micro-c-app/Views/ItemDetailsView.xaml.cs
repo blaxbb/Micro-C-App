@@ -28,68 +28,109 @@ namespace micro_c_app.Views
             if (bindable is ItemDetailsView view && view.BindingContext is ItemDetailsViewViewModel vm)
             {
                 vm.Item = newValue as Item;
-                view.UpdatePlansAndSpecs();
+                view.SetSpecs();
             }
         }
 
-        public void UpdatePlansAndSpecs()
-        {
-            SetPlanItems();
-        }
-
-        private static void AddSpacer(StackLayout stack, Color color)
-        {
-            stack.Children.Add(new BoxView() { Color = color, WidthRequest = 100, HeightRequest = 2, HorizontalOptions = LayoutOptions.FillAndExpand });
-        }
-
-        private static void AddSpacer(Grid grid, Color color)
+        private static void AddStripedBackground(Grid grid, Color color, int row)
         {
             grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            var spacer = new BoxView() { Color = color, WidthRequest = 100, HeightRequest = 2, HorizontalOptions = LayoutOptions.FillAndExpand };
-            grid.Children.Add(spacer);
-            Grid.SetRow(spacer, grid.Children.Count - 1);
+            var background = new BoxView() { Color = row % 2 == 0 ? color : Color.Transparent, WidthRequest = 100, HeightRequest = 1, HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
+            grid.Children.Add(background);
+            Grid.SetRow(background, row);
+            Grid.SetColumnSpan(background, grid.ColumnDefinitions.Count);
         }
 
-        private void SetPlanItems()
+        private void SetSpecs()
         {
-            PlansStackLayout.Children.Clear();
-            if (BindingContext is ItemDetailsViewViewModel vm && vm.Item != null)
+            SpecsGrid.Children.Clear();
+            SpecsGrid.RowDefinitions.Clear();
+            var stripeColor = Application.Current.UserAppTheme == OSAppTheme.Dark ||
+                              (Application.Current.UserAppTheme == OSAppTheme.Unspecified && Application.Current.RequestedTheme == OSAppTheme.Dark)
+                              ? Color.FromHex("FF595959") : Color.LightGray;
+
+            //column row defs
+            if (BindingContext is ItemDetailsViewViewModel vm && vm.Item?.Specs != null)
             {
-                if (vm.Item.Plans != null)
+                if (vm.Item?.Plans != null)
                 {
-
-                    foreach (var plan in vm.Item.Plans)
+                    for (int i = 0; i < vm.Item.Plans.Count; i++)
                     {
-                        AddSpacer(PlansStackLayout, Color.LightGray);
-                        var stack = new StackLayout() { Orientation = StackOrientation.Horizontal };
-                        stack.Children.Add(new SelectableLabel() { Text = plan.Name, HorizontalOptions = LayoutOptions.StartAndExpand, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.Start });
-                        stack.Children.Add(new SelectableLabel() { Text = $"${plan.Price.ToString("#0.00")}", HorizontalOptions = LayoutOptions.End, WidthRequest = 100, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.End });
+                        var row = i;
+                        var plan = vm.Item.Plans[i];
 
-                        PlansStackLayout.Children.Add(stack);
+                        AddStripedBackground(SpecsGrid, stripeColor, row);
+
+                        var name = new Label()
+                        {
+                            Text = plan.Name,
+                            HorizontalOptions = LayoutOptions.StartAndExpand,
+                            HorizontalTextAlignment = TextAlignment.Start,
+                            VerticalTextAlignment = TextAlignment.Center,
+                            LineBreakMode = LineBreakMode.WordWrap,
+                            Margin = new Thickness(10)
+                        };
+                        var price = new Label()
+                        {
+                            Text = $"${plan.Price.ToString("#0.00")}",
+                            HorizontalOptions = LayoutOptions.EndAndExpand,
+                            VerticalOptions = LayoutOptions.FillAndExpand,
+                            VerticalTextAlignment = TextAlignment.Center,
+                            HorizontalTextAlignment = TextAlignment.End,
+                            LineBreakMode = LineBreakMode.WordWrap,
+                            Margin = new Thickness(10)
+                        };
+
+                        SpecsGrid.Children.Add(name);
+                        SpecsGrid.Children.Add(price);
+                        Grid.SetColumn(name, 0);
+                        Grid.SetColumn(price, 1);
+                        Grid.SetRow(name, row);
+                        Grid.SetRow(price, row);
+
+                        SpecsGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                    }
+                }
+                if (vm.Item?.Specs != null)
+                {
+                    int startingRow = SpecsGrid.RowDefinitions.Count;
+
+                    for (int i = 0; i < vm.Item.Specs.Count; i++)
+                    {
+                        var row = startingRow + i;
+                        AddStripedBackground(SpecsGrid, stripeColor, row);
+
+                        var spec = vm.Item.Specs.ElementAt(i);
+                        var name = new Label()
+                        {
+                            Text = spec.Key,
+                            HorizontalOptions = LayoutOptions.StartAndExpand,
+                            HorizontalTextAlignment = TextAlignment.Start,
+                            VerticalTextAlignment = TextAlignment.Center,
+                            LineBreakMode = LineBreakMode.WordWrap,
+                            Margin = new Thickness(10)
+                        };
+                        var val = new Label()
+                        {
+                            Text = spec.Value,
+                            HorizontalOptions = LayoutOptions.EndAndExpand,
+                            VerticalOptions = LayoutOptions.FillAndExpand,
+                            VerticalTextAlignment = TextAlignment.Center,
+                            HorizontalTextAlignment = TextAlignment.End,
+                            LineBreakMode = LineBreakMode.WordWrap,
+                            Margin = new Thickness(10)
+                        };
+
+                        SpecsGrid.Children.Add(name);
+                        SpecsGrid.Children.Add(val);
+                        Grid.SetColumn(name, 0);
+                        Grid.SetColumn(val, 1);
+                        Grid.SetRow(name, row);
+                        Grid.SetRow(val, row);
+                        SpecsGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
                     }
                 }
             }
-        }
-
-        private void SpecsList_ItemTapped(object sender, ItemTappedEventArgs e)
-        {
-            if (e.Item is KeyValuePair<string, string> kvp)
-            {
-                System.Diagnostics.Debug.WriteLine(kvp.Value);
-                Xamarin.Essentials.Clipboard.SetTextAsync(kvp.Value);
-                DependencyService.Get<IToastMessage>().ShortAlert("Copied to clipboard.");
-            }
-        }
-    }
-
-    public class SpecInfo{
-        public string Name;
-        public string Value;
-
-        public SpecInfo(string name, string value)
-        {
-            Name = name;
-            Value = value;
         }
     }
 }
