@@ -7,7 +7,7 @@
         Define global resources and styles here, that apply to all pages in your app.
     -->
     <Application.Resources>
-        <!--<ResourceDictionary Source="Themes/DarkTheme.xaml"/>
+        <!--<ResourceDictionary Source="Themes/DarkTheme.xaml"/>-->
         <ResourceDictionary x:Name="IOS">
             <Style TargetType="Entry">
                 <Setter Property="PlaceholderColor" Value="{DynamicResource SecondaryTextColor}"/>
@@ -95,7 +95,7 @@
                 <Setter Property="TextColor" Value="{DynamicResource PrimaryTextColor}"/>
                 <Setter Property="TitleColor" Value="{DynamicResource SecondaryTextColor}"/>
             </Style>
-        </ResourceDictionary>-->
+        </ResourceDictionary>
         <ResourceDictionary>
             <Color x:Key="Primary">#2196F3</Color>
             <Style TargetType="Button">

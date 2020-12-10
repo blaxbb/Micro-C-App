@@ -21,6 +21,12 @@ namespace micro_c_app.Views
         {
             this.BindingContext = new ItemDetailsViewViewModel();
             InitializeComponent();
+            MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, SettingsUpdated);
+        }
+
+        private void SettingsUpdated(SettingsPageViewModel obj)
+        {
+            SetSpecs();
         }
 
         private static void ItemChanged(BindableObject bindable, object oldValue, object newValue)
