@@ -35,6 +35,7 @@ namespace micro_c_app.Views
             {
                 vm.Item = newValue as Item;
                 view.SetSpecs();
+
             }
         }
 
@@ -48,6 +49,12 @@ namespace micro_c_app.Views
 
         private void SetSpecs()
         {
+            Grid parentGrid = SpecsGrid.Parent as Grid;
+            if(parentGrid != null)
+            {
+                parentGrid.Children.Remove(SpecsGrid);
+            }
+
             SpecsGrid.Children.Clear();
             SpecsGrid.RowDefinitions.Clear();
             var stripeColor = Application.Current.UserAppTheme == OSAppTheme.Dark ||
@@ -135,6 +142,11 @@ namespace micro_c_app.Views
                         SpecsGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
                     }
                 }
+            }
+
+            if (parentGrid != null)
+            {
+                parentGrid.Children.Add(SpecsGrid);
             }
         }
     }
