@@ -48,15 +48,22 @@ namespace MicroCLib.Models
 
             using (HttpClient client = new HttpClient())
             {
+                token?.Register(() =>
+                {
+                    client.CancelPendingRequests();
+                });
+
                 var url = $"https://www.microcenter.com{urlIdStub}?storeid={storeId}";
                 var response = await (token == null ? client.GetAsync(url) : client.GetAsync(url, token.Value));
+                token?.ThrowIfCancellationRequested();
+
                 if (response.StatusCode != System.Net.HttpStatusCode.OK)
                 {
                     return new Item(){ Name = "Product not found", SKU = "000000" };
                 }
 
                 var body = await response.Content.ReadAsStringAsync();
-
+                token?.ThrowIfCancellationRequested();
                 item.ID = ParseIDFromURL(urlIdStub);
                 item.URL = ParseURL(body);
 
@@ -78,9 +85,9 @@ namespace MicroCLib.Models
                 {
                     item.Stock = "Soon";
                 }
-
             }
 
+            token?.ThrowIfCancellationRequested();
             return item;
         }
 

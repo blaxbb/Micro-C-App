@@ -36,6 +36,7 @@ namespace micro_c_lib.Models
         {
             int page = 1;
             var result = new SearchResults() { TotalResults = 1 };
+
             while(result.Items.Count < result.TotalResults)
             {
                 if(token != null && token.Value.IsCancellationRequested)
@@ -49,22 +50,28 @@ namespace micro_c_lib.Models
                 page++;
             }
 
-
+            token?.ThrowIfCancellationRequested();
             return result;
 
         }
 
         public static async Task<SearchResults> LoadQuery(string searchQuery, string storeID, string categoryFilter, OrderByMode orderBy, int page, CancellationToken? token = null)
         {
+            token?.Register(() =>
+            {
+                client?.CancelPendingRequests();
+            });
+
             var url = GetSearchUrl(searchQuery, storeID, categoryFilter, orderBy, RESULTS_PER_PAGE, page);
             var response = await (token != null ? client.GetAsync(url, token.Value) :  client.GetAsync(url));
-
+            token?.ThrowIfCancellationRequested();
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 var body = await response.Content.ReadAsStringAsync();
 
                 var result = await ParseBody(body, token);
                 result.Page = page;
+                token?.ThrowIfCancellationRequested();
                 return result;
             }
 
@@ -91,10 +98,7 @@ namespace micro_c_lib.Models
             for (int i = 0; i < shortMatches.Count; i++)
             {
 
-                if (token != null && token.Value.IsCancellationRequested)
-                {
-                    return new SearchResults();
-                }
+                token?.ThrowIfCancellationRequested();
 
                 bool comingSoon = false;
                 Match m = shortMatches[i];
@@ -147,6 +151,7 @@ namespace micro_c_lib.Models
 
                 result.Items.Add(item);
             }
+            token?.ThrowIfCancellationRequested();
             return result;
         }
     }

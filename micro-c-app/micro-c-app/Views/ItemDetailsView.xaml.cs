@@ -49,7 +49,17 @@ namespace micro_c_app.Views
 
         private void SetSpecs()
         {
-            Grid parentGrid = SpecsGrid.Parent as Grid;
+            if(SpecsGrid == null)
+            {
+                return;
+            }
+
+            /*
+             * Performance on repeatedly adding things to a grid is awful, since
+             * the grid needs to resize elements on each add.  Detaching from parent,
+             * and then re-attaching at the end skips all of those resize calls.
+             */
+            Grid? parentGrid = SpecsGrid.Parent as Grid;
             if(parentGrid != null)
             {
                 parentGrid.Children.Remove(SpecsGrid);

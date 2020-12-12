@@ -25,7 +25,7 @@ namespace micro_c_app.Views
     {
         HttpClient client;
         CancellationTokenSource tokenSource = new CancellationTokenSource();
-        CancellationToken cancellationToken;
+        CancellationToken cancellationToken => tokenSource.Token;
 
         private bool busy;
 
@@ -175,6 +175,7 @@ namespace micro_c_app.Views
                 return;
             }
             Busy = true;
+            tokenSource = new CancellationTokenSource();
             var storeId = SettingsPage.StoreID();
             int queryAttempts = 0;
 
@@ -185,7 +186,6 @@ namespace micro_c_app.Views
 
             try
             {
-                UpdateCancellationToken();
                 var results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1, cancellationToken);
                 if (results != null)
                 {
@@ -197,8 +197,6 @@ namespace micro_c_app.Views
                             break;
                         case 1:
                             var stub = results.Items.First();
-
-                            UpdateCancellationToken();
                             var item = await Item.FromUrl(stub.URL, storeId, cancellationToken);
                             DoProductFound(item);
                             break;
@@ -224,7 +222,6 @@ namespace micro_c_app.Views
                             page.AutoPop = AutoPopSearchPage;
                             page.ItemTapped += (sender, args) =>
                             {
-                                UpdateCancellationToken();
                                 Task.Run(async () =>
                                 {
                                     if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
@@ -250,7 +247,11 @@ namespace micro_c_app.Views
             {
                 //triggered by user input, do nothing
             }
-            catch(Exception e)
+            catch (OperationCanceledException e)
+            {
+                //triggered by user input, do nothing
+            }
+            catch (Exception e)
             {
                 if (queryAttempts > NUM_RETRY_ATTEMPTS)
                 {
@@ -265,12 +266,6 @@ namespace micro_c_app.Views
             }
 
             Busy = false;
-        }
-
-        private void UpdateCancellationToken()
-        {
-            tokenSource = new CancellationTokenSource();
-            cancellationToken = tokenSource.Token;
         }
 
         private async void DoProductFound(Item item)
