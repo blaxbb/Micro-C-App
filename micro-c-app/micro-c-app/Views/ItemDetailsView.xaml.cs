@@ -40,7 +40,6 @@ namespace micro_c_app.Views
 
         private static void AddStripedBackground(Grid grid, Color color, int row)
         {
-            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             var background = new BoxView() { Color = row % 2 == 0 ? color : Color.Transparent, WidthRequest = 100, HeightRequest = 1, HorizontalOptions = LayoutOptions.FillAndExpand, VerticalOptions = LayoutOptions.FillAndExpand };
             grid.Children.Add(background);
             Grid.SetRow(background, row);
@@ -66,7 +65,7 @@ namespace micro_c_app.Views
                         var plan = vm.Item.Plans[i];
 
                         AddStripedBackground(SpecsGrid, stripeColor, row);
-
+                        
                         var name = new Label()
                         {
                             Text = plan.Name,

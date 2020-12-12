@@ -33,14 +33,14 @@
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" Source="{Binding PictureUrls[0]}"/>
                             <StackLayout Orientation="Vertical" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
-                                <Label Text="{Binding Name}" MaxLines="2" VerticalTextAlignment="Center"/>
+                                <Label Text="{Binding Name}" MaxLines="2" VerticalTextAlignment="Center" InputTransparent="True"/>
                                 <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween">
-                                    <Label Text="{Binding Brand}" HorizontalOptions="Start"/>
-                                    <Label Text="{Binding SKU, StringFormat='SKU {0}'}" HorizontalOptions="End" HorizontalTextAlignment="End"/>
+                                    <Label Text="{Binding Brand}" HorizontalOptions="Start" InputTransparent="True"/>
+                                    <Label Text="{Binding SKU, StringFormat='SKU {0}'}" HorizontalOptions="End" HorizontalTextAlignment="End" InputTransparent="True"/>
                                 </FlexLayout>
                             </StackLayout>
-                            <Label Grid.Column="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
-                            <Label Grid.Column="3" Text="{Binding Stock}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"/>
+                            <Label Grid.Column="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" InputTransparent="True"/>
+                            <Label Grid.Column="3" Text="{Binding Stock}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" InputTransparent="True"/>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>
