@@ -37,25 +37,25 @@
                             <StackLayout Orientation="Vertical" x:Name="item" Margin="5">
                                 <StackLayout Orientation="Horizontal" Padding="0,0,10,0"  HeightRequest="70">
                                     <StackLayout Orientation="Vertical"  HorizontalOptions="StartAndExpand" VerticalOptions="Center">
-                                        <Label Text="{Binding Name}" LineBreakMode="TailTruncation"/>
+                                        <Label Text="{Binding Name}" LineBreakMode="TailTruncation" InputTransparent="True"/>
                                         <StackLayout Orientation="Horizontal">
-                                            <Label Text="{Binding Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand"/>
-                                            <Label Text="{Binding SKU}" HorizontalOptions="EndAndExpand"/>
+                                            <Label Text="{Binding Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
+                                            <Label Text="{Binding SKU}" HorizontalOptions="EndAndExpand" InputTransparent="True"/>
                                         </StackLayout>
                                         <StackLayout Orientation="Horizontal">
-                                            <Label Text="{Binding Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
-                                            <Label Text="{Binding Stock}" HorizontalOptions="EndAndExpand"/>
+                                            <Label Text="{Binding Specs[UPC]}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
+                                            <Label Text="{Binding Stock}" HorizontalOptions="EndAndExpand" InputTransparent="True"/>
                                         </StackLayout>
                                     </StackLayout>
                                     <StackLayout Orientation="Horizontal">
                                         <Button Text="&#xf068;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
-                                        <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" MinimumWidthRequest="50" VerticalTextAlignment="Center" Margin="10,0,10,0" HorizontalTextAlignment="Center"/>
+                                        <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" MinimumWidthRequest="50" VerticalTextAlignment="Center" Margin="10,0,10,0" HorizontalTextAlignment="Center" InputTransparent="True"/>
                                         <Button Text="&#xf067;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
                                     </StackLayout>
                                 </StackLayout>
                                 <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
                                     <StackLayout Orientation="Horizontal" HorizontalOptions="Start">
-                                        <Label Text="Price" VerticalTextAlignment="Center"/>
+                                        <Label Text="Price" VerticalTextAlignment="Center" InputTransparent="True"/>
                                         <Entry Text="{Binding Price}" TextChanged="ItemPriceChanged" Keyboard="Numeric" WidthRequest="100"/>
                                     </StackLayout>
                                     <Button Text="&#xf129;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding DetailItem, Source={RelativeSource AncestorType={x:Type vm:QuotePageViewModel}}}" CommandParameter="{Binding .}"/>
