@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:v="clr-namespace:micro_c_app.Views"
              x:Class="micro_c_app.Views.ItemDetailsView">
-  <ContentView.Content>
+    <ContentView.Content>
         <ScrollView>
             <Grid Padding="10">
                 <Grid.RowDefinitions>
@@ -16,39 +16,27 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Row="0" Text="{Binding Item.Name, FallbackValue=NAME}" FontSize="24"/>
-                <Label Grid.Row="1" Text="{Binding Item.Brand}"/>
-                <StackLayout Grid.Row="2" Orientation="Horizontal" HeightRequest="150">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Item.Name, FallbackValue=NAME}" FontSize="24"/>
+                <Label Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Item.Brand, FallbackValue=BRAND}"/>
+                <StackLayout Grid.Row="2" Grid.ColumnSpan="2" Orientation="Horizontal" HeightRequest="150">
                     <Button Text="&lt;" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="Start" Command="{Binding BackPicture}"/>
                     <Image Source="{Binding ActivePicture, FallbackValue=https://aka.ms/campus.jpg}" HorizontalOptions="FillAndExpand" Aspect="AspectFit" />
                     <Button Text=">" WidthRequest="40" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="End" Command="{Binding ForwardPicture}"/>
                 </StackLayout>
-                <Grid Grid.Row="3">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Label Grid.Column="0" Grid.Row="0" Text="{Binding Item.Specs[SKU], FallbackValue=123456}" HorizontalTextAlignment="Start"/>
-                    <Label Grid.Column="1" Grid.Row="0" Text="{Binding Item.Specs[UPC], FallbackValue=123456}" HorizontalTextAlignment="End"/>
-                    <Label Grid.Column="0" Grid.Row="1" Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
-                    <Label VerticalOptions="FillAndExpand" Grid.Column="1" Grid.Row="1" Text="{Binding Item.Location, FallbackValue=Section 000}" FontSize="Large" HorizontalTextAlignment="End"/>
-                </Grid>
+                <Label Grid.Column="0" Grid.Row="3" Text="{Binding Item.Specs[SKU], FallbackValue=123456}" HorizontalTextAlignment="Start"/>
+                <Label Grid.Column="1" Grid.Row="3" Text="{Binding Item.Specs[UPC], FallbackValue=123456}" HorizontalTextAlignment="End"/>
+                <Label Grid.Column="0" Grid.Row="4" Text="{Binding Item.Stock, FallbackValue=3 in stock}" FontSize="Large"/>
+                <Label VerticalOptions="FillAndExpand" Grid.Column="1" Grid.Row="4" Text="{Binding Item.Location, FallbackValue=Section 000}" FontSize="Large" HorizontalTextAlignment="End"/>
 
-                <Grid Grid.Row="4">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Label Grid.Column="0" Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Start"/>
-                    <Label Grid.Column="1" Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Center"/>
-                    <Label Grid.Column="2" Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" HorizontalTextAlignment="End"/>
-                </Grid>
-                <Grid x:Name="SpecsGrid" Grid.Row="6" RowSpacing="0">
+                <Label Grid.Row="5" Grid.Column="0" Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Start"/>
+                <!--<Label Grid.Column="1" Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Center"/>-->
+                <Label Grid.Row="5" Grid.Column="1" Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" HorizontalTextAlignment="End"/>
+
+                <Grid x:Name="SpecsGrid" Grid.Row="6" RowSpacing="0" Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>
