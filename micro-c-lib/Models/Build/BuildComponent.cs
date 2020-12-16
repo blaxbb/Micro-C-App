@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using static MicroCLib.Models.Reference.PlanReference;
 
 namespace MicroCLib.Models
 {
@@ -111,12 +112,12 @@ namespace MicroCLib.Models
 
         public void AddDependency(BuildComponentDependency dependency)
         {
-            if(dependency.SetRelevant(this))
+            if (dependency.SetRelevant(this))
             {
                 Dependencies.Add(dependency);
             }
 
-            
+
         }
 
         public bool PlanApplicable()
@@ -217,16 +218,28 @@ namespace MicroCLib.Models
 
         public static ComponentType TypeForCategoryFilter(string filter)
         {
-            foreach(ComponentType val in Enum.GetValues(typeof(ComponentType)))
+            foreach (ComponentType val in Enum.GetValues(typeof(ComponentType)))
             {
                 var check = CategoryFilterForType(val);
-                if(check == filter)
+                if (check == filter)
                 {
                     return val;
                 }
             }
 
             return ComponentType.None;
+        }
+
+        public static IEnumerable<PlanType> ApplicablePlans(ComponentType type)
+        {
+            switch (type)
+            {
+                case ComponentType.BluetoothAdapter:
+                    yield return PlanType.Replacement;
+                    yield return PlanType.Carry_In;
+                    break;
+            }
+
         }
 
         public static int MaxNumberPerType(ComponentType type)

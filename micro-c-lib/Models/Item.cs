@@ -1,5 +1,10 @@
 ﻿
+using micro_c_lib.Models;
+using micro_c_lib.Models.Json;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Dynamic;
+using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -33,13 +38,13 @@ namespace MicroCLib.Models
         public string ID { get; set; } = "";
         public string Brand { get => brand; set => SetProperty(ref brand, value); }
         public bool ComingSoon { get; set; }
+        public List<CategoryInfo> Categories { get; private set; }
 
         public Item()
         {
             Specs = new Dictionary<string, string>();
             PictureUrls = new List<string>();
             Plans = new List<Plan>();
-
         }
 
         public static async Task<Item> FromUrl(string urlIdStub, string storeId, CancellationToken? token = null)
@@ -85,6 +90,8 @@ namespace MicroCLib.Models
                 {
                     item.Stock = "Soon";
                 }
+
+                var categories = ParseCategories(body);
             }
 
             token?.ThrowIfCancellationRequested();
@@ -131,21 +138,20 @@ namespace MicroCLib.Models
 
         public static float ParseOriginalPrice(string body, Item item)
         {
-            var match = GetOriginalPrice.Match(body);
-            if (match.Success)
+            var regexes = new Regex[] { GetOriginalPrice, GetOriginalPriceAlt };
+            foreach(var reg in regexes)
             {
-                if (float.TryParse(match.Groups[1].Value, out float price))
+                var match = reg.Match(body);
+                if (match.Success)
                 {
-                    return price;
-                }
-                {
-                    return item.price;
+                    if (float.TryParse(match.Groups[1].Value, out float price))
+                    {
+                        return price;
+                    }
                 }
             }
-            else
-            {
-                return item.Price;
-            }
+
+            return item.price;
         }
 
         public static string ParseURL(string body)
@@ -258,6 +264,18 @@ namespace MicroCLib.Models
             return false;
         }
 
+        public static List<CategoryInfo> ParseCategories(string body)
+        {
+            var match = Regex.Match(body, "<nav aria-labelledby=\"breadcrumb-label\"(?:.*?)<script type=\"application/ld\\+json\">(.*?)</script>", RegexOptions.Singleline);
+            if (match.Success)
+            {
+                var info = JsonSerializer.Deserialize<CategoryJsonResult>(match.Groups[1].Value);
+                return info.Categories.Skip(1).ToList();
+            }
+
+            return new List<CategoryInfo>();
+        }
+
         public static string ParseIDFromURL(string url)
         {
             var match = GetIDFromURL.Match(url);
@@ -274,6 +292,7 @@ namespace MicroCLib.Models
         private static Regex GetPrice => new Regex("'productPrice':'(.*?)',");
         private static Regex GetURL => new Regex("'pageUrl':'(.*?)',");
         private static Regex GetOriginalPrice => new Regex("\"savings\"><span>\\$([\\d\\.]+)");
+        private static Regex GetOriginalPriceAlt => new Regex("<span id='pricing' content=\"(.*?)\">");
         private static Regex GetStock => new Regex("<span class=\"inventoryCnt\">(.*?)</span>");
         private static Regex GetName => new Regex("data-name=\"(.*?)\"");
         private static Regex GetPictures => new Regex("<img class= ?\"productImageZoom\" src=\"(.*?)\"");
