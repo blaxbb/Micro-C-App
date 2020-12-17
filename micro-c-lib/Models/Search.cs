@@ -55,18 +55,22 @@ namespace micro_c_lib.Models
 
         }
 
-        public static async Task<SearchResults> LoadQuery(string searchQuery, string storeID, string categoryFilter, OrderByMode orderBy, int page, CancellationToken? token = null)
+        public static async Task<SearchResults> LoadQuery(string searchQuery, string storeID, string categoryFilter, OrderByMode orderBy, int page, CancellationToken? token = null, IProgress<ProgressInfo> progress = null)
         {
             token?.Register(() =>
             {
                 client?.CancelPendingRequests();
             });
 
+            progress?.Report(new ProgressInfo() { Text = $"Loading query {searchQuery}", Value = .3d });
+
             var url = GetSearchUrl(searchQuery, storeID, categoryFilter, orderBy, RESULTS_PER_PAGE, page);
             var response = await (token != null ? client.GetAsync(url, token.Value) :  client.GetAsync(url));
             token?.ThrowIfCancellationRequested();
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
+                progress?.Report(new ProgressInfo() { Text = $"Parsing query {searchQuery}", Value = .5d });
+
                 var body = await response.Content.ReadAsStringAsync();
 
                 var result = await ParseBody(body, token);

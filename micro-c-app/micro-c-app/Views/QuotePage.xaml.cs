@@ -14,6 +14,10 @@ namespace micro_c_app.Views
         public QuotePage()
         {
             InitializeComponent();
+            if(BindingContext is QuotePageViewModel vm)
+            {
+                vm.Navigation = Navigation;
+            }
             this.SetupActionButton();
             KeyboardHelper.KeyboardChanged += KeyboardHelper_KeyboardChanged;
         }

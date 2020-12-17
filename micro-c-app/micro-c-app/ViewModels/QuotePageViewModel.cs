@@ -2,6 +2,7 @@
 using micro_c_app.Models;
 using micro_c_app.Views;
 using micro_c_app.Views.CollectionFile;
+using micro_c_lib.Models;
 using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace micro_c_app.ViewModels
 {
     public class QuotePageViewModel : BaseViewModel
     {
+        public INavigation Navigation;
         private bool notBusy;
         private Item? selectedItem;
 
@@ -39,6 +41,7 @@ namespace micro_c_app.ViewModels
         public ICommand Load { get; }
         public ICommand ImportWeb { get; }
         public ICommand ExportWeb { get; }
+        public ICommand BatchScan { get; }
 
         protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
         {
@@ -47,7 +50,8 @@ namespace micro_c_app.ViewModels
             {"Save", Save },
             {"Load", Load },
             {"Import", ImportWeb },
-            {"Export", ExportWeb }
+            {"Export", ExportWeb },
+            {"Batch", BatchScan }
         };
 
         public bool NotBusy { get => notBusy; set { SetProperty(ref notBusy, value); } }
@@ -231,6 +235,8 @@ namespace micro_c_app.ViewModels
                     await Shell.Current.DisplayAlert("Error", "Failed to export to DataFlare server.", "Ok");
                 }
             });
+
+            BatchScan = new Command(() => DoBatchScan());
         }
 
         private void DoLoad(CollectionLoadPageViewModel<Item> obj)
@@ -362,6 +368,34 @@ namespace micro_c_app.ViewModels
             view.ProductFound = productFound;
             view.Error = error;
             await view.OnSubmit("951970");
+        }
+
+
+        private void DoBatchScan()
+        {
+            SearchView.DoScan(Navigation, async (result) => {
+                System.Diagnostics.Debug.WriteLine(result);
+
+                try
+                {
+                    var storeId = SettingsPage.StoreID();
+
+                    var results = await Search.LoadQuery(result, storeId, null, Search.OrderByMode.match, 1);
+                    if (results.Items.Count == 1)
+                    {
+                        var stub = results.Items.First();
+                        var item = await Item.FromUrl(stub.URL, storeId);
+                        if (item != null)
+                        {
+                            Items.Add(item);
+                        }
+                    }
+                }
+                catch(Exception e)
+                {
+                    await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
+                }
+            }, batchMode: true);
         }
 
         public void UpdateProperties()

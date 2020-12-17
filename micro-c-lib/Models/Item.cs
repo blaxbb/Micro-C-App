@@ -1,6 +1,7 @@
 ﻿
 using micro_c_lib.Models;
 using micro_c_lib.Models.Json;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
@@ -47,7 +48,7 @@ namespace MicroCLib.Models
             Plans = new List<Plan>();
         }
 
-        public static async Task<Item> FromUrl(string urlIdStub, string storeId, CancellationToken? token = null)
+        public static async Task<Item> FromUrl(string urlIdStub, string storeId, CancellationToken? token = null, IProgress<ProgressInfo> progress = null)
         {
             var item = new Item();
 
@@ -58,6 +59,12 @@ namespace MicroCLib.Models
                     client.CancelPendingRequests();
                 });
 
+                progress?.Report(new ProgressInfo()
+                {
+                    Text = $"Found item, fetching details",
+                    Value = .7d
+                });
+
                 var url = $"https://www.microcenter.com{urlIdStub}?storeid={storeId}";
                 var response = await (token == null ? client.GetAsync(url) : client.GetAsync(url, token.Value));
                 token?.ThrowIfCancellationRequested();
@@ -66,6 +73,12 @@ namespace MicroCLib.Models
                 {
                     return new Item(){ Name = "Product not found", SKU = "000000" };
                 }
+
+                progress?.Report(new ProgressInfo()
+                {
+                    Text = $"Parsing item details",
+                    Value = .7d
+                });
 
                 var body = await response.Content.ReadAsStringAsync();
                 token?.ThrowIfCancellationRequested();

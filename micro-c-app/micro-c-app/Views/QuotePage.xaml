@@ -16,6 +16,7 @@
         <ToolbarItem Text="Save" Order="Secondary" Command="{Binding Save}"/>
         <ToolbarItem Text="Import" Order="Secondary" Command="{Binding ImportWeb}"/>
         <ToolbarItem Text="Export" Order="Secondary" Command="{Binding ExportWeb}"/>
+        <ToolbarItem Text="Batch" Order="Secondary" Command="{Binding BatchScan}"/>
         <!--<ToolbarItem Text="Export" Order="Secondary" Command="{Binding ExportQuote}"/>
         <ToolbarItem Text="Import" Order="Secondary" Command="{Binding ImportQuote}"/>-->
     </ContentPage.ToolbarItems>

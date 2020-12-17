@@ -12,6 +12,7 @@ using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using static MicroCLib.Models.BuildComponent;
 
 namespace micro_c_app.ViewModels
 {
@@ -206,7 +207,7 @@ namespace micro_c_app.ViewModels
 
         void SetupDefaultComponents()
         {
-            foreach (BuildComponent.ComponentType t in Enum.GetValues(typeof(BuildComponent.ComponentType)))
+            foreach (BuildComponent.ComponentType t in PresetBYO())
             {
                 if (BuildComponent.MaxNumberPerType(t) > 0)
                 {
@@ -215,6 +216,24 @@ namespace micro_c_app.ViewModels
                     Components.Add(comp);
                 }
             }
+        }
+
+        private static IEnumerable<ComponentType> PresetBYO()
+        {
+            yield return ComponentType.BuildService;
+            yield return ComponentType.OperatingSystem;
+            yield return ComponentType.CPU;
+            yield return ComponentType.Motherboard;
+            yield return ComponentType.GPU;
+            yield return ComponentType.RAM;
+            yield return ComponentType.PowerSupply;
+            yield return ComponentType.SSD;
+            yield return ComponentType.HDD;
+            yield return ComponentType.Case;
+            yield return ComponentType.CPUCooler;
+            yield return ComponentType.WaterCoolingKit;
+            yield return ComponentType.CaseFan;
+            yield return ComponentType.Miscellaneous;
         }
 
         private void SaveRestore()

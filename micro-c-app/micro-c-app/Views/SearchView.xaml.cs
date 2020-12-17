@@ -28,7 +28,7 @@ namespace micro_c_app.Views
         CancellationToken cancellationToken => tokenSource.Token;
 
         private bool busy;
-
+        private ProgressInfo progress;
         public static readonly BindableProperty ProductFoundProperty = BindableProperty.Create(nameof(ProductFound), typeof(ICommand), typeof(SearchView), null);
 
         public static readonly BindableProperty ErrorProperty = BindableProperty.Create(nameof(Error), typeof(ICommand), typeof(SearchView), null);
@@ -49,6 +49,8 @@ namespace micro_c_app.Views
 
         public static readonly BindableProperty BatchScanProperty = BindableProperty.Create("BatchScan", typeof(bool), typeof(SearchView), false);
         public bool BatchScan { get { return (bool)GetValue(BatchScanProperty); } set { SetValue(BatchScanProperty, value); } }
+
+        public ProgressInfo Progress { get => progress; set { progress = value; OnPropertyChanged(nameof(Progress)); } }
 
         public bool Busy
         {
@@ -91,10 +93,13 @@ namespace micro_c_app.Views
 
         }
 
-        private void OnScanClicked(object sender, EventArgs e)
+        private void ReportProgress(ProgressInfo info)
         {
-            var filter = CategoryFilter;
-            Console.WriteLine(filter);
+            Progress = info;
+        }
+
+        public static void DoScan(INavigation navigation, Func<string, Task> resultTask, string categoryFilter = "", bool batchMode = false)
+        {
             Device.BeginInvokeOnMainThread(async () =>
             {
                 var options = new MobileBarcodeScanningOptions
@@ -120,24 +125,30 @@ namespace micro_c_app.Views
                     {
                         Vibration.Vibrate();
                     }
-                    if (!BatchScan)
+                    if (!batchMode)
                     {
                         // Stop scanning
                         scanPage.IsScanning = false;
                         // Pop the page and show the result
                         Device.BeginInvokeOnMainThread(async () =>
                         {
-                            await Navigation.PopModalAsync();
-                            SKUField.Text = FilterBarcodeResult(result);
-                            await OnSubmit(SKUField.Text);
+                            await navigation.PopModalAsync();
+                            //SKUField.Text = FilterBarcodeResult(result);
+                            //await OnSubmit(SKUField.Text);
+                            await resultTask.Invoke(FilterBarcodeResult(result));
                         });
                     }
                     else
                     {
+                        scanPage.IsScanning = false;
+                        scanPage.IsBusy = true;
+                        options.DelayBetweenContinuousScans = int.MaxValue;
                         Device.BeginInvokeOnMainThread(async () =>
                         {
-                            SKUField.Text = FilterBarcodeResult(result);
-                            await OnSubmit(SKUField.Text);
+                            await resultTask.Invoke(FilterBarcodeResult(result));
+                            options.DelayBetweenContinuousScans = 0;
+                            scanPage.IsScanning = true;
+                            scanPage.IsBusy = false;
                         });
                     }
                 };
@@ -146,18 +157,27 @@ namespace micro_c_app.Views
                 navPage.ToolbarItems.Add(new ToolbarItem()
                 {
                     Text = "Cancel",
-                    Command = new Command(async () => { await Navigation.PopModalAsync(); })
+                    Command = new Command(async () => { await navigation.PopModalAsync(); })
                 });
-                await Navigation.PushModalAsync(navPage);
+                await navigation.PushModalAsync(navPage);
             });
         }
 
-        private string FilterBarcodeResult(Result result)
+        private void OnScanClicked(object sender, EventArgs e)
+        {
+            DoScan(Navigation, async (string result) =>
+            {
+                SKUField.Text = result;
+                await OnSubmit(result);
+            }, categoryFilter: CategoryFilter, batchMode: BatchScan);
+        }
+
+        private static string FilterBarcodeResult(Result result)
         {
             switch (result.BarcodeFormat)
             {
                 case BarcodeFormat.CODE_128:
-                    if(result.Text.Length >= 6)
+                    if (result.Text.Length >= 6)
                     {
                         return result.Text.Substring(0, 6);
                     }
@@ -167,7 +187,6 @@ namespace micro_c_app.Views
                     return result.Text;
             }
         }
-
         public async Task OnSubmit(string searchValue)
         {
             if (string.IsNullOrWhiteSpace(searchValue) && string.IsNullOrWhiteSpace(CategoryFilter))
@@ -176,6 +195,8 @@ namespace micro_c_app.Views
             }
             Busy = true;
             tokenSource = new CancellationTokenSource();
+            var progress = new Progress<ProgressInfo>(ReportProgress);
+
             var storeId = SettingsPage.StoreID();
             int queryAttempts = 0;
 
@@ -186,7 +207,7 @@ namespace micro_c_app.Views
 
             try
             {
-                var results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1, cancellationToken);
+                var results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1, token: cancellationToken, progress: progress);
                 if (results != null)
                 {
 
@@ -197,7 +218,7 @@ namespace micro_c_app.Views
                             break;
                         case 1:
                             var stub = results.Items.First();
-                            var item = await Item.FromUrl(stub.URL, storeId, cancellationToken);
+                            var item = await Item.FromUrl(stub.URL, storeId, token: cancellationToken, progress: progress);
                             DoProductFound(item);
                             break;
                         default:
@@ -227,7 +248,7 @@ namespace micro_c_app.Views
                                     if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
                                     {
                                         Busy = true;
-                                        var item = await Item.FromUrl(shortItem.URL, storeId, cancellationToken);
+                                        var item = await Item.FromUrl(shortItem.URL, storeId, token: cancellationToken, progress: progress);
                                         Busy = false;
                                         DoProductFound(item);
                                     }
