@@ -373,23 +373,26 @@ namespace micro_c_app.ViewModels
 
         private void DoBatchScan()
         {
-            SearchView.DoScan(Navigation, async (result) => {
+            SearchView.DoScan(Navigation, async (result, progress) => {
                 System.Diagnostics.Debug.WriteLine(result);
 
                 try
                 {
                     var storeId = SettingsPage.StoreID();
 
-                    var results = await Search.LoadQuery(result, storeId, null, Search.OrderByMode.match, 1);
+                    var results = await Search.LoadQuery(result, storeId, null, Search.OrderByMode.match, 1, progress: progress);
                     if (results.Items.Count == 1)
                     {
                         var stub = results.Items.First();
-                        var item = await Item.FromUrl(stub.URL, storeId);
+                        var item = await Item.FromUrl(stub.URL, storeId, progress: progress);
                         if (item != null)
                         {
                             Items.Add(item);
+                            return;
                         }
                     }
+
+                    await Shell.Current.DisplayAlert("Error", $"Failed to find item \"{result}\"", "Ok");
                 }
                 catch(Exception e)
                 {

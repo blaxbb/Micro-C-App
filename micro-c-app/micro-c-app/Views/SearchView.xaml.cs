@@ -98,7 +98,7 @@ namespace micro_c_app.Views
             Progress = info;
         }
 
-        public static void DoScan(INavigation navigation, Func<string, Task> resultTask, string categoryFilter = "", bool batchMode = false)
+        public static void DoScan(INavigation navigation, Func<string, IProgress<ProgressInfo>?, Task> resultTask, string categoryFilter = "", bool batchMode = false)
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
@@ -113,10 +113,10 @@ namespace micro_c_app.Views
                     UseNativeScanning = true,
                     DelayBetweenContinuousScans = 1000
                 };
-                var scanPage = new ZXingScannerPage(options)
+                var scanPage = new ScannerPage()
                 {
-                    DefaultOverlayShowFlashButton = true
                 };
+
                 // Navigate to our scanner page
                 scanPage.OnScanResult += (result) =>
                 {
@@ -128,44 +128,50 @@ namespace micro_c_app.Views
                     if (!batchMode)
                     {
                         // Stop scanning
-                        scanPage.IsScanning = false;
+                        //scanPage.IsScanning = false;
                         // Pop the page and show the result
                         Device.BeginInvokeOnMainThread(async () =>
                         {
-                            await navigation.PopModalAsync();
+                            await navigation.PopAsync();
                             //SKUField.Text = FilterBarcodeResult(result);
                             //await OnSubmit(SKUField.Text);
-                            await resultTask.Invoke(FilterBarcodeResult(result));
+                            await resultTask.Invoke(FilterBarcodeResult(result), null);
                         });
                     }
                     else
                     {
-                        scanPage.IsScanning = false;
+                        var progress = new Progress<ProgressInfo>((info) =>
+                        {
+                            scanPage.Progress = info;
+                        });
+                        //scanPage.IsScanning = false;
                         scanPage.IsBusy = true;
+                        scanPage.IsRunningTask = true;
                         options.DelayBetweenContinuousScans = int.MaxValue;
                         Device.BeginInvokeOnMainThread(async () =>
                         {
-                            await resultTask.Invoke(FilterBarcodeResult(result));
+                            await resultTask.Invoke(FilterBarcodeResult(result), progress);
                             options.DelayBetweenContinuousScans = 0;
-                            scanPage.IsScanning = true;
+                            //scanPage.IsScanning = true;
                             scanPage.IsBusy = false;
+                            scanPage.IsRunningTask = false;
                         });
                     }
                 };
 
-                var navPage = new NavigationPage(scanPage);
-                navPage.ToolbarItems.Add(new ToolbarItem()
-                {
-                    Text = "Cancel",
-                    Command = new Command(async () => { await navigation.PopModalAsync(); })
-                });
-                await navigation.PushModalAsync(navPage);
+                //var navPage = new NavigationPage(scanPage);
+                //navPage.ToolbarItems.Add(new ToolbarItem()
+                //{
+                //    Text = "Cancel",
+                //    Command = new Command(async () => { await navigation.PopModalAsync(); })
+                //});
+                await navigation.PushAsync(scanPage);
             });
         }
 
         private void OnScanClicked(object sender, EventArgs e)
         {
-            DoScan(Navigation, async (string result) =>
+            DoScan(Navigation, async (result, progress) =>
             {
                 SKUField.Text = result;
                 await OnSubmit(result);
