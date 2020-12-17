@@ -66,6 +66,42 @@
             </Style>
         </ResourceDictionary>
     </Shell.Resources>
+
+    <Shell.ItemTemplate>
+        <DataTemplate>
+            <Grid Padding="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition Width="0.8*" />
+                </Grid.ColumnDefinitions>
+                <Image Source="{Binding Icon}"
+                       Margin="5"/>
+                <Label Grid.Column="1"
+                       Text="{Binding Title}"
+                       InputTransparent="True"
+                       FontSize="Medium"
+                       VerticalTextAlignment="Center"/>
+            </Grid>
+        </DataTemplate>
+    </Shell.ItemTemplate>
+    <Shell.MenuItemTemplate>
+        <DataTemplate>
+            <Grid Padding="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.2*" />
+                    <ColumnDefinition Width="0.8*" />
+                </Grid.ColumnDefinitions>
+                <Image Source="{Binding Icon}"
+                       Margin="5"/>
+                <Label Grid.Column="1"
+                       Text="{Binding Text}"
+                       InputTransparent="True"
+                       FontSize="Medium"
+                       VerticalTextAlignment="Center"/>
+            </Grid>
+        </DataTemplate>
+    </Shell.MenuItemTemplate>
+
     <!-- 
         When the Flyout is visible this defines the content to display in the flyout.
         FlyoutDisplayOptions="AsMultipleItems" will create a separate flyout item for each child element    
@@ -120,15 +156,6 @@
                     Size="24"/>
             </ShellContent.Icon>
         </ShellContent>
-        <!--<ShellContent Title="References" Route="ReferencePage" ContentTemplate="{DataTemplate local:ReferencePage}">
-            <ShellContent.Icon>
-                <FontImageSource
-                    FontFamily="{StaticResource FontAwesomeSolid}"
-                    Glyph="&#xf02d;"
-                    Color="{DynamicResource PrimaryTextColor}"
-                    Size="24"/>
-            </ShellContent.Icon>
-        </ShellContent>-->
     </FlyoutItem>
     <MenuItem Text="Settings" Clicked="DisplaySettings">
         <MenuItem.IconImageSource>

@@ -127,6 +127,9 @@
             <Style TargetType="ListView">
                 <Setter Property="BackgroundColor" Value="Transparent"/>
             </Style>
+            <Style TargetType="Frame">
+                <Setter Property="BackgroundColor" Value="Transparent"/>
+            </Style>
 
             <local:NullBoolConverter x:Key="NullBoolConverter"/>
             <local:StringNullOrEmptyBoolConverter x:Key="StringNullOrEmptyConverter"/>

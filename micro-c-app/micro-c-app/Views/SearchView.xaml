@@ -50,12 +50,6 @@
                             HorizontalOptions="End"
                             WidthRequest="40"/>
                 </StackLayout>
-                <ActivityIndicator
-                    x:Name="BusyIndicator" 
-                    IsRunning="{Binding Busy, Source={x:Reference view}}"
-                    IsVisible="{Binding Busy, Source={x:Reference view}}"
-                    Scale="0.7"
-                    />
             </Grid>
             <Button x:Name="ScanButton"
                     Text="Scan"
