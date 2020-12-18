@@ -378,21 +378,47 @@ namespace micro_c_app.ViewModels
 
                 try
                 {
+                    int queryAttempts = 0;
+                    //go back here on error, so that we can retry the request a few times
+                    const int NUM_RETRY_ATTEMPTS = 5;
+
                     var storeId = SettingsPage.StoreID();
 
-                    var results = await Search.LoadQuery(result, storeId, null, Search.OrderByMode.match, 1, progress: progress);
-                    if (results.Items.Count == 1)
+                startQuery:
+                    queryAttempts++;
+
+                    try
                     {
-                        var stub = results.Items.First();
-                        var item = await Item.FromUrl(stub.URL, storeId, progress: progress);
-                        if (item != null)
+                        var results = await Search.LoadQuery(result, storeId, null, Search.OrderByMode.match, 1, progress: progress);
+                        if (results.Items.Count == 1)
                         {
-                            Items.Add(item);
+                            var stub = results.Items.First();
+                            var item = await Item.FromUrl(stub.URL, storeId, progress: progress);
+                            if (item != null)
+                            {
+                                Items.Add(item);
+                                return;
+                            }
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        if(queryAttempts > NUM_RETRY_ATTEMPTS)
+                        {
+                            await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
                             return;
                         }
                     }
-
-                    await Shell.Current.DisplayAlert("Error", $"Failed to find item \"{result}\"", "Ok");
+                    if (queryAttempts > NUM_RETRY_ATTEMPTS)
+                    {
+                        await Shell.Current.DisplayAlert("Error", $"Failed to find item \"{result}\"", "Ok");
+                    }
+                    else
+                    {
+                        progress?.Report(new ProgressInfo($"Retrying query...{queryAttempts}/{NUM_RETRY_ATTEMPTS}", 0));
+                        await Task.Delay(1000);
+                        goto startQuery;
+                    }
                 }
                 catch(Exception e)
                 {

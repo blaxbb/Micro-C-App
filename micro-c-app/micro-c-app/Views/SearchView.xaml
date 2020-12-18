@@ -6,7 +6,7 @@
              x:Name="view">
   <ContentView.Content>
         <StackLayout x:Name="FlipStack" Orientation="Vertical" Spacing="20" VerticalOptions="CenterAndExpand">
-            <Grid HorizontalOptions="FillAndExpand" RowSpacing="20">
+            <Grid HorizontalOptions="FillAndExpand" RowSpacing="20" HeightRequest="100">
                 <views:ProgressView
                     Grid.Row="0"
                     Grid.RowSpan="2"
@@ -20,8 +20,7 @@
                     VerticalOptions="FillAndExpand"
                     IsEnabled="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"
                     IsVisible="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}">
-                    <Entry
-                        x:Name="SKUField"
+                    <Entry x:Name="SKUField"
                         Placeholder="Enter a SKU/UPC"
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="CenterAndExpand"
@@ -38,7 +37,7 @@
                     Orientation="Horizontal"
                     Grid.Row="1"
                     IsEnabled="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"
-                    IsVisible="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"                    >
+                    IsVisible="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}">
                     <Entry x:Name="SearchField"
                            Placeholder="Search"
                            HorizontalOptions="FillAndExpand"

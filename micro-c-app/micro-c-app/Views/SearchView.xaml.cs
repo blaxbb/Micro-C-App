@@ -286,7 +286,11 @@ namespace micro_c_app.Views
                 }
                 else
                 {
-                    await Task.Delay(100);
+                    if(progress is IProgress<ProgressInfo> p)
+                    {
+                        p.Report(new ProgressInfo($"Retrying query...{queryAttempts}/{NUM_RETRY_ATTEMPTS}", 0));
+                    }
+                    await Task.Delay(500);
                     client = new HttpClient();
                     goto startQuery;
                 }

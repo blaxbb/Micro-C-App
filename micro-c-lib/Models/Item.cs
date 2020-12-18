@@ -54,16 +54,13 @@ namespace MicroCLib.Models
 
             using (HttpClient client = new HttpClient())
             {
+                client.Timeout = TimeSpan.FromSeconds(15);
                 token?.Register(() =>
                 {
                     client.CancelPendingRequests();
                 });
 
-                progress?.Report(new ProgressInfo()
-                {
-                    Text = $"Found item, fetching details",
-                    Value = .7d
-                });
+                progress?.Report(new ProgressInfo($"Found item, fetching details", .7d));
 
                 var url = $"https://www.microcenter.com{urlIdStub}?storeid={storeId}";
                 var response = await (token == null ? client.GetAsync(url) : client.GetAsync(url, token.Value));
@@ -74,11 +71,7 @@ namespace MicroCLib.Models
                     return new Item(){ Name = "Product not found", SKU = "000000" };
                 }
 
-                progress?.Report(new ProgressInfo()
-                {
-                    Text = $"Parsing item details",
-                    Value = .7d
-                });
+                progress?.Report(new ProgressInfo($"Parsing item details", .9d));
 
                 var body = await response.Content.ReadAsStringAsync();
                 token?.ThrowIfCancellationRequested();

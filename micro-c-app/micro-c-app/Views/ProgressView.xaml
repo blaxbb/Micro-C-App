@@ -4,7 +4,7 @@
              xmlns:views="clr-namespace:micro_c_app.Views"
              x:Class="micro_c_app.Views.ProgressView">
     <ContentView.Content>
-        <Frame>
+        <Frame VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
             <Grid VerticalOptions="Center">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>

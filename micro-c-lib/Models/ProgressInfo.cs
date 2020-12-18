@@ -8,5 +8,11 @@ namespace MicroCLib.Models
     {
         public string Text { get; set; }
         public double Value { get; set; }
+
+        public ProgressInfo(string text, double value)
+        {
+            Text = text;
+            Value = value;
+        }
     }
 }

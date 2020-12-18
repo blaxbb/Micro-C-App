@@ -26,6 +26,7 @@ namespace micro_c_lib.Models
         static Search()
         {
             client = new HttpClient();
+            client.Timeout = TimeSpan.FromSeconds(15);
         }
         public static string GetSearchUrl(string query, string storeId, string categoryFilter, OrderByMode orderBy, int resultsPerPage, int page)
         {
@@ -62,14 +63,14 @@ namespace micro_c_lib.Models
                 client?.CancelPendingRequests();
             });
 
-            progress?.Report(new ProgressInfo() { Text = $"Loading query {searchQuery}", Value = .3d });
+            progress?.Report(new ProgressInfo($"Loading query {searchQuery}", .3));
 
             var url = GetSearchUrl(searchQuery, storeID, categoryFilter, orderBy, RESULTS_PER_PAGE, page);
             var response = await (token != null ? client.GetAsync(url, token.Value) :  client.GetAsync(url));
             token?.ThrowIfCancellationRequested();
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                progress?.Report(new ProgressInfo() { Text = $"Parsing query {searchQuery}", Value = .5d });
+                progress?.Report(new ProgressInfo($"Parsing query {searchQuery}", .5));
 
                 var body = await response.Content.ReadAsStringAsync();
 
