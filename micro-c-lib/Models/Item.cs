@@ -1,6 +1,7 @@
 ﻿
 using micro_c_lib.Models;
 using micro_c_lib.Models.Json;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,7 +9,6 @@ using System.Dynamic;
 using System.Linq;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -275,7 +275,7 @@ namespace MicroCLib.Models
             var match = Regex.Match(body, "<nav aria-labelledby=\"breadcrumb-label\"(?:.*?)<script type=\"application/ld\\+json\">(.*?)</script>", RegexOptions.Singleline);
             if (match.Success)
             {
-                var info = JsonSerializer.Deserialize<CategoryJsonResult>(match.Groups[1].Value);
+                var info = JsonConvert.DeserializeObject<CategoryJsonResult>(match.Groups[1].Value);
                 return info.Categories.Skip(1).ToList();
             }
 
@@ -325,8 +325,8 @@ namespace MicroCLib.Models
         }
         public Item CloneAndResetQuantity()
         {
-            var json = JsonSerializer.Serialize(this);
-            var ret = JsonSerializer.Deserialize<Item>(json);
+            var json = JsonConvert.SerializeObject(this);
+            var ret = JsonConvert.DeserializeObject<Item>(json);
             ret.Quantity = 1;
             return ret;
         }

@@ -1,4 +1,5 @@
 ﻿using micro_c_app.Views;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,7 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -141,7 +141,7 @@ namespace micro_c_app.ViewModels
                         var token = match.Groups[1].Value;
 
                         var obj = new LoginPacket(LocatorUsername, LocatorPassword, token);
-                        var json = JsonSerializer.Serialize(obj);
+                        var json = JsonConvert.SerializeObject(obj);
                         var content = new StringContent(json, Encoding.UTF8, "application/json");
                         var ct = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>()
                         {

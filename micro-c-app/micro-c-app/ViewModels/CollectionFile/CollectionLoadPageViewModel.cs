@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -40,7 +40,7 @@ namespace micro_c_app.ViewModels
                     if (File.Exists(Path))
                     {
                         var text = File.ReadAllText(Path);
-                        Result = JsonSerializer.Deserialize<List<T>>(text);
+                        Result = JsonConvert.DeserializeObject<List<T>>(text);
                         MessagingCenter.Send<CollectionLoadPageViewModel<T>>(this, "load");
                         await Shell.Current.Navigation.PopModalAsync();
                     }

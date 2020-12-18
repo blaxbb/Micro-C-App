@@ -296,6 +296,9 @@
     <PackageReference Include="Microsoft.UI.Xaml">
       <Version>2.4.3</Version>
     </PackageReference>
+    <PackageReference Include="Newtonsoft.Json">
+      <Version>12.0.3</Version>
+    </PackageReference>
     <PackageReference Include="QRCoder">
       <Version>1.4.1</Version>
     </PackageReference>

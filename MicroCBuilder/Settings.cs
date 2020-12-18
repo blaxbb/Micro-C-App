@@ -1,9 +1,9 @@
 ﻿using micro_c_lib.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Windows.Storage;
 using static MicroCLib.Models.BuildComponent;
@@ -32,12 +32,12 @@ namespace MicroCBuilder
         public static string StoreID() => Stores.AllStores[Store()];
         public static double TaxRate() => Exists(TAXRATE_KEY) ? Value<double>(TAXRATE_KEY) : 7.5d;
         public static DateTimeOffset LastUpdated() => Exists(LASTUPDATE_KEY) ? Value<DateTimeOffset>(LASTUPDATE_KEY) : DateTimeOffset.Now;
-        public static List<ComponentType> Categories() => Exists(CATEGORIES_KEY) ? JsonSerializer.Deserialize<List<ComponentType>>(Value<string>(CATEGORIES_KEY)) : new List<ComponentType>();
+        public static List<ComponentType> Categories() => Exists(CATEGORIES_KEY) ? JsonConvert.DeserializeObject<List<ComponentType>>(Value<string>(CATEGORIES_KEY)) : new List<ComponentType>();
 
 
         public static void Store(string store) => Set(STORE_KEY, store);
         public static void TaxRate(double tax) => Set(TAXRATE_KEY, tax);
         public static void LastUpdated(DateTimeOffset time) => Set(LASTUPDATE_KEY, time);
-        public static void Categories(List<ComponentType> components) => Set(CATEGORIES_KEY, JsonSerializer.Serialize(components));
+        public static void Categories(List<ComponentType> components) => Set(CATEGORIES_KEY, JsonConvert.SerializeObject(components));
     }
 }

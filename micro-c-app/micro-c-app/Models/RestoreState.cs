@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
-using System.Text.Json;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using micro_c_app.ViewModels;
 using MicroCLib.Models;
+using Newtonsoft.Json;
 
 namespace micro_c_app.Models
 {
@@ -32,7 +32,7 @@ namespace micro_c_app.Models
                 if (File.Exists(Path))
                 {
                     var text = File.ReadAllText(Path);
-                    Instance = JsonSerializer.Deserialize<RestoreState>(text);
+                    Instance = JsonConvert.DeserializeObject<RestoreState>(text);
                 }
             }
             catch(Exception e)
@@ -76,7 +76,7 @@ namespace micro_c_app.Models
         {
             try
             {
-                var text = JsonSerializer.Serialize(Instance, new JsonSerializerOptions() { WriteIndented = true });
+                var text = JsonConvert.SerializeObject(Instance, Formatting.Indented);
                 File.WriteAllText(Path, text);
             }
             catch(Exception e)

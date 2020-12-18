@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -6,7 +7,6 @@ using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace micro_c_app.Models
@@ -52,7 +52,7 @@ namespace micro_c_app.Models
                     var baseUrl = micro_c_app.Views.SettingsPage.LOCATOR_BASE_URL;
                     cookies.Add(new Uri(baseUrl), new Cookie(".AspNetCore.Identity.Application", token));
 
-                    var json = JsonSerializer.Serialize(this);
+                    var json = JsonConvert.SerializeObject(this);
                     var content = new StringContent(json, Encoding.UTF8, "application/json");
                     var result = await client.PostAsync($"{baseUrl}api/location", content);
                     if (result.IsSuccessStatusCode)
@@ -99,7 +99,7 @@ namespace micro_c_app.Models
                     if (result.IsSuccessStatusCode)
                     {
                         var response = await result.Content.ReadAsStringAsync();
-                        var ret = JsonSerializer.Deserialize<List<LocationEntry>>(response);
+                        var ret = JsonConvert.DeserializeObject<List<LocationEntry>>(response);
                         return ret;
 
                     }

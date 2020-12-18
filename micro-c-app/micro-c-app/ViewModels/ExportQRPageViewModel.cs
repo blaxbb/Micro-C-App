@@ -1,11 +1,11 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
 using MicroCLib.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text.Json;
 using System.Windows.Input;
 using Xamarin.Forms;
 
@@ -62,7 +62,7 @@ namespace micro_c_app.ViewModels
             for (int i = 0; i < Items.Count; i += MAX_ITEMS_PER_SCAN)
             {
                 var slice = Items.Skip(i).Take(MAX_ITEMS_PER_SCAN);
-                ItemsJson.Add(JsonSerializer.Serialize(slice.Select(item => new ExportItem(item))));
+                ItemsJson.Add(JsonConvert.SerializeObject(slice.Select(item => new ExportItem(item))));
             }
             TotalCodes = (int)Math.Ceiling(((float)Items.Count / MAX_ITEMS_PER_SCAN));
             OnPropertyChanged(nameof(CurrentJSON));

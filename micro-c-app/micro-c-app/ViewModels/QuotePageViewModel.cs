@@ -4,13 +4,14 @@ using micro_c_app.Views;
 using micro_c_app.Views.CollectionFile;
 using micro_c_lib.Models;
 using MicroCLib.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
+
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
@@ -210,7 +211,7 @@ namespace micro_c_app.ViewModels
 
                 Items.Clear();
 
-                var components = JsonSerializer.Deserialize<List<BuildComponent>>(flare.Data);
+                var components = JsonConvert.DeserializeObject<List<BuildComponent>>(flare.Data);
                 foreach(var comp in components)
                 {
                     if (comp.Item != null)
@@ -223,7 +224,7 @@ namespace micro_c_app.ViewModels
             ExportWeb = new Command(async () =>
             {
                 var components = Items.Select(i => new BuildComponent() { Item = i }).ToList();
-                var flare = new Flare(JsonSerializer.Serialize(components));
+                var flare = new Flare(JsonConvert.SerializeObject(components));
                 flare.Tag = $"micro-c-{SettingsPage.StoreID()}";
                 var success = await flare.Post("https://dataflare.bbarrettnas.duckdns.org/api/Flare");
                 if (success)

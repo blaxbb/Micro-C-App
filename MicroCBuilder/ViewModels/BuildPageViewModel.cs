@@ -11,7 +11,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Storage;
@@ -21,6 +20,7 @@ using Windows.UI.Xaml.Controls;
 using DataFlareClient;
 
 using static MicroCLib.Models.BuildComponent.ComponentType;
+using Newtonsoft.Json;
 
 namespace MicroCBuilder.ViewModels
 {
@@ -142,7 +142,7 @@ namespace MicroCBuilder.ViewModels
 
         private async void DoExportToWeb(object obj)
         {
-            var flare = new Flare(JsonSerializer.Serialize(Components.Where(c => c.Item != null).ToList()));
+            var flare = new Flare(JsonConvert.SerializeObject(Components.Where(c => c.Item != null).ToList()));
             flare.Tag = $"micro-c-{Settings.StoreID()}";
             var success = await flare.Post($"https://dataflare.bbarrettnas.duckdns.org/api/Flare");
 
@@ -180,7 +180,7 @@ namespace MicroCBuilder.ViewModels
             if (flare != null && flare.ShortCode.ToString() == shortCode)
             {
                 var json = flare.Data;
-                var imported = JsonSerializer.Deserialize<List<BuildComponent>>(json);
+                var imported = JsonConvert.DeserializeObject<List<BuildComponent>>(json);
                 if (imported.Count > 0)
                 {
                     DoReset(null);

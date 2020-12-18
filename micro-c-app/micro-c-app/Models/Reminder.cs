@@ -1,11 +1,11 @@
 ﻿using micro_c_app.Views;
 using MicroCLib.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace micro_c_app.Models
@@ -120,7 +120,7 @@ namespace micro_c_app.Models
 
             try
             {
-                var text = JsonSerializer.Serialize(AllReminders);
+                var text = JsonConvert.SerializeObject(AllReminders);
                 File.WriteAllText(Path, text);
             }
             catch (Exception e)
