@@ -14,6 +14,7 @@
         <ToolbarItem Text="Load" Order="Secondary" Command="{Binding Load}"/>
         <ToolbarItem Text="Save" Order="Secondary" Command="{Binding Save}"/>
         <ToolbarItem Text="Export" Order="Secondary" Command="{Binding Export}"/>
+        <ToolbarItem Text="Batch" Order="Secondary" Command="{Binding BatchScan}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical">

@@ -1,6 +1,7 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
 using micro_c_app.Views.CollectionFile;
+using micro_c_lib.Models;
 using MicroCLib.Models;
 using MicroCLib.Models.Reference;
 using System;
@@ -9,6 +10,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Http;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -34,6 +36,7 @@ namespace micro_c_app.ViewModels
         public ICommand Load { get; }
         public ICommand Export { get; }
         public ICommand OpenURL { get; }
+        public ICommand BatchScan { get; }
 
         public string? BuildURL { get => buildURL; set => SetProperty(ref buildURL, value); }
 
@@ -43,7 +46,8 @@ namespace micro_c_app.ViewModels
             {"Reset", Reset },
             {"Save", Save },
             {"Load", Load },
-            {"Export", Export }
+            {"Export", Export },
+            { "Batch", BatchScan }
         };
 
         public static event Action? CellUpdated;
@@ -189,6 +193,8 @@ namespace micro_c_app.ViewModels
                     await Launcher.TryOpenAsync(BuildURL);
                 }
             });
+
+            BatchScan = new Command(() => DoBatchScan());
         }
 
         private void DoLoad(CollectionLoadPageViewModel<BuildComponent> obj)
@@ -309,6 +315,103 @@ namespace micro_c_app.ViewModels
             Shell.Current.Navigation.PopAsync();
             CellUpdated?.Invoke();
             SaveRestore();
+        }
+
+        private void AddNewItem(Item item, ComponentType type)
+        {
+            var comp = new BuildComponent()
+            {
+                Type = type,
+                Item = item
+            };
+            Components.Add(comp);
+            comp.AddDependencies(FieldContainsDependency.Dependencies);
+            comp.OnDependencyStatusChanged();
+            UpdateProperties();
+        }
+
+        private void DoBatchScan()
+        {
+            SearchView.DoScan(Shell.Current.Navigation, async (result, progress) => {
+                System.Diagnostics.Debug.WriteLine(result);
+
+                try
+                {
+                    int queryAttempts = 0;
+                    //go back here on error, so that we can retry the request a few times
+                    const int NUM_RETRY_ATTEMPTS = 5;
+
+                    var storeId = SettingsPage.StoreID();
+
+                startQuery:
+                    queryAttempts++;
+
+                    try
+                    {
+                        var results = await Search.LoadQuery(result, storeId, null, Search.OrderByMode.match, 1, progress: progress);
+                        if (results.Items.Count == 1)
+                        {
+                            var stub = results.Items.First();
+                            var item = await Item.FromUrl(stub.URL, storeId, progress: progress);
+                            if (item != null)
+                            {
+                                //
+                                // Check if there is an open slot to put the item in
+                                //
+                                for(int i = item.Categories.Count - 1; i >= 0; i--)
+                                {
+                                    var cat = item.Categories[i];
+                                    var comp = Components.FirstOrDefault(c => c.Item == null && c.CategoryFilter == cat.Filter);
+                                    if(comp != null)
+                                    {
+                                        comp.Item = item;
+                                        comp.OnDependencyStatusChanged();
+                                        UpdateProperties();
+                                        return;
+                                    }
+                                }
+
+                                //
+                                // If there is no open component, add one
+                                //
+                                for (int i = item.Categories.Count - 1; i >= 0; i--)
+                                {
+                                    var cat = BuildComponent.TypeForCategoryFilter(item.Categories[i].Filter);
+                                    if(cat != ComponentType.None)
+                                    {
+                                        AddNewItem(item, cat);
+                                        return;
+                                    }
+                                }
+                                AddNewItem(item, ComponentType.Miscellaneous);
+                                return;
+                            }
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        if (queryAttempts > NUM_RETRY_ATTEMPTS)
+                        {
+                            await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
+                            return;
+                        }
+                    }
+                    if (queryAttempts > NUM_RETRY_ATTEMPTS)
+                    {
+                        await Shell.Current.DisplayAlert("Error", $"Failed to find item \"{result}\"", "Ok");
+                    }
+                    else
+                    {
+                        progress?.Report(new ProgressInfo($"Retrying query...{queryAttempts}/{NUM_RETRY_ATTEMPTS}", 0));
+                        await Task.Delay(1000);
+                        goto startQuery;
+                    }
+                }
+                catch (Exception e)
+                {
+                    await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
+                }
+            }, batchMode: true);
         }
 
         private void UpdateProperties()

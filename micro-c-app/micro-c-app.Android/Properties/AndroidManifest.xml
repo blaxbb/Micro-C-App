@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="201" android:versionName="2.0.1" package="com.bbarrett.micro_c_app" android:installLocation="auto">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="210" android:versionName="2.1.0" package="com.bbarrett.micro_c_app" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="29" />
 	<application android:label="Micro C App" android:theme="@style/MainTheme"></application>
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />

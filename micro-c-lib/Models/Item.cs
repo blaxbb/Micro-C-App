@@ -97,7 +97,7 @@ namespace MicroCLib.Models
                     item.Stock = "Soon";
                 }
 
-                var categories = ParseCategories(body);
+                item.Categories = ParseCategories(body);
             }
 
             token?.ThrowIfCancellationRequested();
