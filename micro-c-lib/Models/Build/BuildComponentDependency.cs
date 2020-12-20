@@ -1,55 +1,16 @@
-﻿using System.Collections.Generic;
-using static MicroCLib.Models.BuildComponent;
+﻿using micro_c_lib.Models.Build;
+using System.Collections.Generic;
 using static MicroCLib.Models.BuildComponent;
 
 namespace MicroCLib.Models
 {
-    public abstract class BuildComponentDependency
+    public abstract class BuildComponentDependency : IBuildComponentDependency
     {
         public static List<BuildComponentDependency> Dependencies { get; }
-        public virtual string ErrorText => "";
-        public BuildComponent? First { get; set; }
-        public BuildComponent? Second { get; set; }
-        public BuildComponent.ComponentType FirstType { get; set; }
-        public BuildComponent.ComponentType SecondType { get; set; }
 
-        public string FirstFieldName { get; set; } = "";
-        public string SecondFieldName { get; set; } = "";
-
-        public string? FirstValue => First?.Item?.Specs?[FirstFieldName];
-        public string? SecondValue => Second?.Item?.Specs?[SecondFieldName];
-
-        public bool Applicable(BuildComponent first, BuildComponent second)
-        {
-            return (FirstType == first.Type && SecondType == second.Type) ||
-                    (FirstType == second.Type && SecondType == first.Type);
-        }
-        public abstract BuildComponentDependency Clone();
-        public bool Compatible()
-        {
-            return Compatible(First!, Second!);
-        }
-        public abstract bool Compatible(BuildComponent a, BuildComponent b);
-        public bool SetRelevant(BuildComponent comp)
-        {
-            if (comp.Type == FirstType)
-            {
-                First = comp;
-            }
-            else if (comp.Type == SecondType)
-            {
-                Second = comp;
-            }
-            else
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        public abstract string HintText();
-        public BuildComponent? Other(BuildComponent comp) => First == comp ? Second : First;
+        //public abstract string HintText();
+        public abstract List<DependencyResult> HasErrors(List<Item> items);
+        public abstract string? HintText(List<Item> items, ComponentType type);
 
         static BuildComponentDependency()
         {
@@ -62,6 +23,7 @@ namespace MicroCLib.Models
                 //Mobo -> Other
                 new FieldContainsDependency(ComponentType.Motherboard, "Memory Type", ComponentType.RAM, "Memory Speed (MHz)"),
                 new FieldContainsDependency(ComponentType.Motherboard, "Form Factor", ComponentType.Case, "Motherboard Support"),
+                new FieldQuantityDependency(ComponentType.RAM, ComponentType.Motherboard, "Memory Slots", "Number of Modules"),
 
                 new FieldContainsDependency(ComponentType.Motherboard, "M.2 Port Type", ComponentType.SSD, "Form Factor"),
 

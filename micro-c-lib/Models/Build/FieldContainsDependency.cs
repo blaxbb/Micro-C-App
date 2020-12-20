@@ -1,40 +1,39 @@
-﻿using Newtonsoft.Json;
+﻿using micro_c_lib.Models.Build;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using static MicroCLib.Models.BuildComponent;
 
 namespace MicroCLib.Models
 {
     public class FieldContainsDependency : BuildComponentDependency
     {
-        [JsonIgnore]
-        public override string ErrorText => $"({FirstFieldName}) {FirstValue?.Replace('\n', ',')} != ({SecondFieldName}) {SecondValue?.Replace('\n', ',')}";
+        //public override string HintText()
+        //{
+        //    if (First?.Item == null && Second?.Item == null)
+        //    {
+        //        return "";
+        //    }
+        //    if (First?.Item == null)
+        //    {
+        //        return $"{FirstFieldName} = {SecondValue?.Replace('\n', ',') ?? ""}";
+        //    }
+        //    else
+        //    {
+        //        return $"{SecondFieldName} = {FirstValue?.Replace('\n', ',') ?? ""}";
+        //    }
+        //}
+        public BuildComponent.ComponentType FirstType { get; set; }
+        public BuildComponent.ComponentType SecondType { get; set; }
 
-        public override string HintText()
-        {
-            if (First?.Item == null && Second?.Item == null)
-            {
-                return "";
-            }
-            if (First?.Item == null)
-            {
-                return $"{FirstFieldName} = {SecondValue?.Replace('\n', ',') ?? ""}";
-            }
-            else
-            {
-                return $"{SecondFieldName} = {FirstValue?.Replace('\n', ',') ?? ""}";
-            }
-        }
+        public string FirstFieldName { get; set; } = "";
+        public string SecondFieldName { get; set; } = "";
 
         public override string ToString()
         {
             return $"{FirstType}({FirstFieldName}) === {SecondType}({SecondFieldName})";
-        }
-
-        public override BuildComponentDependency Clone()
-        {
-            return new FieldContainsDependency(FirstType, FirstFieldName, SecondType, SecondFieldName);
         }
 
         public FieldContainsDependency()
@@ -50,20 +49,71 @@ namespace MicroCLib.Models
             SecondFieldName = secondField;
         }
 
-        public override bool Compatible(BuildComponent a, BuildComponent b)
+        public override List<DependencyResult> HasErrors(List<Item> items)
+        {
+            var errors = new List<DependencyResult>();
+            for (int i = 0; i < items.Count; i++)
+            {
+                var primary = items[i];
+                if (primary.ComponentType == FirstType || primary.ComponentType == SecondType)
+                {
+                    for (int j = i + 1; j < items.Count; j++)
+                    {
+                        var secondary = items[j];
+                        if ((secondary.ComponentType == FirstType || secondary.ComponentType == SecondType) && secondary.ComponentType != primary.ComponentType)
+                        {
+                            if(!Compatible(primary, secondary))
+                            {
+                                errors.Add(new DependencyResult(primary, $"{GetValue(primary, FirstFieldName)} != {GetValue(secondary, SecondFieldName)} on {secondary.Name}"));
+                                errors.Add(new DependencyResult(secondary, $"{GetValue(secondary, SecondFieldName)} != {GetValue(primary, FirstFieldName)} on {primary.Name}"));
+                            }
+                        }
+                    }
+                }
+            }
+            return errors;
+        }
+
+        public override string? HintText(List<Item> items, ComponentType type)
+        {
+            if(type == FirstType)
+            {
+                var hints = items.Where(i => i.ComponentType == SecondType).Select(i => $"Must have {FirstFieldName} = {SecondFieldName} ({GetValue(i, SecondFieldName)})");
+                return string.Join("\n", hints);
+            }
+            if (type == SecondType)
+            {
+                var hints = items.Where(i => i.ComponentType == FirstType).Select(i => $"Must have {SecondFieldName} = {FirstFieldName} ({GetValue(i, FirstFieldName)})");
+                return string.Join("\n", hints);
+            }
+
+            return null;
+        }
+
+        private static string GetValue(Item item, string field)
+        {
+            if (item == null || item.Specs == null || !item.Specs.ContainsKey(field))
+            {
+                return null;
+            }
+
+            return item.Specs[field];
+        }
+
+        public bool Compatible(Item a, Item b)
         {
             if (a == null || b == null)
             {
-                return false;
+                return true;
             }
 
-            BuildComponent first, second;
-            if (a.Type == FirstType && b.Type == SecondType)
+            Item first, second;
+            if (a.ComponentType == FirstType && b.ComponentType == SecondType)
             {
                 first = a;
                 second = b;
             }
-            else if (a.Type == SecondType && b.Type == FirstType)
+            else if (a.ComponentType == SecondType && b.ComponentType == FirstType)
             {
                 first = b;
                 second = a;
@@ -73,28 +123,26 @@ namespace MicroCLib.Models
                 return true;
             }
 
-            if (a.Item == null || b.Item == null)
+            if (!first.Specs.ContainsKey(FirstFieldName))
             {
                 return true;
             }
 
-            if ((!first.Item?.Specs.ContainsKey(FirstFieldName)) ?? true)
-            {
-                return false;
-            }
-
-            if ((!second.Item?.Specs.ContainsKey(SecondFieldName)) ?? true)
+            if (!second.Specs.ContainsKey(SecondFieldName))
             {
                 return true;
             }
 
-            if (FirstValue == null || SecondValue == null)
+            string firstValue = first.Specs[FirstFieldName];
+            string secondValue = second.Specs[SecondFieldName];
+
+            if (firstValue == null || secondValue == null)
             {
                 return true;
             }
 
-            var secondSpecLines = SecondValue.Split('\n');
-            return FirstValue.Split('\n').Any(s => secondSpecLines.Any(l => l.Contains(s)));
+            var secondSpecLines = secondValue.Split('\n');
+            return firstValue.Split('\n').Any(s => secondSpecLines.Any(l => l.Contains(s)));
         }
     }
 }

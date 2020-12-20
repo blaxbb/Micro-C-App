@@ -1,15 +1,22 @@
-﻿using Newtonsoft.Json;
+﻿using micro_c_lib.Models.Build;
+using Newtonsoft.Json;
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace MicroCLib.Models
 {
-    internal class FieldComparisonDependency : BuildComponentDependency
+    public class FieldComparisonDependency : BuildComponentDependency, IBuildComponentDependency
     {
-        public CompareMode Mode { get; set; }
+        public BuildComponent.ComponentType FirstType { get; set; }
+        public BuildComponent.ComponentType SecondType { get; set; }
 
-        [JsonIgnore]
-        public override string ErrorText => $"{FirstFieldName} {Mode} {SecondFieldName}";
+        public string FirstFieldName { get; set; } = "";
+        public string SecondFieldName { get; set; } = "";
+
+        public CompareMode Mode { get; set; }
+        public bool FailOnEmpty { get; set; }
 
         public enum CompareMode
         {
@@ -28,49 +35,149 @@ namespace MicroCLib.Models
             Mode = mode;
         }
 
-        public override BuildComponentDependency Clone()
+        //public override string HintText()
+        //{
+        //    return $"{FirstFieldName} {Mode} {SecondFieldName}";
+        //}
+
+        public override string HintText(List<Item> items, BuildComponent.ComponentType type)
         {
-            return new FieldComparisonDependency(FirstType, FirstFieldName, SecondType, SecondFieldName, Mode);
+            if(type == FirstType)
+            {
+                var secondaryItems = items.Where(i => i.ComponentType == SecondType);
+                if(secondaryItems.Count() == 0)
+                {
+                    return null;
+                }
+                var secondarySum = secondaryItems.Sum(i => GetValue(i, SecondFieldName));
+
+                return $"Must have {FirstFieldName} {GetModeString(Mode)} {secondarySum} ({SecondType})";
+            }
+            if(type == SecondType)
+            {
+                var primaryItems = items.Where(i => i.ComponentType == FirstType);
+                if (primaryItems.Count() == 0)
+                {
+                    return null;
+                }
+                var primarySum = primaryItems.Sum(i => GetValue(i, FirstFieldName));
+                return $"Must have {SecondFieldName} {GetModeString(Reverse(Mode))} {primarySum} ({FirstType})";
+            }
+
+            return null;
         }
 
-        public override bool Compatible(BuildComponent a, BuildComponent b)
+        public static bool Compare(float f1, float f2, CompareMode mode)
         {
-            if(a.Item == null || b.Item == null)
+            switch (mode)
             {
-                return true;
+                case CompareMode.LessThan:
+                    return f1 < f2;
+                case CompareMode.LessThanOrEqual:
+                    return f1 <= f2;
+                case CompareMode.Equal:
+                    return f1 == f2;
+                case CompareMode.GreaterThanOrEqual:
+                    return f1 >= f2;
+                case CompareMode.GreaterThan:
+                    return f1 > f2;
+                default:
+                    return false;
             }
+        }
 
-            if(SecondValue == null || FirstValue == null)
+        private static string GetModeString(CompareMode mode)
+        {
+            switch (mode)
             {
-                return false;
+                case CompareMode.LessThan:
+                    return "≺";
+                case CompareMode.LessThanOrEqual:
+                    return "≤";
+                case CompareMode.Equal:
+                    return "=";
+                case CompareMode.GreaterThanOrEqual:
+                    return "≥";
+                case CompareMode.GreaterThan:
+                    return "≻";
+                default:
+                    return "?";
             }
+        }
 
-            var m1 = Regex.Match(FirstValue, "([\\d\\.]+)").Groups[1].Value;
-            var m2 = Regex.Match(SecondValue, "([\\d\\.]+)").Groups[1].Value;
-
-            if(float.TryParse(m1, out float f1) && float.TryParse(m2, out float f2))
+        private static CompareMode Reverse(CompareMode mode)
+        {
+            switch (mode)
             {
-                switch (Mode)
+                case CompareMode.LessThan:
+                    return CompareMode.GreaterThan;
+                case CompareMode.LessThanOrEqual:
+                    return CompareMode.GreaterThanOrEqual;
+                case CompareMode.Equal:
+                    return CompareMode.Equal;
+                case CompareMode.GreaterThanOrEqual:
+                    return CompareMode.LessThanOrEqual;
+                case CompareMode.GreaterThan:
+                    return CompareMode.LessThan;
+                default:
+                    return mode;
+            }
+        }
+
+        public override List<DependencyResult> HasErrors(List<Item> items)
+        {
+            var primaryItems = items.Where(i => i.ComponentType == FirstType);
+            var secondaryItems = items.Where(i => i.ComponentType == SecondType);
+
+            if (FailOnEmpty)
+            {
+                if (primaryItems.Count(i => i.Specs.ContainsKey(FirstFieldName)) == 0)
                 {
-                    case CompareMode.LessThan:
-                        return f1 < f2;
-                    case CompareMode.LessThanOrEqual:
-                        return f1 <= f2;
-                    case CompareMode.Equal:
-                        return f1 == f2;
-                    case CompareMode.GreaterThanOrEqual:
-                        return f1 >= f2;
-                    case CompareMode.GreaterThan:
-                        return f1 > f2;
+                    return primaryItems.Select(i => new DependencyResult(i, $"Cannot determine value of {FirstFieldName}"))
+                            .Concat(
+                                secondaryItems.Select(i => new DependencyResult(i, $"Cannot determine value of {FirstFieldName} on {FirstType}"))
+                            ).ToList();
+                }
+
+                if (secondaryItems.Count(i => i.Specs.ContainsKey(SecondFieldName)) == 0)
+                {
+                    return secondaryItems.Select(i => new DependencyResult(i, $"Cannot determine value of {SecondFieldName}"))
+                            .Concat(
+                                primaryItems.Select(i => new DependencyResult(i, $"Cannot determine value of {SecondFieldName} on {SecondType}"))
+                            ).ToList();
                 }
             }
 
-            return false;
+            var primarySum = primaryItems.Sum(i => GetValue(i, FirstFieldName));
+            var secondarySum = secondaryItems.Sum(i => GetValue(i, SecondFieldName));
+
+            if (!Compare(primarySum, secondarySum, Mode))
+            {
+                return secondaryItems.Concat(primaryItems)
+                    .Select(i =>
+                        new DependencyResult(i, $"{FirstFieldName} ({primarySum}) {GetModeString(Mode)} {SecondFieldName} ({secondarySum})")
+                    ).ToList();
+            }
+
+
+            return new List<DependencyResult>();
         }
 
-        public override string HintText()
+        private static float GetValue(Item item, string field)
         {
-            return $"{FirstFieldName} {Mode} {SecondFieldName}";
+            if (item == null || item.Specs == null || !item.Specs.ContainsKey(field))
+            {
+                return 0;
+            }
+
+            var spec = item.Specs[field];
+            var specNumber = Regex.Match(spec, "([\\d\\.]+)").Groups[1].Value;
+            if (float.TryParse(specNumber, out float val))
+            {
+                return val;
+            }
+
+            return 0;
         }
     }
 }

@@ -38,7 +38,7 @@
                                         <Label Text="{Binding Item.Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
                                         <Label Text="{Binding Item.Stock}" HorizontalOptions="EndAndExpand"/>
                                     </StackLayout>
-                                    <Label Text="{Binding HintText}" IsVisible="{Binding HintText, Converter={StaticResource StringNullOrEmptyConverter}}"/>
+                                    <Label Text="{Binding HintText}" IsVisible="{Binding HintText, Converter={StaticResource StringNullOrEmptyConverter}}" BackgroundColor="Orange" TextColor="White"/>
                                     <Label Text="{Binding ErrorText}" IsVisible="{Binding ErrorText, Converter={StaticResource StringNullOrEmptyConverter}}" BackgroundColor="Red" TextColor="White"/>
                                 </StackLayout>
                             </StackLayout>

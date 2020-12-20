@@ -14,9 +14,6 @@ namespace MicroCLib.Models
         private Item? item;
         public Item? Item { get => item; set { SetProperty(ref item, value); OnPropertyChanged(nameof(ComponentLabel)); } }
 
-        [JsonIgnore]
-        public List<BuildComponentDependency> Dependencies { get; }
-
         public enum ComponentType
         {
             BuildService,
@@ -86,38 +83,18 @@ namespace MicroCLib.Models
         [JsonIgnore]
         public string ComponentLabel => Item == null ? Type.ToString() : $"{Item.Name}";
         [JsonIgnore]
-        public string ErrorText => String.Join("\n", Dependencies.Where(d => !d.Compatible()).Select(d => d.ErrorText));
+        //public string ErrorText => String.Join("\n", Dependencies.Where(d => !d.Compatible()).Select(d => d.ErrorText));
+        private string errorText;
+        private string hintText;
+
         [JsonIgnore]
-        public string HintText => Item == null ? String.Join("\n", Dependencies.Where(d => d.Other(this)?.item != null).Select(d => d.HintText())) : "";
+        public string ErrorText { get => errorText; set => SetProperty(ref errorText, value); }
+        [JsonIgnore]
+        public string HintText { get => hintText; set => SetProperty(ref hintText, value); }
 
         public BuildComponent()
         {
-            Dependencies = new List<BuildComponentDependency>();
-        }
-
-        public void OnDependencyStatusChanged()
-        {
-            OnPropertyChanged(nameof(ErrorText));
-            OnPropertyChanged(nameof(HintText));
-        }
-
-        public void AddDependencies(List<BuildComponentDependency> dependencies)
-        {
-            foreach (var dep in dependencies)
-            {
-                AddDependency(dep);
-
-            }
-        }
-
-        public void AddDependency(BuildComponentDependency dependency)
-        {
-            if (dependency.SetRelevant(this))
-            {
-                Dependencies.Add(dependency);
-            }
-
-
+            
         }
 
         public bool PlanApplicable()
@@ -351,7 +328,7 @@ namespace MicroCLib.Models
                         var componentText = match.Groups[1].Value;
                         //collect all of the items in that section
                         var matches = Regex.Matches(componentText, "id=\"selector_(.*?)\"");
-                        if(matches.Count > 0)
+                        if (matches.Count > 0)
                         {
                             var selectors = matches.OfType<Match>().Select(m => m.Groups[1]);
 

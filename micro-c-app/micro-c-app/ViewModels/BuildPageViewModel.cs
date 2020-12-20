@@ -71,12 +71,8 @@ namespace micro_c_app.ViewModels
             else
             {
                 Components = new ObservableCollection<BuildComponent>(RestoreState.Instance.BuildComponents);
-                foreach (var comp in Components)
-                {
-                    comp.AddDependencies(FieldContainsDependency.Dependencies);
-                }
             }
-
+            UpdateProperties();
             ComponentSelectClicked = new Command<BuildComponent>(async (BuildComponent comp) =>
             {
                 var componentPage = new BuildComponentPage();
@@ -204,11 +200,6 @@ namespace micro_c_app.ViewModels
             {
                 Components.Add(i);
             }
-
-            foreach (var comp in Components)
-            {
-                comp.AddDependencies(FieldContainsDependency.Dependencies);
-            }
         }
 
         void SetupDefaultComponents()
@@ -218,7 +209,6 @@ namespace micro_c_app.ViewModels
                 if (BuildComponent.MaxNumberPerType(t) > 0)
                 {
                     var comp = new BuildComponent() { Type = t };
-                    comp.AddDependencies(FieldContainsDependency.Dependencies);
                     Components.Add(comp);
                 }
             }
@@ -283,12 +273,6 @@ namespace micro_c_app.ViewModels
                 {
                     Type = updated.Component.Type,
                 };
-                foreach (var d in updated.Component.Dependencies)
-                {
-                    var clone = d.Clone();
-                    newItem.AddDependency(clone);
-                    d.Other(updated.Component)?.AddDependency(clone);
-                }
                 var index = Components.IndexOf(updated.Component);
                 Components.Insert(index + 1, newItem);
             }
@@ -299,22 +283,9 @@ namespace micro_c_app.ViewModels
 
         private void BuildComponentSelected(BuildComponentViewModel updated)
         {
-            if(updated?.Component?.Dependencies == null)
-            {
-                return;
-            }
-
-            foreach (var depend in updated.Component.Dependencies)
-            {
-                depend.Other(updated.Component)?.OnDependencyStatusChanged();
-            }
-
-            CurrentSubTotal = Subtotal;
-            updated.Component.OnDependencyStatusChanged();
+            //CurrentSubTotal = Subtotal;
             UpdateProperties();
             Shell.Current.Navigation.PopAsync();
-            CellUpdated?.Invoke();
-            SaveRestore();
         }
 
         private void AddNewItem(Item item, ComponentType type)
@@ -325,8 +296,6 @@ namespace micro_c_app.ViewModels
                 Item = item
             };
             Components.Add(comp);
-            comp.AddDependencies(FieldContainsDependency.Dependencies);
-            comp.OnDependencyStatusChanged();
             UpdateProperties();
         }
 
@@ -365,7 +334,6 @@ namespace micro_c_app.ViewModels
                                     if(comp != null)
                                     {
                                         comp.Item = item;
-                                        comp.OnDependencyStatusChanged();
                                         UpdateProperties();
                                         return;
                                     }
@@ -416,6 +384,42 @@ namespace micro_c_app.ViewModels
 
         private void UpdateProperties()
         {
+            foreach(var comp in Components)
+            {
+                comp.ErrorText = "";
+                comp.HintText = "";
+            }
+            foreach(var dep in BuildComponentDependency.Dependencies)
+            {
+                var items = Components.Where(comp => comp.Item != null).Select(comp => comp.Item).ToList();
+                var errors = dep.HasErrors(items);
+                foreach(var item in errors)
+                {
+                    var matchingComp = Components.FirstOrDefault(comp => comp.Item == item.Primary);
+                    matchingComp.ErrorText += item.Text.Replace("\n", ", ") + "\n\n";
+                }
+
+                foreach (var comp in Components)
+                {
+                    if(comp.Item != null)
+                    {
+                        continue;
+                    }
+
+                    var hint = dep.HintText(items, comp.Type);
+                    if (!string.IsNullOrWhiteSpace(hint))
+                    {
+                        comp.HintText += hint.Replace("\n", ", ") + "\n\n";
+                    }
+                }
+            }
+
+
+
+            CurrentSubTotal = Subtotal;
+            CellUpdated?.Invoke();
+            SaveRestore();
+
             OnPropertyChanged(nameof(Components));
             OnPropertyChanged(nameof(Subtotal));
             OnPropertyChanged(nameof(TaxedTotal));

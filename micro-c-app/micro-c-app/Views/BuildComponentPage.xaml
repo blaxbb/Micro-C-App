@@ -41,7 +41,11 @@
                         <StackLayout x:Name="SpecsStackLayout"/>
                     </StackLayout>
                 </ScrollView>
-                <Label Text="Select an item" IsVisible="{Binding ItemNotExists}"/>
+                <ScrollView IsVisible="{Binding ItemNotExists}">
+                    <StackLayout Orientation="Vertical">
+                        <Label Text="{Binding Component.HintText}"/>
+                    </StackLayout>
+                </ScrollView>
             </StackLayout>
         </Grid>
     </ContentPage.Content>

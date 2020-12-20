@@ -13,6 +13,7 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
+using static MicroCLib.Models.BuildComponent;
 
 namespace MicroCLib.Models
 {
@@ -40,6 +41,7 @@ namespace MicroCLib.Models
         public string Brand { get => brand; set => SetProperty(ref brand, value); }
         public bool ComingSoon { get; set; }
         public List<CategoryInfo> Categories { get; private set; }
+        public ComponentType ComponentType { get; set; }
 
         public Item()
         {
@@ -98,6 +100,7 @@ namespace MicroCLib.Models
                 }
 
                 item.Categories = ParseCategories(body);
+                item.ComponentType = GetPrimaryType(item.Categories);
             }
 
             token?.ThrowIfCancellationRequested();
@@ -280,6 +283,21 @@ namespace MicroCLib.Models
             }
 
             return new List<CategoryInfo>();
+        }
+
+        public static ComponentType GetPrimaryType(List<CategoryInfo> categories)
+        {
+            for(int i = categories.Count - 1; i >= 0; i--)
+            {
+                var cat = categories[i];
+                var type = BuildComponent.TypeForCategoryFilter(cat.Filter);
+                if(type != ComponentType.None)
+                {
+                    return type;
+                }
+            }
+
+            return ComponentType.Miscellaneous;
         }
 
         public static string ParseIDFromURL(string url)
