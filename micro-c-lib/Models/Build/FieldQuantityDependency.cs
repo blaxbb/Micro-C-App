@@ -11,10 +11,10 @@ namespace MicroCLib.Models
         public BuildComponent.ComponentType subType { get; set; }
         public BuildComponent.ComponentType containerType { get; set; }
 
-        public string subTypeFieldName { get; set; } = "";
-        public string containerFieldName { get; set; } = "";
+        public string? subTypeFieldName { get; set; }
+        public string? containerFieldName { get; set; }
 
-        public FieldQuantityDependency(BuildComponent.ComponentType subItem, BuildComponent.ComponentType containerItem, string containerField, string subField = null)
+        public FieldQuantityDependency(BuildComponent.ComponentType subItem, BuildComponent.ComponentType containerItem, string? containerField = null, string? subField = null)
         {
             subType = subItem;
             containerType = containerItem;
@@ -31,8 +31,15 @@ namespace MicroCLib.Models
                 {
                     return null;
                 }
-
-                var containerSlots = containerItems.Sum(i => GetValue(i, containerFieldName));
+                int containerSlots;
+                if (!string.IsNullOrWhiteSpace(containerFieldName))
+                {
+                    containerSlots = containerItems.Sum(i => GetValue(i, containerFieldName));
+                }
+                else
+                {
+                    containerSlots = containerItems.Count();
+                }
 
                 return $"{containerType} has {containerSlots} available for {subType}";
             }
@@ -66,9 +73,17 @@ namespace MicroCLib.Models
             var containerItems = items.Where(i => i.ComponentType == containerType);
             var subItems = items.Where(i => i.ComponentType == subType);
 
-            var containerSlots = containerItems.Sum(i => GetValue(i, containerFieldName));
-            int subItemCount;
+            int containerSlots;
+            if (!string.IsNullOrWhiteSpace(containerFieldName))
+            {
+                containerSlots = containerItems.Sum(i => GetValue(i, containerFieldName));
+            }
+            else
+            {
+                containerSlots = containerItems.Count();
+            }
 
+            int subItemCount;
             if(!string.IsNullOrWhiteSpace(subTypeFieldName))
             {
                 subItemCount = subItems.Sum(i => GetValue(i, subTypeFieldName));

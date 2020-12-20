@@ -25,8 +25,14 @@ namespace MicroCLib.Models
                 new FieldContainsDependency(ComponentType.Motherboard, "Form Factor", ComponentType.Case, "Motherboard Support"),
                 new FieldQuantityDependency(ComponentType.RAM, ComponentType.Motherboard, "Memory Slots", "Number of Modules"),
                 new FieldComparisonDependency(ComponentType.Motherboard, "Max Memory Supported", ComponentType.RAM, "Memory Capacity", FieldComparisonDependency.CompareMode.GreaterThanOrEqual),
+                new FieldQuantityDependency(ComponentType.OperatingSystem, ComponentType.Motherboard),
 
                 new FieldContainsDependency(ComponentType.Motherboard, "M.2 Port Type", ComponentType.SSD, "Form Factor"),
+
+                //Case -> Other
+                new FieldComparisonDependency(ComponentType.Case, "Max Video Card Length", ComponentType.GPU, "Video Card Length", FieldComparisonDependency.CompareMode.GreaterThan),
+                new FieldComparisonDependency(ComponentType.Case, "Max CPU Heatsink Height", ComponentType.CPUCooler, "Heatsink Height", FieldComparisonDependency.CompareMode.GreaterThan),
+                new FieldComparisonDependency(ComponentType.Case, "Max Power Supply Depth", ComponentType.PowerSupply, "Power Supply Depth", FieldComparisonDependency.CompareMode.GreaterThan),
 
                 new FieldComparisonDependency(ComponentType.GPU, "Recommended Power Supply", ComponentType.PowerSupply, "Wattage", FieldComparisonDependency.CompareMode.LessThanOrEqual),
 
