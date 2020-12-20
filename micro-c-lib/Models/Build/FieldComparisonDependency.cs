@@ -42,26 +42,32 @@ namespace MicroCLib.Models
 
         public override string HintText(List<Item> items, BuildComponent.ComponentType type)
         {
+            if(type != FirstType && type != SecondType)
+            {
+                return null;
+            }
+
+            var secondaryItems = items.Where(i => i.ComponentType == SecondType);
+            var primaryItems = items.Where(i => i.ComponentType == FirstType);
+            var primarySum = primaryItems.Sum(i => GetValue(i, FirstFieldName));
+            var secondarySum = secondaryItems.Sum(i => GetValue(i, SecondFieldName));
+
             if(type == FirstType)
             {
-                var secondaryItems = items.Where(i => i.ComponentType == SecondType);
                 if(secondaryItems.Count() == 0)
                 {
                     return null;
                 }
-                var secondarySum = secondaryItems.Sum(i => GetValue(i, SecondFieldName));
 
-                return $"Must have {FirstFieldName} {GetModeString(Mode)} {secondarySum} ({SecondType})";
+                return $"Must have {FirstFieldName} {GetModeString(Mode)} {secondarySum} ({SecondType}) (Currently {primarySum})";
             }
             if(type == SecondType)
             {
-                var primaryItems = items.Where(i => i.ComponentType == FirstType);
                 if (primaryItems.Count() == 0)
                 {
                     return null;
                 }
-                var primarySum = primaryItems.Sum(i => GetValue(i, FirstFieldName));
-                return $"Must have {SecondFieldName} {GetModeString(Reverse(Mode))} {primarySum} ({FirstType})";
+                return $"Must have {SecondFieldName} {GetModeString(Reverse(Mode))} {primarySum} ({FirstType}) (Currently {secondarySum})";
             }
 
             return null;

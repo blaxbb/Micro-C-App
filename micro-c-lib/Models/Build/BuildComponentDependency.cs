@@ -24,6 +24,7 @@ namespace MicroCLib.Models
                 new FieldContainsDependency(ComponentType.Motherboard, "Memory Type", ComponentType.RAM, "Memory Speed (MHz)"),
                 new FieldContainsDependency(ComponentType.Motherboard, "Form Factor", ComponentType.Case, "Motherboard Support"),
                 new FieldQuantityDependency(ComponentType.RAM, ComponentType.Motherboard, "Memory Slots", "Number of Modules"),
+                new FieldComparisonDependency(ComponentType.Motherboard, "Max Memory Supported", ComponentType.RAM, "Memory Capacity", FieldComparisonDependency.CompareMode.GreaterThanOrEqual),
 
                 new FieldContainsDependency(ComponentType.Motherboard, "M.2 Port Type", ComponentType.SSD, "Form Factor"),
 

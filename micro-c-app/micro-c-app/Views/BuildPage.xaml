@@ -31,15 +31,15 @@
                                 <Button Text="{Binding ComponentLabel}" Command="{Binding ComponentSelectClicked, Source={RelativeSource AncestorType={x:Type vm:BuildPageViewModel}}}" CommandParameter="{Binding .}"/>
                                 <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="Center" Margin="20,0,20,0">
                                     <StackLayout Orientation="Horizontal" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}">
-                                        <Label Text="{Binding Item.Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" IsVisible="{Binding Path=Item.SKU}"/>
-                                        <Label Text="{Binding Item.SKU}" HorizontalOptions="EndAndExpand"/>
+                                        <Label Text="{Binding Item.Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" IsVisible="{Binding Path=Item.SKU}" InputTransparent="True"/>
+                                        <Label Text="{Binding Item.SKU}" HorizontalOptions="EndAndExpand" InputTransparent="True"/>
                                     </StackLayout>
                                     <StackLayout Orientation="Horizontal" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}">
-                                        <Label Text="{Binding Item.Specs[UPC]}" HorizontalOptions="StartAndExpand"/>
-                                        <Label Text="{Binding Item.Stock}" HorizontalOptions="EndAndExpand"/>
+                                        <Label Text="{Binding Item.Specs[UPC]}" InputTransparent="True" HorizontalOptions="StartAndExpand"/>
+                                        <Label Text="{Binding Item.Stock}" InputTransparent="True" HorizontalOptions="EndAndExpand"/>
                                     </StackLayout>
-                                    <Label Text="{Binding HintText}" IsVisible="{Binding HintText, Converter={StaticResource StringNullOrEmptyConverter}}" BackgroundColor="Orange" TextColor="White"/>
-                                    <Label Text="{Binding ErrorText}" IsVisible="{Binding ErrorText, Converter={StaticResource StringNullOrEmptyConverter}}" BackgroundColor="Red" TextColor="White"/>
+                                    <Label Text="{Binding HintText}" IsVisible="{Binding HintText, Converter={StaticResource StringNullOrEmptyConverter}}" InputTransparent="True" BackgroundColor="Orange" TextColor="White"/>
+                                    <Label Text="{Binding ErrorText}" IsVisible="{Binding ErrorText, Converter={StaticResource StringNullOrEmptyConverter}}" InputTransparent="True" BackgroundColor="Red" TextColor="White"/>
                                 </StackLayout>
                             </StackLayout>
                         </ViewCell>
