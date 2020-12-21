@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace micro_c_lib.Tests
 {
@@ -17,9 +18,12 @@ namespace micro_c_lib.Tests
 
         public SearchTests()
         {
-            var task = Search.LoadQuery(QUERY, STORE, null, Search.OrderByMode.pricelow, 1);
-            task.Wait();
-            results = task.Result;
+            Task.Run(
+                async () =>
+                {
+                    results = await Search.LoadQuery(QUERY, STORE, null, Search.OrderByMode.pricelow, 1);
+                }
+            ).Wait();
         }
 
         [TestMethod]
