@@ -17,7 +17,9 @@ namespace micro_c_lib.Tests
 
         public SearchTests()
         {
-            results = Search.LoadQuery(QUERY, STORE, null, Search.OrderByMode.pricelow, 1).Result;
+            var task = Search.LoadQuery(QUERY, STORE, null, Search.OrderByMode.pricelow, 1);
+            task.Wait();
+            results = task.Result;
         }
 
         [TestMethod]
