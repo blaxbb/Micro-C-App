@@ -18,6 +18,7 @@ namespace MicroCLib.Models
         public CompareMode Mode { get; set; }
         public bool FailOnEmpty { get; set; }
 
+
         public enum CompareMode
         {
             LessThan,
@@ -26,7 +27,8 @@ namespace MicroCLib.Models
             GreaterThanOrEqual,
             GreaterThan
         }
-        public FieldComparisonDependency(BuildComponent.ComponentType first, string fieldFirst, BuildComponent.ComponentType second, string fieldSecond, CompareMode mode)
+        public FieldComparisonDependency(string name, BuildComponent.ComponentType first, string fieldFirst, BuildComponent.ComponentType second, string fieldSecond, CompareMode mode)
+            : base(name)
         {
             FirstType = first;
             SecondType = second;
@@ -153,6 +155,19 @@ namespace MicroCLib.Models
                             ).ToList();
                 }
             }
+            else
+            {
+                if (primaryItems.Count(i => i.Specs.ContainsKey(FirstFieldName)) == 0)
+                {
+                    return new List<DependencyResult>();
+                }
+
+                if (secondaryItems.Count(i => i.Specs.ContainsKey(SecondFieldName)) == 0)
+                {
+                    return new List<DependencyResult>();
+                }
+            }
+
 
             var primarySum = primaryItems.Sum(i => GetValue(i, FirstFieldName));
             var secondarySum = secondaryItems.Sum(i => GetValue(i, SecondFieldName));

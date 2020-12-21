@@ -14,7 +14,8 @@ namespace MicroCLib.Models
         public string? subTypeFieldName { get; set; }
         public string? containerFieldName { get; set; }
 
-        public FieldQuantityDependency(BuildComponent.ComponentType subItem, BuildComponent.ComponentType containerItem, string? containerField = null, string? subField = null)
+        public FieldQuantityDependency(string name, BuildComponent.ComponentType subItem, BuildComponent.ComponentType containerItem, string? containerField = null, string? subField = null)
+            : base(name)
         {
             subType = subItem;
             containerType = containerItem;
@@ -34,7 +35,7 @@ namespace MicroCLib.Models
                 int containerSlots;
                 if (!string.IsNullOrWhiteSpace(containerFieldName))
                 {
-                    containerSlots = containerItems.Sum(i => GetValue(i, containerFieldName));
+                    containerSlots = containerItems.Sum(i => GetValue(i, containerFieldName).Value);
                 }
                 else
                 {
@@ -55,7 +56,7 @@ namespace MicroCLib.Models
 
                 if (!string.IsNullOrWhiteSpace(subTypeFieldName))
                 {
-                    subItemCount = subItems.Sum(i => GetValue(i, subTypeFieldName));
+                    subItemCount = subItems.Sum(i => GetValue(i, subTypeFieldName).Value);
                 }
                 else
                 {
@@ -70,13 +71,31 @@ namespace MicroCLib.Models
 
         public override List<DependencyResult> HasErrors(List<Item> items)
         {
-            var containerItems = items.Where(i => i.ComponentType == containerType);
-            var subItems = items.Where(i => i.ComponentType == subType);
+            var containerItems = items.Where(i => i.ComponentType == containerType && GetValue(i, containerFieldName).HasValue);
+            if (containerItems.Count() == 0)
+            {
+                return new List<DependencyResult>();
+            }
+
+            IEnumerable<Item> subItems;
+            if (string.IsNullOrWhiteSpace(subTypeFieldName))
+            {
+                subItems = items.Where(i => i.ComponentType == subType);
+            }
+            else
+            {
+                subItems = items.Where(i => i.ComponentType == subType && GetValue(i, subTypeFieldName).HasValue);
+            }
+
+            if(subItems.Count() == 0)
+            {
+                return new List<DependencyResult>();
+            }
 
             int containerSlots;
             if (!string.IsNullOrWhiteSpace(containerFieldName))
             {
-                containerSlots = containerItems.Sum(i => GetValue(i, containerFieldName));
+                containerSlots = containerItems.Sum(i => GetValue(i, containerFieldName).Value);
             }
             else
             {
@@ -86,7 +105,7 @@ namespace MicroCLib.Models
             int subItemCount;
             if(!string.IsNullOrWhiteSpace(subTypeFieldName))
             {
-                subItemCount = subItems.Sum(i => GetValue(i, subTypeFieldName));
+                subItemCount = subItems.Sum(i => GetValue(i, subTypeFieldName).Value);
             }
             else
             {
@@ -106,11 +125,11 @@ namespace MicroCLib.Models
             return new List<DependencyResult>();
         }
 
-        private static int GetValue(Item item, string field)
+        private static int? GetValue(Item item, string field)
         {
-            if(item == null || item.Specs == null || !item.Specs.ContainsKey(field))
+            if(item == null || item.Specs == null || field == null || !item.Specs.ContainsKey(field))
             {
-                return 0;
+                return null;
             }
 
             var spec = item.Specs[field];
@@ -120,7 +139,7 @@ namespace MicroCLib.Models
                 return val;
             }
 
-            return 0;
+            return null;
         }
 
     }

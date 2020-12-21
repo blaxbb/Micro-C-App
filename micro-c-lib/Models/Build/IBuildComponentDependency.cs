@@ -10,5 +10,6 @@ namespace micro_c_lib.Models.Build
     {
         List<DependencyResult> HasErrors(List<Item> items);
         string? HintText(List<Item> items, ComponentType type);
+        string Name { get; }
     }
 }

@@ -36,12 +36,8 @@ namespace MicroCLib.Models
             return $"{FirstType}({FirstFieldName}) === {SecondType}({SecondFieldName})";
         }
 
-        public FieldContainsDependency()
-        {
-
-        }
-
-        public FieldContainsDependency(ComponentType first, string firstField, ComponentType second, string secondField)
+        public FieldContainsDependency(string name, ComponentType first, string firstField, ComponentType second, string secondField)
+            : base(name)
         {
             FirstType = first;
             FirstFieldName = firstField;
