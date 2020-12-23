@@ -64,10 +64,10 @@ namespace micro_c_app
 
         protected override void OnStart()
         {
-            Debug.WriteLine("-------------------STARTING ANALYTICS");
+            //These values aren't *really* secrets
             Microsoft.AppCenter.AppCenter.Start("android=e236360c-f1d0-4e7c-a4b2-a0edd6f40241;" +
                                                   "uwp={Your UWP App secret here};" +
-                                                  "ios={Your iOS App secret here}",
+                                                  "ios=2cf94c3f-2fe7-4c6f-8d44-17da1c3f957f",
                                                   typeof(Microsoft.AppCenter.Analytics.Analytics), typeof(Microsoft.AppCenter.Crashes.Crashes));
 
             AnalyticsService.Track("Store ID", SettingsPage.StoreID());
