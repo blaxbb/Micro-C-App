@@ -1,6 +1,8 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.ViewModels;
 using MicroCLib.Models;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter.Crashes;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -199,6 +201,9 @@ namespace micro_c_app.Views
             {
                 return;
             }
+
+            AnalyticsService.Track("SearchSubmit", searchValue);
+
             Busy = true;
             tokenSource = new CancellationTokenSource();
             var progress = new Progress<ProgressInfo>(ReportProgress);
@@ -213,7 +218,12 @@ namespace micro_c_app.Views
 
             try
             {
+                var sw = Stopwatch.StartNew();
                 var results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1, token: cancellationToken, progress: progress);
+                sw.Stop();
+
+                AnalyticsService.Track("Load Query Elapsed", ElapsedToAnalytics(sw.ElapsedMilliseconds));
+
                 if (results != null)
                 {
 
@@ -224,7 +234,12 @@ namespace micro_c_app.Views
                             break;
                         case 1:
                             var stub = results.Items.First();
+                            sw.Restart();
                             var item = await Item.FromUrl(stub.URL, storeId, token: cancellationToken, progress: progress);
+                            sw.Stop();
+
+                            AnalyticsService.Track("Item From Url Elapsed", ElapsedToAnalytics(sw.ElapsedMilliseconds));
+
                             DoProductFound(item);
                             break;
                         default:
@@ -254,7 +269,11 @@ namespace micro_c_app.Views
                                     if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
                                     {
                                         Busy = true;
+                                        var sw2 = Stopwatch.StartNew();
                                         var item = await Item.FromUrl(shortItem.URL, storeId, token: cancellationToken, progress: progress);
+                                        sw2.Stop();
+
+                                        AnalyticsService.Track("Item From Url Elapsed", ElapsedToAnalytics(sw2.ElapsedMilliseconds));
                                         Busy = false;
                                         DoProductFound(item);
                                     }
@@ -272,10 +291,12 @@ namespace micro_c_app.Views
             }
             catch (TaskCanceledException e)
             {
+                AnalyticsService.Track("Search Submit Cancelled");
                 //triggered by user input, do nothing
             }
             catch (OperationCanceledException e)
             {
+                AnalyticsService.Track("Search Submit Cancelled");
                 //triggered by user input, do nothing
             }
             catch (Exception e)
@@ -283,10 +304,12 @@ namespace micro_c_app.Views
                 if (queryAttempts > NUM_RETRY_ATTEMPTS)
                 {
                     DoError(e.Message);
+                    AnalyticsService.TrackError(e, searchValue);
                 }
                 else
                 {
-                    if(progress is IProgress<ProgressInfo> p)
+                    AnalyticsService.Track("Search Submit Retrying");
+                    if (progress is IProgress<ProgressInfo> p)
                     {
                         p.Report(new ProgressInfo($"Retrying query...{queryAttempts}/{NUM_RETRY_ATTEMPTS}", 0));
                     }
@@ -295,7 +318,6 @@ namespace micro_c_app.Views
                     goto startQuery;
                 }
             }
-
             Busy = false;
         }
 
@@ -319,6 +341,31 @@ namespace micro_c_app.Views
         {
             tokenSource.Cancel();
             Busy = false;
+        }
+
+        public static string ElapsedToAnalytics(long ms)
+        {
+            if(ms < 1 * 1000)
+            {
+                return "0-1 Sec";
+            }
+
+            if(ms < 2 * 1000)
+            {
+                return "1-2 Sec";
+            }
+
+            if(ms < 5 * 1000)
+            {
+                return "2-5 Sec";
+            }
+
+            if (ms < 10 * 1000)
+            {
+                return "5-10 Sec";
+            }
+
+            return "10+ Sec";
         }
     }
 }

@@ -29,6 +29,10 @@
                     <Label Text="Vibrate on Scan" WidthRequest="100" VerticalTextAlignment="Center"/>
                     <CheckBox IsChecked="{Binding Vibrate}" HorizontalOptions="FillAndExpand"/>
                 </StackLayout>
+                <StackLayout Orientation="Horizontal">
+                    <Label Text="Enable Analyitcs" WidthRequest="100" VerticalTextAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding AnalyticsEnabled}" HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
                 <ContentView>
                     <OnPlatform x:TypeArguments="ContentView">
                         <On Platform="Android">
