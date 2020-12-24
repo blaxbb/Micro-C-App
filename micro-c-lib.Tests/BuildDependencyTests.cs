@@ -1,4 +1,5 @@
-﻿using MicroCLib.Models;
+﻿using micro_c_lib.Models.Build;
+using MicroCLib.Models;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
@@ -103,6 +104,215 @@ namespace micro_c_lib.Tests
 
             Assert.AreEqual(dep.HasErrors(items).Count, 0);
         }
+
+        [TestMethod]
+        [TestCategory("MemorySpeedDependency")]
+        public void MemorySpeedTestMatches()
+        {
+            var dep = new MemorySpeedDependency("Motherboard Memory Speed", ComponentType.Motherboard, "Memory Speeds Supported", ComponentType.RAM, "Memory Speed (MHz)");
+            var items = new List<Item>()
+            {
+                new Item()
+                {
+                    Name = "Mobo",
+                    ComponentType = ComponentType.Motherboard,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "Memory Speeds Supported", "4400(O.C)/3466(O.C.)/3400(O.C.)/3200(O.C.)/3000(O.C.)/2933(O.C.)/2800(O.C.)/2666/2400/2133" }
+                    }
+                },
+                new Item()
+                {
+                    Name = "RAM",
+                    ComponentType = ComponentType.RAM,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "Memory Speed (MHz)", "DDR4-3200" }
+                    }
+                }
+            };
+
+            Assert.AreEqual(dep.HasErrors(items).Count, 0);
+        }
+
+        [TestMethod]
+        [TestCategory("MemorySpeedDependency")]
+        public void MemorySpeedDoesntMatch()
+        {
+            var dep = new MemorySpeedDependency("Motherboard Memory Speed", ComponentType.Motherboard, "Memory Speeds Supported", ComponentType.RAM, "Memory Speed (MHz)");
+            var items = new List<Item>()
+            {
+                new Item()
+                {
+                    Name = "Mobo",
+                    ComponentType = ComponentType.Motherboard,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "Memory Speeds Supported", "4400(O.C)/3466(O.C.)/3400(O.C.)/3200(O.C.)/3000(O.C.)/2933(O.C.)/2800(O.C.)/2666/2400/2133" }
+                    }
+                },
+                new Item()
+                {
+                    Name = "RAM",
+                    ComponentType = ComponentType.RAM,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "Memory Speed (MHz)", "DDR4-5100" }
+                    }
+                }
+            };
+
+            Assert.AreEqual(dep.HasErrors(items).Count, 2);
+        }
+
+        [TestMethod]
+        [TestCategory("MemorySpeedDependency")]
+        public void MemorySpeedMissing()
+        {
+            var dep = new MemorySpeedDependency("Motherboard Memory Speed", ComponentType.Motherboard, "Memory Speeds Supported", ComponentType.RAM, "Memory Speed (MHz)");
+            var items = new List<Item>()
+            {
+                new Item()
+                {
+                    Name = "Mobo",
+                    ComponentType = ComponentType.Motherboard,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "Memory Speeds Supported", "4400(O.C)/3466(O.C.)/3400(O.C.)/3200(O.C.)/3000(O.C.)/2933(O.C.)/2800(O.C.)/2666/2400/2133" }
+                    }
+                },
+                new Item()
+                {
+                    Name = "RAM",
+                    ComponentType = ComponentType.RAM,
+                    Specs = new Dictionary<string, string>()
+                    {
+                    }
+                }
+            };
+
+            Assert.AreEqual(dep.HasErrors(items).Count, 0);
+
+            dep = new MemorySpeedDependency("Motherboard Memory Speed", ComponentType.RAM, "Memory Speed (MHz)", ComponentType.Motherboard, "Memory Speeds Supported");
+
+            Assert.AreEqual(dep.HasErrors(items).Count, 0);
+        }
+
+        [TestMethod]
+        [TestCategory("SSDFormFactorDependency")]
+        public void SSDFormFactorTestMatches()
+        {
+            var dep = new SSDFormFactorDependency("SSD Form Factor", ComponentType.Motherboard, "M.2 Port Type", ComponentType.SSD, "Form Factor");
+            var items = new List<Item>()
+            {
+                new Item()
+                {
+                    Name = "Mobo",
+                    ComponentType = ComponentType.Motherboard,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "M.2 Port Type", "2242\n2260\n2280\n22110" }
+                    }
+                },
+                new Item()
+                {
+                    Name = "SSD",
+                    ComponentType = ComponentType.SSD,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "Form Factor", "M.2 2280 M Key" }
+                    }
+                },
+                new Item()
+                {
+                    Name = "SSD",
+                    ComponentType = ComponentType.SSD,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "Form Factor", "2.5\"" }
+                    }
+                }
+            };
+
+            Assert.AreEqual(dep.HasErrors(items).Count, 0);
+        }
+
+        [TestMethod]
+        [TestCategory("SSDFormFactorDependency")]
+        public void SSDFormFactorDoesntMatch()
+        {
+            var dep = new SSDFormFactorDependency("SSD Form Factor", ComponentType.Motherboard, "M.2 Port Type", ComponentType.SSD, "Form Factor");
+            var items = new List<Item>()
+            {
+                new Item()
+                {
+                    Name = "Mobo",
+                    ComponentType = ComponentType.Motherboard,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "M.2 Port Type", "2242\n2260\n22110" }
+                    }
+                },
+                new Item()
+                {
+                    Name = "SSD",
+                    ComponentType = ComponentType.SSD,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "Form Factor", "M.2 2280 M Key" }
+                    }
+                },
+                new Item()
+                {
+                    Name = "SSD",
+                    ComponentType = ComponentType.SSD,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "Form Factor", "2.5\"" }
+                    }
+                }
+            };
+
+            Assert.AreEqual(dep.HasErrors(items).Count, 2);
+        }
+
+        [TestMethod]
+        [TestCategory("SSDFormFactorDependency")]
+        public void SSDFormFactorMissing()
+        {
+            var dep = new SSDFormFactorDependency("SSD Form Factor", ComponentType.Motherboard, "M.2 Port Type", ComponentType.SSD, "Form Factor");
+            var items = new List<Item>()
+            {
+                new Item()
+                {
+                    Name = "Mobo",
+                    ComponentType = ComponentType.Motherboard,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        { "M.2 Port Type", "2242\n2260\n2280\n22110" }
+                    }
+                },
+                new Item()
+                {
+                    Name = "SSD",
+                    ComponentType = ComponentType.SSD,
+                    Specs = new Dictionary<string, string>()
+                    {
+                    }
+                },
+                new Item()
+                {
+                    Name = "SSD",
+                    ComponentType = ComponentType.SSD,
+                    Specs = new Dictionary<string, string>()
+                    {
+                    }
+                }
+            };
+
+            Assert.AreEqual(dep.HasErrors(items).Count, 0);
+        }
+
 
         [TestMethod]
         [TestCategory("FieldQuantityDependency")]
@@ -485,7 +695,7 @@ namespace micro_c_lib.Tests
                     ComponentType = ComponentType.Motherboard,
                     Specs = new Dictionary<string, string>()
                     {
-                        {"Memory Type", "DDR4-2133\nDDR4-2400\nDDR4-2666\nDDR4-2933\nDDR4-3200\nDDR4-2800\nDDR4-3000" }
+                        {"Memory Speeds Supported", "4400(O.C)/3466(O.C.)/3400(O.C.)/3200(O.C.)/3000(O.C.)/2933(O.C.)/2800(O.C.)/2666/2400/2133" }
                     }
                 },
                 new Item()
@@ -532,7 +742,7 @@ namespace micro_c_lib.Tests
         [TestCategory("Dependency Checks")]
         public void M2FormFactor()
         {
-            var dep = Get("M.2 form factor");
+            var dep = Get("SSD Form Factor");
 
             TestPermutations(dep,
                 new Item()

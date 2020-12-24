@@ -27,7 +27,7 @@ namespace MicroCLib.Models
                 new FieldContainsDependency("CPU Chipset", ComponentType.CPU, "Compatibility", ComponentType.Motherboard, "North Bridge"),
 
                 //Mobo -> Other
-                new FieldContainsDependency("Motherboard Memory Speed", ComponentType.Motherboard, "Memory Type", ComponentType.RAM, "Memory Speed (MHz)"),
+                new MemorySpeedDependency("Motherboard Memory Speed", ComponentType.Motherboard, "Memory Speeds Supported", ComponentType.RAM, "Memory Speed (MHz)"),
                 new FieldContainsDependency("Motherboard Form Factor", ComponentType.Motherboard, "Form Factor", ComponentType.Case, "Motherboard Support"),
                 new FieldQuantityDependency("Motherboard RAM Slots", ComponentType.RAM, ComponentType.Motherboard, "Memory Slots", "Number of Modules"),
                 new FieldComparisonDependency("Motherboard Max Memory", ComponentType.Motherboard, "Max Memory Supported", ComponentType.RAM, "Memory Capacity", FieldComparisonDependency.CompareMode.GreaterThanOrEqual){
@@ -35,7 +35,7 @@ namespace MicroCLib.Models
                 },
                 new FieldQuantityDependency("Has OS", ComponentType.OperatingSystem, ComponentType.Motherboard),
 
-                new FieldContainsDependency("M.2 form factor", ComponentType.Motherboard, "M.2 Port Type", ComponentType.SSD, "Form Factor"),
+                new SSDFormFactorDependency("SSD Form Factor", ComponentType.Motherboard, "M.2 Port Type", ComponentType.SSD, "Form Factor"),
 
                 //Case -> Other
                 new FieldComparisonDependency("Case GPU Length", ComponentType.Case, "Max Video Card Length", ComponentType.GPU, "Video Card Length", FieldComparisonDependency.CompareMode.GreaterThanOrEqual),

@@ -96,7 +96,7 @@ namespace MicroCLib.Models
             return item.Specs[field];
         }
 
-        public bool Compatible(Item a, Item b)
+        public virtual bool Compatible(Item a, Item b)
         {
             if (a == null || b == null)
             {
@@ -137,6 +137,11 @@ namespace MicroCLib.Models
                 return true;
             }
 
+            return Compatible(firstValue, secondValue);
+        }
+
+        protected virtual bool Compatible(string firstValue, string secondValue)
+        {
             var secondSpecLines = secondValue.Split('\n');
             return firstValue.Split('\n').Any(s => secondSpecLines.Any(l => l.Contains(s)));
         }
