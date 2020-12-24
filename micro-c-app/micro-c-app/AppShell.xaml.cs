@@ -31,12 +31,14 @@ namespace micro_c_app
                     var enableAnalytics = await DisplayAlert("Analytics", "This app uses anonymous analytics to track the most used features, as well as provide detailed crash reports to help improve the reliablity of the application.  Would you like to enable or disable them?", "Enable", "Disable");
                     SettingsPage.AcknowledgedAnalytics(true);
                     SettingsPage.AnalyticsEnabled(enableAnalytics);
-
-                    var goToSettings = await DisplayAlert("Check settings", "You should set your store, sales ID, and tax rate before using the app.", "Ok", "Cancel");
-                    SettingsPage.VersionPrompt(SettingsPage.CURRENT_VERSION_PROMPT);
-                    if (goToSettings)
+                    if (SettingsPage.VersionPrompt() < SettingsPage.CURRENT_VERSION_PROMPT)
                     {
-                        await Navigation.PushAsync(new SettingsPage());
+                        var goToSettings = await DisplayAlert("Check settings", "You should set your store, sales ID, and tax rate before using the app.", "Ok", "Cancel");
+                        SettingsPage.VersionPrompt(SettingsPage.CURRENT_VERSION_PROMPT);
+                        if (goToSettings)
+                        {
+                            await Navigation.PushAsync(new SettingsPage());
+                        }
                     }
                 });
             }

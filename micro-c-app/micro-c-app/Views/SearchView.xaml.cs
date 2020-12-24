@@ -102,6 +102,7 @@ namespace micro_c_app.Views
 
         public static void DoScan(INavigation navigation, Func<string, IProgress<ProgressInfo>?, Task> resultTask, string categoryFilter = "", bool batchMode = false)
         {
+            AnalyticsService.Track("DoScan");
             Device.BeginInvokeOnMainThread(async () =>
             {
                 var options = new MobileBarcodeScanningOptions
@@ -122,6 +123,7 @@ namespace micro_c_app.Views
                 // Navigate to our scanner page
                 scanPage.OnScanResult += (result) =>
                 {
+                    AnalyticsService.Track("Scan Result", result.Text);
                     Debug.WriteLine($"SCANNED {result}");
                     if (SettingsPage.Vibrate())
                     {
