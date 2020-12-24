@@ -31,6 +31,7 @@ namespace micro_c_app.ViewModels
         public OSAppTheme Theme { get; set; }
 
         public bool Vibrate { get; set; }
+        public bool AnalyticsEnabled { get; set; }
 
         public string LocatorUsername { get; set; }
         public string LocatorPassword { get; set; }
@@ -69,6 +70,8 @@ namespace micro_c_app.ViewModels
             SelectedStoreName = Stores.FirstOrDefault(kvp => kvp.Value == StoreID).Key;
 
             Vibrate = SettingsPage.Vibrate();
+            AnalyticsEnabled = SettingsPage.AnalyticsEnabled();
+
             LocatorCookie = SettingsPage.LocatorCookie();
 
             LocatorRegister = new Command(() => { Xamarin.Essentials.Launcher.OpenAsync($"{ SettingsPage.LOCATOR_BASE_URL}Identity/Account/Register"); });
@@ -237,6 +240,7 @@ namespace micro_c_app.ViewModels
 
             SettingsPage.Theme(Theme);
             SettingsPage.Vibrate(Vibrate);
+            SettingsPage.AnalyticsEnabled(AnalyticsEnabled);
 
             MessagingCenter.Send(this, SETTINGS_UPDATED_MESSAGE);
             await ExitSettings();

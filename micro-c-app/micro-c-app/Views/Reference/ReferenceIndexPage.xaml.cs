@@ -90,6 +90,8 @@ namespace micro_c_app.Views
             }
             else if (node is ReferenceEntry entry)
             {
+                AnalyticsService.Track("ReferencePage", node.Name);
+
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
                     var page = new ReferenceWebViewPage()
@@ -105,6 +107,8 @@ namespace micro_c_app.Views
             }
             else if (node is ReferencePlanData plans)
             {
+                AnalyticsService.Track("ReferencePage", node.Name);
+
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
                     var page = new ReferencePlanPage()
