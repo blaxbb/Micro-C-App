@@ -13,6 +13,16 @@ namespace MicroCBuilder.Converters
         public bool NullIsCollapsed { get; set; } = true;
         public object Convert(object value, Type targetType, object parameter, string language)
         {
+            if(value is string s)
+            {
+                if(string.IsNullOrWhiteSpace(s))
+                {
+                    return NullIsCollapsed ? Visibility.Collapsed : Visibility.Visible;
+                }
+
+                return NullIsCollapsed ? Visibility.Visible : Visibility.Collapsed;
+            }    
+
             if(value is null)
             {
                 return  NullIsCollapsed ? Visibility.Collapsed : Visibility.Visible;

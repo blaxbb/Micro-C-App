@@ -47,6 +47,8 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Image Grid.Column="0" Grid.RowSpan="2" Source="{Binding Component.Item.PictureUrls[0]}" Margin="5"  Height="100" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
         <TextBlock Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Component.Item.Name}" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
@@ -65,5 +67,11 @@
         <TextBlock Grid.Column="3" Grid.Row="1" Text="{Binding Component.Item.SKU}"/>
         <muxc:NumberBox Grid.Column="4" Value="{Binding Quantity, Mode=TwoWay}"  VerticalAlignment="Center" SpinButtonPlacementMode="Compact" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
         <TextBlock Grid.Column="4" Grid.Row="1" Text="{Binding Component.Item.Stock, Converter={StaticResource Format}, ConverterParameter='Stock {0}'}" HorizontalAlignment="Center"/>
+        <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" Background="Red" Padding="10" Visibility="{Binding Component.ErrorText, Converter={StaticResource HideIfNull}}" Margin="0,0,0,10">
+            <TextBlock Text="{Binding Component.ErrorText}" MaxLines="4" TextWrapping="WrapWholeWords"/>
+        </Border>
+        <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Background="LightGreen" Padding="10" Visibility="{Binding Component.HintText, Converter={StaticResource HideIfNull}}">
+            <TextBlock Text="{Binding Component.HintText}"  Foreground="Black" TextWrapping="WrapWholeWords"/>
+        </Border>
     </Grid>
 </UserControl>

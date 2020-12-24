@@ -76,7 +76,6 @@ namespace MicroCBuilder.ViewModels
                 Components.Add(comp);
             });
 
-
             Save = new Command(DoSave);
 
             Load = new Command(DoLoad);
@@ -112,6 +111,8 @@ namespace MicroCBuilder.ViewModels
 
             ItemValuesUpdated = new Command((_) =>
             {
+                UpdateHintsAndErrors();
+
                 Task.Run(async () =>
                 {
                     await BuildContext.RemoveComponent(SelectedComponent);
@@ -126,6 +127,40 @@ namespace MicroCBuilder.ViewModels
             ImportFromWeb = new Command(DoImportFromWeb);
         }
 
+        private void UpdateHintsAndErrors()
+        {
+            foreach (var comp in Components)
+            {
+                comp.ErrorText = "";
+                comp.HintText = "";
+            }
+
+            foreach (var dep in BuildComponentDependency.Dependencies)
+            {
+                var items = Components.Where(comp => comp.Item != null).Select(comp => comp.Item).ToList();
+                var errors = dep.HasErrors(items);
+                foreach (var result in errors)
+                {
+                    var matchingComp = Components.FirstOrDefault(comp => comp.Item == result.Primary);
+                    matchingComp.ErrorText += result.Text.Replace("\n", ", ") + "\n\n";
+                }
+
+                foreach (var comp in Components)
+                {
+                    if (comp.Item != null)
+                    {
+                        continue;
+                    }
+
+                    var hint = dep.HintText(items, comp.Type);
+                    if (!string.IsNullOrWhiteSpace(hint))
+                    {
+                        comp.HintText += hint.Replace("\n", ", ") + "\n\n";
+                    }
+                }
+            }
+        }
+
         private async Task DoItemSelected(Item item)
         {
             if (SelectedComponent != null)
@@ -136,6 +171,7 @@ namespace MicroCBuilder.ViewModels
                 }
                 SelectedComponent.Item = item;
                 _ = BuildContext.AddComponent(SelectedComponent);
+                UpdateHintsAndErrors();
             }
             OnPropertyChanged(nameof(SubTotal));
         }
@@ -215,6 +251,8 @@ namespace MicroCBuilder.ViewModels
                     }
                 }
             }
+
+            UpdateHintsAndErrors();
         }
 
         private async void DoAddCustomItem(object obj)
@@ -247,6 +285,8 @@ namespace MicroCBuilder.ViewModels
                     }
                 });
             }
+
+            UpdateHintsAndErrors();
         }
 
         private async void DoAddSearchItem(object obj)
@@ -305,6 +345,8 @@ namespace MicroCBuilder.ViewModels
 
                 }
             }
+
+            UpdateHintsAndErrors();
         }
 
         private static async Task<Item?> DisplaySearchResults(List<Item> items)
@@ -355,11 +397,13 @@ namespace MicroCBuilder.ViewModels
             }
 
             OnPropertyChanged(nameof(SubTotal));
+            UpdateHintsAndErrors();
         }
 
         private void AddItem(BuildComponent.ComponentType type)
         {
             SelectedComponent = InsertAtEndByType(type);
+            UpdateHintsAndErrors();
         }
 
         private void AddDuplicate(BuildComponent orig)
@@ -369,6 +413,7 @@ namespace MicroCBuilder.ViewModels
             SelectedComponent = comp;
             _ = BuildContext.AddComponent(comp);
             OnPropertyChanged(nameof(SubTotal));
+            UpdateHintsAndErrors();
         }
 
         private BuildComponent InsertAtEndByType(BuildComponent.ComponentType type)
@@ -385,6 +430,10 @@ namespace MicroCBuilder.ViewModels
             }
 
             var comp = new BuildComponent() { Type = type };
+            comp.PropertyChanged += (sender, args) =>
+            {
+                OnPropertyChanged(nameof(Components));
+            };
             Components.Insert(index, comp);
             OnPropertyChanged(nameof(SubTotal));
             return comp;
@@ -397,6 +446,7 @@ namespace MicroCBuilder.ViewModels
                 c.Item = null;
             }
             OnPropertyChanged(nameof(SubTotal));
+            UpdateHintsAndErrors();
         }
 
         private async void DoLoad(object obj)
@@ -427,6 +477,8 @@ namespace MicroCBuilder.ViewModels
             {
                 Debug.WriteLine("Operation cancelled.");
             }
+
+            UpdateHintsAndErrors();
         }
 
         private void InsertComponents(List<BuildComponent> fromFile)
@@ -450,6 +502,7 @@ namespace MicroCBuilder.ViewModels
                 }
             }
 
+            UpdateHintsAndErrors();
             OnPropertyChanged(nameof(SubTotal));
         }
 

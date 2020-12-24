@@ -32,6 +32,13 @@ namespace MicroCBuilder
                 {
                     var text = await Windows.Storage.FileIO.ReadTextAsync(file);
                     Cache = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, List<Item>>>(text);
+                    foreach(var kvp in Cache)
+                    {
+                        foreach(var i in kvp.Value)
+                        {
+                            i.ComponentType = BuildComponent.TypeForCategoryFilter(kvp.Key);
+                        }
+                    }
                     return true;
                 }
             }

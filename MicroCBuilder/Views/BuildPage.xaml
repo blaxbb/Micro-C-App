@@ -70,6 +70,7 @@
                                 AddDuplicateCommand="{Binding DataContext.AddDuplicateFlyoutCommand, ElementName=page}"
                                 InfoCommand="{Binding DataContext.InfoFlyoutCommand, ElementName=page}"
                                 AddPlan="{Binding DataContext.AddDuplicateFlyoutCommand, ElementName=page}"
+                                ActiveComponent="{Binding DataContext.SelectedComponent, ElementName=page}"
                                 Margin="10,0,10,0"/>
                         </DataTemplate>
                     </ListView.ItemTemplate>

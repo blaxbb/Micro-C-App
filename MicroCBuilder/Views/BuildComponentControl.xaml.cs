@@ -5,6 +5,7 @@ using MicroCLib.Models;
 using MicroCLib.Models.Reference;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -30,7 +31,8 @@ namespace MicroCBuilder.Views
         public BuildComponent Component
         {
             get { return (BuildComponent)GetValue(ComponentProperty); }
-            set {
+            set
+            {
                 SetValue(ComponentProperty, value);
             }
         }
@@ -51,7 +53,7 @@ namespace MicroCBuilder.Views
                     newItem.PropertyChanged += control.UpdateFields;
                     control.UpdateFields(control, new PropertyChangedEventArgs(e.Property.ToString()));
                 }
-                
+
             }
         }
 
@@ -145,10 +147,38 @@ namespace MicroCBuilder.Views
         public static readonly DependencyProperty AddPlanProperty =
             DependencyProperty.Register("AddPlan", typeof(ICommand), typeof(BuildComponentControl), new PropertyMetadata(null));
 
+
+
+        public BuildComponent ActiveComponent
+        {
+            get { return (BuildComponent)GetValue(ActiveComponentProperty); }
+            set { SetValue(ActiveComponentProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for ActiveComponent.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty ActiveComponentProperty =
+            DependencyProperty.Register("ActiveComponent", typeof(BuildComponent), typeof(BuildComponentControl), new PropertyMetadata(null, ActiveComponentChanged));
+
+        private bool isActive;
+        public bool IsActive { get => isActive; set { isActive = value; OnPropertyChanged(nameof(IsActive)); } }
+
+        private static void ActiveComponentChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            if (d is BuildComponentControl c)
+            {
+                c.UpdateActiveComponent();
+            }
+        }
+
         public BuildComponentControl()
         {
             this.InitializeComponent();
             (this.Content as FrameworkElement).DataContext = this;
+        }
+
+        public void UpdateActiveComponent()
+        {
+            IsActive = ActiveComponent == Component;
         }
 
         private void textBox_TextChanged(object sender, TextChangedEventArgs args)
@@ -267,6 +297,6 @@ namespace MicroCBuilder.Views
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-       
+
     }
 }
