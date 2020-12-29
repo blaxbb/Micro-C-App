@@ -23,26 +23,11 @@ namespace micro_c_app.Views
         {
             BindingContext = this;
             InitializeComponent();
-            MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, SettingsUpdated);
             UpdateMapImage();
         }
         public void UpdateMapImage()
         {
             image.Source = ImageSource.FromStream(() => LocationEntry.GetMapImageStream(SettingsPage.StoreID(), SettingsPage.LocatorCookie()));
-        }
-
-        private void SettingsUpdated(SettingsPageViewModel obj)
-        {
-            UpdateMapImage();
-        }
-
-        private void DevClicked(object sender, EventArgs e)
-        {
-            ClearMarkers();
-            AddMarker(new Point(.85, .85), 30, SolidColorBrush.Red, 5);
-            AddMarker(new Point(.65, .65), 25, SolidColorBrush.Orange, 4);
-            AddMarker(new Point(.45, .45), 20, SolidColorBrush.Yellow, 3);
-            AddMarker(new Point(.25, .25), 15, SolidColorBrush.Green, 2);
         }
 
         public void AddMarker(Point percent, double size, SolidColorBrush color, double thickness)

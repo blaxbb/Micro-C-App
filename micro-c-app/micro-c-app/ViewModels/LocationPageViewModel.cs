@@ -21,17 +21,10 @@ namespace micro_c_app.ViewModels
         private Point clickPosition;
         private bool searchMode;
         private Point cursorPosition;
-        private Point cursorPercent;
+        private Point panPercentage;
         private List<LocationEntry> markers;
 
-        public ICommand Tapped { get; }
-        public Point ClickPosition { get => clickPosition; set => SetProperty(ref clickPosition, value); }
-
-        public Point CursorPosition { get => cursorPosition; set => SetProperty(ref cursorPosition, value); }
-
-        //
-        //set in LocaitonPage.xaml.cs
-        public Point CursorPercent { get => cursorPercent; set => SetProperty(ref cursorPercent, value); }
+        public Point PanPercentage { get => panPercentage; set => SetProperty(ref panPercentage, value); }
         //
         //accessed in LocationPage.xaml.cs
         public List<LocationEntry> Markers { get => markers; set => SetProperty(ref markers, value); }
@@ -68,17 +61,22 @@ namespace micro_c_app.ViewModels
                 SearchMode = true;
             });
 
-            Tapped = new Command<Point>(p =>
-            {
-                ClickPosition = p;
-                Debug.WriteLine($"{p.X} - {p.Y}");
-            });
             ProductFound = new Command<Item>(async (item) => await DoProductFound(item));
 
             LocatorLogin = new Command(async () => await DoLogin());
             LocatorLogout = new Command(async () => await DoLogout());
             LocatorCookie = SettingsPage.LocatorCookie();
             LocatorRegister = new Command(() => { Xamarin.Essentials.Launcher.OpenAsync($"{ SettingsPage.LOCATOR_BASE_URL}Identity/Account/Register"); });
+
+            PropertyChanged += LocationPageViewModel_PropertyChanged;
+        }
+
+        private void LocationPageViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(PanPercentage))
+            {
+                Debug.WriteLine(PanPercentage);
+            }
         }
 
         private async Task DoProductFound(Item item)
@@ -95,7 +93,7 @@ namespace micro_c_app.ViewModels
 
         private async Task DoProductScan(Item item)
         {
-            var entry = new LocationEntry(SettingsPage.StoreID(), item.SKU, CursorPercent.X, CursorPercent.Y);
+            var entry = new LocationEntry(SettingsPage.StoreID(), item.SKU, PanPercentage.X, PanPercentage.Y);
             await entry.Post(SettingsPage.LocatorCookie());
         }
 

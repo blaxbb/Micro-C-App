@@ -85,14 +85,6 @@ namespace micro_c_app.ViewModels
                     Items.Add(item);
                 }
             });
-
-            //var response = await client.GetAsync(GetSearchUrl(SearchQuery, StoreID, CategoryFilter, OrderBy, RESULTS_PER_PAGE, page));
-            //if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            //{
-            //    var body = response.Content.ReadAsStringAsync().Result;
-
-            //    await ParseBody(body);
-            //}
         }
 
         public void ParseResults(SearchResults results)

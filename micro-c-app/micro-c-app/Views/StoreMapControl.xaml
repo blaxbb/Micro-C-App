@@ -3,18 +3,18 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:micro_c_app"
              xmlns:pinchzoomimage="clr-namespace:Xamarin.Forms.PinchZoomImage"
-             x:Class="micro_c_app.Views.StoreMapControl">
+             x:Class="micro_c_app.Views.StoreMapControl"
+             x:Name="control">
   <ContentView.Content>
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <pinchzoomimage:PinchZoom Grid.Row="0" Margin="0" Padding="0">
+            <pinchzoomimage:PinchZoom Grid.Row="0" Margin="0" Padding="0" PanPercentage="{Binding PanPercentage, Source={Reference control}, Mode=TwoWay}">
                 <Frame Margin="0" Padding="0">
                     <Image x:Name="image" Source="https://aka.ms/campus.jpg" BackgroundColor="Blue" HorizontalOptions="Center" VerticalOptions="Center" Margin="0"/>
                 </Frame>
             </pinchzoomimage:PinchZoom>
-            <Ellipse x:Name="cursor" InputTransparent="True" WidthRequest="25" HeightRequest="25" Stroke="Red"  StrokeThickness="3" HorizontalOptions="Start" VerticalOptions="Start"/>
             <Ellipse Grid.Row="0" InputTransparent="True" WidthRequest="25" HeightRequest="25" Stroke="Red" StrokeDashArray="3,1"  StrokeThickness="3" HorizontalOptions="Center" VerticalOptions="Center"/>
             <Path Data="M 25,0 V 50 M 0,25 H 50" Stroke="Red" StrokeThickness="2" HorizontalOptions="Center" VerticalOptions="Center" InputTransparent="True"/>
         </Grid>

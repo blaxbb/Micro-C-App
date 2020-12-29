@@ -18,99 +18,34 @@ namespace micro_c_app.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class StoreMapControl : ContentView, INotifyPropertyChanged
     {
-        private Point cursorPosition;
-        private Point cursorPercent;
-        public Point CursorPercent { get => cursorPercent; set { cursorPercent = value; OnPropertyChanged(nameof(CursorPercent)); } }
-        public Point CursorPosition { get => cursorPosition; set { cursorPosition = value; OnPropertyChanged(nameof(CursorPosition)); cursor.TranslateTo(CursorPosition.X, CursorPosition.Y, 50); } }
-        Point[] Points;
-
-        public double x { get; set; } = 0;
-        public double y { get; set; } = 0;
-        public double scale { get; set; } = 1;
-
+        public static readonly BindableProperty PanPercentageProperty = BindableProperty.Create(nameof(PanPercentage), typeof(Point), typeof(StoreMapControl));
+        public Point PanPercentage { get => (Point)GetValue(PanPercentageProperty); set => SetValue(PanPercentageProperty, value); }
 
         public StoreMapControl()
         {
             BindingContext = this;
             InitializeComponent();
 
-            MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, SettingsUpdated);
             UpdateMapImage();
-            
+            PropertyChanged += StoreMapControl_PropertyChanged;
+        }
 
-            cursor.IsVisible = false;
-
-            Points = new Point[]
+        private void StoreMapControl_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if(e.PropertyName == nameof(PanPercentage))
             {
-                new Point() { X = 0.564746775390276, Y = 0.311131858323938 },
-                new Point() { X = 0.852397341485005, Y = 0.314126503194288 },
-                new Point() { X = 0.855062795614092, Y = 0.658334507703871 },
-                new Point() { X = 0.536912442927517, Y = 0.66132915257422 },
-                new Point() { X = 0.564746775390276, Y = 0.311131858323938 }
-            };
-
-            //Gestures.SetTapped(image, new Command<Point>(p =>
-            //{
-            //    OnClick(p);
-            //}));
+                //Debug.WriteLine(PanPercentage);
+            }
         }
 
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
-            //var delta = new Point((imageFrame.Width - image.Width) / 2, (imageFrame.Height - image.Height) / 2);
-            //CursorPosition = new Point((CursorPercent.X * image.Width) + delta.X, (CursorPercent.Y * image.Height) + delta.Y);
-            Debug.WriteLine($"CursorPercent {CursorPercent} CusrorPosition {CursorPosition}");
-
-        }
-
-        private void OnClick(Point p)
-        {
-            //cursor.IsVisible = true;
-
-            //var delta = new Point((imageFrame.Width - image.Width) / 2, (imageFrame.Height - image.Height) / 2);
-
-            //CursorPosition = new Point(p.X + delta.X - (cursor.Width / 2), p.Y + delta.Y - (cursor.Height / 2));
-
-            //var x = p.X / image.Width;
-            //var y = p.Y / image.Height;
-            //CursorPercent = new Point(x, y);
-
-            ////Debug.WriteLine($"CursorPercent {CursorPercent} CusrorPosition {CursorPosition} ClickedPosition {p}");
-            //if (IsPointInPolygon(CursorPercent, Points) && false)
-            //{
-            //    image.Scale = 2;
-            //    //image.TranslationX = -((image.Scale - 1) / 1) * (Points[0].X * (image.Width + delta.X));
-            //    //image.TranslationY = -((image.Scale - 1) / 1) * (Points[1].Y * (image.Height + delta.Y));
-
-            //    image.TranslateTo(-p.X, -p.Y);
-            //    Debug.WriteLine("INSIDE");
-            //}
-            //else
-            //{
-            //    image.Scale = 1;
-            //    image.TranslateTo(0, 0);
-            //    Debug.WriteLine("OUTSIDE");
-            //}
-            //Debug.WriteLine($"new Point(){CursorPercent}");
         }
 
         public void UpdateMapImage()
         {
             image.Source = ImageSource.FromStream(() => LocationEntry.GetMapImageStream(SettingsPage.StoreID(), SettingsPage.LocatorCookie()));
-        }
-
-        private void SettingsUpdated(SettingsPageViewModel obj)
-        {
-            UpdateMapImage();
-        }
-
-        bool DEV_ENABLED = false;
-
-        private void DevButton(object sender, EventArgs e)
-        {
-            DEV_ENABLED = !DEV_ENABLED;
-            Debug.WriteLine($"DEV {(DEV_ENABLED ? "ENABLED" : "DISABLED")}");
         }
 
         //

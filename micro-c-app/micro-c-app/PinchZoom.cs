@@ -27,6 +27,9 @@ namespace Xamarin.Forms.PinchZoomImage
 
         private Image image;
         private Frame frame;
+
+        public static readonly BindableProperty PanPercentageProperty = BindableProperty.Create(nameof(PanPercentage), typeof(Point), typeof(PinchZoom));
+        public Point PanPercentage { get => (Point)GetValue(PanPercentageProperty); set => SetValue(PanPercentageProperty, value); }
         Frame Frame { get
             {
                 if(frame == null)
@@ -128,6 +131,7 @@ namespace Xamarin.Forms.PinchZoomImage
                 Content.TranslationY = Math.Min(0, Math.Max(targetY, -Content.Height * (currentScale - 1)));
 
                 Content.Scale = currentScale;
+                PanPercentage = GetPanPercent();
             }
 
             if (e.Status == GestureStatus.Completed)
@@ -176,6 +180,7 @@ namespace Xamarin.Forms.PinchZoomImage
 
                     Content.TranslationX = newX;
                     Content.TranslationY = newY;
+                    PanPercentage = GetPanPercent();
                     break;
                 case GestureStatus.Completed:
                     DoingPinch = false;
@@ -195,6 +200,7 @@ namespace Xamarin.Forms.PinchZoomImage
                 currentScale = 1;
                 xOffset = 0;
                 yOffset = 0;
+                PanPercentage = GetPanPercent();
                 return;
             }
 
@@ -223,6 +229,7 @@ namespace Xamarin.Forms.PinchZoomImage
                 Content.TranslationY = Math.Min(0, Math.Max(targetY, -Content.Height * (currentScale - 1)));
 
                 Content.Scale = currentScale;
+                PanPercentage = GetPanPercent();
                 await Task.Delay(10);
             }
 

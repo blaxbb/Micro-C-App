@@ -5,7 +5,8 @@
              xmlns:views="clr-namespace:micro_c_app.Views"
              xmlns:forms="clr-namespace:SkiaSharp.Views.Forms;assembly=SkiaSharp.Views.Forms"
              xmlns:local="clr-namespace:micro_c_app"
-             x:Class="micro_c_app.Views.LocationPage">
+             x:Class="micro_c_app.Views.LocationPage"
+             x:Name="control">
     <ContentPage.BindingContext>
         <viewmodels:LocationPageViewModel/>
     </ContentPage.BindingContext>
@@ -32,7 +33,7 @@
                     <Button Text="Scan" Grid.Column="1" IsEnabled="{Binding SearchMode, FallbackValue=False}" Command="{Binding DoScanMode}"/>
                 </Grid>
                 <Frame Grid.Row="1" x:Name="mapContainer" Padding="0" IsVisible="{Binding ScanMode}">
-                    <views:StoreMapControl Grid.Row="0" x:Name="map"/>
+                    <views:StoreMapControl Grid.Row="0" x:Name="map" PanPercentage="{Binding BindingContext.PanPercentage, Source={Reference control}, Mode=TwoWay}"/>
                 </Frame>
                 <Frame Grid.Row="1" Padding="0" x:Name="mapResultsContainer" IsVisible="{Binding SearchMode}">
                     <views:StoreMapResultsControl Grid.Row="0" x:Name="mapResults" />
@@ -40,7 +41,6 @@
                 <views:SearchView x:Name="searchView" Grid.Row="2" HeightRequest="100" WidthRequest="250" Margin="20" BatchScan="{Binding ScanMode}" ProductFound="{Binding ProductFound}"/>
             </Grid>
             <Grid x:Name="LoginGrid" Grid.Row="0" IsVisible="{Binding LocatorCookie, Converter={StaticResource StringNullOrEmptyConverter}, ConverterParameter=True}" Padding="10">
-                <!--<Grid IsVisible="False">-->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>

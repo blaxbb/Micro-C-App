@@ -23,7 +23,7 @@ namespace micro_c_app.Views
                 vm.SearchMode = true;
                 vm.PropertyChanged += Vm_PropertyChanged;
             }
-            map.PropertyChanged += Map_PropertyChanged;
+
             this.SetupActionButton();
         }
 
@@ -55,17 +55,6 @@ namespace micro_c_app.Views
                         map.UpdateMapImage();
                         mapResults.UpdateMapImage();
                         break;
-                }
-            }
-        }
-
-        private void Map_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
-        {
-            if (BindingContext is LocationPageViewModel vm)
-            {
-                if (e.PropertyName == nameof(StoreMapControl.CursorPercent))
-                {
-                    vm.CursorPercent = map.CursorPercent;
                 }
             }
         }
