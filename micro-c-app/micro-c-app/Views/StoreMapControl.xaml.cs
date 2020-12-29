@@ -49,50 +49,50 @@ namespace micro_c_app.Views
                 new Point() { X = 0.564746775390276, Y = 0.311131858323938 }
             };
 
-            Gestures.SetTapped(image, new Command<Point>(p =>
-            {
-                OnClick(p);
-            }));
+            //Gestures.SetTapped(image, new Command<Point>(p =>
+            //{
+            //    OnClick(p);
+            //}));
         }
 
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
-            var delta = new Point((imageFrame.Width - image.Width) / 2, (imageFrame.Height - image.Height) / 2);
-            CursorPosition = new Point((CursorPercent.X * image.Width) + delta.X, (CursorPercent.Y * image.Height) + delta.Y);
+            //var delta = new Point((imageFrame.Width - image.Width) / 2, (imageFrame.Height - image.Height) / 2);
+            //CursorPosition = new Point((CursorPercent.X * image.Width) + delta.X, (CursorPercent.Y * image.Height) + delta.Y);
             Debug.WriteLine($"CursorPercent {CursorPercent} CusrorPosition {CursorPosition}");
 
         }
 
         private void OnClick(Point p)
         {
-            cursor.IsVisible = true;
+            //cursor.IsVisible = true;
 
-            var delta = new Point((imageFrame.Width - image.Width) / 2, (imageFrame.Height - image.Height) / 2);
+            //var delta = new Point((imageFrame.Width - image.Width) / 2, (imageFrame.Height - image.Height) / 2);
 
-            CursorPosition = new Point(p.X + delta.X - (cursor.Width / 2), p.Y + delta.Y - (cursor.Height / 2));
+            //CursorPosition = new Point(p.X + delta.X - (cursor.Width / 2), p.Y + delta.Y - (cursor.Height / 2));
 
-            var x = p.X / image.Width;
-            var y = p.Y / image.Height;
-            CursorPercent = new Point(x, y);
+            //var x = p.X / image.Width;
+            //var y = p.Y / image.Height;
+            //CursorPercent = new Point(x, y);
 
-            //Debug.WriteLine($"CursorPercent {CursorPercent} CusrorPosition {CursorPosition} ClickedPosition {p}");
-            if (IsPointInPolygon(CursorPercent, Points) && false)
-            {
-                image.Scale = 2;
-                //image.TranslationX = -((image.Scale - 1) / 1) * (Points[0].X * (image.Width + delta.X));
-                //image.TranslationY = -((image.Scale - 1) / 1) * (Points[1].Y * (image.Height + delta.Y));
+            ////Debug.WriteLine($"CursorPercent {CursorPercent} CusrorPosition {CursorPosition} ClickedPosition {p}");
+            //if (IsPointInPolygon(CursorPercent, Points) && false)
+            //{
+            //    image.Scale = 2;
+            //    //image.TranslationX = -((image.Scale - 1) / 1) * (Points[0].X * (image.Width + delta.X));
+            //    //image.TranslationY = -((image.Scale - 1) / 1) * (Points[1].Y * (image.Height + delta.Y));
 
-                image.TranslateTo(-p.X, -p.Y);
-                Debug.WriteLine("INSIDE");
-            }
-            else
-            {
-                image.Scale = 1;
-                image.TranslateTo(0, 0);
-                Debug.WriteLine("OUTSIDE");
-            }
-            Debug.WriteLine($"new Point(){CursorPercent}");
+            //    image.TranslateTo(-p.X, -p.Y);
+            //    Debug.WriteLine("INSIDE");
+            //}
+            //else
+            //{
+            //    image.Scale = 1;
+            //    image.TranslateTo(0, 0);
+            //    Debug.WriteLine("OUTSIDE");
+            //}
+            //Debug.WriteLine($"new Point(){CursorPercent}");
         }
 
         private void GetMapImage()

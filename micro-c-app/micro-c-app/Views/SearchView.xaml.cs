@@ -178,7 +178,9 @@ namespace micro_c_app.Views
             DoScan(Navigation, async (result, progress) =>
             {
                 SKUField.Text = result;
+                progress?.Report(new ProgressInfo($"Scanned {result}", .33d));
                 await OnSubmit(result);
+                progress?.Report(new ProgressInfo($"Submitted {result}", .66d));
             }, categoryFilter: CategoryFilter, batchMode: BatchScan);
         }
 
