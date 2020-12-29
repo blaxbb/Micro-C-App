@@ -9,28 +9,54 @@
     <ContentPage.BindingContext>
         <viewmodels:LocationPageViewModel/>
     </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Logout" Order="Secondary" Command="{Binding LocatorLogout}"/>
+    </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <Grid x:Name="grid">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <Frame Grid.Row="0" x:Name="mapContainer" Padding="0" IsVisible="{Binding ScanMode}">
-                <views:StoreMapControl Grid.Row="0" x:Name="map"/>
-            </Frame>
-            <Frame Grid.Row="0" Padding="0" x:Name="mapResultsContainer" IsVisible="{Binding SearchMode}">
-                <views:StoreMapResultsControl Grid.Row="0" x:Name="mapResults" />
-            </Frame>
-            <Grid x:Name="modeStack" Grid.Row="1">
+            <Grid x:Name="grid" Grid.Row="0" IsVisible="{Binding LocatorCookie, Converter={StaticResource StringNullOrEmptyConverter}, ConverterParameter=False}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid x:Name="modeStack" Grid.Row="0" Margin="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Text="Search" Grid.Column="0" IsEnabled="{Binding ScanMode, FallbackValue=True}" Command="{Binding DoSearchMode}"/>
+                    <Button Text="Scan" Grid.Column="1" IsEnabled="{Binding SearchMode, FallbackValue=False}" Command="{Binding DoScanMode}"/>
+                </Grid>
+                <Frame Grid.Row="1" x:Name="mapContainer" Padding="0" IsVisible="{Binding ScanMode}">
+                    <views:StoreMapControl Grid.Row="0" x:Name="map"/>
+                </Frame>
+                <Frame Grid.Row="1" Padding="0" x:Name="mapResultsContainer" IsVisible="{Binding SearchMode}">
+                    <views:StoreMapResultsControl Grid.Row="0" x:Name="mapResults" />
+                </Frame>
+                <views:SearchView x:Name="searchView" Grid.Row="2" HeightRequest="100" WidthRequest="250" Margin="20" BatchScan="{Binding ScanMode}" ProductFound="{Binding ProductFound}"/>
+            </Grid>
+            <Grid x:Name="LoginGrid" Grid.Row="0" IsVisible="{Binding LocatorCookie, Converter={StaticResource StringNullOrEmptyConverter}, ConverterParameter=True}" Padding="10">
+                <!--<Grid IsVisible="False">-->
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-                <Button Text="Search" Grid.Column="0" IsEnabled="{Binding ScanMode, FallbackValue=True}" Command="{Binding DoSearchMode}"/>
-                <Button Text="Scan" Grid.Column="1" IsEnabled="{Binding SearchMode, FallbackValue=False}" Command="{Binding DoScanMode}"/>
+                <Label Grid.Row="0" Grid.ColumnSpan="2" Text="An account is needed to use the location service." FontSize="Title"/>
+                <Entry Grid.Row="1" Grid.ColumnSpan="2" Placeholder="Username" Text="{Binding LocatorUsername}"/>
+                <Entry Grid.Row="2" Grid.ColumnSpan="2" Placeholder="Password" IsPassword="True" Text="{Binding LocatorPassword}" ReturnCommand="{Binding LocatorLogin}"/>
+                <Button Grid.Row="3" Grid.Column="0" Text="Register" Command="{Binding LocatorRegister}"/>
+                <Button Grid.Row="3" Grid.Column="1" Text="Login" Command="{Binding LocatorLogin}"/>
             </Grid>
-            <views:SearchView x:Name="searchView" Grid.Row="2" HeightRequest="100" WidthRequest="250" Margin="20" BatchScan="{Binding ScanMode}" ProductFound="{Binding ProductFound}"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>

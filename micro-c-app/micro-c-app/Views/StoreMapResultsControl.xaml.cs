@@ -24,16 +24,16 @@ namespace micro_c_app.Views
             BindingContext = this;
             InitializeComponent();
             MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, SettingsUpdated);
-            GetMapImage();
+            UpdateMapImage();
         }
-        private void GetMapImage()
+        public void UpdateMapImage()
         {
             image.Source = ImageSource.FromStream(() => LocationEntry.GetMapImageStream(SettingsPage.StoreID(), SettingsPage.LocatorCookie()));
         }
 
         private void SettingsUpdated(SettingsPageViewModel obj)
         {
-            GetMapImage();
+            UpdateMapImage();
         }
 
         private void DevClicked(object sender, EventArgs e)

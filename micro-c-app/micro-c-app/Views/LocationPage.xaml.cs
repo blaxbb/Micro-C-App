@@ -24,27 +24,37 @@ namespace micro_c_app.Views
                 vm.PropertyChanged += Vm_PropertyChanged;
             }
             map.PropertyChanged += Map_PropertyChanged;
+            this.SetupActionButton();
         }
 
         private void Vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
-            if (BindingContext is LocationPageViewModel vm && e.PropertyName == nameof(vm.Markers))
+            if (BindingContext is LocationPageViewModel vm)
             {
-                mapResults.ClearMarkers();
-                var minSize = 5d;
-                var maxSize = 30d;
-                var deltaSize = (maxSize - minSize) / vm.Markers.Count;
-                var size = maxSize;
-                var ordered = vm.Markers.OrderByDescending(m => m.Created).ToList();
-                var colors = new SolidColorBrush[] { SolidColorBrush.Green, SolidColorBrush.Yellow, SolidColorBrush.Red };
-                for (int i = 0; i < ordered.Count; i++)
+                switch(e.PropertyName)
                 {
-                    var marker = ordered[i];
-                    var percent = (float)i / ordered.Count;
-                    var color = colors[(int)(percent * colors.Length)];
+                    case nameof(vm.Markers):
+                        mapResults.ClearMarkers();
+                        var minSize = 5d;
+                        var maxSize = 30d;
+                        var deltaSize = (maxSize - minSize) / vm.Markers.Count;
+                        var size = maxSize;
+                        var ordered = vm.Markers.OrderByDescending(m => m.Created).ToList();
+                        var colors = new SolidColorBrush[] { SolidColorBrush.Green, SolidColorBrush.Yellow, SolidColorBrush.Red };
+                        for (int i = 0; i < ordered.Count; i++)
+                        {
+                            var marker = ordered[i];
+                            var percent = (float)i / ordered.Count;
+                            var color = colors[(int)(percent * colors.Length)];
 
-                    mapResults.AddMarker(new Point(marker.X, marker.Y), size, color, 5);
-                    size -= deltaSize;
+                            mapResults.AddMarker(new Point(marker.X, marker.Y), size, color, 5);
+                            size -= deltaSize;
+                        }
+                        break;
+                    case nameof(vm.LocatorCookie):
+                        map.UpdateMapImage();
+                        mapResults.UpdateMapImage();
+                        break;
                 }
             }
         }
@@ -82,6 +92,10 @@ namespace micro_c_app.Views
                 //Grid.SetRow(mapContainer, 0);
                 //Grid.SetRowSpan(mapContainer, 2);
 
+                //
+                //
+                //LoginGrid
+
                 Grid.SetColumn(mapContainer, 0);
                 Grid.SetRow(mapContainer, 0);
                 Grid.SetRowSpan(mapContainer, 2);
@@ -102,8 +116,8 @@ namespace micro_c_app.Views
             {
                 grid.RowDefinitions = new RowDefinitionCollection()
                 {
-                    new RowDefinition(){ Height = GridLength.Star},
                     new RowDefinition(){ Height = GridLength.Auto},
+                    new RowDefinition(){ Height = GridLength.Star},
                     new RowDefinition(){ Height = GridLength.Auto},
                 };
                 grid.ColumnDefinitions = new ColumnDefinitionCollection()
@@ -112,14 +126,14 @@ namespace micro_c_app.Views
                 };
 
                 Grid.SetColumn(mapContainer, 0);
-                Grid.SetRow(mapContainer, 0);
+                Grid.SetRow(mapContainer, 1);
                 Grid.SetRowSpan(mapContainer, 1);
 
                 Grid.SetColumn(mapResultsContainer, 0);
-                Grid.SetRow(mapResultsContainer, 0);
+                Grid.SetRow(mapResultsContainer, 1);
                 Grid.SetRowSpan(mapResultsContainer, 1);
 
-                Grid.SetRow(modeStack, 1);
+                Grid.SetRow(modeStack, 0);
                 Grid.SetColumn(modeStack, 0);
 
                 Grid.SetColumn(searchView, 0);

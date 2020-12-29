@@ -35,7 +35,7 @@ namespace micro_c_app.Views
             InitializeComponent();
 
             MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, SettingsUpdated);
-            GetMapImage();
+            UpdateMapImage();
             
 
             cursor.IsVisible = false;
@@ -95,14 +95,14 @@ namespace micro_c_app.Views
             //Debug.WriteLine($"new Point(){CursorPercent}");
         }
 
-        private void GetMapImage()
+        public void UpdateMapImage()
         {
             image.Source = ImageSource.FromStream(() => LocationEntry.GetMapImageStream(SettingsPage.StoreID(), SettingsPage.LocatorCookie()));
         }
 
         private void SettingsUpdated(SettingsPageViewModel obj)
         {
-            GetMapImage();
+            UpdateMapImage();
         }
 
         bool DEV_ENABLED = false;

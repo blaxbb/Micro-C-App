@@ -8,7 +8,7 @@ namespace micro_c_app
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if(parameter is string paramString && bool.TryParse(paramString, out bool flip))
+            if(parameter is string paramString && bool.TryParse(paramString, out bool flip) && flip)
             {
                 return string.IsNullOrWhiteSpace(value as string);
             }
