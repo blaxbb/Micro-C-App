@@ -8,8 +8,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Frame x:Name="imageFrame" Grid.Row="0" BackgroundColor="Green" Padding="0">
-                <Image BackgroundColor="Blue" x:Name="image" Aspect="AspectFit" Margin="0" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
+            <Frame x:Name="imageFrame" Grid.Row="0" Padding="0">
+                <Image x:Name="image" Aspect="AspectFit" Margin="0" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand"/>
             </Frame>
         </Grid>
   </ContentView.Content>

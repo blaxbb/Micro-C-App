@@ -9,8 +9,8 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <pinchzoomimage:PinchZoom Grid.Row="0" BackgroundColor="Green" Margin="0" Padding="0">
-                <Frame BackgroundColor="Yellow" Margin="0" Padding="0">
+            <pinchzoomimage:PinchZoom Grid.Row="0" Margin="0" Padding="0">
+                <Frame Margin="0" Padding="0">
                     <Image x:Name="image" Source="https://aka.ms/campus.jpg" BackgroundColor="Blue" HorizontalOptions="Center" VerticalOptions="Center" Margin="0"/>
                 </Frame>
             </pinchzoomimage:PinchZoom>
