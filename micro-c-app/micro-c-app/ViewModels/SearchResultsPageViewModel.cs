@@ -76,15 +76,33 @@ namespace micro_c_app.ViewModels
 
         private async Task LoadQuery()
         {
-            var result = await Search.LoadQuery(SearchQuery, StoreID, CategoryFilter, OrderBy, page);
-            await Device.InvokeOnMainThreadAsync(() =>
+            try
             {
-                TotalResults = result.TotalResults;
-                foreach (var item in result.Items)
+                var result = await Search.LoadQuery(SearchQuery, StoreID, CategoryFilter, OrderBy, page);
+                await Device.InvokeOnMainThreadAsync(() =>
                 {
-                    Items.Add(item);
-                }
-            });
+                    TotalResults = result.TotalResults;
+                    foreach (var item in result.Items)
+                    {
+                        Items.Add(item);
+                    }
+                });
+            }
+            catch (TaskCanceledException e)
+            {
+                AnalyticsService.Track("Search Submit Cancelled");
+                //triggered by user input, do nothing
+            }
+            catch (OperationCanceledException e)
+            {
+                AnalyticsService.Track("Search Submit Cancelled");
+                //triggered by user input, do nothing
+            }
+            catch(Exception e)
+            {
+                AnalyticsService.TrackError(e, SearchQuery);
+                Shell.Current.DisplayAlert("Error", e.Message, "Ok");
+            }
         }
 
         public void ParseResults(SearchResults results)
