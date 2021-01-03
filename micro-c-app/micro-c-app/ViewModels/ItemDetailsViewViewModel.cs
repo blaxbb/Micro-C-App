@@ -21,7 +21,21 @@ namespace micro_c_app.ViewModels
                 }
             }
         }
-        public string? ActivePicture => Item?.PictureUrls?[PictureIndex] ?? "";
+        public string? ActivePicture
+        {
+            get
+            {
+                if(Item?.PictureUrls == null)
+                {
+                    return "";
+                }
+                if(PictureIndex <= item.PictureUrls.Count)
+                {
+                    return "";
+                }
+                return Item?.PictureUrls?[PictureIndex];
+            }
+        }
         int PictureIndex = 0;
 
         public ICommand BackPicture { get; }
