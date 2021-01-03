@@ -101,7 +101,7 @@ namespace micro_c_app.ViewModels
             catch(Exception e)
             {
                 AnalyticsService.TrackError(e, SearchQuery);
-                Shell.Current.DisplayAlert("Error", e.Message, "Ok");
+                await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
             }
         }
 
