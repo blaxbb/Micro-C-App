@@ -123,6 +123,12 @@ namespace micro_c_app.Views
                 // Navigate to our scanner page
                 scanPage.OnScanResult += (result) =>
                 {
+                    var currentPage = navigation.NavigationStack.LastOrDefault();
+                    if (currentPage != scanPage)
+                    {
+                        return;
+                    }
+
                     AnalyticsService.Track("Scan Result", result.Text);
                     Debug.WriteLine($"SCANNED {result}");
                     if (SettingsPage.Vibrate())
@@ -137,6 +143,7 @@ namespace micro_c_app.Views
                         Device.BeginInvokeOnMainThread(async () =>
                         {
                             await navigation.PopAsync();
+
                             //SKUField.Text = FilterBarcodeResult(result);
                             //await OnSubmit(SKUField.Text);
                             await resultTask.Invoke(FilterBarcodeResult(result), null);
