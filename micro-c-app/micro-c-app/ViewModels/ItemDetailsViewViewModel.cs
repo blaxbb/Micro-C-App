@@ -29,7 +29,7 @@ namespace micro_c_app.ViewModels
                 {
                     return "";
                 }
-                if(PictureIndex <= item.PictureUrls.Count)
+                if(PictureIndex >= item.PictureUrls.Count)
                 {
                     return "";
                 }
