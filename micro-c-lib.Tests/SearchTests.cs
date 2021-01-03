@@ -18,12 +18,7 @@ namespace micro_c_lib.Tests
 
         public SearchTests()
         {
-            Task.Run(
-                async () =>
-                {
-                    results = await Search.LoadQuery(QUERY, STORE, null, Search.OrderByMode.pricelow, 1);
-                }
-            ).Wait();
+            results = Search.LoadQuery(QUERY, STORE, null, Search.OrderByMode.pricelow, 1).GetAwaiter().GetResult();
         }
 
         [TestMethod]
@@ -69,9 +64,9 @@ namespace micro_c_lib.Tests
         }
 
         [TestMethod]
-        public void ResultsLoadAll()
+        public async Task ResultsLoadAll()
         {
-            var allResults = Search.LoadAll(QUERY, STORE, null, Search.OrderByMode.pricelow).Result;
+            var allResults = await Search.LoadAll(QUERY, STORE, null, Search.OrderByMode.pricelow);
             Assert.IsTrue(allResults.Items.Count == allResults.TotalResults);
         }
     }
