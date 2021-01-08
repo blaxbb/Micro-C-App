@@ -4,12 +4,18 @@
              xmlns:views="clr-namespace:micro_c_app.Views"
              xmlns:themes="clr-namespace:micro_c_app.Themes"
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
-             x:Class="micro_c_app.Views.ItemBatchPage">
+             x:Class="micro_c_app.Views.ItemBatchPage"
+             Title="Batch Scan">
+    
     <ContentPage.BindingContext>
         <vm:ItemBatchPageViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Reset" Command="{Binding Reset}"/>
+        <ToolbarItem Text="Reset" Command="{Binding Reset}" Order="Secondary"/>
+        <ToolbarItem Text="Save" Command="{Binding Save}" Order="Secondary"/>
+        <ToolbarItem Text="Load" Command="{Binding Load}" Order="Secondary"/>
+        <ToolbarItem Text="Export" Command="{Binding ExportWeb}" Order="Secondary"/>
+        <ToolbarItem Text="Import" Command="{Binding ImportWeb}" Order="Secondary"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Resources>
         <ResourceDictionary>

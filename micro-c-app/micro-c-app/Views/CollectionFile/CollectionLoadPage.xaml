@@ -9,7 +9,7 @@
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <Label Text="{Binding .}"/>
+                            <Label Text="{Binding .}" InputTransparent="True"/>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>

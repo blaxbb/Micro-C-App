@@ -5,7 +5,7 @@
              xmlns:views="clr-namespace:micro_c_app.Views"
              xmlns:themes="clr-namespace:micro_c_app.Themes"
              x:Class="micro_c_app.Views.QuotePage"
-             >
+             Title="Quote">
     <ContentPage.BindingContext>
         <vm:QuotePageViewModel/>
     </ContentPage.BindingContext>

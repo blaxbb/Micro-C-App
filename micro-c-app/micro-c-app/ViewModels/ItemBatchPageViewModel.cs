@@ -1,6 +1,10 @@
-﻿using micro_c_app.Models;
+﻿using DataFlareClient;
+using micro_c_app.Models;
 using micro_c_app.ViewModels;
+using micro_c_app.Views;
+using micro_c_app.Views.CollectionFile;
 using MicroCLib.Models;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,10 +30,18 @@ namespace micro_c_app.ViewModels
         public ICommand RemoveItem { get; }
         public ICommand DetailItem { get; }
         public ICommand Reset { get; }
+        public ICommand Save { get; }
+        public ICommand Load { get; }
+        public ICommand ImportWeb { get; }
+        public ICommand ExportWeb { get; }
 
         protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
         {
             {"Reset", Reset },
+            {"Save", Save },
+            {"Load", Load },
+            {"Import", ImportWeb },
+            {"Export", ExportWeb },
         };
 
         public ItemBatchPageViewModel()
@@ -62,7 +74,7 @@ namespace micro_c_app.ViewModels
                 }
                 else
                 {
-                    IncreaseQuantity.Execute(existing);
+                    IncreaseQuantity?.Execute(existing);
                 }
             });
 
@@ -133,7 +145,76 @@ namespace micro_c_app.ViewModels
                     }
                 });
             });
+
+            Save = new Command(async () =>
+            {
+                var vm = new CollectionSavePageViewModel("batch", Items.ToList());
+
+                await Shell.Current.Navigation.PushModalAsync(new CollectionSavePage() { BindingContext = vm });
+            });
+
+            Load = new Command(async () =>
+            {
+                var vm = new CollectionLoadPageViewModel<Item>("batch");
+                MessagingCenter.Subscribe<CollectionLoadPageViewModel<Item>>(this, "load", DoLoad, vm);
+                await Shell.Current.Navigation.PushModalAsync(new CollectionLoadPage() { BindingContext = vm });
+            });
+
+            ImportWeb = new Command(async () =>
+            {
+                var shortCode = await Shell.Current.DisplayPromptAsync("Import", "Enter the share code to import a item list", keyboard: Keyboard.Numeric);
+                if (string.IsNullOrWhiteSpace(shortCode))
+                {
+                    return;
+                }
+
+                var flare = await Flare.GetShortCode("https://dataflare.bbarrettnas.duckdns.org/api/Flare", shortCode);
+                if (flare == null || string.IsNullOrWhiteSpace(flare.Data))
+                {
+                    return;
+                }
+
+                Items.Clear();
+
+                var components = JsonConvert.DeserializeObject<List<BuildComponent>>(flare.Data);
+                foreach (var comp in components)
+                {
+                    if (comp.Item != null)
+                    {
+                        Items.Add(comp.Item);
+                    }
+                }
+            });
+
+            ExportWeb = new Command(async () =>
+            {
+                var components = Items.Select(i => new BuildComponent() { Item = i }).ToList();
+                var flare = new Flare(JsonConvert.SerializeObject(components));
+                flare.Tag = $"micro-c-{SettingsPage.StoreID()}";
+                var success = await flare.Post("https://dataflare.bbarrettnas.duckdns.org/api/Flare");
+                if (success)
+                {
+                    await Shell.Current.DisplayAlert("Import using code", $"{flare.ShortCode}", "Ok");
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Error", "Failed to export to DataFlare server.", "Ok");
+                }
+            });
+
         }
+
+        private void DoLoad(CollectionLoadPageViewModel<Item> obj)
+        {
+            Items.Clear();
+            foreach (var i in obj.Result)
+            {
+                Items.Add(i);
+            }
+
+            UpdateProperties();
+        }
+
         public void UpdateProperties()
         {
             OnPropertyChanged(nameof(Items));
