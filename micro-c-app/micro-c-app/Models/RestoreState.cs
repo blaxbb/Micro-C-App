@@ -17,6 +17,7 @@ namespace micro_c_app.Models
 
         public List<BuildComponent> BuildComponents { get; set; }
         public List<Item> QuoteItems { get; set; }
+        public List<Item> BatchItems { get; set; }
         public BuildPageViewModel BuildVM { get; set; }
 
         public const string FILENAME = "RestoreState.json";

@@ -175,4 +175,13 @@
                 Size="24"/>
         </MenuItem.IconImageSource>
     </MenuItem>
+    <MenuItem Text="Batch" Clicked="DisplayBatchPage">
+        <MenuItem.IconImageSource>
+            <FontImageSource
+                FontFamily="{StaticResource FontAwesomeSolid}"
+                Glyph="&#xf5fd;"
+                Color="{DynamicResource PrimaryTextColor}"
+                Size="24"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
 </Shell>

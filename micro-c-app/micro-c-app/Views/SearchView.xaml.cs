@@ -5,6 +5,7 @@ using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -53,6 +54,9 @@ namespace micro_c_app.Views
         public bool BatchScan { get { return (bool)GetValue(BatchScanProperty); } set { SetValue(BatchScanProperty, value); } }
 
         public ProgressInfo Progress { get => progress; set { progress = value; OnPropertyChanged(nameof(Progress)); } }
+        public static readonly BindableProperty CachedItemsProperty = BindableProperty.Create("CachedItems", typeof(ObservableCollection<Item>), typeof(SearchView), null);
+        public ObservableCollection<Item> CachedItems { get => (ObservableCollection<Item>)GetValue(CachedItemsProperty); set => SetValue(CachedItemsProperty, value); }
+
 
         public bool Busy
         {
@@ -218,6 +222,17 @@ namespace micro_c_app.Views
             }
 
             AnalyticsService.Track("SearchSubmit", searchValue);
+
+            if(CachedItems != null)
+            {
+                var match = CachedItems.FirstOrDefault(i => i.SKU == searchValue || (i.Specs.ContainsKey("UPC") && i.Specs["UPC"] == searchValue));
+                if(match != null)
+                {
+                    AnalyticsService.Track("CacheHit", searchValue);
+                    DoProductFound(match.CloneAndResetQuantity());
+                    return;
+                }
+            }
 
             Busy = true;
             tokenSource = new CancellationTokenSource();

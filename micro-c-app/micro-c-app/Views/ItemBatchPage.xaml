@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:micro_c_app.Views"
+             xmlns:themes="clr-namespace:micro_c_app.Themes"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             x:Class="micro_c_app.Views.ItemBatchPage">
+    <ContentPage.BindingContext>
+        <vm:ItemBatchPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Reset" Command="{Binding Reset}"/>
+    </ContentPage.ToolbarItems>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <!--
+                Both the evenRow and oddRow template are identical except for the BackgroundColor property
+            -->
+            <DataTemplate x:Key="evenRow">
+                <ViewCell>
+                    <Grid x:Name="item" Padding="5" BackgroundColor="Transparent">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Name}" InputTransparent="True"/>
+                        <Label Grid.Column="0" Grid.Row="1" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
+                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding SKU}" HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" InputTransparent="True"/>
+                        <Label Grid.Column="0" Grid.Row="2" Text="{Binding Specs[UPC]}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
+                        <Label Grid.Column="1" Grid.Row="2" Text="{Binding Stock}" HorizontalOptions="EndAndExpand" InputTransparent="True"/>
+                        <StackLayout Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Orientation="Horizontal">
+                            <Button Text="&#xf068;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
+                            <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" MinimumWidthRequest="50" VerticalTextAlignment="Center" Margin="10,0,10,0" HorizontalTextAlignment="Center" InputTransparent="True"/>
+                            <Button Text="&#xf067;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
+                        </StackLayout>
+                        <FlexLayout Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
+                            <Frame />
+                            <Button Text="&#xf129;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding DetailItem, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}"/>
+                            <Button Text="&#xf2ed;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red"/>
+                        </FlexLayout>
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+            <DataTemplate x:Key="oddRow">
+                <ViewCell>
+                    <Grid x:Name="item" Padding="5" BackgroundColor="{DynamicResource SecondaryTextColor}">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Name}" InputTransparent="True"/>
+                        <Label Grid.Column="0" Grid.Row="1" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
+                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding SKU}" HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" InputTransparent="True"/>
+                        <Label Grid.Column="0" Grid.Row="2" Text="{Binding Specs[UPC]}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
+                        <Label Grid.Column="1" Grid.Row="2" Text="{Binding Stock}" HorizontalOptions="EndAndExpand" InputTransparent="True"/>
+                        <StackLayout Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Orientation="Horizontal">
+                            <Button Text="&#xf068;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
+                            <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" MinimumWidthRequest="50" VerticalTextAlignment="Center" Margin="10,0,10,0" HorizontalTextAlignment="Center" InputTransparent="True"/>
+                            <Button Text="&#xf067;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
+                        </StackLayout>
+                        <FlexLayout Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
+                            <Frame />
+                            <Button Text="&#xf129;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding DetailItem, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}"/>
+                            <Button Text="&#xf2ed;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red"/>
+                        </FlexLayout>
+                    </Grid>
+                </ViewCell>
+            </DataTemplate>
+            <themes:StripedRowDataTemplateSelector x:Key="stripedRow" EvenRow="{StaticResource evenRow}" OddRow="{StaticResource oddRow}"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+    <ContentPage.Content>
+        <Grid x:Name="grid" IsEnabled="{Binding NotBusy}" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="0"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <ListView Grid.Column="0"  x:Name="listView" ItemTemplate="{StaticResource stripedRow}" ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" ItemTapped="listView_ItemTapped" HasUnevenRows="True">
+            </ListView>
+            <Grid Grid.Column="1" x:Name="SecondaryStack" Margin="10,5,10,5">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <views:SearchView x:Name="SearchView" Grid.Row="0" BatchScan="True" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" AutoPopSearchPage="True" VerticalOptions="Start" CachedItems="{Binding Items}"/>
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
