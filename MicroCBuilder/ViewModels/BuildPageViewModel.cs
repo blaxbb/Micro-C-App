@@ -253,6 +253,7 @@ namespace MicroCBuilder.ViewModels
             }
 
             UpdateHintsAndErrors();
+            OnPropertyChanged(nameof(SubTotal));
         }
 
         private async void DoAddCustomItem(object obj)
