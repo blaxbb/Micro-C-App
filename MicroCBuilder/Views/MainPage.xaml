@@ -32,6 +32,7 @@
                             <AppBarButton Icon="Mail"  Label="Email" Click="MailClicked"/>
                             <AppBarButton Icon="CellPhone" Label="Import From Phone" Click="ImportFromWebClicked"/>
                             <AppBarButton Icon="Setting" Label="Settings" Click="SettingsClick"/>
+                            <AppBarButton Icon="SaveLocal" Label="Save Signs" Click="SaveSignsClicked"/>
                         </CommandBar.SecondaryCommands>
 
                         <AppBarButton Icon="Add" Label="Add" x:Name="AddButton">

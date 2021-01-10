@@ -283,6 +283,14 @@ namespace MicroCBuilder.Views
             }
         }
 
+        private void SaveSignsClicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            {
+                vm.SaveSigns.Execute(null);
+            }
+        }
+
         private void PrintClicked(object sender, RoutedEventArgs e)
         {
             if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)

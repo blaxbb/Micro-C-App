@@ -21,6 +21,8 @@ using DataFlareClient;
 
 using static MicroCLib.Models.BuildComponent.ComponentType;
 using Newtonsoft.Json;
+using Microsoft.Toolkit.Uwp.Helpers;
+using Windows.UI.Xaml.Media;
 
 namespace MicroCBuilder.ViewModels
 {
@@ -36,6 +38,7 @@ namespace MicroCBuilder.ViewModels
         private MCOLBuildContext buildContext;
 
         public ICommand Save { get; }
+        public ICommand SaveSigns { get; }
         public ICommand Load { get; }
         public ICommand Reset { get; }
         public ICommand Add { get; }
@@ -77,6 +80,7 @@ namespace MicroCBuilder.ViewModels
             });
 
             Save = new Command(DoSave);
+            SaveSigns = new Command(DoSaveSigns);
 
             Load = new Command(DoLoad);
 
@@ -529,6 +533,97 @@ namespace MicroCBuilder.ViewModels
                 Windows.Storage.CachedFileManager.DeferUpdates(file);
                 // write to file
                 await Windows.Storage.FileIO.WriteTextAsync(file, json);
+                // Let Windows know that we're finished changing the file so
+                // the other app can update the remote version of the file.
+                // Completing updates may require Windows to ask for user input.
+                Windows.Storage.Provider.FileUpdateStatus status =
+                    await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(file);
+                if (status == Windows.Storage.Provider.FileUpdateStatus.Complete)
+                {
+                    Debug.WriteLine("File " + file.Name + " was saved.");
+                }
+                else
+                {
+                    Debug.WriteLine("File " + file.Name + " couldn't be saved.");
+                }
+            }
+            else
+            {
+                Debug.WriteLine("Operation cancelled.");
+            }
+        }
+
+        private async void DoSaveSigns(object obj)
+        {
+            var text = string.Join(Environment.NewLine, Components.Where(c => c.Item != null).Select(c => c.Item.SKU));
+            var titleTextBox = new TextBox()
+            {
+                PlaceholderText = "Batch Title",
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = new Thickness(5)
+            };
+
+            var signs = new string[]
+            {
+                "AD_PEG",
+                "BULK"
+            };
+
+            var signComboBox = new ComboBox()
+            {
+                ItemsSource = signs,
+                SelectedIndex = 0,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                Margin = new Thickness(5)
+            };
+
+            var stack = new StackPanel()
+            {
+                Orientation = Orientation.Vertical
+            };
+            stack.Children.Add(titleTextBox);
+            stack.Children.Add(signComboBox);
+
+            var dialog = new ContentDialog()
+            {
+                Title = "Save Signs",
+                Content = stack,
+                PrimaryButtonText = "Save",
+                SecondaryButtonText = "Cancel"
+            };
+
+        showDialog:
+            var result = await dialog.ShowAsync();
+
+            if (result != ContentDialogResult.Primary)
+            {
+                return;
+            }
+            if (string.IsNullOrWhiteSpace(titleTextBox.Text))
+            {
+                Windows.UI.Popups.MessageDialog msg = new Windows.UI.Popups.MessageDialog("Batch title cannot be empty!", "Error");
+                await msg.ShowAsync();
+                goto showDialog;
+            }
+
+            var savePicker = new Windows.Storage.Pickers.FileSavePicker
+            {
+                SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary,
+                SuggestedFileName = $"{titleTextBox.Text}-{signComboBox.SelectedItem}-{Settings.StoreID()}.txt",
+            };
+
+            // Dropdown of file types the user can save the file as
+            savePicker.FileTypeChoices.Add("Text File", new List<string>() { ".txt" });
+            // Default file name if the user does not type one in or select a file to replace
+
+            var file = await savePicker.PickSaveFileAsync();
+            if (file != null)
+            {
+                // Prevent updates to the remote version of the file until
+                // we finish making changes and call CompleteUpdatesAsync.
+                Windows.Storage.CachedFileManager.DeferUpdates(file);
+                // write to file
+                await Windows.Storage.FileIO.WriteTextAsync(file, text);
                 // Let Windows know that we're finished changing the file so
                 // the other app can update the remote version of the file.
                 // Completing updates may require Windows to ask for user input.
