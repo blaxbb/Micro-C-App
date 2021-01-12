@@ -1,4 +1,5 @@
-﻿using micro_c_app.Models;
+﻿using GoogleVisionBarCodeScanner;
+using micro_c_app.Models;
 using micro_c_app.ViewModels;
 using MicroCLib.Models;
 using Microsoft.AppCenter.Analytics;
@@ -54,9 +55,6 @@ namespace micro_c_app.Views
         public bool BatchScan { get { return (bool)GetValue(BatchScanProperty); } set { SetValue(BatchScanProperty, value); } }
 
         public ProgressInfo Progress { get => progress; set { progress = value; OnPropertyChanged(nameof(Progress)); } }
-        public static readonly BindableProperty CachedItemsProperty = BindableProperty.Create("CachedItems", typeof(ObservableCollection<Item>), typeof(SearchView), null);
-        public ObservableCollection<Item> CachedItems { get => (ObservableCollection<Item>)GetValue(CachedItemsProperty); set => SetValue(CachedItemsProperty, value); }
-
 
         public bool Busy
         {
@@ -133,7 +131,7 @@ namespace micro_c_app.Views
                         return;
                     }
 
-                    AnalyticsService.Track("Scan Result", result.Text);
+                    AnalyticsService.Track("Scan Result", result.DisplayValue);
                     Debug.WriteLine($"SCANNED {result}");
                     if (SettingsPage.Vibrate())
                     {
@@ -195,24 +193,34 @@ namespace micro_c_app.Views
             }, categoryFilter: CategoryFilter, batchMode: BatchScan);
         }
 
-        private static string FilterBarcodeResult(Result result)
+        private static string FilterBarcodeResult(BarcodeResult result)
         {
-            switch (result.BarcodeFormat)
+            if (Regex.IsMatch(result.DisplayValue, "\\d{12}"))
             {
-                case BarcodeFormat.CODE_128:
-                    if(Regex.IsMatch(result.Text, "\\d{12}"))
-                    {
-                        return result.Text;
-                    }
-                    if (result.Text.Length >= 6)
-                    {
-                        return result.Text.Substring(0, 6);
-                    }
-                    return "";
-                case BarcodeFormat.UPC_A:
-                default:
-                    return result.Text;
+                return result.DisplayValue;
             }
+            else if (result.DisplayValue.Length >= 6)
+            {
+                return result.DisplayValue.Substring(0, 6);
+            }
+            return "";
+
+            //switch (result.BarcodeType)
+            //{
+            //    case BarcodeTypes:
+            //        if(Regex.IsMatch(result.Text, "\\d{12}"))
+            //        {
+            //            return result.Text;
+            //        }
+            //        if (result.Text.Length >= 6)
+            //        {
+            //            return result.Text.Substring(0, 6);
+            //        }
+            //        return "";
+            //    case BarcodeFormat.UPC_A:
+            //    default:
+            //        return result.Text;
+            //}
         }
         public async Task OnSubmit(string searchValue)
         {
@@ -223,15 +231,13 @@ namespace micro_c_app.Views
 
             AnalyticsService.Track("SearchSubmit", searchValue);
 
-            if(CachedItems != null)
+            var cachedItem = App.SearchCache?.Get(searchValue);
+            if(cachedItem != null)
             {
-                var match = CachedItems.FirstOrDefault(i => i.SKU == searchValue || (i.Specs.ContainsKey("UPC") && i.Specs["UPC"] == searchValue));
-                if(match != null)
-                {
-                    AnalyticsService.Track("CacheHit", searchValue);
-                    DoProductFound(match.CloneAndResetQuantity());
-                    return;
-                }
+                Debug.WriteLine("HIT NEW CACHE!!");
+                AnalyticsService.Track("CacheHit", searchValue);
+                DoProductFound(cachedItem);
+                return;
             }
 
             Busy = true;
@@ -269,7 +275,7 @@ namespace micro_c_app.Views
                             sw.Stop();
 
                             AnalyticsService.Track("Item From Url Elapsed", ElapsedToAnalytics(sw.ElapsedMilliseconds));
-
+                            App.SearchCache?.Add(item);
                             DoProductFound(item);
                             break;
                         default:
@@ -305,6 +311,7 @@ namespace micro_c_app.Views
 
                                         AnalyticsService.Track("Item From Url Elapsed", ElapsedToAnalytics(sw2.ElapsedMilliseconds));
                                         Busy = false;
+                                        App.SearchCache?.Add(item);
                                         DoProductFound(item);
                                     }
                                 }, cancellationToken).ContinueWith((task) => { Busy = false; });

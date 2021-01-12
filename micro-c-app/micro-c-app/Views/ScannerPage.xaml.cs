@@ -1,4 +1,5 @@
-﻿using MicroCLib.Models;
+﻿using GoogleVisionBarCodeScanner;
+using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -19,7 +20,7 @@ namespace micro_c_app.Views
         private bool isRunningTask;
         private ProgressInfo progress;
 
-        public delegate void ScanResultDelegate(Result result);
+        public delegate void ScanResultDelegate(BarcodeResult result);
         public event ScanResultDelegate OnScanResult;
 
         public bool IsRunningTask { get => isRunningTask; set { isRunningTask = value; OnPropertyChanged(nameof(IsRunningTask)); } }
@@ -29,23 +30,29 @@ namespace micro_c_app.Views
         {
             InitializeComponent();
 
-            scanner.Options = new MobileBarcodeScanningOptions()
-            {
-                AutoRotate = false,
-                TryHarder = true,
-                PossibleFormats = new List<BarcodeFormat>() {
-                        BarcodeFormat.CODE_128,
-                        BarcodeFormat.UPC_A
-                    },
-                UseNativeScanning = true,
-                DelayBetweenContinuousScans = 1000,
-            };
+            //scanner.Options = new MobileBarcodeScanningOptions()
+            //{
+            //    AutoRotate = false,
+            //    TryHarder = true,
+            //    PossibleFormats = new List<BarcodeFormat>() {
+            //            BarcodeFormat.CODE_128,
+            //            BarcodeFormat.UPC_A
+            //        },
+            //    UseNativeScanning = true,
+            //    DelayBetweenContinuousScans = 1000,
+            //};
 
-            scanner.OnScanResult += (result) =>
+            //scanner.OnScanResult += (result) =>
+            //{
+            //    OnScanResult?.Invoke(result);
+            //};
+            //scanner.IsScanning = true;
+
+            scanner2.OnDetected += (sender, args) =>
             {
-                OnScanResult?.Invoke(result);
+                OnScanResult?.Invoke(args.BarcodeResults.FirstOrDefault());
+                Device.StartTimer(TimeSpan.FromSeconds(1), () => { Methods.SetIsScanning(true); return false; });
             };
-            scanner.IsScanning = true;
             IsRunningTask = false;
             PropertyChanged += ScannerPage_PropertyChanged;
         }
@@ -54,7 +61,8 @@ namespace micro_c_app.Views
         {
             if (e.PropertyName == nameof(IsRunningTask))
             {
-                scanner.IsScanning = !IsRunningTask;
+                scanner2.IsEnabled = !IsRunningTask;
+                //scanner.IsScanning = !IsRunningTask;
             }
         }
     }

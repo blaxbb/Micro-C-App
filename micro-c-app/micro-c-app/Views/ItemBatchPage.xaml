@@ -107,7 +107,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <views:SearchView x:Name="SearchView" Grid.Row="0" BatchScan="True" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" AutoPopSearchPage="True" VerticalOptions="Start" CachedItems="{Binding Items}"/>
+                <views:SearchView x:Name="SearchView" Grid.Row="0" BatchScan="True" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" AutoPopSearchPage="True" VerticalOptions="Start"/>
             </Grid>
         </Grid>
     </ContentPage.Content>

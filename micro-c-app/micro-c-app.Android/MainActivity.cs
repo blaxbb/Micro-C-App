@@ -20,6 +20,7 @@ namespace micro_c_app.Droid
             Xamarin.Forms.Forms.SetFlags("Shapes_Experimental");
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             ZXing.Net.Mobile.Forms.Android.Platform.Init();
+            GoogleVisionBarCodeScanner.Droid.RendererInitializer.Init();
             global::Xamarin.Forms.Forms.Init(this, savedInstanceState);
             global::Android.Webkit.WebView.SetWebContentsDebuggingEnabled(true);
             LoadApplication(new App());

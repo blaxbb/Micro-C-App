@@ -18,15 +18,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="BarcodeScanner.XF" Version="4.8.1.1" />
     <PackageReference Include="DataFlareClient" Version="1.0.6" />
-    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.0.0" />
-    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.0.0" />
+    <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.1.0" />
+    <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="SkiaSharp" Version="2.80.2" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.2" />
-    <PackageReference Include="Xamarin.Forms" Version="4.8.0.1269" />  
-    <PackageReference Include="Xamarin.Essentials" Version="1.5.3.2" />  
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.1874" />  
+    <PackageReference Include="Xamarin.Essentials" Version="1.6.0" />  
     <PackageReference Include="ZXing.Net.Mobile" Version="3.0.0-beta5" />  
     <PackageReference Include="ZXing.Net.Mobile.Forms" Version="3.0.0-beta5" />
   </ItemGroup>

@@ -138,6 +138,15 @@
                     Size="24"/>
             </ShellContent.Icon>
         </ShellContent>
+        <ShellContent Title="Batch" Route="BatchPage" ContentTemplate="{DataTemplate local:ItemBatchPage}">
+            <ShellContent.Icon>
+                <FontImageSource
+                    FontFamily="{StaticResource FontAwesomeSolid}"
+                    Glyph="&#xf5fd;"
+                    Color="{DynamicResource PrimaryTextColor}"
+                    Size="24"/>
+            </ShellContent.Icon>
+        </ShellContent>
         <!--<ShellContent Title="Location" Route="LocationPage" ContentTemplate="{DataTemplate local:LocationPage}">
             <ShellContent.Icon>
                 <FontImageSource
@@ -171,15 +180,6 @@
             <FontImageSource
                 FontFamily="{StaticResource FontAwesomeSolid}"
                 Glyph="&#xf2f2;"
-                Color="{DynamicResource PrimaryTextColor}"
-                Size="24"/>
-        </MenuItem.IconImageSource>
-    </MenuItem>
-    <MenuItem Text="Batch" Clicked="DisplayBatchPage">
-        <MenuItem.IconImageSource>
-            <FontImageSource
-                FontFamily="{StaticResource FontAwesomeSolid}"
-                Glyph="&#xf5fd;"
                 Color="{DynamicResource PrimaryTextColor}"
                 Size="24"/>
         </MenuItem.IconImageSource>

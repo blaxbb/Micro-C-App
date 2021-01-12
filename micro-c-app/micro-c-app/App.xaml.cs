@@ -1,5 +1,6 @@
 ﻿using micro_c_app.Themes;
 using micro_c_app.Views;
+using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -10,7 +11,7 @@ namespace micro_c_app
 {
     public partial class App : Application
     {
-
+        public static SearchCache SearchCache = new SearchCache(TimeSpan.FromHours(1));
         public App()
         {
             InitializeComponent();

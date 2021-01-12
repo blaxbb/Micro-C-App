@@ -83,7 +83,7 @@ namespace micro_c_app.Droid
 
             var pendingIntent = PendingIntent.GetActivity(AndroidApp.Context, PENDING_INTENT_ID, intent, PendingIntentFlags.OneShot);
 
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(AndroidApp.Context, CHANNEL_ID)
+            AndroidX.Core.App.NotificationCompat.Builder builder = new AndroidX.Core.App.NotificationCompat.Builder(AndroidApp.Context, CHANNEL_ID)
                 .SetContentIntent(pendingIntent)
                 .SetContentTitle(title)
                 .SetContentText(message)
