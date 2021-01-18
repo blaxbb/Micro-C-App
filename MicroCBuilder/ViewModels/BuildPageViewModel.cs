@@ -184,7 +184,7 @@ namespace MicroCBuilder.ViewModels
         {
             var flare = new Flare(JsonConvert.SerializeObject(Components.Where(c => c.Item != null).ToList()));
             flare.Tag = $"micro-c-{Settings.StoreID()}";
-            var success = await flare.Post($"https://dataflare.bbarrettnas.duckdns.org/api/Flare");
+            var success = await flare.Post($"https://dataflare.bbarrett.me/api/Flare");
 
             if (!success)
             {
@@ -215,7 +215,7 @@ namespace MicroCBuilder.ViewModels
                 return;
             }
 
-            var flare = await Flare.GetShortCode("https://dataflare.bbarrettnas.duckdns.org/api/Flare", shortCode);
+            var flare = await Flare.GetShortCode("https://dataflare.bbarrett.me/api/Flare", shortCode);
 
             if (flare != null && flare.ShortCode.ToString() == shortCode)
             {

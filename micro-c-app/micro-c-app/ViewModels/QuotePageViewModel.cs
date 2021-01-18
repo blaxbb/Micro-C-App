@@ -203,7 +203,7 @@ namespace micro_c_app.ViewModels
                     return;
                 }
 
-                var flare = await Flare.GetShortCode("https://dataflare.bbarrettnas.duckdns.org/api/Flare", shortCode);
+                var flare = await Flare.GetShortCode("https://dataflare.bbarrett.me/api/Flare", shortCode);
                 if(flare == null || string.IsNullOrWhiteSpace(flare.Data))
                 {
                     return;
@@ -226,7 +226,7 @@ namespace micro_c_app.ViewModels
                 var components = Items.Select(i => new BuildComponent() { Item = i }).ToList();
                 var flare = new Flare(JsonConvert.SerializeObject(components));
                 flare.Tag = $"micro-c-{SettingsPage.StoreID()}";
-                var success = await flare.Post("https://dataflare.bbarrettnas.duckdns.org/api/Flare");
+                var success = await flare.Post("https://dataflare.bbarrett.me/api/Flare");
                 if (success)
                 {
                     await Shell.Current.DisplayAlert("Import using code", $"{flare.ShortCode}", "Ok");
