@@ -182,15 +182,19 @@ namespace micro_c_app.Views
             });
         }
 
-        private void OnScanClicked(object sender, EventArgs e)
+        private async void OnScanClicked(object sender, EventArgs e)
         {
-            DoScan(Navigation, async (result, progress) =>
+            bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+            if (allowed)
             {
-                SKUField.Text = result;
-                progress?.Report(new ProgressInfo($"Scanned {result}", .33d));
-                await OnSubmit(result);
-                progress?.Report(new ProgressInfo($"Submitted {result}", .66d));
-            }, categoryFilter: CategoryFilter, batchMode: BatchScan);
+                DoScan(Navigation, async (result, progress) =>
+                {
+                    SKUField.Text = result;
+                    progress?.Report(new ProgressInfo($"Scanned {result}", .33d));
+                    await OnSubmit(result);
+                    progress?.Report(new ProgressInfo($"Submitted {result}", .66d));
+                }, categoryFilter: CategoryFilter, batchMode: BatchScan);
+            }
         }
 
         private static string FilterBarcodeResult(BarcodeResult result)
