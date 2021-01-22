@@ -76,6 +76,8 @@ namespace micro_c_app.ViewModels
                 {
                     IncreaseQuantity?.Execute(existing);
                 }
+
+                UpdateProperties();
             });
 
             OnProductError = new Command<string>(async (string message) =>

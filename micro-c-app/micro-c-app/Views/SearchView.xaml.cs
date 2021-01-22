@@ -123,7 +123,7 @@ namespace micro_c_app.Views
                 };
 
                 // Navigate to our scanner page
-                scanPage.OnScanResult += (result) =>
+                scanPage.OnScanResult += async (result) =>
                 {
                     var currentPage = navigation.NavigationStack.LastOrDefault();
                     if (currentPage != scanPage)
@@ -161,14 +161,12 @@ namespace micro_c_app.Views
                         scanPage.IsBusy = true;
                         scanPage.IsRunningTask = true;
                         options.DelayBetweenContinuousScans = int.MaxValue;
-                        Device.BeginInvokeOnMainThread(async () =>
-                        {
-                            await resultTask.Invoke(FilterBarcodeResult(result), progress);
-                            options.DelayBetweenContinuousScans = 0;
-                            //scanPage.IsScanning = true;
-                            scanPage.IsBusy = false;
-                            scanPage.IsRunningTask = false;
-                        });
+
+                        await resultTask.Invoke(FilterBarcodeResult(result), progress);
+                        options.DelayBetweenContinuousScans = 0;
+                        //scanPage.IsScanning = true;
+                        scanPage.IsBusy = false;
+                        scanPage.IsRunningTask = false;
                     }
                 };
 

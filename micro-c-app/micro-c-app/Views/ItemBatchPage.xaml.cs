@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using micro_c_app.ViewModels;
 
 namespace micro_c_app.Views
 {
@@ -17,6 +17,15 @@ namespace micro_c_app.Views
         {
             InitializeComponent();
             this.SetupActionButton();
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            //list view does not update until touched after returning from batch scan
+            listView.BatchBegin();
+            listView.BatchCommit();
         }
 
         protected override void OnSizeAllocated(double width, double height)

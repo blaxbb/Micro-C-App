@@ -22,6 +22,15 @@ namespace micro_c_app.Views
             KeyboardHelper.KeyboardChanged += KeyboardHelper_KeyboardChanged;
         }
 
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+
+            //list view does not update until touched after returning from batch scan
+            listView.BatchBegin();
+            listView.BatchCommit();
+        }
+
         private void KeyboardHelper_KeyboardChanged(object sender, KeyboardHelperEventArgs e)
         {
             grid.RowDefinitions[2].Height = e.Visible ? e.Height : 0;
