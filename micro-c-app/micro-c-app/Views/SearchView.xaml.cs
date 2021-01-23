@@ -81,6 +81,7 @@ namespace micro_c_app.Views
             SearchField.ReturnCommand = new Command(async () => await OnSubmit(SearchField.Text));
             SKUSubmitButton.Command = new Command(async () => await OnSubmit(SKUField.Text));
             SearchSubmitButton.Command = new Command(async () => await OnSubmit(SearchField.Text));
+
         }
 
         protected override void OnSizeAllocated(double width, double height)
@@ -201,29 +202,21 @@ namespace micro_c_app.Views
             {
                 return result.DisplayValue;
             }
-            else if (result.DisplayValue.Length >= 6)
-            {
-                return result.DisplayValue.Substring(0, 6);
-            }
-            return "";
 
-            //switch (result.BarcodeType)
-            //{
-            //    case BarcodeTypes:
-            //        if(Regex.IsMatch(result.Text, "\\d{12}"))
-            //        {
-            //            return result.Text;
-            //        }
-            //        if (result.Text.Length >= 6)
-            //        {
-            //            return result.Text.Substring(0, 6);
-            //        }
-            //        return "";
-            //    case BarcodeFormat.UPC_A:
-            //    default:
-            //        return result.Text;
-            //}
+            if(result.DisplayValue.Length < 6)
+            {
+                return "";
+            }
+
+            var match = Regex.Match(result.DisplayValue, "\\d{6}");
+            if (match.Success)
+            {
+                return match.Groups[0].Value;
+            }
+
+            return "";
         }
+
         public async Task OnSubmit(string searchValue)
         {
             if (string.IsNullOrWhiteSpace(searchValue) && string.IsNullOrWhiteSpace(CategoryFilter))
