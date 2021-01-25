@@ -20,6 +20,7 @@ namespace micro_c_app.ViewModels
         private bool notBusy;
         private Item? selectedItem;
         private ObservableCollection<Item> items;
+        private Item lastItem;
 
         public Item? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); } }
         public ObservableCollection<Item> Items { get => items; set => SetProperty(ref items, value); }
@@ -34,6 +35,8 @@ namespace micro_c_app.ViewModels
         public ICommand Load { get; }
         public ICommand ImportWeb { get; }
         public ICommand ExportWeb { get; }
+
+        public Item LastItem { get => lastItem; set => SetProperty(ref lastItem, value); }
 
         protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
         {
@@ -62,7 +65,7 @@ namespace micro_c_app.ViewModels
 
             OnProductFound = new Command<Item>((Item item) =>
             {
-                if(item == null)
+                if (item == null)
                 {
                     return;
                 }

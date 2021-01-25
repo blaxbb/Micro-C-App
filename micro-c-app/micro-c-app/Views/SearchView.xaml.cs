@@ -56,6 +56,9 @@ namespace micro_c_app.Views
 
         public ProgressInfo Progress { get => progress; set { progress = value; OnPropertyChanged(nameof(Progress)); } }
 
+        public static readonly BindableProperty LastItemProperty = BindableProperty.Create("LastItem", typeof(Item), typeof(SearchView), null);
+        public Item LastItem { get => (Item)GetValue(LastItemProperty); set => SetValue(LastItemProperty, value); }
+
         public bool Busy
         {
             get

@@ -12,6 +12,18 @@
             <!--<zxing:ZXingScannerView Grid.Row="0" x:Name="scanner"/>-->
             <gv:CameraView x:Name="scanner2" Grid.Row="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" DefaultTorchOn="False" VibrationOnDetected="False" AutoStartScanning="True" RequestedFPS="30"/>
             <BoxView Grid.Row="0" HeightRequest="2" Color="Red" WidthRequest="100" HorizontalOptions="FillAndExpand" VerticalOptions="Center" Margin="30,0,30,0"/>
+            <Frame Grid.Row="0" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="White" Margin="20">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Label Grid.Column="0" Text="SCANNED ITEM 123456" VerticalTextAlignment="Center"/>
+                    <Label Grid.Column="1" Text="QTY 1" VerticalTextAlignment="Center"/>
+                    <Button Grid.Column="2"  Text="+1"/>
+                </Grid>
+            </Frame>
             <views:ProgressView Grid.Row="0" Text="{Binding Progress.Text, Source={Reference root}}" Progress="{Binding Progress.Value, Source={Reference root}}" IsVisible="{Binding IsRunningTask, Source={Reference root}}" BackgroundColor="{DynamicResource PageBackgroundColor}"/>
         </Grid>
     </ContentPage.Content>
