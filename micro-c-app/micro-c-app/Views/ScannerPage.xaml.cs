@@ -19,6 +19,7 @@ namespace micro_c_app.Views
     {
         private bool isRunningTask;
         private ProgressInfo progress;
+        private Item lastItem;
 
         public delegate void ScanResultDelegate(BarcodeResult result);
         public event ScanResultDelegate OnScanResult;
@@ -26,9 +27,17 @@ namespace micro_c_app.Views
         public bool IsRunningTask { get => isRunningTask; set { isRunningTask = value; OnPropertyChanged(nameof(IsRunningTask)); } }
         public ProgressInfo Progress { get => progress; set { progress = value; OnPropertyChanged(nameof(Progress)); } }
 
+        public Item LastItem { get => lastItem; set { lastItem = value; OnPropertyChanged(nameof(LastItem)); } }
+
         public ScannerPage()
         {
             InitializeComponent();
+
+            MessagingCenter.Subscribe<SearchView>(this, "LastItemUpdated", (view) =>
+            {
+                LastItem = view.LastItem;
+                Debug.WriteLine($"UPDATE: {LastItem?.Name} - {LastItem?.Quantity}");
+            });
 
             //scanner.Options = new MobileBarcodeScanningOptions()
             //{

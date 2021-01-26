@@ -74,10 +74,13 @@ namespace micro_c_app.ViewModels
                 if (existing == null)
                 {
                     Items.Add(item);
+                    LastItem = item;
                 }
                 else
                 {
                     IncreaseQuantity?.Execute(existing);
+                    LastItem = null;
+                    LastItem = existing;
                 }
 
                 UpdateProperties();
