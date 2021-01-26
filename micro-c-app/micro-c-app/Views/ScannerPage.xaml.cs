@@ -74,5 +74,13 @@ namespace micro_c_app.Views
                 //scanner.IsScanning = !IsRunningTask;
             }
         }
+
+        private void AddAnotherClicked(object sender, EventArgs e)
+        {
+            if(LastItem != null)
+            {
+                LastItem.Quantity++;
+            }
+        }
     }
 }

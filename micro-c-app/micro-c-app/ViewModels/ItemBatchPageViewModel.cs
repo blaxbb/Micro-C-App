@@ -74,6 +74,7 @@ namespace micro_c_app.ViewModels
                 if (existing == null)
                 {
                     Items.Add(item);
+                    item.PropertyChanged += (sender, args) => { UpdateProperties(); };
                     LastItem = item;
                 }
                 else

@@ -97,6 +97,7 @@ namespace micro_c_app.ViewModels
             OnProductFound = new Command<Item>((Item item) =>
             {
                 Items.Add(item);
+                item.PropertyChanged += (sender, args) => { UpdateProperties(); };
                 LastItem = item;
             });
 
@@ -402,6 +403,7 @@ namespace micro_c_app.ViewModels
                             if (item != null)
                             {
                                 Items.Add(item);
+                                item.PropertyChanged += (sender, args) => { UpdateProperties(); };
                                 LastItem = item;
                                 return;
                             }

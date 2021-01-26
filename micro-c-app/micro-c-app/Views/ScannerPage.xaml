@@ -21,7 +21,7 @@
                     </Grid.ColumnDefinitions>
                     <Label Grid.Column="0" Text="{Binding LastItem.Name, Source={Reference root}}" MaxLines="2" VerticalTextAlignment="Center" TextColor="{DynamicResource PrimaryTextColor}"/>
                     <Label Grid.Column="1" Text="{Binding LastItem.Quantity, StringFormat='Qty {0}', Source={Reference root}}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center"  TextColor="{DynamicResource PrimaryTextColor}"/>
-                    <Button Grid.Column="2"  Text="+1"/>
+                    <Button Grid.Column="2"  Text="+1" Clicked="AddAnotherClicked"/>
                 </Grid>
             </Frame>
             <views:ProgressView Grid.Row="0" Text="{Binding Progress.Text, Source={Reference root}}" Progress="{Binding Progress.Value, Source={Reference root}}" IsVisible="{Binding IsRunningTask, Source={Reference root}}" BackgroundColor="{DynamicResource PageBackgroundColor}"/>

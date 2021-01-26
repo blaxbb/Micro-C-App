@@ -41,8 +41,7 @@
                     <Entry x:Name="SearchField"
                            Placeholder="Search"
                            HorizontalOptions="FillAndExpand"
-                           VerticalOptions="CenterAndExpand"
-                           Text="{Binding LastItem.Name}"/>
+                           VerticalOptions="CenterAndExpand"/>
                     <Button x:Name="SearchSubmitButton"
                             Margin="20,0,0,0" Text="&#xf002;"
                             FontFamily="{StaticResource FontAwesomeSolid}"
