@@ -59,6 +59,9 @@ namespace micro_c_app.ViewModels
 
         public float Subtotal => Items.Sum(i => i.Price * i.Quantity);
         public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${Subtotal * SettingsPage.TaxRateFactor():#0.00}";
+        
+        private Item lastItem;
+        public Item LastItem { get => lastItem; set => SetProperty(ref lastItem, value); }
 
         public QuotePageViewModel()
         {
@@ -94,6 +97,7 @@ namespace micro_c_app.ViewModels
             OnProductFound = new Command<Item>((Item item) =>
             {
                 Items.Add(item);
+                LastItem = item;
             });
 
             OnProductError = new Command<string>(async (string message) =>
@@ -398,6 +402,7 @@ namespace micro_c_app.ViewModels
                             if (item != null)
                             {
                                 Items.Add(item);
+                                LastItem = item;
                                 return;
                             }
                         }
