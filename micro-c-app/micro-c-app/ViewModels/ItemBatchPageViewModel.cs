@@ -211,6 +211,15 @@ namespace micro_c_app.ViewModels
                 }
             });
 
+            DetailItem = new Command(async () =>
+            {
+                await Device.InvokeOnMainThreadAsync(async () =>
+                {
+                    var detailsPage = new ItemDetailsPageViewModel() { Item = SelectedItem };
+                    await Shell.Current.Navigation.PushAsync(new ItemDetailsPage() { BindingContext = detailsPage, Item = SelectedItem });
+                });
+            });
+
         }
 
         private void DoLoad(CollectionLoadPageViewModel<Item> obj)

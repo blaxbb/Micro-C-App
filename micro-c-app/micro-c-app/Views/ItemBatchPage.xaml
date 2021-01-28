@@ -30,26 +30,29 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Name}" InputTransparent="True"/>
-                        <Label Grid.Column="0" Grid.Row="1" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
-                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding SKU}" HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" InputTransparent="True"/>
-                        <Label Grid.Column="0" Grid.Row="2" Text="{Binding Specs[UPC]}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
-                        <Label Grid.Column="1" Grid.Row="2" Text="{Binding Stock}" HorizontalOptions="EndAndExpand" InputTransparent="True"/>
-                        <StackLayout Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Orientation="Horizontal">
+                        <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" MaxLines="2" Text="{Binding Name}" Margin="2" VerticalTextAlignment="Center" InputTransparent="True"/>
+                        <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Brand}" InputTransparent="True"/>
+                        <Label Grid.Column="0" Grid.Row="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
+                        <Label Grid.Column="1" Grid.Row="2" Text="{Binding SKU}" HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" InputTransparent="True"/>
+                        <Label Grid.Column="0" Grid.Row="3" Text="{Binding Specs[UPC]}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
+                        <Label Grid.Column="1" Grid.Row="3" Text="{Binding Stock}" HorizontalOptions="EndAndExpand" InputTransparent="True"/>
+                        <StackLayout Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Orientation="Horizontal">
                             <Button Text="&#xf068;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
                             <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" MinimumWidthRequest="50" VerticalTextAlignment="Center" Margin="10,0,10,0" HorizontalTextAlignment="Center" InputTransparent="True"/>
                             <Button Text="&#xf067;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
                         </StackLayout>
-                        <FlexLayout Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
+                        <Frame Margin="0" Padding="0" Grid.Column="0" Grid.Row="4" />
+                        <FlexLayout Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
                             <Frame />
                             <Button Text="&#xf129;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding DetailItem, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}"/>
-                            <Button Text="&#xf2ed;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red"/>
+                            <Button Text="&#xf2ed;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}"/>
                         </FlexLayout>
                     </Grid>
                 </ViewCell>
@@ -62,26 +65,29 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
-                        <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Name}" InputTransparent="True"/>
-                        <Label Grid.Column="0" Grid.Row="1" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
-                        <Label Grid.Column="1" Grid.Row="1" Text="{Binding SKU}" HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" InputTransparent="True"/>
-                        <Label Grid.Column="0" Grid.Row="2" Text="{Binding Specs[UPC]}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
-                        <Label Grid.Column="1" Grid.Row="2" Text="{Binding Stock}" HorizontalOptions="EndAndExpand" InputTransparent="True"/>
-                        <StackLayout Grid.Column="2" Grid.Row="0" Grid.RowSpan="3" Orientation="Horizontal">
+                        <Label Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="3" MaxLines="2" Text="{Binding Name}" Margin="2" VerticalTextAlignment="Center" InputTransparent="True"/>
+                        <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding Brand}" InputTransparent="True"/>
+                        <Label Grid.Column="0" Grid.Row="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
+                        <Label Grid.Column="1" Grid.Row="2" Text="{Binding SKU}" HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" InputTransparent="True"/>
+                        <Label Grid.Column="0" Grid.Row="3" Text="{Binding Specs[UPC]}" HorizontalOptions="StartAndExpand" InputTransparent="True"/>
+                        <Label Grid.Column="1" Grid.Row="3" Text="{Binding Stock}" HorizontalOptions="EndAndExpand" InputTransparent="True"/>
+                        <StackLayout Grid.Column="2" Grid.Row="1" Grid.RowSpan="3" Orientation="Horizontal">
                             <Button Text="&#xf068;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding DecreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
                             <Label Text="{Binding Quantity, StringFormat='Qty: {0}'}" MinimumWidthRequest="50" VerticalTextAlignment="Center" Margin="10,0,10,0" HorizontalTextAlignment="Center" InputTransparent="True"/>
                             <Button Text="&#xf067;" FontFamily="{StaticResource FontAwesomeSolid}" WidthRequest="45" Command="{Binding IncreaseQuantity, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}"/>
                         </StackLayout>
-                        <FlexLayout Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="3" Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
+                        <Frame Margin="0" Padding="0" Grid.Column="0" Grid.Row="4" />
+                        <FlexLayout Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="4" Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween" IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference item}}">
                             <Frame />
                             <Button Text="&#xf129;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding DetailItem, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}"/>
-                            <Button Text="&#xf2ed;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}" BackgroundColor="Red"/>
+                            <Button Text="&#xf2ed;" WidthRequest="75" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveItem, Source={RelativeSource AncestorType={x:Type vm:ItemBatchPageViewModel}}}" CommandParameter="{Binding .}"/>
                         </FlexLayout>
                     </Grid>
                 </ViewCell>
