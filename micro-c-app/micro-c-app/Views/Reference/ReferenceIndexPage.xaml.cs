@@ -38,12 +38,29 @@ namespace micro_c_app.Views
 
                 if (BindingContext is ReferenceIndexPageViewModel vm)
                 {
-                    Title = "References";
-                    foreach (var node in Tree.Nodes)
-                    {
-                        vm.Nodes.Add(node);
-                    }
+                    SetupRoot(vm);
                 }
+            }
+        }
+
+        protected override void OnAppearing()
+        {
+            base.OnAppearing();
+            if (BindingContext is ReferenceIndexPageViewModel vm)
+            {
+                if(vm.Nodes.Count == 0)
+                {
+                    SetupRoot(vm);
+                }
+            }
+        }
+
+        private void SetupRoot(ReferenceIndexPageViewModel vm)
+        {
+            Title = "References";
+            foreach (var node in Tree.Nodes)
+            {
+                vm.Nodes.Add(node);
             }
         }
 
