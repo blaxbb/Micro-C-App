@@ -35,7 +35,7 @@ namespace micro_c_app
 
         private void SettingsUpdated()
         {
-            AnalyticsService.Track("Store ID", SettingsPage.StoreID());
+            AnalyticsService.Track($"Store {SettingsPage.StoreID()}");
         }
 
         private void App_RequestedThemeChanged(object sender, AppThemeChangedEventArgs e)
