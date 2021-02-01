@@ -284,8 +284,8 @@ namespace micro_c_app.ViewModels
         private void BuildComponentSelected(BuildComponentViewModel updated)
         {
             //CurrentSubTotal = Subtotal;
-            UpdateProperties();
             Shell.Current.Navigation.PopAsync();
+            UpdateProperties();
         }
 
         private void AddNewItem(Item item, ComponentType type)

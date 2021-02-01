@@ -411,5 +411,15 @@ namespace micro_c_app.Views
 
             return "10+ Sec";
         }
+
+        private void ClearSkuFieldClicked(object sender, EventArgs e)
+        {
+            SKUField.Text = "";
+        }
+
+        private void ClearSearchFieldClicked(object sender, EventArgs e)
+        {
+            SearchField.Text = "";
+        }
     }
 }

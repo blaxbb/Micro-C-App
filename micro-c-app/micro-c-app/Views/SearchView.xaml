@@ -7,6 +7,13 @@
   <ContentView.Content>
         <StackLayout x:Name="FlipStack" Orientation="Vertical" Spacing="20" VerticalOptions="CenterAndExpand">
             <Grid HorizontalOptions="FillAndExpand" RowSpacing="20" HeightRequest="100">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
                 <views:ProgressView
                     Grid.Row="0"
                     Grid.RowSpan="2"
@@ -14,41 +21,79 @@
                     VerticalOptions="FillAndExpand"
                     Text="{Binding Progress.Text, Source={x:Reference view}}"
                     Progress="{Binding Progress.Value, Source={x:Reference view}}"/>
-                <StackLayout
-                    Orientation="Horizontal"
+                <Grid
                     Grid.Row="0"
                     VerticalOptions="FillAndExpand"
                     IsEnabled="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"
-                    IsVisible="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}">
+                    IsVisible="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"
+                    ColumnSpacing="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
                     <Entry x:Name="SKUField"
-                        Placeholder="Enter a SKU/UPC"
+                        Placeholder="SKU/UPC"
                         HorizontalOptions="FillAndExpand"
                         VerticalOptions="CenterAndExpand"
-                        Keyboard="Numeric"/>
+                        Keyboard="Numeric"
+                        Grid.Column="0"/>
                     <Button x:Name="SKUSubmitButton"
-                            Margin="20,0,0,0"
                             Text="&#xf002;"
                             FontFamily="{StaticResource FontAwesomeSolid}"
                             VerticalOptions="CenterAndExpand"
                             HorizontalOptions="End"
-                            WidthRequest="40"/>
-                </StackLayout>
-                <StackLayout
-                    Orientation="Horizontal"
+                            Grid.Column="1"/>
+                    <Button Text="&#xf00d;"
+                            FontFamily="{StaticResource FontAwesomeSolid}"
+                            IsVisible="{Binding Text, Source={x:Reference SKUField}, Converter={StaticResource StringNullOrEmptyConverter}}"
+                            Grid.Column="0"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center"
+                            WidthRequest="20"
+                            HeightRequest="20"
+                            Padding="0"
+                            Margin="0,0,0,5"
+                            CornerRadius="10"
+                            TextColor="{DynamicResource PrimaryTextColor}"
+                            BackgroundColor="{DynamicResource SecondaryTextColor}"
+                            Clicked="ClearSkuFieldClicked"/>
+                </Grid>
+                <Grid
                     Grid.Row="1"
+                    VerticalOptions="FillAndExpand"
                     IsEnabled="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"
-                    IsVisible="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}">
+                    IsVisible="{Binding Busy, Converter={StaticResource NegateConverter}, Source={x:Reference view}}"
+                    ColumnSpacing="20">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="4*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
                     <Entry x:Name="SearchField"
                            Placeholder="Search"
                            HorizontalOptions="FillAndExpand"
-                           VerticalOptions="CenterAndExpand"/>
+                           VerticalOptions="CenterAndExpand"
+                           Grid.Column="0"/>
                     <Button x:Name="SearchSubmitButton"
-                            Margin="20,0,0,0" Text="&#xf002;"
+                            Text="&#xf002;"
                             FontFamily="{StaticResource FontAwesomeSolid}"
-                            VerticalOptions="Center"
+                            VerticalOptions="CenterAndExpand"
                             HorizontalOptions="End"
-                            WidthRequest="40"/>
-                </StackLayout>
+                            Grid.Column="1"/>
+                    <Button Text="&#xf00d;"
+                            FontFamily="{StaticResource FontAwesomeSolid}"
+                            IsVisible="{Binding Text, Source={x:Reference SearchField}, Converter={StaticResource StringNullOrEmptyConverter}}"
+                            Grid.Column="0"
+                            HorizontalOptions="End"
+                            VerticalOptions="Center"
+                            WidthRequest="20"
+                            HeightRequest="20"
+                            Padding="0"
+                            Margin="0,0,0,5"
+                            CornerRadius="10"
+                            TextColor="{DynamicResource PrimaryTextColor}"
+                            BackgroundColor="{DynamicResource SecondaryTextColor}"
+                            Clicked="ClearSearchFieldClicked"/>
+                </Grid>
             </Grid>
             <Button x:Name="ScanButton"
                     Text="Scan"

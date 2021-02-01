@@ -19,9 +19,9 @@ namespace micro_c_app
 
             notificationManager = DependencyService.Get<INotificationManager>();
 
-            Routing.RegisterRoute(nameof(SearchPage), typeof(SearchPage));
-            Routing.RegisterRoute(nameof(BuildPage), typeof(BuildPage));
-            Routing.RegisterRoute(nameof(QuotePage), typeof(QuotePage));
+            //Routing.RegisterRoute(nameof(SearchPage), typeof(SearchPage));
+            //Routing.RegisterRoute(nameof(BuildPage), typeof(BuildPage));
+            //Routing.RegisterRoute(nameof(QuotePage), typeof(QuotePage));
 
             RestoreState.Load();
             if(!SettingsPage.AcknowledgedAnalytics())
