@@ -115,8 +115,14 @@ namespace micro_c_app.Views
             Progress = info;
         }
 
-        public static void DoScan(INavigation navigation, Func<string, IProgress<ProgressInfo>?, Task> resultTask, string categoryFilter = "", bool batchMode = false)
+        public static async void DoScan(INavigation navigation, Func<string, IProgress<ProgressInfo>?, Task> resultTask, string categoryFilter = "", bool batchMode = false)
         {
+            bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+            if (!allowed)
+            {
+                return;
+            }
+
             AnalyticsService.Track("DoScan");
             Device.BeginInvokeOnMainThread(async () =>
             {

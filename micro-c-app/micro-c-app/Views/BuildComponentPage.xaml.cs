@@ -19,9 +19,7 @@ namespace micro_c_app.Views
 
         public void Setup()
         {
-            SetPlanItems();
-            SetSpecItems();
-            if(BindingContext is BuildComponentViewModel vm)
+            if(BindingContext is BuildComponentViewModel vm && vm.Component != null)
             {
                 if(vm.Component.AutoSearch() && vm.Component.Item == null)
                 {
@@ -31,125 +29,47 @@ namespace micro_c_app.Views
             }
         }
 
-        private static void AddSpacer(StackLayout stack, Color color)
-        {
-            stack.Children.Add(new BoxView() { Color = color, WidthRequest = 100, HeightRequest = 2, HorizontalOptions = LayoutOptions.FillAndExpand });
-        }
-
-        private void SetPlanItems()
-        {
-            PlansStackLayout?.Children?.Clear();
-            if (BindingContext is BuildComponentViewModel vm)
-            {
-                if (vm.Component?.Item != null && vm.Component.PlanApplicable())
-                {
-                    PlanReference plans;
-                    if (vm.Component.Type == BuildComponent.ComponentType.BuildService)
-                    {
-                        plans = PlanReference.Get(PlanReference.PlanType.Build_Plan, BuildPageViewModel.CurrentSubTotal);
-                    }
-                    else
-                    {
-                        plans = PlanReference.Get(PlanReference.PlanType.Replacement, vm.Component.Item.Price);
-                    }
-
-                    if (plans != null)
-                    {
-                        foreach (var tier in plans.Tiers)
-                        {
-                            //iOS is handled in BuildComponentViewModel.cs Actions
-                            if (Device.RuntimePlatform == "Android")
-                            {
-                                this.ToolbarItems.Add(new ToolbarItem($"Add {tier.Duration} yr plan", "", () => { vm.BuildComponentAddPlan(tier); }) { Order = ToolbarItemOrder.Secondary });
-                            }
-
-                            if (PlansStackLayout != null)
-                            {
-                                AddSpacer(PlansStackLayout, Color.LightGray);
-                                var stack = new StackLayout() { Orientation = StackOrientation.Horizontal };
-                                stack.Children.Add(new Label() { Text = $"{tier.Duration} year {plans.Name}", HorizontalOptions = LayoutOptions.StartAndExpand, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.Start });
-                                stack.Children.Add(new Label() { Text = $"${tier.Price:#0.00}", HorizontalOptions = LayoutOptions.End, WidthRequest = 100, VerticalTextAlignment = TextAlignment.Center, HorizontalTextAlignment = TextAlignment.End });
-
-                                PlansStackLayout.Children?.Add(stack);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        private void SetSpecItems()
-        {
-            SpecsStackLayout.Children.Clear();
-            if (BindingContext is BuildComponentViewModel vm)
-            {
-                if (vm?.Component?.Item?.Specs != null)
-                {
-                    foreach (var spec in vm.Component.Item.Specs)
-                    {
-                        AddSpacer(SpecsStackLayout, Color.LightGray);
-                        var stack = new StackLayout() { Orientation = StackOrientation.Horizontal };
-                        stack.Children.Add(new Label()
-                        {
-                            Text = spec.Key,
-                            HorizontalOptions = LayoutOptions.Start,
-                            VerticalTextAlignment = TextAlignment.Center,
-                            HorizontalTextAlignment = TextAlignment.Start,
-                            MinimumWidthRequest = 200,
-                            WidthRequest = 200
-                        });
-                        stack.Children.Add(new Label()
-                        {
-                            Text = spec.Value,
-                            HorizontalOptions = LayoutOptions.Fill,
-                            VerticalTextAlignment = TextAlignment.Center,
-                            HorizontalTextAlignment = TextAlignment.Start
-                        });
-                        SpecsStackLayout.Children.Add(stack);
-                    }
-                }
-            }
-        }
-
         protected override void OnSizeAllocated(double width, double height)
         {
             base.OnSizeAllocated(width, height);
-            if (Device.RuntimePlatform == "UWP")
-            {
-                //xamarin bug, shell does not pass correct width and height to contained pages on UWP
-                width = App.Current.MainPage.Width;
-                height = App.Current.MainPage.Height;
-            }
-            if (width > height)
-            {
-                //FlipStack.Orientation = StackOrientation.Horizontal;
-                if(grid.RowDefinitions.Count > 1 && grid.ColumnDefinitions.Count > 0)
-                {
-                    grid.RowDefinitions[1].Height = 0;
-                    grid.ColumnDefinitions[1].Width = GridLength.Star;
-                }
+            return;
 
-                grid.RowSpacing = 0;
-                grid.ColumnSpacing = 20;
+            //if (Device.RuntimePlatform == "UWP")
+            //{
+            //    //xamarin bug, shell does not pass correct width and height to contained pages on UWP
+            //    width = App.Current.MainPage.Width;
+            //    height = App.Current.MainPage.Height;
+            //}
+            //if (width > height)
+            //{
+            //    //FlipStack.Orientation = StackOrientation.Horizontal;
+            //    if(grid.RowDefinitions.Count > 1 && grid.ColumnDefinitions.Count > 0)
+            //    {
+            //        grid.RowDefinitions[1].Height = 0;
+            //        grid.ColumnDefinitions[1].Width = GridLength.Star;
+            //    }
 
-                Grid.SetRow(ItemInfo, 0);
-                Grid.SetColumn(ItemInfo, 1);
-                //SearchView.Orientation = "Vertical";
-            }
-            else
-            {
-                //FlipStack.Orientation = StackOrientation.Vertical;
-                if (grid.RowDefinitions.Count > 1 && grid.ColumnDefinitions.Count > 0)
-                {
-                    grid.RowDefinitions[1].Height = new GridLength(2.25, GridUnitType.Star);
-                    grid.ColumnDefinitions[1].Width = 0;
-                }
-                grid.RowSpacing = 20;
-                grid.ColumnSpacing = 0;
-                Grid.SetRow(ItemInfo, 1);
-                Grid.SetColumn(ItemInfo, 0);
-                //SearchView.Orientation = "Horizontal";
-            }
+            //    grid.RowSpacing = 0;
+            //    grid.ColumnSpacing = 20;
+
+            //    Grid.SetRow(ItemInfo, 0);
+            //    Grid.SetColumn(ItemInfo, 1);
+            //    //SearchView.Orientation = "Vertical";
+            //}
+            //else
+            //{
+            //    //FlipStack.Orientation = StackOrientation.Vertical;
+            //    if (grid.RowDefinitions.Count > 1 && grid.ColumnDefinitions.Count > 0)
+            //    {
+            //        grid.RowDefinitions[1].Height = new GridLength(2.25, GridUnitType.Star);
+            //        grid.ColumnDefinitions[1].Width = 0;
+            //    }
+            //    grid.RowSpacing = 20;
+            //    grid.ColumnSpacing = 0;
+            //    Grid.SetRow(ItemInfo, 1);
+            //    Grid.SetColumn(ItemInfo, 0);
+            //    //SearchView.Orientation = "Horizontal";
+            //}
         }
     }
 }

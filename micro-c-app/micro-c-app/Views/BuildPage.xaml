@@ -17,35 +17,47 @@
         <ToolbarItem Text="Batch" Order="Secondary" Command="{Binding BatchScan}"/>
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
-        <StackLayout Orientation="Vertical">
-            <StackLayout Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="30,10,30,10">
-                <Label Text="{Binding Subtotal, StringFormat='Subtotal ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalOptions="StartAndExpand" VerticalTextAlignment="Center"/>
-                <Label Text="{Binding TaxedTotal, StringFormat='Total {0}', FallbackValue=(7.5%) $123.45}" HorizontalOptions="EndAndExpand" VerticalTextAlignment="Center"/>
-            </StackLayout>
-            <views:SelectableLabel TextColor="Green" Text="{Binding BuildURL}" HeightRequest="30" IsVisible="{Binding BuildURL, Converter={StaticResource StringNullOrEmptyConverter}}"/>
-            <ListView x:Name="listView" ItemsSource="{Binding Components, Mode=TwoWay}" VerticalOptions="FillAndExpand" HasUnevenRows="True" RowHeight="-1">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Row="0" Grid.Column="0" Margin="10" Text="{Binding Subtotal, StringFormat='Subtotal ${0:#,#0.00}', FallbackValue=$123.45}" VerticalTextAlignment="Center"/>
+            <Label Grid.Row="0" Grid.Column="1" Margin="10" Text="{Binding TaxedTotal, StringFormat='Total {0}', FallbackValue=(7.5%) $123.45}" HorizontalTextAlignment="End" VerticalTextAlignment="Center"/>
+            <views:SelectableLabel Grid.Row="1" Grid.ColumnSpan="2" TextColor="Green" Text="{Binding BuildURL}" HeightRequest="30" IsVisible="{Binding BuildURL, Converter={StaticResource StringNullOrEmptyConverter}}"/>
+            <ListView x:Name="listView" Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding Components, Mode=TwoWay}" VerticalOptions="FillAndExpand" HasUnevenRows="True" RowHeight="-1">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <ViewCell>
-                            <StackLayout Orientation="Vertical" Margin="10">
-                                <Button Text="{Binding ComponentLabel}" Command="{Binding ComponentSelectClicked, Source={RelativeSource AncestorType={x:Type vm:BuildPageViewModel}}}" CommandParameter="{Binding .}"/>
-                                <StackLayout Orientation="Vertical"  HorizontalOptions="FillAndExpand" VerticalOptions="Center" Margin="20,0,20,0">
-                                    <StackLayout Orientation="Horizontal" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}">
-                                        <Label Text="{Binding Item.Price, StringFormat='${0:#,#0.00}'}" HorizontalOptions="StartAndExpand" IsVisible="{Binding Path=Item.SKU}" InputTransparent="True"/>
-                                        <Label Text="{Binding Item.SKU}" HorizontalOptions="EndAndExpand" InputTransparent="True"/>
-                                    </StackLayout>
-                                    <StackLayout Orientation="Horizontal" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}">
-                                        <Label Text="{Binding Item.Specs[UPC]}" InputTransparent="True" HorizontalOptions="StartAndExpand"/>
-                                        <Label Text="{Binding Item.Stock}" InputTransparent="True" HorizontalOptions="EndAndExpand"/>
-                                    </StackLayout>
-                                    <Label Text="{Binding HintText}" IsVisible="{Binding HintText, Converter={StaticResource StringNullOrEmptyConverter}}" InputTransparent="True" BackgroundColor="Orange" TextColor="White"/>
-                                    <Label Text="{Binding ErrorText}" IsVisible="{Binding ErrorText, Converter={StaticResource StringNullOrEmptyConverter}}" InputTransparent="True" BackgroundColor="Red" TextColor="White"/>
-                                </StackLayout>
-                            </StackLayout>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding ComponentLabel}" Command="{Binding ComponentSelectClicked, Source={RelativeSource AncestorType={x:Type vm:BuildPageViewModel}}}" CommandParameter="{Binding .}"/>
+                                <Label Grid.Row="1" Grid.Column="0" Padding="10,0,10,0" Text="{Binding Item.Price, StringFormat='${0:#,#0.00}'}" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}"  HorizontalOptions="StartAndExpand" InputTransparent="True"/>
+                                <Label Grid.Row="1" Grid.Column="1" Padding="10,0,10,0" Text="{Binding Item.SKU}" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}" HorizontalOptions="EndAndExpand" InputTransparent="True"/>
+                                <Label Grid.Row="2" Grid.Column="0" Padding="10,0,10,0" Text="{Binding Item.Specs[UPC]}" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}" InputTransparent="True" HorizontalOptions="StartAndExpand"/>
+                                <Label Grid.Row="2" Grid.Column="1" Padding="10,0,10,0" Text="{Binding Item.Stock}" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}" InputTransparent="True" HorizontalOptions="EndAndExpand"/>
+                                <Label Grid.Row="3" Grid.Column="0" Padding="10,0,10,0" Grid.ColumnSpan="2" Text="{Binding HintText}" IsVisible="{Binding HintText, Converter={StaticResource StringNullOrEmptyConverter}}" InputTransparent="True" BackgroundColor="Orange" TextColor="White"/>
+                                <Label Grid.Row="4" Grid.Column="0" Padding="10,0,10,0" Grid.ColumnSpan="2" Text="{Binding ErrorText}" IsVisible="{Binding ErrorText, Converter={StaticResource StringNullOrEmptyConverter}}" InputTransparent="True" BackgroundColor="Red" TextColor="White"/>
+                            </Grid>
                         </ViewCell>
                     </DataTemplate>
                 </ListView.ItemTemplate>
             </ListView>
-        </StackLayout>
+        </Grid>
     </ContentPage.Content>
 </ContentPage>

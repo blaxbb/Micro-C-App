@@ -10,9 +10,11 @@ namespace micro_c_app.ViewModels
 {
     public class ItemDetailsPageViewModel : BaseViewModel
     {
-        public Item? Item { get; set; }
+        public Item? Item { get => item; set => SetProperty(ref item, value); }
         public string? ActivePicture => Item?.PictureUrls?[PictureIndex];
         int PictureIndex = 0;
+        private Item? item;
+
         public ICommand BackPicture { get; }
         public ICommand ForwardPicture { get; }
         public ICommand GoToWebpage { get; }

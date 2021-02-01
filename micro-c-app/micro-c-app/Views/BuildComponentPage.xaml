@@ -4,49 +4,24 @@
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
              xmlns:views="clr-namespace:micro_c_app.Views"
              x:Class="micro_c_app.Views.BuildComponentPage"
-             Title="{Binding Component.Type, StringFormat='Component Selection ({0})'}">
+             Title="{Binding Component.Type, StringFormat='Component Selection ({0})'}"
+             x:Name="page">
     <ContentPage.BindingContext>
         <vm:BuildComponentViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <Grid x:Name="grid" Margin="10">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="0"/>
-            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
-                <RowDefinition Height="0"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <StackLayout x:Name="ButtonContainer" Orientation="Vertical" HorizontalOptions="FillAndExpand" VerticalOptions="CenterAndExpand" Grid.Column="0">
-                <Button Text="Remove" BackgroundColor="Red" Command="{Binding Remove}" IsVisible="{Binding Component.Item, Converter={StaticResource NullBoolConverter}}" VerticalOptions="Start"/>
-                <views:SearchView x:Name="SearchView"  ProductFound="{Binding ProductFound}" Error="{Binding SearchError}" CategoryFilter="{Binding Component.CategoryFilter}" AutoPopSearchPage="True" Orientation="Horizontal" VerticalOptions="EndAndExpand"/>
-            </StackLayout>
-            <StackLayout x:Name="ItemInfo" Orientation="Vertical" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" Grid.Column="1">
-                <ScrollView IsVisible="{Binding ItemExists}" VerticalOptions="FillAndExpand">
-                    <StackLayout VerticalOptions="FillAndExpand">
-                        <Label Text="{Binding Component.Item.Name, FallbackValue=NAME}" FontSize="Large" LineBreakMode="TailTruncation"/>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="{Binding Component.Item.Specs[SKU], FallbackValue=123456}" HorizontalOptions="StartAndExpand"/>
-                            <Label Text="{Binding Component.Item.Specs[UPC], FallbackValue=123456}" HorizontalOptions="EndAndExpand"/>
-                        </StackLayout>
-                        <Label Text="{Binding Component.Item.Stock, FallbackValue=3 in stock}"/>
-                        <Label x:Name="zzz" Text="{Binding Component.Item.Location, FallbackValue=Section 000}"/>
-                        <StackLayout Orientation="Horizontal">
-                            <Label Text="{Binding Component.Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" TextDecorations="Strikethrough" IsVisible="{Binding Component.Item.OnSale}"/>
-                            <Label Text="{Binding Component.Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" IsVisible="{Binding Component.Item.OnSale}"/>
-                            <Label Text="{Binding Component.Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}"/>
-                        </StackLayout>
-                        <StackLayout x:Name="PlansStackLayout"/>
-                        <StackLayout x:Name="SpecsStackLayout"/>
-                    </StackLayout>
-                </ScrollView>
-                <ScrollView IsVisible="{Binding ItemNotExists}">
-                    <StackLayout Orientation="Vertical">
-                        <Label Text="{Binding Component.HintText}"/>
-                    </StackLayout>
-                </ScrollView>
-            </StackLayout>
+            <Button Grid.Row="0" Text="Remove" BackgroundColor="Red" Command="{Binding Remove}" IsVisible="{Binding Component.Item, FallbackValue=False, Converter={StaticResource NullBoolConverter}}" VerticalOptions="Start"/>
+            
+            <views:ItemDetailsView Grid.Row="1" Item="{Binding BindingContext.Component.Item, Source={Reference Name=page}}" IsVisible="{Binding BindingContext.Component.Item, FallbackValue=False, Converter={StaticResource NullBoolConverter}, Source={Reference Name=page}}"/>
+            <Label Grid.Row="1" Text="{Binding Component.HintText}" IsVisible="{Binding ItemNotExists, FallbackValue=False}"/>
+
+            <views:SearchView Grid.Row="2" x:Name="SearchView"  ProductFound="{Binding ProductFound}" Error="{Binding SearchError}" CategoryFilter="{Binding Component.CategoryFilter}" AutoPopSearchPage="True" Orientation="Horizontal" VerticalOptions="EndAndExpand"/>
         </Grid>
     </ContentPage.Content>
 </ContentPage>
