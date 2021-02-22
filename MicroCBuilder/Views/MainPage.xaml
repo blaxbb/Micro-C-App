@@ -27,12 +27,13 @@
                     <Grid Grid.Column="2" x:Name="TabRightMargin"/>
                     <CommandBar Grid.Column="1" DefaultLabelPosition="Right" HorizontalAlignment="Right">
                         <CommandBar.SecondaryCommands>
-                            <AppBarButton Icon="Clear" Label="Reset" Click="ResetClicked"/>
+                            <!--<AppBarButton Icon="Clear" Label="Reset" Click="ResetClicked"/>-->
                             <AppBarButton Icon="Share" Label="Export to Microcenter.com" Click="ExportClicked"/>
-                            <AppBarButton Icon="Mail"  Label="Email" Click="MailClicked"/>
-                            <AppBarButton Icon="CellPhone" Label="Import From Phone" Click="ImportFromWebClicked"/>
+                            <!--<AppBarButton Icon="Mail"  Label="Email" Click="MailClicked"/>-->
+                            <AppBarButton Icon="Upload" Label="Export to Web" Click="ExportToWebClicked"/>
+                            <AppBarButton Icon="Download" Label="Import from Web" Click="ImportFromWebClicked"/>
+                            <AppBarButton Icon="Pictures" Label="Output Sign Batch" Click="SaveSignsClicked"/>
                             <AppBarButton Icon="Setting" Label="Settings" Click="SettingsClick"/>
-                            <AppBarButton Icon="SaveLocal" Label="Save Signs" Click="SaveSignsClicked"/>
                         </CommandBar.SecondaryCommands>
 
                         <AppBarButton Icon="Add" Label="Add" x:Name="AddButton">
@@ -55,7 +56,6 @@
                                 <KeyboardAccelerator Key="P" Modifiers="Control"/>
                             </AppBarButton.KeyboardAccelerators>
                         </AppBarButton>
-                        <AppBarButton Icon="CellPhone" Label="Send To Phone" Click="ExportToWebClicked"/>
 
                     </CommandBar>
                 </Grid>

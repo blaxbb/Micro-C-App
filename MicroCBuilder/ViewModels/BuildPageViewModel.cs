@@ -61,11 +61,9 @@ namespace MicroCBuilder.ViewModels
         public float SubTotal => Components.Where(c => c?.Item != null).Sum(c => c.Item.Price * c.Item.Quantity);
 
         public Flare Flare { get => flare; set => SetProperty(ref flare, value); }
-        public MCOLBuildContext BuildContext { get => buildContext; set => SetProperty(ref buildContext, value); }
 
         public BuildPageViewModel()
         {
-            BuildContext = new MCOLBuildContext();
             Components = new ObservableCollection<BuildComponent>();
 
             Settings.Categories().ForEach(c =>
@@ -103,7 +101,10 @@ namespace MicroCBuilder.ViewModels
 
             ExportToMCOL = new Command(async (_) =>
             {
-                var url = BuildContext.BuildURL;
+                var buildContext = new MCOLBuildContext();
+                await buildContext.AddComponents(Components.ToList());
+
+                var url = buildContext.BuildURL;
                 if(string.IsNullOrWhiteSpace(url))
                 {
                     return;
@@ -115,12 +116,6 @@ namespace MicroCBuilder.ViewModels
             ItemValuesUpdated = new Command((_) =>
             {
                 UpdateHintsAndErrors();
-
-                Task.Run(async () =>
-                {
-                    await BuildContext.RemoveComponent(SelectedComponent);
-                    await BuildContext.AddComponent(SelectedComponent);
-                });
                 OnPropertyChanged(nameof(SubTotal));
             });
 
@@ -168,12 +163,7 @@ namespace MicroCBuilder.ViewModels
         {
             if (SelectedComponent != null)
             {
-                if (SelectedComponent.Item != null)
-                {
-                    _ = BuildContext.RemoveComponent(SelectedComponent);
-                }
                 SelectedComponent.Item = item;
-                _ = BuildContext.AddComponent(SelectedComponent);
                 UpdateHintsAndErrors();
             }
             OnPropertyChanged(nameof(SubTotal));
@@ -181,8 +171,27 @@ namespace MicroCBuilder.ViewModels
 
         private async void DoExportToWeb(object obj)
         {
+            var tb = new TextBox() { PlaceholderText = "Sales ID" };
+
+            var dialog = new ContentDialog()
+            {
+                Title = "Export to web",
+                Content = tb,
+                PrimaryButtonText = "Export",
+                SecondaryButtonText = "Cancel"
+            };
+            tb.KeyDown += (sender, args) => { if (args.Key == Windows.System.VirtualKey.Enter) dialog.Hide(); };
+            var result = await dialog.ShowAsync();
+            var name = tb.Text;
+            if (result != ContentDialogResult.Primary)
+            {
+                return;
+            }
+
             var flare = new Flare(JsonConvert.SerializeObject(Components.Where(c => c.Item != null).ToList()));
             flare.Tag = $"micro-c-{Settings.StoreID()}";
+            flare.Title = tb.Text;
+
             var success = await flare.Post($"https://dataflare.bbarrett.me/api/Flare");
 
             if (!success)
@@ -197,7 +206,6 @@ namespace MicroCBuilder.ViewModels
 
         private async void DoImportFromWeb(object obj)
         {
-
             var tb = new TextBox() { PlaceholderText = "Code" };
             var dialog = new ContentDialog()
             {
@@ -392,8 +400,6 @@ namespace MicroCBuilder.ViewModels
                 return;
             }
 
-            await BuildContext.RemoveComponent(comp);
-
             comp.Item = null;
             if (comp.Type == BuildComponent.ComponentType.Miscellaneous || comp.Type == BuildComponent.ComponentType.Plan || Components.Count(c => c.Type == comp.Type) > 1)
             {
@@ -415,7 +421,6 @@ namespace MicroCBuilder.ViewModels
             var comp = InsertAtEndByType(orig.Type);
             comp.Item = orig.Item?.CloneAndResetQuantity();
             SelectedComponent = comp;
-            _ = BuildContext.AddComponent(comp);
             OnPropertyChanged(nameof(SubTotal));
             UpdateHintsAndErrors();
         }

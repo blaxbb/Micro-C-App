@@ -83,23 +83,36 @@ namespace MicroCBuilder.Views
 
         public async Task PrintClicked()
         {
+            var grid = new Grid();
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+
+            var cb = new CheckBox() { Content = "Export to MCOL" };
             var tb = new TextBox() { PlaceholderText = "Sales ID" };
+
+            grid.Children.Add(cb);
+            grid.Children.Add(tb);
+
+            Grid.SetRow(cb, 0);
+            Grid.SetRow(tb, 1);
+
             var dialog = new ContentDialog()
             {
                 Title = "Print options",
-                Content = tb,
+                Content = grid,
                 PrimaryButtonText = "Print",
                 SecondaryButtonText = "Cancel"
             };
             tb.KeyDown += (sender, args) => { if (args.Key == Windows.System.VirtualKey.Enter) dialog.Hide(); };
             var result = await dialog.ShowAsync();
             var name = tb.Text;
+            var doExport = cb.IsChecked;
             if (result != ContentDialogResult.Secondary)
             {
-                await DoPrint(name);
+                await DoPrint(name, doExport.HasValue ? doExport.Value : false);
             }
         }
-        private async Task DoPrint(string salesID = "")
+        private async Task DoPrint(string salesID = "", bool exportToMCOL = false)
         { 
 
             var itemsCount = vm.Components.Count(c => c.Item != null);
@@ -138,10 +151,16 @@ namespace MicroCBuilder.Views
                     header.Text = $"Order created on {DateTime.Now:yyyy-MM-dd} at the {Settings.Store()} MicroCenter Location.\nContact {salesID}@microcenter.com with additional questions.";
                 }
 
+                var buildContext = new MCOLBuildContext();
+                if (exportToMCOL)
+                {
+                    await buildContext.AddComponents(vm.Components.ToList());
+                }
+
                 var footer = new BuildSummaryControl
                 {
                     SubTotal = vm.SubTotal,
-                    MCOLUrl = vm.BuildContext.TinyBuildURL
+                    MCOLUrl = buildContext.TinyBuildURL
                 };
 
                 page.Children.Add(header);
@@ -237,6 +256,15 @@ namespace MicroCBuilder.Views
                 {
                     control.SetTextBox("");
                 }
+            }
+        }
+
+        private async void FlareTapped(object sender, TappedRoutedEventArgs e)
+        {
+            if (vm.Flare != null)
+            {
+                var url = $"https://microc.bbarrett.me/quotes/{vm.Flare.ShortCode}";
+                await Windows.System.Launcher.LaunchUriAsync(new Uri(url));
             }
         }
     }

@@ -1,4 +1,5 @@
-﻿using MicroCLib.Models;
+﻿using MicroCBuilder.Views;
+using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -34,6 +35,21 @@ namespace MicroCBuilder
             client?.Dispose();
         }
 
+        public async Task AddComponents(List<BuildComponent> components)
+        {
+            var count = components.Count(c => c.Item != null && c.Item.ID != null);
+            await MainPage.Instance.DisplayProgress(async (progress) =>
+            {
+                int i = 0;
+                foreach (var comp in components)
+                {
+                    await AddComponent(comp);
+                    i++;
+                    progress.Report(i);
+                }
+            }, "Exporting to MCOL", count);
+        }
+
         public async Task AddComponent(BuildComponent component)
         {
             if (component.Item == null || component.Item.ID == null)
@@ -42,9 +58,9 @@ namespace MicroCBuilder
             }
 
             var selectorID = BuildComponent.MCOLSelectorIDForType(component.Type);
-            //bool duplicateSelector = hitCategories.Contains(selectorID);
+
             bool duplicateSelector = CategorySelectors.ContainsKey(selectorID);
-            var url = $"https://www.microcenter.com/site/content/custom-pc-builder.aspx?toselectorId={selectorID}&configuratorId=1&productId={component.Item.ID}&productName={component.Item.Name}&newItem={(duplicateSelector ? "true" : "false")}&qty=5";
+            var url = $"https://www.microcenter.com/site/content/custom-pc-builder.aspx?toselectorId={selectorID}&configuratorId=1&productId={component.Item.ID}&productName={component.Item.Name}&newItem={(duplicateSelector ? "true" : "false")}";
 
             var result = await client.GetAsync(url);
             var body = await result.Content.ReadAsStringAsync();

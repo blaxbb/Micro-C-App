@@ -94,14 +94,26 @@
                     </controls:GridSplitter.RenderTransform>
             </controls:GridSplitter>
         </Grid>
-        <Frame Grid.Row="1" Width="300" Height="100" Margin="30" HorizontalAlignment="Right" VerticalAlignment="Top" Background="{StaticResource SystemControlAcrylicElementBrush}" BorderBrush="{StaticResource SystemControlBackgroundAccentRevealBorderBrush}" BorderThickness="1" Opacity=".9" Visibility="{Binding Flare, Converter={StaticResource HideIfNull}}">
+        <Frame
+            Grid.Row="1"
+            Width="300"
+            Height="100"
+            Margin="30"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Top"
+            Background="{StaticResource SystemControlAcrylicElementBrush}"
+            BorderBrush="{StaticResource SystemControlBackgroundAccentRevealBorderBrush}"
+            BorderThickness="1"
+            Opacity=".9"
+            Tapped="FlareTapped"
+            Visibility="{Binding Flare, Converter={StaticResource HideIfNull}}">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="2*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" Text="{Binding Flare.ShortCode}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="{StaticResource HubHeaderThemeFontSize}"/>
-                <TextBlock Grid.Row="1" Text="Import on quote page with Micro-C-App" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="1" Text="Click to open in browser." HorizontalAlignment="Center"/>
             </Grid>
             
         </Frame>
