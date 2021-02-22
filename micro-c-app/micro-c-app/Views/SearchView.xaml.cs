@@ -20,7 +20,7 @@ using Xamarin.Forms.Xaml;
 using ZXing;
 using ZXing.Mobile;
 using ZXing.Net.Mobile.Forms;
-using static micro_c_lib.Models.Search;
+using static MicroCLib.Models.Search;
 
 namespace micro_c_app.Views
 {

@@ -281,6 +281,9 @@
     <PackageReference Include="Lucene.Net.QueryParser">
       <Version>4.8.0-beta00011</Version>
     </PackageReference>
+    <PackageReference Include="micro-c-lib">
+      <Version>1.0.3</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.11</Version>
     </PackageReference>
@@ -302,12 +305,6 @@
     <PackageReference Include="QRCoder">
       <Version>1.4.1</Version>
     </PackageReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\micro-c-lib\micro-c-lib.csproj">
-      <Project>{f750678a-8fd0-464c-b75f-46b4c34b7129}</Project>
-      <Name>micro-c-lib</Name>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <None Include="MicroCBuilder.pfx" />

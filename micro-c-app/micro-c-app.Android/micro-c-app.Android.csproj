@@ -69,6 +69,9 @@
     <PackageReference Include="BarcodeScanner.XF">
       <Version>4.8.1.1</Version>
     </PackageReference>
+    <PackageReference Include="micro-c-lib">
+      <Version>1.0.3</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
       <Version>4.1.0</Version>
     </PackageReference>
@@ -175,7 +178,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties XamarinHotReloadUnhandledDeviceExceptionmicrocappAndroidHideInfoBar="True" XamarinHotReloadDebuggerTimeoutExceptionmicrocappAndroidHideInfoBar="True" TriggeredFromHotReload="False" />
+      <UserProperties TriggeredFromHotReload="False" XamarinHotReloadDebuggerTimeoutExceptionmicrocappAndroidHideInfoBar="True" XamarinHotReloadUnhandledDeviceExceptionmicrocappAndroidHideInfoBar="True" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>

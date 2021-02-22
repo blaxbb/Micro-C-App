@@ -4,7 +4,7 @@ using MicroCLib.Models.Reference;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using static micro_c_lib.Models.Search;
+using static MicroCLib.Models.Search;
 
 namespace micro_c_app.Views
 {

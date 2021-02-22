@@ -1,5 +1,4 @@
 ﻿using micro_c_app.Models;
-using micro_c_lib.Models;
 using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
@@ -11,7 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Forms;
 using static micro_c_app.Views.SearchView;
-using static micro_c_lib.Models.Search;
+using static MicroCLib.Models.Search;
 
 namespace micro_c_app.ViewModels
 {

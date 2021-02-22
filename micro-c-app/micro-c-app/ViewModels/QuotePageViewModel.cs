@@ -2,7 +2,6 @@
 using micro_c_app.Models;
 using micro_c_app.Views;
 using micro_c_app.Views.CollectionFile;
-using micro_c_lib.Models;
 using MicroCLib.Models;
 using Newtonsoft.Json;
 using System;
@@ -276,7 +275,18 @@ namespace micro_c_app.ViewModels
                         attach
                     };
                 }
-                await Email.ComposeAsync(message);
+                //await Email.ComposeAsync(message);
+
+                foreach(var line in message.Body.Split('\n'))
+                {
+                    Console.WriteLine(line);
+                }
+
+                await Share.RequestAsync(new ShareTextRequest()
+                {
+                    Title = message.Subject,
+                    Text = message.Body,
+                });
             }
             catch (Exception e)
             {
@@ -310,11 +320,11 @@ namespace micro_c_app.ViewModels
         public static string ExportTxtTable(IEnumerable<Item> items)
         {
             StringBuilder b = new StringBuilder();
-            b.AppendLine($"SKU      {string.Format("{0,-50}", "Name")}\tQty  Unit      Price");
+            b.AppendLine($"SKU         {string.Format("{0,-50}", "Name")}  Qty  Unit       Price");
             b.AppendLine();
             foreach (var item in items)
             {
-                b.AppendLine($"{item.SKU}\t{string.Format("{0,-40}", item.Name.Substring(0, Math.Min(item.Name.Length, 30)))}\t{item.Quantity}    ${item.Price:#0.00}    ${item.Price * item.Quantity:#0.00}");
+                b.AppendLine($"{item.SKU}    {string.Format("{0,-40}", item.Name.Substring(0, Math.Min(item.Name.Length, 30)))}  {item.Quantity}    ${item.Price:#0.00}    ${item.Price * item.Quantity:#0.00}");
             }
 
             var Subtotal = items.Sum(i => i.Price * i.Quantity);
@@ -327,7 +337,13 @@ namespace micro_c_app.ViewModels
             b.AppendLine();
 
             var salesId = Preferences.Get("sales_id", "SALESID");
-            b.AppendLine($"Quote created by {salesId} for additional help contact me at {salesId}@microcenter.com");
+            if (!string.IsNullOrWhiteSpace(salesId))
+            {
+                b.AppendLine($"Quote created by {salesId} for additional help contact me at {salesId}@microcenter.com");
+            }
+
+
+            b.AppendLine("<p>ABCDEFG</p>");
 
             return b.ToString();
         }

@@ -1,6 +1,5 @@
-﻿using micro_c_lib.Models;
+﻿using MicroCLib.Models;
 using MicroCBuilder.Views;
-using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;

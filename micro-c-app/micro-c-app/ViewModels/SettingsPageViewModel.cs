@@ -51,7 +51,7 @@ namespace micro_c_app.ViewModels
             ThemeOptions = System.Enum.GetValues(typeof(OSAppTheme)).Cast<OSAppTheme>().ToList();
             Theme = SettingsPage.Theme();
 
-            Stores = micro_c_lib.Models.Stores.AllStores;
+            Stores = MicroCLib.Models.Stores.AllStores;
 
             StoreNames = Stores.Keys.ToList();
             SelectedStoreName = Stores.FirstOrDefault(kvp => kvp.Value == StoreID).Key;

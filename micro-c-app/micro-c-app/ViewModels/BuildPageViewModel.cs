@@ -1,7 +1,6 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
 using micro_c_app.Views.CollectionFile;
-using micro_c_lib.Models;
 using MicroCLib.Models;
 using MicroCLib.Models.Reference;
 using System;

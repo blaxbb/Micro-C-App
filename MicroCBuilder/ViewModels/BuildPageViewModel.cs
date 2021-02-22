@@ -1,6 +1,5 @@
-﻿using micro_c_lib.Models;
+﻿using MicroCLib.Models;
 using MicroCBuilder.Views;
-using MicroCLib.Models;
 using Microsoft.UI.Xaml.Controls;
 using System;
 using System.Collections.Generic;
@@ -312,7 +311,7 @@ namespace MicroCBuilder.ViewModels
             var dialogResult = await dialog.ShowAsync();
             var query = tb.Text;
 
-            micro_c_lib.Models.SearchResults? results = null;
+            MicroCLib.Models.SearchResults? results = null;
             if (dialogResult != ContentDialogResult.Secondary && !string.IsNullOrWhiteSpace(query))
             {
                 await MainPage.Instance.DisplayProgress(async (progress) =>
