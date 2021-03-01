@@ -58,6 +58,9 @@
     <Compile Update="Views\StoreMapResultsControl.xaml.cs">
       <DependentUpon>StoreMapResultsControl.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\ExportPage.xaml.cs">
+      <DependentUpon>ExportPage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -131,6 +134,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\StoreMapControl.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\ExportPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
   </ItemGroup>

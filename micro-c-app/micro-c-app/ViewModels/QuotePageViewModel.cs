@@ -227,18 +227,7 @@ namespace micro_c_app.ViewModels
 
             ExportWeb = new Command(async () =>
             {
-                var components = Items.Select(i => new BuildComponent() { Item = i }).ToList();
-                var flare = new Flare(JsonConvert.SerializeObject(components));
-                flare.Tag = $"micro-c-{SettingsPage.StoreID()}";
-                var success = await flare.Post("https://dataflare.bbarrett.me/api/Flare");
-                if (success)
-                {
-                    await Shell.Current.DisplayAlert("Import using code", $"{flare.ShortCode}", "Ok");
-                }
-                else
-                {
-                    await Shell.Current.DisplayAlert("Error", "Failed to export to DataFlare server.", "Ok");
-                }
+                await Shell.Current.Navigation.PushModalAsync(new ExportPage(Items.Select(i => new BuildComponent() { Item = i }).ToList()));
             });
 
             BatchScan = new Command(() => DoBatchScan());

@@ -171,7 +171,7 @@ namespace MicroCBuilder.ViewModels
 
         private async void DoExportToWeb(object obj)
         {
-            var tb = new TextBox() { PlaceholderText = "Sales ID" };
+            var tb = new TextBox() { PlaceholderText = "Title" };
 
             var dialog = new ContentDialog()
             {
@@ -206,10 +206,10 @@ namespace MicroCBuilder.ViewModels
 
         private async void DoImportFromWeb(object obj)
         {
-            var tb = new TextBox() { PlaceholderText = "Code" };
+            var tb = new TextBox() { PlaceholderText = "Short Code" };
             var dialog = new ContentDialog()
             {
-                Title = "Import From Phone",
+                Title = "Import From web",
                 Content = tb,
                 PrimaryButtonText = "Import",
                 SecondaryButtonText = "Cancel"

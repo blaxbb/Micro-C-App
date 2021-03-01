@@ -8,7 +8,14 @@ namespace micro_c_app
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return value != null;
+            if(parameter is string s && bool.TryParse(s, out bool b) && b)
+            {
+                return value == null;
+            }
+            else
+            {
+                return value != null;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

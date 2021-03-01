@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             x:Class="micro_c_app.Views.ExportPage">
+    <ContentPage.BindingContext>
+        <vm:ExportPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid>
+            <Grid IsVisible="{Binding ExportFlare, Converter={StaticResource NullBoolConverter}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label HorizontalTextAlignment="Center" Grid.Column="1" Grid.Row="1">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Export to another device with code " />
+                            <Span Text="{Binding ExportFlare.ShortCode}"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button Grid.Column="0" Grid.Row="2" Text="Open via web"/>
+                <Button Grid.Column="1" Grid.Row="2" Text="Save to device"/>
+                <Button Grid.Column="2" Grid.Row="2" Text="Share text file"/>
+                <!--<Image>
+                    <Image.Source>
+                        <FontImageSource
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        Glyph="&#xf002;"
+                        Color="{DynamicResource PrimaryTextColor}"
+                        Size="24"/>
+                    </Image.Source>
+                </Image>-->
+            </Grid>
+            <Grid IsVisible="{Binding ExportFlare, Converter={StaticResource NullBoolConverter}, ConverterParameter=true}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" VerticalOptions="Center">Title</Label>
+                <Entry Grid.Column="1" Grid.Row="0" VerticalOptions="Start" x:Name="titleEntry" ReturnCommand="{Binding SetTitleCommand}" ReturnCommandParameter="{Binding Text, Source={x:Reference titleEntry}}"/>
+                <Button Grid.Column="1" Grid.Row="1" Text="Save" Command="{Binding SetTitleCommand}" CommandParameter="{Binding Text, Source={x:Reference titleEntry}}"/>
+                <!--<Image>
+                    <Image.Source>
+                        <FontImageSource
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        Glyph="&#xf002;"
+                        Color="{DynamicResource PrimaryTextColor}"
+                        Size="24"/>
+                    </Image.Source>
+                </Image>-->
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
