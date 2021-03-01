@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=netstandard"
              x:Class="micro_c_app.Views.ExportPage">
     <ContentPage.BindingContext>
         <vm:ExportPageViewModel/>
@@ -23,14 +24,40 @@
                 <Label HorizontalTextAlignment="Center" Grid.Column="1" Grid.Row="1">
                     <Label.FormattedText>
                         <FormattedString>
-                            <Span Text="Export to another device with code " />
-                            <Span Text="{Binding ExportFlare.ShortCode}"/>
+                            <Span Text="Export to another device with code" />
+                            <Span Text="{x:Static system:Environment.NewLine}" FontSize="Large" />
+                            <Span Text="{x:Static system:Environment.NewLine}" FontSize="Large" />
+                            <Span Text="{Binding ExportFlare.ShortCode}" FontSize="Large"/>
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <Button Grid.Column="0" Grid.Row="2" Text="Open via web"/>
-                <Button Grid.Column="1" Grid.Row="2" Text="Save to device"/>
-                <Button Grid.Column="2" Grid.Row="2" Text="Share text file"/>
+                <Button Grid.Column="0" Grid.Row="2" Text="Open via web">
+                    <Button.ImageSource>
+                        <FontImageSource
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        Glyph="&#xf382;"
+                        Color="{DynamicResource SecondaryTextColor}"
+                        Size="24"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button Grid.Column="1" Grid.Row="2" Text="Save to device">
+                    <Button.ImageSource>
+                        <FontImageSource
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        Glyph="&#xf0c7;"
+                        Color="{DynamicResource SecondaryTextColor}"
+                        Size="24"/>
+                    </Button.ImageSource>
+                </Button>
+                <Button Grid.Column="2" Grid.Row="2" Text="Share text file">
+                    <Button.ImageSource>
+                        <FontImageSource
+                        FontFamily="{StaticResource FontAwesomeSolid}"
+                        Glyph="&#xf064;"
+                        Color="{DynamicResource SecondaryTextColor}"
+                        Size="24"/>
+                    </Button.ImageSource>
+                </Button>
                 <!--<Image>
                     <Image.Source>
                         <FontImageSource
