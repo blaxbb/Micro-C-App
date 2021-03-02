@@ -227,7 +227,7 @@ namespace micro_c_app.ViewModels
 
             ExportWeb = new Command(async () =>
             {
-                await Shell.Current.Navigation.PushModalAsync(new ExportPage(Items.Select(i => new BuildComponent() { Item = i }).ToList()));
+                await Shell.Current.Navigation.PushModalAsync(new ExportPage(Items.Select(i => new BuildComponent() { Item = i }).ToList(), "quote"));
             });
 
             BatchScan = new Command(() => DoBatchScan());

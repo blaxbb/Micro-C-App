@@ -21,7 +21,14 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Label HorizontalTextAlignment="Center" Grid.Column="1" Grid.Row="1">
+                <Label HorizontalTextAlignment="Center" Grid.Column="1" Grid.Row="1" IsVisible="{Binding IsError}">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Error exporting to web." />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Label HorizontalTextAlignment="Center" Grid.Column="1" Grid.Row="1" IsVisible="{Binding IsError, Converter={StaticResource NegateConverter}}">
                     <Label.FormattedText>
                         <FormattedString>
                             <Span Text="Export to another device with code" />
@@ -31,7 +38,7 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <Button Grid.Column="0" Grid.Row="2" Text="Open via web">
+                <Button Grid.Column="0" Grid.Row="2" Text="Open via web" IsEnabled="{Binding IsError, Converter={StaticResource NegateConverter}}" Command="{Binding OpenWebCommand}">
                     <Button.ImageSource>
                         <FontImageSource
                         FontFamily="{StaticResource FontAwesomeSolid}"
@@ -40,7 +47,7 @@
                         Size="24"/>
                     </Button.ImageSource>
                 </Button>
-                <Button Grid.Column="1" Grid.Row="2" Text="Save to device">
+                <Button Grid.Column="1" Grid.Row="2" Text="Save to device" Command="{Binding SaveCommand}">
                     <Button.ImageSource>
                         <FontImageSource
                         FontFamily="{StaticResource FontAwesomeSolid}"
@@ -49,7 +56,7 @@
                         Size="24"/>
                     </Button.ImageSource>
                 </Button>
-                <Button Grid.Column="2" Grid.Row="2" Text="Share text file">
+                <Button Grid.Column="2" Grid.Row="2" Text="Share text file" Command="{Binding ShareCommand}">
                     <Button.ImageSource>
                         <FontImageSource
                         FontFamily="{StaticResource FontAwesomeSolid}"

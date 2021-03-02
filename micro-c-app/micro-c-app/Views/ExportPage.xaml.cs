@@ -19,12 +19,13 @@ namespace micro_c_app.Views
             InitializeComponent();
         }
 
-        public ExportPage(List<BuildComponent> components)
+        public ExportPage(List<BuildComponent> components, string folder)
         {
             InitializeComponent();
             if(BindingContext is ExportPageViewModel vm)
             {
                 vm.Components = components;
+                vm.Folder = folder;
             }
         }
     }
