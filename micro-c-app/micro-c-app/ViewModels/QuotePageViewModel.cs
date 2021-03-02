@@ -45,13 +45,11 @@ namespace micro_c_app.ViewModels
 
         protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
         {
-            {"Send", SendQuote },
-            {"Reset", Reset },
             {"Save", Save },
             {"Load", Load },
             {"Import", ImportWeb },
-            {"Export", ExportWeb },
-            {"Batch", BatchScan }
+            {"Batch Scan", BatchScan },
+            {"Reset", Reset }
         };
 
         public bool NotBusy { get => notBusy; set { SetProperty(ref notBusy, value); } }
@@ -155,10 +153,6 @@ namespace micro_c_app.ViewModels
                 });
             });
 
-            SendQuote = new Command(async () => await DoSendQuote(Items));
-
-            ExportQuote = new Command(async () => await DoExportQuote(Items));
-
             ImportQuote = new Command(async () => await ImportQuoteAction());
 
             MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, (_) => { UpdateProperties(); });
@@ -183,13 +177,6 @@ namespace micro_c_app.ViewModels
                     var detailsPage = new ItemDetailsPageViewModel() { Item = SelectedItem };
                     await Shell.Current.Navigation.PushAsync(new ItemDetailsPage() { BindingContext = detailsPage, Item = SelectedItem });
                 });
-            });
-
-            Save = new Command(async () =>
-            {
-                var vm = new CollectionSavePageViewModel("quote", Items.ToList());
-
-                await Shell.Current.Navigation.PushModalAsync(new CollectionSavePage() { BindingContext = vm });
             });
 
             Load = new Command(async () =>
@@ -225,7 +212,7 @@ namespace micro_c_app.ViewModels
                 }
             });
 
-            ExportWeb = new Command(async () =>
+            Save = new Command(async () =>
             {
                 await Shell.Current.Navigation.PushModalAsync(new ExportPage(Items.Select(i => new BuildComponent() { Item = i }).ToList(), "quote"));
             });
