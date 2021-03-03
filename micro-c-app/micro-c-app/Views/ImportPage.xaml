@@ -1,0 +1,55 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             xmlns:system="clr-namespace:System;assembly=netstandard"
+             x:Class="micro_c_app.Views.ImportPage">
+    <ContentPage.BindingContext>
+        <vm:ImportPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Entry Placeholder="Import Code" Grid.Row="0" Grid.Column="0" VerticalOptions="Start"/>
+            <Button Text="V" Grid.Row="0" Grid.Column="1" VerticalOptions="Start"/>
+            <Button Text="List files" Grid.Row="1" Grid.Column="0" VerticalOptions="Start" Command="{Binding SetLocalMode}" IsEnabled="{Binding LocalFilesMode, Converter={StaticResource NegateConverter}}"/>
+            <Button Text="List web" Grid.Row="1" Grid.Column="1" VerticalOptions="Start" Command="{Binding SetNetworkMode}" IsEnabled="{Binding LocalFilesMode}"/>
+            <ActivityIndicator Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" IsVisible="{Binding Loading}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+            <Grid Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" IsVisible="{Binding Loading, Converter={StaticResource NegateConverter}}">
+                <ListView Grid.Row="0" Grid.Column="0" VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand" ItemsSource="{Binding LocalFiles}" IsVisible="{Binding LocalFilesMode}" SelectedItem="{Binding SelectedFile}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <TextCell Text="{Binding .}"/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+                <ListView Grid.Row="0" Grid.Column="0" VerticalOptions="FillAndExpand" SelectionMode="Single" HorizontalOptions="FillAndExpand" ItemsSource="{Binding NetworkFlares}" IsVisible="{Binding LocalFilesMode, Converter={StaticResource NegateConverter}}" HasUnevenRows="True" RowHeight="-1" SelectedItem="{Binding SelectedFlare}">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <ViewCell>
+                                <Grid VerticalOptions="FillAndExpand" HorizontalOptions="FillAndExpand">
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="*"/>
+                                        <RowDefinition Height="*"/>
+                                    </Grid.RowDefinitions>
+                                    <Label Text="{Binding Title}" BackgroundColor="Transparent" Grid.Row="0" InputTransparent="True"/>
+                                    <Label Text="{Binding ShortCode}" BackgroundColor="Transparent" Grid.Row="1" InputTransparent="True"/>
+                                </Grid>
+                            </ViewCell>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </Grid>
+            <Button Text="Load" Grid.Row="3" Grid.Column="1" VerticalOptions="End" Command="{Binding LoadCommand}"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

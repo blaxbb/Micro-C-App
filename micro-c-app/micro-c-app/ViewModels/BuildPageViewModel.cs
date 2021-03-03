@@ -28,12 +28,9 @@ namespace micro_c_app.ViewModels
         public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${Subtotal * SettingsPage.TaxRateFactor():#0.00}";
 
         public static float CurrentSubTotal { get; set; }
-
-        public ICommand SendQuote { get; }
         public ICommand Reset { get; }
         public ICommand Save { get; }
         public ICommand Load { get; }
-        public ICommand Export { get; }
         public ICommand OpenURL { get; }
         public ICommand BatchScan { get; }
 
@@ -41,11 +38,9 @@ namespace micro_c_app.ViewModels
 
         protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
         {
-            {"Send", SendQuote },
             {"Reset", Reset },
             {"Save", Save },
             {"Load", Load },
-            {"Export", Export },
             { "Batch", BatchScan }
         };
 
@@ -83,8 +78,6 @@ namespace micro_c_app.ViewModels
                 await Shell.Current.Navigation.PushAsync(componentPage);
             });
 
-            SendQuote = new Command(async () => await QuotePageViewModel.DoSendQuote(Components.Where(c => c.Item != null).Select(c => c.Item!)));
-
             Reset = new Command(async () =>
             {
                 await Device.InvokeOnMainThreadAsync(async () =>
@@ -113,70 +106,6 @@ namespace micro_c_app.ViewModels
                 var vm = new CollectionLoadPageViewModel<BuildComponent>("build");
                 MessagingCenter.Subscribe<CollectionLoadPageViewModel<BuildComponent>>(this, "load", DoLoad, vm);
                 await Shell.Current.Navigation.PushModalAsync(new CollectionLoadPage() { BindingContext = vm });
-            });
-
-            Export = new Command(async () =>
-            {
-                var vm = new ProgressPageViewModel()
-                {
-                    Description = "Exporting build to MCOL",
-                    TotalItems = Components.Count(c => c.Item != null && c.Item.ID != null)
-                };
-                var page = new ProgressPage() { BindingContext = vm };
-
-                await Device.InvokeOnMainThreadAsync(async () =>
-                {
-                    await Shell.Current.Navigation.PushModalAsync(page, true);
-                });
-
-                try
-                {
-                    using (var client = new HttpClient())
-                    {
-                        List<string> hitCategories = new List<string>();
-                        int cnt = 0;
-                        for (int i = 0; i < Components.Count; i++)
-                        {
-                            var comp = Components[i];
-                            if (comp.Item == null || comp.Item.ID == null)
-                            {
-                                continue;
-                            }
-                            cnt++;
-                            await Device.InvokeOnMainThreadAsync(() =>
-                            {
-                                vm.CurrentItem = cnt;
-                            });
-                            var selectorID = BuildComponent.MCOLSelectorIDForType(comp.Type);
-                            bool duplicateSelector = hitCategories.Contains(selectorID);
-                            var url = $"https://www.microcenter.com/site/content/custom-pc-builder.aspx?toselectorId={selectorID}&configuratorId=1&productId={comp.Item.ID}&productName={comp.Item.Name}&newItem={(duplicateSelector ? "true" : "false")}";
-                            if (!duplicateSelector)
-                            {
-                                hitCategories.Add(selectorID);
-                            }
-
-                            var result = await client.GetAsync(url);
-                            var body = await result.Content.ReadAsStringAsync();
-                            var match = Regex.Match(body, "value=\"(.*?)\" name=\"shareURL\" id=\"shareURL\">");
-                            if (match.Success)
-                            {
-                                BuildURL = match.Groups[1].Value;
-                            }
-                        }
-                    }
-                }
-                catch(Exception e)
-                {
-                    await Device.InvokeOnMainThreadAsync(async () =>
-                    {
-                        await Shell.Current.DisplayAlert("Exception", e.ToString(), "Ok");
-                    });
-                }
-
-                await Device.InvokeOnMainThreadAsync(async () =>
-                {
-                    await Shell.Current.Navigation.PopModalAsync();
-                });
             });
 
             Components.CollectionChanged += (sender, args) => { SaveRestore(); };

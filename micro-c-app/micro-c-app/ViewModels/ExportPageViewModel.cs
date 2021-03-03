@@ -23,10 +23,12 @@ namespace micro_c_app.ViewModels
         public ICommand OpenWebCommand { get; }
         public ICommand SaveCommand { get; }
         public ICommand ShareCommand { get; }
+        public ICommand SendFlare { get; }
 
         private string name;
         private Flare exportFlare;
         private bool isError;
+        private bool loadingFlare;
 
         public string Name { get => name; set => SetProperty(ref name, value); }
 
@@ -38,26 +40,29 @@ namespace micro_c_app.ViewModels
         public string FolderPath => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), Folder);
         public string Path(string filename) => System.IO.Path.Combine(FolderPath, filename);
 
+        public bool LoadingFlare { get => loadingFlare; set => SetProperty(ref loadingFlare, value); }
+
         public ExportPageViewModel()
         {
             components = new List<BuildComponent>();
 
-            SetTitleCommand = new Command<string>(DoSetTitle);
-            OpenWebCommand = new Command(async () => {
-                await Xamarin.Essentials.Browser.OpenAsync($"https://microc.bbarrett.me/quotes/{ExportFlare.ShortCode}");
+            //SetTitleCommand = new Command<string>(DoSetTitle);
+            OpenWebCommand = new Command(async () =>
+            {
+                await Xamarin.Essentials.Browser.OpenAsync($"https://microc.bbarrett.me/{Folder}s/{ExportFlare.ShortCode}");
                 await Shell.Current.Navigation.PopModalAsync();
             });
             ShareCommand = new Command(async () => { await DoSendQuote(components?.Where(c => c.Item != null).Select(c => c.Item)); });
             SaveCommand = new Command(() => { DoSave(); });
+            SendFlare = new Command(async () => await DoSendFlare());
         }
 
-        private async void DoSetTitle(string s)
+        public async Task DoSendFlare()
         {
-            var n = s == null ? "" : s;
-
+            LoadingFlare = true;
             var flare = new Flare(JsonConvert.SerializeObject(components))
             {
-                Title = n
+                Title = Name
             };
             flare.Tag = $"micro-c-{SettingsPage.StoreID()}";
             var success = await flare.Post("https://dataflare.bbarrett.me/api/Flare");
@@ -70,9 +75,8 @@ namespace micro_c_app.ViewModels
                 await Shell.Current.DisplayAlert("Error", "Failed to export to DataFlare server.", "Ok");
                 IsError = true;
             }
-            Name = n;
             ExportFlare = flare;
-
+            LoadingFlare = false;
         }
 
         public static async Task DoSendQuote(IEnumerable<Item> Items)

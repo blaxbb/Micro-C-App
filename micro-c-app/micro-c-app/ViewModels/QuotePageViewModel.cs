@@ -25,7 +25,7 @@ namespace micro_c_app.ViewModels
         private Item? selectedItem;
 
         public Item? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); } }
-        public ObservableCollection<Item> Items { get; set; }
+        public ObservableCollection<Item> Items { get => items; set => SetProperty(ref items, value); }
         public ICommand OnProductFound { get; }
         public ICommand OnProductError { get; }
         public ICommand IncreaseQuantity { get; }
@@ -56,8 +56,10 @@ namespace micro_c_app.ViewModels
 
         public float Subtotal => Items.Sum(i => i.Price * i.Quantity);
         public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${Subtotal * SettingsPage.TaxRateFactor():#0.00}";
-        
+
         private Item lastItem;
+        private ObservableCollection<Item> items;
+
         public Item LastItem { get => lastItem; set => SetProperty(ref lastItem, value); }
 
         public QuotePageViewModel()
@@ -181,6 +183,12 @@ namespace micro_c_app.ViewModels
 
             Load = new Command(async () =>
             {
+                var page = await ImportPage.Create("quote");
+                page.OnImportResults += (sender, items) =>
+                {
+                    Items = new ObservableCollection<Item>(items);
+                };
+                return;
                 var vm = new CollectionLoadPageViewModel<Item>("quote");
                 MessagingCenter.Subscribe<CollectionLoadPageViewModel<Item>>(this, "load", DoLoad, vm);
                 await Shell.Current.Navigation.PushModalAsync(new CollectionLoadPage() { BindingContext = vm });
@@ -188,14 +196,14 @@ namespace micro_c_app.ViewModels
 
             ImportWeb = new Command(async () =>
             {
-                var shortCode = await Shell.Current.DisplayPromptAsync("Import", "Enter the code from Micro-C-Builder to import a quote", keyboard:Keyboard.Numeric);
+                var shortCode = await Shell.Current.DisplayPromptAsync("Import", "Enter the code from Micro-C-Builder to import a quote", keyboard: Keyboard.Numeric);
                 if (string.IsNullOrWhiteSpace(shortCode))
                 {
                     return;
                 }
 
                 var flare = await Flare.GetShortCode("https://dataflare.bbarrett.me/api/Flare", shortCode);
-                if(flare == null || string.IsNullOrWhiteSpace(flare.Data))
+                if (flare == null || string.IsNullOrWhiteSpace(flare.Data))
                 {
                     return;
                 }
@@ -203,7 +211,7 @@ namespace micro_c_app.ViewModels
                 Items.Clear();
 
                 var components = JsonConvert.DeserializeObject<List<BuildComponent>>(flare.Data);
-                foreach(var comp in components)
+                foreach (var comp in components)
                 {
                     if (comp.Item != null)
                     {
@@ -214,7 +222,7 @@ namespace micro_c_app.ViewModels
 
             Save = new Command(async () =>
             {
-                await Shell.Current.Navigation.PushModalAsync(new ExportPage(Items.Select(i => new BuildComponent() { Item = i }).ToList(), "quote"));
+                await ExportPage.Create(Items.Select(i => new BuildComponent() { Item = i }).ToList(), "quote");
             });
 
             BatchScan = new Command(() => DoBatchScan());
@@ -253,7 +261,7 @@ namespace micro_c_app.ViewModels
                 }
                 //await Email.ComposeAsync(message);
 
-                foreach(var line in message.Body.Split('\n'))
+                foreach (var line in message.Body.Split('\n'))
                 {
                     Console.WriteLine(line);
                 }
@@ -371,7 +379,8 @@ namespace micro_c_app.ViewModels
 
         private void DoBatchScan()
         {
-            SearchView.DoScan(Navigation, async (result, progress) => {
+            SearchView.DoScan(Navigation, async (result, progress) =>
+            {
                 System.Diagnostics.Debug.WriteLine(result);
 
                 try
@@ -401,9 +410,9 @@ namespace micro_c_app.ViewModels
                             }
                         }
                     }
-                    catch(Exception e)
+                    catch (Exception e)
                     {
-                        if(queryAttempts > NUM_RETRY_ATTEMPTS)
+                        if (queryAttempts > NUM_RETRY_ATTEMPTS)
                         {
                             await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
                             return;
@@ -420,7 +429,7 @@ namespace micro_c_app.ViewModels
                         goto startQuery;
                     }
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
                 }

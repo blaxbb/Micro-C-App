@@ -9,7 +9,7 @@
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <Grid>
-            <Grid IsVisible="{Binding ExportFlare, Converter={StaticResource NullBoolConverter}}">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -21,23 +21,28 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Label HorizontalTextAlignment="Center" Grid.Column="1" Grid.Row="1" IsVisible="{Binding IsError}">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Error exporting to web." />
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
-                <Label HorizontalTextAlignment="Center" Grid.Column="1" Grid.Row="1" IsVisible="{Binding IsError, Converter={StaticResource NegateConverter}}">
-                    <Label.FormattedText>
-                        <FormattedString>
-                            <Span Text="Export to another device with code" />
-                            <Span Text="{x:Static system:Environment.NewLine}" FontSize="Large" />
-                            <Span Text="{x:Static system:Environment.NewLine}" FontSize="Large" />
-                            <Span Text="{Binding ExportFlare.ShortCode}" FontSize="Large"/>
-                        </FormattedString>
-                    </Label.FormattedText>
-                </Label>
+                <Grid IsVisible="{Binding LoadingFlare}" Grid.Column="1" Grid.Row="1">
+                    <ActivityIndicator IsRunning="true" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" />
+                </Grid>
+                <Grid IsVisible="{Binding LoadingFlare, Converter={StaticResource NegateConverter}}" Grid.Column="1" Grid.Row="1">
+                    <Label HorizontalTextAlignment="Center" IsVisible="{Binding IsError}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Error exporting to web." />
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                    <Label HorizontalTextAlignment="Center" IsVisible="{Binding IsError, Converter={StaticResource NegateConverter}}">
+                        <Label.FormattedText>
+                            <FormattedString>
+                                <Span Text="Export to another device with code" />
+                                <Span Text="{x:Static system:Environment.NewLine}" FontSize="Large" />
+                                <Span Text="{x:Static system:Environment.NewLine}" FontSize="Large" />
+                                <Span Text="{Binding ExportFlare.ShortCode}" FontSize="Large"/>
+                            </FormattedString>
+                        </Label.FormattedText>
+                    </Label>
+                </Grid>
                 <Button Grid.Column="0" Grid.Row="2" Text="Open via web" IsEnabled="{Binding IsError, Converter={StaticResource NegateConverter}}" Command="{Binding OpenWebCommand}">
                     <Button.ImageSource>
                         <FontImageSource
@@ -65,29 +70,6 @@
                         Size="24"/>
                     </Button.ImageSource>
                 </Button>
-                <!--<Image>
-                    <Image.Source>
-                        <FontImageSource
-                        FontFamily="{StaticResource FontAwesomeSolid}"
-                        Glyph="&#xf002;"
-                        Color="{DynamicResource PrimaryTextColor}"
-                        Size="24"/>
-                    </Image.Source>
-                </Image>-->
-            </Grid>
-            <Grid IsVisible="{Binding ExportFlare, Converter={StaticResource NullBoolConverter}, ConverterParameter=true}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="2*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Label Grid.Column="0" Grid.Row="0" VerticalOptions="Center">Title</Label>
-                <Entry Grid.Column="1" Grid.Row="0" VerticalOptions="Start" x:Name="titleEntry" ReturnCommand="{Binding SetTitleCommand}" ReturnCommandParameter="{Binding Text, Source={x:Reference titleEntry}}"/>
-                <Button Grid.Column="1" Grid.Row="1" Text="Save" Command="{Binding SetTitleCommand}" CommandParameter="{Binding Text, Source={x:Reference titleEntry}}"/>
                 <!--<Image>
                     <Image.Source>
                         <FontImageSource
