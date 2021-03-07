@@ -183,15 +183,14 @@ namespace micro_c_app.ViewModels
 
             Load = new Command(async () =>
             {
-                var page = await ImportPage.Create("quote");
-                page.OnImportResults += (sender, items) =>
+                var page = await ImportPage.Create<Item>("quote");
+                page.OnImportResults += (sender) =>
                 {
-                    Items = new ObservableCollection<Item>(items);
+                    if (sender.BindingContext is ImportPageViewModel<Item> vm && vm.Result != null)
+                    {
+                        Items = new ObservableCollection<Item>(vm.Result);
+                    }
                 };
-                return;
-                var vm = new CollectionLoadPageViewModel<Item>("quote");
-                MessagingCenter.Subscribe<CollectionLoadPageViewModel<Item>>(this, "load", DoLoad, vm);
-                await Shell.Current.Navigation.PushModalAsync(new CollectionLoadPage() { BindingContext = vm });
             });
 
             ImportWeb = new Command(async () =>

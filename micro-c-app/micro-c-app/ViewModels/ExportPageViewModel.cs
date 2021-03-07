@@ -187,7 +187,15 @@ namespace micro_c_app.ViewModels
 
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    var text = System.Text.Json.JsonSerializer.Serialize(components.Where(c => c.Item != null).Select(c => c.Item));
+                    string text;
+                    if (Folder == "quote")
+                    {
+                        text = System.Text.Json.JsonSerializer.Serialize(components.Where(c => c.Item != null).Select(c => c.Item));
+                    }
+                    else
+                    {
+                        text = System.Text.Json.JsonSerializer.Serialize(components.Where(c => c.Item != null));
+                    }
                     File.WriteAllText(Path(Name), text);
                     await Shell.Current.DisplayAlert("Success", Path(Name), "Ok");
                 });

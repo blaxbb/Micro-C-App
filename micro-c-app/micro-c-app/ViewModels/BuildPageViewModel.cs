@@ -20,6 +20,8 @@ namespace micro_c_app.ViewModels
     public class BuildPageViewModel : BaseViewModel
     {
         private string? buildURL;
+        private ObservableCollection<BuildComponent> components;
+
         public ICommand ComponentSelectClicked { get; }
 
         public ObservableCollection<BuildComponent> Components { get; }
@@ -96,19 +98,35 @@ namespace micro_c_app.ViewModels
 
             Save = new Command(async () =>
             {
-                var vm = new CollectionSavePageViewModel("build", Components.ToList());
+                //var vm = new CollectionSavePageViewModel("build", Components.ToList());
+                await ExportPage.Create(Components.Where(c => c.Item != null).ToList(), "build");
 
-                await Shell.Current.Navigation.PushModalAsync(new CollectionSavePage() { BindingContext = vm });
+                //await Shell.Current.Navigation.PushModalAsync(new CollectionSavePage() { BindingContext = vm });
             });
 
             Load = new Command(async () =>
             {
-                var vm = new CollectionLoadPageViewModel<BuildComponent>("build");
-                MessagingCenter.Subscribe<CollectionLoadPageViewModel<BuildComponent>>(this, "load", DoLoad, vm);
-                await Shell.Current.Navigation.PushModalAsync(new CollectionLoadPage() { BindingContext = vm });
+                var page = await ImportPage.Create<BuildComponent>("build");
+                page.OnImportResults += (sender) =>
+                {
+                    if (sender.BindingContext is ImportPageViewModel<BuildComponent> vm && vm.Result != null)
+                    {
+                        Components.Clear();
+                        SetupDefaultComponents();
+                        foreach(var comp in vm.Result)
+                        {
+                            ReplaceOrAdd(comp);
+                        }
+                        //Components = new ObservableCollection<BuildComponent>(vm.Result);
+                        UpdateProperties();
+                    }
+                };
+                //var vm = new CollectionLoadPageViewModel<BuildComponent>("build");
+                //MessagingCenter.Subscribe<CollectionLoadPageViewModel<BuildComponent>>(this, "load", DoLoad, vm);
+                //await Shell.Current.Navigation.PushModalAsync(new CollectionLoadPage() { BindingContext = vm });
             });
 
-            Components.CollectionChanged += (sender, args) => { SaveRestore(); };
+            //Components.CollectionChanged += (sender, args) => { SaveRestore(); };
 
             OpenURL = new Command(async () =>
             {
@@ -119,15 +137,6 @@ namespace micro_c_app.ViewModels
             });
 
             BatchScan = new Command(() => DoBatchScan());
-        }
-
-        private void DoLoad(CollectionLoadPageViewModel<BuildComponent> obj)
-        {
-            Components.Clear();
-            foreach (var i in obj.Result)
-            {
-                Components.Add(i);
-            }
         }
 
         void SetupDefaultComponents()
@@ -168,7 +177,7 @@ namespace micro_c_app.ViewModels
 
         private void BuildComponentRemove(BuildComponentViewModel updated)
         {
-            if(updated.Component == null)
+            if (updated.Component == null)
             {
                 return;
             }
@@ -227,9 +236,33 @@ namespace micro_c_app.ViewModels
             UpdateProperties();
         }
 
+        private void ReplaceOrAdd(BuildComponent component)
+        {
+            if(component.Item == null)
+            {
+                return;
+            }
+
+            var existing = Components.FirstOrDefault(c => c.Item == null && (c.Type == component.Type || component.Item.ComponentType == c.Type));
+            if(existing != null)
+            {
+                existing.Item = component.Item;
+            }
+            else
+            {
+                var index = Components.ToList().FindLastIndex(c => c.Type == component.Type);
+                if(index >= 0)
+                {
+                    Components.Insert(index, component);
+                }
+            }
+            UpdateProperties();
+        }
+
         private void DoBatchScan()
         {
-            SearchView.DoScan(Shell.Current.Navigation, async (result, progress) => {
+            SearchView.DoScan(Shell.Current.Navigation, async (result, progress) =>
+            {
                 System.Diagnostics.Debug.WriteLine(result);
 
                 try
@@ -255,11 +288,11 @@ namespace micro_c_app.ViewModels
                                 //
                                 // Check if there is an open slot to put the item in
                                 //
-                                for(int i = item.Categories.Count - 1; i >= 0; i--)
+                                for (int i = item.Categories.Count - 1; i >= 0; i--)
                                 {
                                     var cat = item.Categories[i];
                                     var comp = Components.FirstOrDefault(c => c.Item == null && c.CategoryFilter == cat.Filter);
-                                    if(comp != null)
+                                    if (comp != null)
                                     {
                                         comp.Item = item;
                                         UpdateProperties();
@@ -273,7 +306,7 @@ namespace micro_c_app.ViewModels
                                 for (int i = item.Categories.Count - 1; i >= 0; i--)
                                 {
                                     var cat = BuildComponent.TypeForCategoryFilter(item.Categories[i].Filter);
-                                    if(cat != ComponentType.None)
+                                    if (cat != ComponentType.None)
                                     {
                                         AddNewItem(item, cat);
                                         return;
@@ -312,16 +345,16 @@ namespace micro_c_app.ViewModels
 
         private void UpdateProperties()
         {
-            foreach(var comp in Components)
+            foreach (var comp in Components)
             {
                 comp.ErrorText = "";
                 comp.HintText = "";
             }
-            foreach(var dep in BuildComponentDependency.Dependencies)
+            foreach (var dep in BuildComponentDependency.Dependencies)
             {
                 var items = Components.Where(comp => comp.Item != null).Select(comp => comp.Item).ToList();
                 var errors = dep.HasErrors(items);
-                foreach(var item in errors)
+                foreach (var item in errors)
                 {
                     var matchingComp = Components.FirstOrDefault(comp => comp.Item == item.Primary);
                     matchingComp.ErrorText += item.Text.Replace("\n", ", ") + "\n\n";
@@ -329,7 +362,7 @@ namespace micro_c_app.ViewModels
 
                 foreach (var comp in Components)
                 {
-                    if(comp.Item != null)
+                    if (comp.Item != null)
                     {
                         continue;
                     }

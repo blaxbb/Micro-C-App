@@ -4,9 +4,6 @@
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
              xmlns:system="clr-namespace:System;assembly=netstandard"
              x:Class="micro_c_app.Views.ImportPage">
-    <ContentPage.BindingContext>
-        <vm:ImportPageViewModel/>
-    </ContentPage.BindingContext>
     <ContentPage.Content>
         <Grid>
             <Grid.ColumnDefinitions>

@@ -14,7 +14,7 @@ using Xamarin.Forms;
 namespace micro_c_app.ViewModels
 {
 
-    public class ImportPageViewModel : BaseViewModel
+    public class ImportPageViewModel<T> : BaseViewModel
     {
         private string folder;
         private ObservableCollection<string> localFiles;
@@ -41,7 +41,7 @@ namespace micro_c_app.ViewModels
         public string SelectedFile { get => selectedFile; set => SetProperty(ref selectedFile, value); }
         public Flare SelectedFlare { get => selectedFlare; set => SetProperty(ref selectedFlare, value); }
 
-        public List<Item> Result { get; private set; }
+        public List<T> Result { get; private set; }
 
         public ImportPageViewModel()
         {
@@ -90,7 +90,7 @@ namespace micro_c_app.ViewModels
                     if (File.Exists(path))
                     {
                         var text = File.ReadAllText(path);
-                        Result = JsonConvert.DeserializeObject<List<Item>>(text);
+                        Result = JsonConvert.DeserializeObject<List<T>>(text);
                         await Shell.Current.Navigation.PopModalAsync();
                     }
                     else
@@ -105,13 +105,13 @@ namespace micro_c_app.ViewModels
                 else if(SelectedFlare != null)
                 {
                     var components = JsonConvert.DeserializeObject<List<BuildComponent>>(SelectedFlare.Data);
-                    Result = new List<Item>();
-                    foreach (var comp in components)
+                    if (typeof(T) == typeof(Item))
                     {
-                        if (comp.Item != null)
-                        {
-                            Result.Add(comp.Item);
-                        }
+                        Result = components.Select(c => c.Item).Cast<T>().ToList();
+                    }
+                    else if(typeof(T) == typeof(BuildComponent))
+                    {
+                        Result = components.Cast<T>().ToList();
                     }
                     await Shell.Current.Navigation.PopModalAsync();
                 }
