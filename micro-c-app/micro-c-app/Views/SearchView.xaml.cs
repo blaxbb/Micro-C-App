@@ -58,6 +58,8 @@ namespace micro_c_app.Views
 
         public static readonly BindableProperty LastItemProperty = BindableProperty.Create("LastItem", typeof(Item), typeof(SearchView), null, propertyChanged: LastItemPropertyChanged);
 
+        public ICommand SearchCommand { get; }
+
         private static void LastItemPropertyChanged(BindableObject bindable, object oldValue, object newValue)
         {
             if(bindable is SearchView view)
@@ -93,6 +95,14 @@ namespace micro_c_app.Views
             SearchField.ReturnCommand = new Command(async () => await OnSubmit(SearchField.Text));
             SKUSubmitButton.Command = new Command(async () => await OnSubmit(SKUField.Text));
             SearchSubmitButton.Command = new Command(async () => await OnSubmit(SearchField.Text));
+
+            SearchCommand = new Command<string>(async (categoryFilter) =>
+            {
+                var oldFilter = CategoryFilter;
+                CategoryFilter = categoryFilter;
+                await OnSubmit("");
+                CategoryFilter = oldFilter;
+            });
 
         }
 

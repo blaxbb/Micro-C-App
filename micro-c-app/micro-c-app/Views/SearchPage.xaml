@@ -32,6 +32,35 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
+        <CollectionView x:Name="emptyView" Grid.Row="0" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}, ConverterParameter=true}" ItemsSource="{Binding Categories}">
+            <CollectionView.ItemsLayout>
+                <GridItemsLayout Orientation="Vertical" Span="2"/>
+            </CollectionView.ItemsLayout>
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid HeightRequest="80" Padding="10">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                        </Grid.ColumnDefinitions>
+                        <Button Grid.ColumnSpan="2" Command="{Binding SearchCommand, Source={Reference searchView}}" CommandParameter="{Binding SearchCategory}"/>
+                        <Label
+                            Grid.Column="0"
+                            Margin="10"
+                            Text="{Binding Icon}"
+                            FontFamily="{StaticResource FontAwesomeSolid}"
+                            InputTransparent="True"
+                            VerticalOptions="FillAndExpand"
+                            HorizontalTextAlignment="Center"
+                            VerticalTextAlignment="Center"
+                            TextColor="{DynamicResource ButtonTextColor}"
+                            FontSize="Large"
+                        />
+                        <Label Grid.Column="1" Text="{Binding Name}" TextColor="{DynamicResource ButtonTextColor}" InputTransparent="True" VerticalTextAlignment="Center"/>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
         <views:ItemDetailsView x:Name="detailView" Grid.Row="0" Item="{Binding BindingContext.Item, Mode=TwoWay, Source={Reference Name=page}}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}"/>
         <views:SearchView x:Name="searchView" Grid.Row="1" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" HeightRequest="100" WidthRequest="200" HorizontalOptions="FillAndExpand" Margin="10,5,10,5" AutoPopSearchPage="True"/>
         <ContentView x:Name="spacer" Grid.Row="2" />
