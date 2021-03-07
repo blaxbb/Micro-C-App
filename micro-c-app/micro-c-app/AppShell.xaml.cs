@@ -85,15 +85,6 @@ namespace micro_c_app
             });
         }
 
-        private void DisplayBatchPage(object sender, EventArgs e)
-        {
-            Device.BeginInvokeOnMainThread(async () =>
-            {
-                FlyoutIsPresented = false;
-                await Navigation.PushAsync(new ItemBatchPage());
-            });
-        }
-
         protected override bool OnBackButtonPressed()
         {
             var currentPage = (Shell.Current?.CurrentItem?.CurrentItem as IShellSectionController)?.PresentedPage;
