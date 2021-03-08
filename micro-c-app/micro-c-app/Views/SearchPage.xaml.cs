@@ -66,6 +66,9 @@ namespace micro_c_app.Views
                 Grid.SetColumn(detailView, 0);
                 Grid.SetColumn(emptyView, 0);
                 Grid.SetColumn(searchView, 0);
+
+                Grid.SetRowSpan(searchView, 1);
+
                 searchView.Orientation = "Horizontal";
                 grid.RowDefinitions[3].Height = new GridLength(1, GridUnitType.Auto);
             }
