@@ -24,14 +24,14 @@
             <CollectionView x:Name="ItemsList" ItemsSource="{Binding Items}" SelectionMode="Single" RemainingItemsThreshold="{Binding ItemThreshold}" RemainingItemsThresholdReachedCommand="{Binding LoadMore}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
-                        <Grid>
+                        <Grid Margin="3">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="6*"/>
                                 <ColumnDefinition Width="3*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Image Grid.Column="0" Source="{Binding PictureUrls[0]}"/>
+                            <Image Grid.Column="0" Source="{Binding PictureUrls[0]}" HeightRequest="64"/>
                             <StackLayout Orientation="Vertical" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
                                 <Label Text="{Binding Name}" MaxLines="2" VerticalTextAlignment="Center" InputTransparent="True"/>
                                 <FlexLayout Direction="Row" AlignItems="Center" JustifyContent="SpaceBetween">
@@ -41,6 +41,7 @@
                             </StackLayout>
                             <Label Grid.Column="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" InputTransparent="True"/>
                             <Label Grid.Column="3" Text="{Binding Stock}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" InputTransparent="True"/>
+                            <BoxView Grid.Column="0" Grid.ColumnSpan="4" Color="DarkGray" HeightRequest="1" VerticalOptions="End"/>
                         </Grid>
                     </DataTemplate>
                 </CollectionView.ItemTemplate>

@@ -11,9 +11,9 @@ namespace micro_c_app.Views
         public string SearchRoute {
             set
             {
-                Device.InvokeOnMainThreadAsync(async () =>
+                Device.InvokeOnMainThreadAsync(() =>
                 {
-                    searchView.OnSubmit(value);
+                    searchView?.OnSubmit(value);
                 });
             }
         }
