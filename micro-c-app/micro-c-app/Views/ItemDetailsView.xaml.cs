@@ -35,7 +35,6 @@ namespace micro_c_app.Views
             {
                 vm.Item = newValue as Item;
                 view.SetSpecs();
-
             }
         }
 

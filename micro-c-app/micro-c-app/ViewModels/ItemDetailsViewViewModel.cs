@@ -15,10 +15,8 @@ namespace micro_c_app.ViewModels
         public Item? Item { get => item;
             set {
                 SetProperty(ref item, value);
-                if (item != null && item.PictureUrls?.Count > 0)
-                {
-                    OnPropertyChanged(nameof(ActivePicture));
-                }
+                PictureIndex = 0;
+                OnPropertyChanged(nameof(ActivePicture));
             }
         }
         public string? ActivePicture
