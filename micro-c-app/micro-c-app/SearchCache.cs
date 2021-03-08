@@ -34,6 +34,10 @@ namespace micro_c_app
 
         public void Add(Item item)
         {
+            if(string.IsNullOrWhiteSpace(item.SKU))
+            {
+                return;
+            }
             Items.RemoveAll(i => i.item.SKU == item.SKU);
             Items.Add((DateTime.Now, item));
         }
