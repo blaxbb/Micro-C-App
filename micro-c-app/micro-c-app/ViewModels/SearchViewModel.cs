@@ -40,7 +40,7 @@ namespace micro_c_app.ViewModels
             Title = "Search";
             ItemQueue = new Stack<Item>();
 
-            Categories = PresetBYO().ToList();
+            Categories = SettingsPage.QuicksearchCategories();
 
             OnProductFound = new Command<Item>((Item item) =>
             {
@@ -86,6 +86,13 @@ namespace micro_c_app.ViewModels
                     });
                 }
             });
+
+            MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, (_) => { UpdateProperties(); });
+        }
+
+        private void UpdateProperties()
+        {
+            Categories = SettingsPage.QuicksearchCategories();
         }
 
         public bool DoPopItem()
@@ -98,80 +105,5 @@ namespace micro_c_app.ViewModels
             Item = null;
             return false;
         }
-
-        #region PRESETS
-
-        public static IEnumerable<ComponentTypeInfo> PresetBYO()
-        {
-            yield return new ComponentTypeInfo(BuildService, "\uf7d9");
-            yield return new ComponentTypeInfo(ComponentType.OperatingSystem, "\uf17a");
-            yield return new ComponentTypeInfo(CPU, "\uf2db");
-            yield return new ComponentTypeInfo(Motherboard);
-            yield return new ComponentTypeInfo(RAM, "\uf538");
-            yield return new ComponentTypeInfo(Case, "\uf0c8");
-            yield return new ComponentTypeInfo(PowerSupply, "\uf5df");
-            yield return new ComponentTypeInfo(GPU, "\uf1b3");
-            yield return new ComponentTypeInfo(SSD, "\uf0a0");
-            yield return new ComponentTypeInfo(HDD, "\uf0a0");
-            yield return new ComponentTypeInfo(CPUCooler, "\uf76b");
-            yield return new ComponentTypeInfo(WaterCoolingKit, "\uf76b");
-            yield return new ComponentTypeInfo(CaseFan, "\uf863");
-        }
-        public static IEnumerable<ComponentTypeInfo> PresetSystems()
-        {
-            yield return new ComponentTypeInfo(Desktop, "\uf0c8");
-            yield return new ComponentTypeInfo(Laptop, "\uf109");
-            yield return new ComponentTypeInfo(Monitor, "\uf108");
-            yield return new ComponentTypeInfo(ComponentType.Keyboard, "\uf11c");
-            yield return new ComponentTypeInfo(Mouse, "\uf8cc");
-            yield return new ComponentTypeInfo(Printer, "\uf02f");
-        }
-
-        public static IEnumerable<ComponentTypeInfo> PresetGS()
-        {
-            yield return new ComponentTypeInfo(WirelessRouter, "\uf1eb");
-            yield return new ComponentTypeInfo(WiredRouter, "\uf796");
-            yield return new ComponentTypeInfo(WiredNetworkAdapter, "\uf796");
-            yield return new ComponentTypeInfo(NetworkingPowerline, "\uf796");
-            yield return new ComponentTypeInfo(POENetworkAdapter, "\uf796");
-            yield return new ComponentTypeInfo(NetworkSwitch, "\uf6ff");
-            yield return new ComponentTypeInfo(WirelessAdapter, "\uf1eb");
-            yield return new ComponentTypeInfo(WirelessAccessPoint, "\uf1eb");
-            yield return new ComponentTypeInfo(WirelessBoosters, "\uf1eb");
-            yield return new ComponentTypeInfo(NetworkingBridge, "\uf1eb");
-            yield return new ComponentTypeInfo(NetworkingCable, "\uf1eb");
-            yield return new ComponentTypeInfo(NetworkingAccessory, "\uf1eb");
-            yield return new ComponentTypeInfo(NetworkAttachedStorage, "\uf0a0");
-            yield return new ComponentTypeInfo(BluetoothAdapter, "\uf294");
-            yield return new ComponentTypeInfo(ComponentType.Keyboard, "\uf11c");
-            yield return new ComponentTypeInfo(Mouse, "\uf8cc");
-            yield return new ComponentTypeInfo(Headphones, "\uf025");
-            yield return new ComponentTypeInfo(Speakers, "\uf028");
-            yield return new ComponentTypeInfo(ExternalDrives, "\uf0a0");
-            yield return new ComponentTypeInfo(UninteruptablePowerSupply, "\uf5df");
-            yield return new ComponentTypeInfo(GameAccessories, "\uf11b");
-            yield return new ComponentTypeInfo(GameControllers, "\uf11b");
-            yield return new ComponentTypeInfo(Xbox, "\uf412");
-            yield return new ComponentTypeInfo(Playstation, "\uf3df");
-            yield return new ComponentTypeInfo(Nintendo, "\uf11b");
-            yield return new ComponentTypeInfo(InkAndToner, "\uf02f");
-        }
-
-        public static IEnumerable<ComponentTypeInfo> PresetCE()
-        {
-            yield return new ComponentTypeInfo(Television, "\uf26c");
-            yield return new ComponentTypeInfo(HomeTheaterAudio, "\uf008");
-            yield return new ComponentTypeInfo(HomeTheaterWireless, "\uf1eb");
-            yield return new ComponentTypeInfo(StreamingMedia, "\uf03d");
-            yield return new ComponentTypeInfo(Printer, "\uf02f");
-            yield return new ComponentTypeInfo(InkAndToner, "\uf02f");
-            yield return new ComponentTypeInfo(SecurityCamera, "\uf030");
-            yield return new ComponentTypeInfo(SecurityCameraKit, "\uf030");
-            yield return new ComponentTypeInfo(HomeAutomation, "\uf0d0");
-            yield return new ComponentTypeInfo(Projectors, "\uf03d");
-            yield return new ComponentTypeInfo(DigitalCamera, "\uf030");
-            yield return new ComponentTypeInfo(FlashMemory, "\uf7c2");
-        }
-        #endregion
     }
 }

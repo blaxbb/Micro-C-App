@@ -1,4 +1,5 @@
-﻿using micro_c_app.Views;
+﻿using micro_c_app.Models;
+using micro_c_app.Views;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -35,12 +36,66 @@ namespace micro_c_app.ViewModels
         public ICommand Save { get; }
         public ICommand Cancel { get; }
 
+        public List<ComponentTypeInfo> QuicksearchCategories { get => quicksearchCategories; set => SetProperty(ref quicksearchCategories, value); }
+        public List<ComponentTypeInfo> AllCategories { get; set; }
+        public List<string> AllCategoryNames { get => allCategoryNames; set => SetProperty(ref allCategoryNames, value); }
+        public List<string> Presets { get => presets; set => SetProperty(ref presets, value); }
+        public string SelectedNewItem { get => selectedNewItem; set => SetProperty(ref selectedNewItem, value); }
+        public int SelectedNewItemIndex
+        {
+            get => selectedNewItemIndex;
+            set
+            {
+                SetProperty(ref selectedNewItemIndex, value);
+                if (value != -1)
+                {
+                    if (value >= 0 && value < AllCategories.Count)
+                    {
+                        var cat = AllCategories[value];
+                        QuicksearchCategories.Add(cat);
+                        OnPropertyChanged(nameof(QuicksearchCategories));
+                    }
+                }
+            }
+        }
+
+        public string SelectedPreset
+        {
+            get => selectedPreset;
+            set
+            {
+                selectedPreset = value;
+                switch (value)
+                {
+                    case "BYO":
+                        QuicksearchCategories = SettingsPage.PresetBYO().ToList();
+                        break;
+                    case "Systems":
+                        QuicksearchCategories = SettingsPage.PresetSystems().ToList();
+                        break;
+                    case "GS":
+                        QuicksearchCategories = SettingsPage.PresetGS().ToList();
+                        break;
+                    case "CE":
+                        QuicksearchCategories = SettingsPage.PresetCE().ToList();
+                        break;
+                }
+            }
+        }
+
         public const string SETTINGS_UPDATED_MESSAGE = "updated";
+        private List<ComponentTypeInfo> quicksearchCategories;
+        private string selectedPreset;
+        private List<string> presets;
+        private List<string> allCategoryNames;
+        private int selectedNewItemIndex;
+        private string selectedNewItem;
 
         public SettingsPageViewModel()
         {
             Save = new Command(async (o) => await DoSave(o));
             Cancel = new Command(async () => await ExitSettings());
+
 
             Title = "Settings";
             StoreID = SettingsPage.StoreID();
@@ -59,6 +114,23 @@ namespace micro_c_app.ViewModels
             Vibrate = SettingsPage.Vibrate();
             AnalyticsEnabled = SettingsPage.AnalyticsEnabled();
 
+            QuicksearchCategories = SettingsPage.QuicksearchCategories();
+            Presets = new List<string>()
+            {
+                "BYO",
+                "Systems",
+                "GS",
+                "CE"
+            };
+
+            var all = SettingsPage.PresetBYO().ToList();
+            all.AddRange(SettingsPage.PresetSystems());
+            all.AddRange(SettingsPage.PresetCE());
+            all.AddRange(SettingsPage.PresetGS());
+
+            AllCategories = all.GroupBy(c => c.Type).Select(group => group.First()).ToList();
+            AllCategoryNames = AllCategories.Select(c => c.Name).ToList();
+            //SelectedNewItem = null;
         }
 
         private async Task DoSave(object obj)
@@ -78,6 +150,8 @@ namespace micro_c_app.ViewModels
             SettingsPage.Theme(Theme);
             SettingsPage.Vibrate(Vibrate);
             SettingsPage.AnalyticsEnabled(AnalyticsEnabled);
+
+            SettingsPage.QuicksearchCategories(QuicksearchCategories);
 
             MessagingCenter.Send(this, SETTINGS_UPDATED_MESSAGE);
             await ExitSettings();

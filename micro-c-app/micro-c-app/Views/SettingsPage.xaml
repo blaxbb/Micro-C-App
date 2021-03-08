@@ -33,6 +33,21 @@
                     <Label Text="Enable Analyitcs" WidthRequest="100" VerticalTextAlignment="Center"/>
                     <CheckBox IsChecked="{Binding AnalyticsEnabled}" HorizontalOptions="FillAndExpand"/>
                 </StackLayout>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition  Width="*"/>
+                        <ColumnDefinition  Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Picker Grid.Column="0" Grid.Row="0" ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset}" Title="Presets"/>
+                    <Picker Grid.Column="1" Grid.Row="0" ItemsSource="{Binding AllCategoryNames}" SelectedIndex="{Binding SelectedNewItemIndex}" Title="Add Item" x:Name="addCategoryPicker"/>
+                    <StackLayout x:Name="quicksearchCategoriesStack" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                        
+                    </StackLayout>
+                </Grid>
                 <ContentView>
                     <OnPlatform x:TypeArguments="ContentView">
                         <On Platform="Android">
