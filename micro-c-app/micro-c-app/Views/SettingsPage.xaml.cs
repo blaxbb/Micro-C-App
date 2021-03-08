@@ -28,6 +28,8 @@ namespace micro_c_app.Views
 
         public const string PREF_QUICKSEARCH_CATEGORIES = "quicksearch_categories";
 
+        public const string PREF_HELPMESSAGE_INDEX = "helpmessage_index";
+
         public const string LOCATOR_BASE_URL = "https://locator.bbarrettnas.duckdns.org/";
 
         public const string SETTINGS_UPDATED_MESSAGE = "updated";
@@ -130,8 +132,7 @@ namespace micro_c_app.Views
 
             return Newtonsoft.Json.JsonConvert.DeserializeObject<List<ComponentTypeInfo>>(json);
         }
-
-
+        public static int HelpMessageIndex() => Preferences.Get(PREF_HELPMESSAGE_INDEX, 0);
 
         public static void StoreID(string id) {Preferences.Set(PREF_SELECTED_STORE, id); SendSettingsUpdated();}
         public static void SalesID(string id) {Preferences.Set(PREF_SALES_ID, id); SendSettingsUpdated();}
@@ -149,6 +150,12 @@ namespace micro_c_app.Views
             var json = Newtonsoft.Json.JsonConvert.SerializeObject(categories);
             Preferences.Set(PREF_QUICKSEARCH_CATEGORIES, json);
             SendSettingsUpdated();
+        }
+        public static void HelpMessageIndex(int index) { Preferences.Set(PREF_HELPMESSAGE_INDEX, index); SendSettingsUpdated(); }
+        public static void IncrementHelpMessageIndex()
+        {
+            var index = HelpMessageIndex();
+            HelpMessageIndex(index + 1);
         }
 
         private static void SendSettingsUpdated()

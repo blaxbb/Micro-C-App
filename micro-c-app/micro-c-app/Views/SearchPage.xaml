@@ -24,6 +24,7 @@
     
     <Grid x:Name="grid">
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
@@ -32,7 +33,20 @@
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
-        <CollectionView x:Name="emptyView" Grid.Row="0" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}, ConverterParameter=true}" ItemsSource="{Binding Categories}">
+        <Frame Grid.Row="0" x:Name="hintGrid" IsVisible="{Binding HintVisible}" BorderColor="DarkGray" Margin="5">
+            <Grid IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}, ConverterParameter=true}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" MaxLines="5" Text="{Binding HintText}"/>
+                <Button Grid.Column="1" Text="X" WidthRequest="64" Command="{Binding DismissHint}" />
+            </Grid>
+        </Frame>
+        <CollectionView x:Name="emptyView" Grid.Row="1" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}, ConverterParameter=true}" ItemsSource="{Binding Categories}">
             <CollectionView.ItemsLayout>
                 <GridItemsLayout Orientation="Vertical" Span="2"/>
             </CollectionView.ItemsLayout>
@@ -61,8 +75,8 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <views:ItemDetailsView x:Name="detailView" Grid.Row="0" Item="{Binding BindingContext.Item, Mode=TwoWay, Source={Reference Name=page}}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}"/>
-        <views:SearchView x:Name="searchView" Grid.Row="1" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" HeightRequest="100" WidthRequest="200" HorizontalOptions="FillAndExpand" Margin="10,5,10,5" AutoPopSearchPage="True"/>
-        <ContentView x:Name="spacer" Grid.Row="2" />
+        <views:ItemDetailsView x:Name="detailView" Grid.Row="1" Item="{Binding BindingContext.Item, Mode=TwoWay, Source={Reference Name=page}}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}"/>
+        <views:SearchView x:Name="searchView" Grid.Row="2" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" HeightRequest="100" WidthRequest="200" HorizontalOptions="FillAndExpand" Margin="10,5,10,5" AutoPopSearchPage="True"/>
+        <ContentView x:Name="spacer" Grid.Row="3" />
     </Grid>
 </ContentPage>

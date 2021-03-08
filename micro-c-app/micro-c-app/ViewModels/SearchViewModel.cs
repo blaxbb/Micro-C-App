@@ -15,6 +15,8 @@ namespace micro_c_app.ViewModels
         private Item item;
         private Stack<Item> itemQueue;
         private List<ComponentTypeInfo> categories;
+        private string hintText;
+        private bool hintVisible;
 
         public Stack<Item> ItemQueue { get => itemQueue; set => SetProperty(ref itemQueue, value); }
         public ICommand PopItem { get; }
@@ -26,6 +28,9 @@ namespace micro_c_app.ViewModels
 
         public ICommand GoToWebpage { get; }
         public ICommand AddReminder { get; }
+        public ICommand DismissHint { get; }
+        public string HintText { get => hintText; set => SetProperty(ref hintText, value); }
+        public bool HintVisible { get => hintVisible; set => SetProperty(ref hintVisible, value); }
 
         protected override Dictionary<string, ICommand> Actions => new Dictionary<string, ICommand>()
         {
@@ -34,11 +39,18 @@ namespace micro_c_app.ViewModels
         };
 
         public List<ComponentTypeInfo> Categories { get => categories; set => SetProperty(ref categories, value); }
+        private int HelpMessageIndex;
 
         public SearchViewModel()
         {
             Title = "Search";
             ItemQueue = new Stack<Item>();
+
+            HintText = HelpMessages.GetNextMessage();
+            if(HintText != null)
+            {
+                HintVisible = true;
+            }
 
             Categories = SettingsPage.QuicksearchCategories();
 
@@ -48,7 +60,6 @@ namespace micro_c_app.ViewModels
                 {
                     ItemQueue.Push(Item);
                 }
-
                 Item = item;
             });
 
@@ -85,6 +96,11 @@ namespace micro_c_app.ViewModels
                         await Shell.Current.Navigation.PushAsync(new ReminderEditPage() { BindingContext = vm });
                     });
                 }
+            });
+            DismissHint = new Command(() =>
+            {
+                HintVisible = false;
+                SettingsPage.IncrementHelpMessageIndex();
             });
 
             MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, (_) => { UpdateProperties(); });
