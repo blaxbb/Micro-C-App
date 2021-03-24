@@ -282,7 +282,7 @@
       <Version>4.8.0-beta00011</Version>
     </PackageReference>
     <PackageReference Include="micro-c-lib">
-      <Version>1.0.4</Version>
+      <Version>1.0.6</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>6.2.11</Version>

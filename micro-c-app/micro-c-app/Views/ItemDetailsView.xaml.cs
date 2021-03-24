@@ -35,6 +35,7 @@ namespace micro_c_app.Views
             {
                 vm.Item = newValue as Item;
                 view.SetSpecs();
+                view.SetClearance();
             }
         }
 
@@ -139,7 +140,7 @@ namespace micro_c_app.Views
                             VerticalTextAlignment = TextAlignment.Center,
                             HorizontalTextAlignment = TextAlignment.End,
                             LineBreakMode = LineBreakMode.WordWrap,
-                            Margin = new Thickness(10)
+                            Margin = new Thickness(10),
                         };
 
                         SpecsGrid.Children.Add(name);
@@ -157,6 +158,84 @@ namespace micro_c_app.Views
             {
                 parentGrid.Children.Add(SpecsGrid);
             }
+        }
+
+        private void PopulateGrid(Grid grid, IEnumerable<IEnumerable<View>> views)
+        {
+            if(grid == null || views == null)
+            {
+                return;
+            }
+
+            Grid? parent = null;
+            if (grid.Parent is Grid p)
+            {
+                parent = p;
+                parent.Children.Remove(grid);
+            }
+
+            grid.RowDefinitions.Clear();
+            grid.Children.Clear();
+
+            var stripeColor = Application.Current.UserAppTheme == OSAppTheme.Dark ||
+                  (Application.Current.UserAppTheme == OSAppTheme.Unspecified && Application.Current.RequestedTheme == OSAppTheme.Dark)
+                  ? Color.FromHex("FF595959") : Color.LightGray;
+
+            int rowIndex = 0;
+            foreach(var row in views)
+            {
+                int viewIndex = 0;
+                grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                AddStripedBackground(grid, stripeColor, rowIndex);
+                foreach (var view in row)
+                {
+                    grid.Children.Add(view);
+                    Grid.SetColumn(view, viewIndex);
+                    Grid.SetRow(view, rowIndex);
+                    viewIndex++;
+                }
+            }
+
+            if(parent != null)
+            {
+                parent.Children.Add(grid);
+            }
+        }
+
+        private void SetClearance()
+        {
+            if(Item == null || Item.ClearanceItems == null)
+            {
+                return;
+            }
+
+            List<List<View>> views = new List<List<View>>();
+            foreach(var clearance in Item.ClearanceItems)
+            {
+                views.Add(new List<View>()
+                {
+                    new Label()
+                    {
+                        Text = clearance.State,
+                        HorizontalOptions = LayoutOptions.StartAndExpand,
+                        HorizontalTextAlignment = TextAlignment.Start,
+                        VerticalTextAlignment = TextAlignment.Center,
+                        LineBreakMode = LineBreakMode.WordWrap,
+                        Margin = new Thickness(10)
+                    },
+                    new Label()
+                    {
+                        Text = clearance.Price.ToString(),
+                        HorizontalOptions = LayoutOptions.EndAndExpand,
+                        VerticalOptions = LayoutOptions.FillAndExpand,
+                        VerticalTextAlignment = TextAlignment.Center,
+                        HorizontalTextAlignment = TextAlignment.End,
+                        LineBreakMode = LineBreakMode.WordWrap,
+                        Margin = new Thickness(10),
+                    }
+                });
+            }
+            PopulateGrid(ClearanceGrid, views);
         }
     }
 }

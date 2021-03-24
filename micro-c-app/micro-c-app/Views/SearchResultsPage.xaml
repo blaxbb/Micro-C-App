@@ -2,7 +2,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:micro_c_app.ViewModels"
-             x:Class="micro_c_app.Views.SearchResultsPage">
+             x:Class="micro_c_app.Views.SearchResultsPage"
+             x:Name="page">
     <ContentPage.BindingContext>
         <vm:SearchResultsPageViewModel/>
     </ContentPage.BindingContext>
@@ -16,7 +17,7 @@
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="6*"/>
                     <ColumnDefinition Width="3*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
                 <Label Text="Price" Grid.Column="2" HorizontalTextAlignment="Center"/>
                 <Label Text="Qty" Grid.Column="3" HorizontalTextAlignment="Center"/>
@@ -29,7 +30,7 @@
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="6*"/>
                                 <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
                             <Image Grid.Column="0" Source="{Binding PictureUrls[0]}" HeightRequest="64"/>
                             <StackLayout Orientation="Vertical" Grid.Column="1" VerticalOptions="Center" HorizontalOptions="FillAndExpand">
@@ -40,7 +41,11 @@
                                 </FlexLayout>
                             </StackLayout>
                             <Label Grid.Column="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" InputTransparent="True"/>
-                            <Label Grid.Column="3" Text="{Binding Stock}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" InputTransparent="True"/>
+                            <StackLayout Grid.Column="3" IsVisible="{Binding BindingContext.EnhancedSearch, Source={Reference page}, Converter={StaticResource NegateConverter}}">
+                                <Label Text="{Binding Stock}" HorizontalTextAlignment="Center" InputTransparent="True" VerticalTextAlignment="Center" VerticalOptions="FillAndExpand"/>
+                                <Label Text="{Binding ClearanceItems.Count, StringFormat='CL {0}'}" HorizontalTextAlignment="Center" InputTransparent="True" VerticalTextAlignment="Center" VerticalOptions="FillAndExpand" IsVisible="{Binding ClearanceItems.Count, Converter={StaticResource GreaterThanZeroConverter}}"/>
+                            </StackLayout>
+                            <Label Grid.Column="3" Text="{Binding Stock}" IsVisible="{Binding BindingContext.EnhancedSearch, Source={Reference page}}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" InputTransparent="True"/>
                             <BoxView Grid.Column="0" Grid.ColumnSpan="4" Color="DarkGray" HeightRequest="1" VerticalOptions="End"/>
                         </Grid>
                     </DataTemplate>

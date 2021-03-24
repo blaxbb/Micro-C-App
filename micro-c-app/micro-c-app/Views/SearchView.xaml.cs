@@ -263,6 +263,8 @@ namespace micro_c_app.Views
                 return;
             }
 
+            bool enhancedSearch = SettingsPage.UseEnhancedSearch();
+
             Busy = true;
             tokenSource = new CancellationTokenSource();
             var progress = new Progress<ProgressInfo>(ReportProgress);
@@ -278,7 +280,16 @@ namespace micro_c_app.Views
             try
             {
                 var sw = Stopwatch.StartNew();
-                var results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1, token: cancellationToken, progress: progress);
+                SearchResults? results;
+                if (enhancedSearch)
+                {
+                    results = await LoadEnhanced(searchValue, storeId, CategoryFilter, token: cancellationToken);
+                }
+                else
+                {
+                    results = await LoadQuery(searchValue, storeId, CategoryFilter, OrderBy, 1, token: cancellationToken, progress: progress);
+                }
+                var clearance = results.Items.Where(i => i.ClearanceItems.Count > 0).ToList();
                 sw.Stop();
 
                 AnalyticsService.Track("Load Query Elapsed", ElapsedToAnalytics(sw.ElapsedMilliseconds));
@@ -293,11 +304,19 @@ namespace micro_c_app.Views
                             break;
                         case 1:
                             var stub = results.Items.First();
-                            sw.Restart();
-                            var item = await Item.FromUrl(stub.URL, storeId, token: cancellationToken, progress: progress);
-                            sw.Stop();
+                            Item item;
+                            if(enhancedSearch && stub.Specs.Count > 0)
+                            {
+                                item = stub;
+                            }
+                            else
+                            {
+                                sw.Restart();
+                                item = await Item.FromUrl(stub.URL, storeId, token: cancellationToken, progress: progress);
+                                sw.Stop();
+                                AnalyticsService.Track("Item From Url Elapsed", ElapsedToAnalytics(sw.ElapsedMilliseconds));
+                            }
 
-                            AnalyticsService.Track("Item From Url Elapsed", ElapsedToAnalytics(sw.ElapsedMilliseconds));
                             App.SearchCache?.Add(item);
                             DoProductFound(item);
                             break;
@@ -311,6 +330,7 @@ namespace micro_c_app.Views
                                     StoreID = storeId,
                                     CategoryFilter = CategoryFilter,
                                     OrderBy = OrderBy,
+                                    EnhancedSearch = enhancedSearch
                                 }
                             };
 

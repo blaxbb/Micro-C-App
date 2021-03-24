@@ -36,6 +36,8 @@ namespace micro_c_app.ViewModels
         public ICommand Save { get; }
         public ICommand Cancel { get; }
 
+        public bool EnhancedSearch { get; set; }
+
         public List<ComponentTypeInfo> QuicksearchCategories { get => quicksearchCategories; set => SetProperty(ref quicksearchCategories, value); }
         public List<ComponentTypeInfo> AllCategories { get; set; }
         public List<string> AllCategoryNames { get => allCategoryNames; set => SetProperty(ref allCategoryNames, value); }
@@ -130,6 +132,9 @@ namespace micro_c_app.ViewModels
 
             AllCategories = all.GroupBy(c => c.Type).Select(group => group.First()).ToList();
             AllCategoryNames = AllCategories.Select(c => c.Name).ToList();
+
+            EnhancedSearch = SettingsPage.UseEnhancedSearch();
+
             //SelectedNewItem = null;
         }
 
@@ -152,6 +157,8 @@ namespace micro_c_app.ViewModels
             SettingsPage.AnalyticsEnabled(AnalyticsEnabled);
 
             SettingsPage.QuicksearchCategories(QuicksearchCategories);
+
+            SettingsPage.UseEnhancedSearch(EnhancedSearch);
 
             MessagingCenter.Send(this, SETTINGS_UPDATED_MESSAGE);
             await ExitSettings();

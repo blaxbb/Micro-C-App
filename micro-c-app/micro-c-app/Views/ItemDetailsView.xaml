@@ -15,6 +15,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -33,15 +34,21 @@
                     <Button Text=">" HeightRequest="40" VerticalOptions="Center" HorizontalOptions="EndAndExpand" Command="{Binding ForwardPicture}"/>
                 </StackLayout>
 
-                
+
                 <StackLayout Grid.Row="6" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal">
                     <Label Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Start" HorizontalOptions="StartAndExpand"/>
                     <Label Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Center" HorizontalOptions="Center"/>
                     <Label Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand"/>
                 </StackLayout>
-                
 
-                <Grid x:Name="SpecsGrid" Grid.Row="7" RowSpacing="0" Grid.ColumnSpan="2">
+                <Grid x:Name="ClearanceGrid" Grid.Row="7" RowSpacing="0" Grid.ColumnSpan="2" IsVisible="{Binding Item.ClearanceItems.Count, Converter={StaticResource GreaterThanZeroConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+
+                <Grid x:Name="SpecsGrid" Grid.Row="8" RowSpacing="0" Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>

@@ -30,6 +30,10 @@
                     <CheckBox IsChecked="{Binding Vibrate}" HorizontalOptions="FillAndExpand"/>
                 </StackLayout>
                 <StackLayout Orientation="Horizontal">
+                    <Label Text="Enhanced Search" WidthRequest="100" VerticalTextAlignment="Center"/>
+                    <CheckBox IsChecked="{Binding EnhancedSearch}" HorizontalOptions="FillAndExpand"/>
+                </StackLayout>
+                <StackLayout Orientation="Horizontal">
                     <Label Text="Enable Analyitcs" WidthRequest="100" VerticalTextAlignment="Center"/>
                     <CheckBox IsChecked="{Binding AnalyticsEnabled}" HorizontalOptions="FillAndExpand"/>
                 </StackLayout>

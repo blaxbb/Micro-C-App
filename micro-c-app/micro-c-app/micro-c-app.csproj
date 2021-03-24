@@ -20,7 +20,7 @@
   <ItemGroup>
     <PackageReference Include="BarcodeScanner.XF" Version="4.8.1.1" />
     <PackageReference Include="DataFlareClient" Version="1.0.7" />
-    <PackageReference Include="micro-c-lib" Version="1.0.4" />
+    <PackageReference Include="micro-c-lib" Version="1.0.6" />
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.1.0" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />

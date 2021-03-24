@@ -29,12 +29,17 @@ namespace micro_c_app.ViewModels
         private int itemThreshold = 5;
         private int totalResults;
         private int page = 1;
+        private bool enhancedSearch;
+        private bool loadingNextResults;
         public const int RESULTS_PER_PAGE = 96;
         public int ItemThreshold { get => itemThreshold; set => SetProperty(ref itemThreshold, value); }
         public ICommand LoadMore { get; }
         public int Page { get => page; set => SetProperty(ref page, value); }
         public int TotalPages => (int)Math.Ceiling((double)totalResults / RESULTS_PER_PAGE);
         public int TotalResults { get => totalResults; set => SetProperty(ref totalResults, value); }
+        public bool EnhancedSearch { get => enhancedSearch; set { SetProperty(ref enhancedSearch, value); if (value) { ItemThreshold = -1; } else { ItemThreshold = 10; } } }
+
+        public bool LoadingNextResults { get => loadingNextResults; set => SetProperty(ref loadingNextResults, value); }
 
         public SearchResultsPageViewModel()
         {
@@ -44,10 +49,17 @@ namespace micro_c_app.ViewModels
 
             LoadMore = new Command(async () =>
             {
-                if(page < TotalPages)
+                if (loadingNextResults)
+                {
+                    return;
+                }
+
+                if (page < TotalPages)
                 {
                     page++;
+                    loadingNextResults = true;
                     await LoadQuery();
+                    loadingNextResults = false;
                 }
             });
 
@@ -97,7 +109,7 @@ namespace micro_c_app.ViewModels
                 AnalyticsService.Track("Search Submit Cancelled");
                 //triggered by user input, do nothing
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 AnalyticsService.TrackError(e, SearchQuery);
                 await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
