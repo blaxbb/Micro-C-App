@@ -12,6 +12,17 @@
     </ContentPage.ToolbarItems>
     <ContentPage.Content>
         <StackLayout Orientation="Vertical" Margin="5">
+            <Grid HeightRequest="50">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Text="Filter" Margin="0" Padding="0" IsEnabled="{Binding EnhancedSearch}"/>
+                <Button Grid.Column="1" Text="Order By" Command="{Binding ChangeOrderBy}" Margin="0" Padding="0"/>
+                <Button Grid.Column="2" Text="&#xf885;" FontFamily="{StaticResource FontAwesomeSolid}" Margin="0" BackgroundColor="Red" Padding="0" WidthRequest="50" Command="{Binding ToggleSortDirection}" IsVisible="{Binding SearchSettings.Ascending}"/>
+                <Button Grid.Column="2" Text="&#xf160;" FontFamily="{StaticResource FontAwesomeSolid}" Margin="0" BackgroundColor="Green" Padding="0" WidthRequest="50" Command="{Binding ToggleSortDirection}" IsVisible="{Binding SearchSettings.Ascending, Converter={StaticResource NegateConverter}}"/>
+            </Grid>
             <Grid HeightRequest="25">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
@@ -41,11 +52,11 @@
                                 </FlexLayout>
                             </StackLayout>
                             <Label Grid.Column="2" Text="{Binding Price, StringFormat='${0:#,#0.00}'}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" InputTransparent="True"/>
-                            <StackLayout Grid.Column="3" IsVisible="{Binding BindingContext.EnhancedSearch, Source={Reference page}, Converter={StaticResource NegateConverter}}">
+                            <StackLayout Grid.Column="3">
                                 <Label Text="{Binding Stock}" HorizontalTextAlignment="Center" InputTransparent="True" VerticalTextAlignment="Center" VerticalOptions="FillAndExpand"/>
                                 <Label Text="{Binding ClearanceItems.Count, StringFormat='CL {0}'}" HorizontalTextAlignment="Center" InputTransparent="True" VerticalTextAlignment="Center" VerticalOptions="FillAndExpand" IsVisible="{Binding ClearanceItems.Count, Converter={StaticResource GreaterThanZeroConverter}}"/>
                             </StackLayout>
-                            <Label Grid.Column="3" Text="{Binding Stock}" IsVisible="{Binding BindingContext.EnhancedSearch, Source={Reference page}}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" InputTransparent="True"/>
+                            <!--<Label Grid.Column="3" Text="{Binding Stock}" IsVisible="{Binding BindingContext.EnhancedSearch, Source={Reference page}}" VerticalTextAlignment="Center" HorizontalTextAlignment="Center" InputTransparent="True"/>-->
                             <BoxView Grid.Column="0" Grid.ColumnSpan="4" Color="DarkGray" HeightRequest="1" VerticalOptions="End"/>
                         </Grid>
                     </DataTemplate>

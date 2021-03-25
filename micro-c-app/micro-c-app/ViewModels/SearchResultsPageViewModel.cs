@@ -3,6 +3,7 @@ using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.RegularExpressions;
@@ -16,7 +17,7 @@ namespace micro_c_app.ViewModels
 {
     public class SearchResultsPageViewModel : BaseViewModel
     {
-        public ObservableCollection<Item> Items { get; }
+        public ObservableCollection<Item> Items { get => items; set => SetProperty(ref items, value); }
 
         public string SearchQuery { get; set; }
         public string StoreID { get; set; }
@@ -31,6 +32,8 @@ namespace micro_c_app.ViewModels
         private int page = 1;
         private bool enhancedSearch;
         private bool loadingNextResults;
+        private EnhancedSearchSettings searchSettings;
+        private ObservableCollection<Item> items;
         public const int RESULTS_PER_PAGE = 96;
         public int ItemThreshold { get => itemThreshold; set => SetProperty(ref itemThreshold, value); }
         public ICommand LoadMore { get; }
@@ -41,11 +44,15 @@ namespace micro_c_app.ViewModels
 
         public bool LoadingNextResults { get => loadingNextResults; set => SetProperty(ref loadingNextResults, value); }
 
+        public EnhancedSearchSettings SearchSettings { get => searchSettings; set => SetProperty(ref searchSettings, value); }
+        public ICommand ToggleSortDirection { get; }
+
         public SearchResultsPageViewModel()
         {
             Title = "Search";
             client = new HttpClient();
             Items = new ObservableCollection<Item>();
+            SearchSettings = new EnhancedSearchSettings();
 
             LoadMore = new Command(async () =>
             {
@@ -67,21 +74,48 @@ namespace micro_c_app.ViewModels
             {
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    var result = await Shell.Current.DisplayActionSheet("Order Mode", "Cancel", null, Enum.GetNames(typeof(OrderByMode)));
+                    string[] options;
+                    if (EnhancedSearch)
+                    {
+                        options = EnhancedSearchSettings.GetOptions(Items);
+                    }
+                    else
+                    {
+                        options = Enum.GetNames(typeof(OrderByMode));
+                    }
+                    var result = await Shell.Current.DisplayActionSheet("Order Mode", "Cancel", null, options);
                     if (result != null && result != "Cancel")
                     {
-                        if (Enum.TryParse<OrderByMode>(result, out var newMode))
+                        if (EnhancedSearch)
                         {
-                            if (OrderBy != newMode)
+                            SearchSettings.Field = result;
+                            SearchSettings.Ascending = true;
+                            Items = new ObservableCollection<Item>(SearchSettings.GetSorted(Items));
+                        }
+                        else
+                        {
+                            if (Enum.TryParse<OrderByMode>(result, out var newMode))
                             {
-                                OrderBy = newMode;
-                                Items.Clear();
-                                page = 1;
-                                await LoadQuery();
+                                if (OrderBy != newMode)
+                                {
+                                    OrderBy = newMode;
+                                    Items.Clear();
+                                    page = 1;
+                                    await LoadQuery();
+                                }
                             }
                         }
                     }
                 });
+            });
+
+            ToggleSortDirection = new Command(() =>
+            {
+                if (SearchSettings != null)
+                {
+                    SearchSettings.Ascending = !SearchSettings.Ascending;
+                    Items = new ObservableCollection<Item>(SearchSettings.GetSorted(Items));
+                }
             });
         }
 
@@ -126,5 +160,56 @@ namespace micro_c_app.ViewModels
             TotalResults = results.TotalResults;
             page = results.Page;
         }
+    }
+
+    public class EnhancedSearchSettings : NotifyPropertyChangedItem
+    {
+        private bool ascending;
+        private string field;
+
+        public bool Ascending { get => ascending; set => SetProperty(ref ascending, value); }
+
+        public string Field { get => field; set => SetProperty(ref field, value); }
+
+        public static string[] GetOptions(IEnumerable<Item> items)
+        {
+            var intrinsic = new string[]
+            {
+                "Price",
+                "Stock",
+                "Brand"
+            };
+
+            string[] ignore = new string[]
+            {
+                "SKU",
+                "Mfr Part#",
+                "UPC",
+                "What's in the Box",
+                "Labor",
+                "Parts"
+            };
+
+            return intrinsic.Concat(items.SelectMany(i => i.Specs.Keys.ToList()).Distinct().Where(s => !ignore.Contains(s))).ToArray();
+        }
+
+        public IEnumerable<Item> GetSorted(IEnumerable<Item> items)
+        {
+            switch (Field)
+            {
+                case "Price":
+                    return Ascending ? items.OrderBy(i => i.Price) : items.OrderByDescending(i => i.Price);
+                case "Stock":
+                    return Ascending ? items.OrderBy(i => i.Stock) : items.OrderByDescending(i => i.Stock);
+                case "Brand":
+                    return Ascending ? items.OrderBy(i => i.Brand) : items.OrderByDescending(i => i.Brand);
+                default:
+                    return Ascending ? items.OrderBy(i => i.Specs.ContainsKey(Field) ? i.Specs[Field] : "") : items.OrderByDescending(i => i.Specs.ContainsKey(Field) ? i.Specs[Field] : "");
+            }
+
+            return items;
+        }
+
+
     }
 }

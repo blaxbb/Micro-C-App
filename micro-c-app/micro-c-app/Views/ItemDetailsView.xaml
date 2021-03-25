@@ -43,7 +43,7 @@
 
                 <Grid x:Name="ClearanceGrid" Grid.Row="7" RowSpacing="0" Grid.ColumnSpan="2" IsVisible="{Binding Item.ClearanceItems.Count, Converter={StaticResource GreaterThanZeroConverter}}">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="3*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                 </Grid>
