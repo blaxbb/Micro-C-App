@@ -152,6 +152,7 @@ namespace micro_c_app.ViewModels
                     {
                         Items.Add(item);
                     }
+                    FilteredItems = new ObservableCollection<Item>(Items.AsEnumerable());
                 });
             }
             catch (TaskCanceledException e)
