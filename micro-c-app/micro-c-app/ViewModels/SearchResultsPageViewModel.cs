@@ -1,4 +1,5 @@
 ﻿using micro_c_app.Models;
+using micro_c_app.Views;
 using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
@@ -18,6 +19,7 @@ namespace micro_c_app.ViewModels
     public class SearchResultsPageViewModel : BaseViewModel
     {
         public ObservableCollection<Item> Items { get => items; set => SetProperty(ref items, value); }
+        public ObservableCollection<Item> FilteredItems { get => filteredItems; set => SetProperty(ref filteredItems, value); }
 
         public string SearchQuery { get; set; }
         public string StoreID { get; set; }
@@ -34,6 +36,8 @@ namespace micro_c_app.ViewModels
         private bool loadingNextResults;
         private EnhancedSearchSettings searchSettings;
         private ObservableCollection<Item> items;
+        private ObservableCollection<Item> filteredItems;
+        private Dictionary<string, List<string>> specFilters;
         public const int RESULTS_PER_PAGE = 96;
         public int ItemThreshold { get => itemThreshold; set => SetProperty(ref itemThreshold, value); }
         public ICommand LoadMore { get; }
@@ -46,13 +50,17 @@ namespace micro_c_app.ViewModels
 
         public EnhancedSearchSettings SearchSettings { get => searchSettings; set => SetProperty(ref searchSettings, value); }
         public ICommand ToggleSortDirection { get; }
+        public ICommand ChangeFilter { get; }
+        public Dictionary<string, List<string>> SpecFilters { get => specFilters; set => SetProperty(ref specFilters, value); }
 
         public SearchResultsPageViewModel()
         {
             Title = "Search";
             client = new HttpClient();
             Items = new ObservableCollection<Item>();
+            FilteredItems = new ObservableCollection<Item>();
             SearchSettings = new EnhancedSearchSettings();
+            SpecFilters = new Dictionary<string, List<string>>();
 
             LoadMore = new Command(async () =>
             {
@@ -91,6 +99,7 @@ namespace micro_c_app.ViewModels
                             SearchSettings.Field = result;
                             SearchSettings.Ascending = true;
                             Items = new ObservableCollection<Item>(SearchSettings.GetSorted(Items));
+                            FilteredItems = new ObservableCollection<Item>(Filter(Items.AsEnumerable()));
                         }
                         else
                         {
@@ -109,12 +118,24 @@ namespace micro_c_app.ViewModels
                 });
             });
 
+            ChangeFilter = new Command(async () =>
+            {
+                var page = new ChangeFilterPage(Items.ToList(), SpecFilters);
+                await Shell.Current.Navigation.PushAsync(page);
+                page.Disappearing += ((sender, args) =>
+                {
+                    SpecFilters = page.SpecFilters;
+                    FilteredItems = new ObservableCollection<Item>(Filter(Items.AsEnumerable()));
+                });
+            });
+
             ToggleSortDirection = new Command(() =>
             {
                 if (SearchSettings != null)
                 {
                     SearchSettings.Ascending = !SearchSettings.Ascending;
                     Items = new ObservableCollection<Item>(SearchSettings.GetSorted(Items));
+                    FilteredItems = new ObservableCollection<Item>(Filter(items.AsEnumerable()));
                 }
             });
         }
@@ -156,9 +177,56 @@ namespace micro_c_app.ViewModels
             {
                 Items.Add(i);
             }
-
+            FilteredItems = new ObservableCollection<Item>(Items);
             TotalResults = results.TotalResults;
             page = results.Page;
+        }
+
+        private IEnumerable<Item> Filter(IEnumerable<Item> items)
+        {
+            return items.Where(item =>
+            {
+                foreach (var specFilter in SpecFilters)
+                {
+                    if (specFilter.Value.Count == 0)
+                    {
+                        continue;
+                    }
+
+                    string value;
+                    switch (specFilter.Key)
+                    {
+                        case "Brand":
+                            value = item.Brand;
+                            break;
+                        default:
+                            value = item.Specs.ContainsKey(specFilter.Key) ? item.Specs[specFilter.Key] : null;
+                            break;
+                    }
+
+                    if (CheckFilter(specFilter.Value, value))
+                    {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+        }
+
+        private bool CheckFilter(List<string> filters, string value)
+        {
+            if(filters.Count() == 0)
+            {
+                return false;
+            }
+
+            if (filters.Contains(value))
+            {
+                return false;
+            }
+
+            return true;
         }
     }
 
@@ -197,10 +265,11 @@ namespace micro_c_app.ViewModels
         {
             switch (Field)
             {
+                case null:
                 case "Price":
                     return Ascending ? items.OrderBy(i => i.Price) : items.OrderByDescending(i => i.Price);
                 case "Stock":
-                    return Ascending ? items.OrderBy(i => i.Stock) : items.OrderByDescending(i => i.Stock);
+                    return Ascending ? items.OrderBy(i => ParseStock(i.Stock)) : items.OrderByDescending(i => ParseStock(i.Stock));
                 case "Brand":
                     return Ascending ? items.OrderBy(i => i.Brand) : items.OrderByDescending(i => i.Brand);
                 default:
@@ -210,6 +279,27 @@ namespace micro_c_app.ViewModels
             return items;
         }
 
+        private float ParseStock(string s)
+        {
+            bool qtyPlus = false;
+            if(s.Length > 0 && s[s.Length - 1] == '+')
+            {
+                qtyPlus = true;
+            }
+            var match = Regex.Match(s, "([\\d\\.]*)");
+            if (match.Success)
+            {
+                if(float.TryParse(match.Groups[1].Value, out float f))
+                {
+                    if(qtyPlus)
+                    {
+                        return f + 1;
+                    }
+                    return f;
+                }
+            }
 
+            return 0;
+        }
     }
 }

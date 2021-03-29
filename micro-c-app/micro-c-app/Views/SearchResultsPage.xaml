@@ -18,8 +18,8 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Button Grid.Column="0" Text="Filter" Margin="0" Padding="0" IsEnabled="{Binding EnhancedSearch}"/>
-                <Button Grid.Column="1" Text="Order By" Command="{Binding ChangeOrderBy}" Margin="0" Padding="0"/>
+                <Button Grid.Column="0" Text="Filter" Margin="0" Padding="0" Command="{Binding ChangeFilter}" IsEnabled="{Binding EnhancedSearch}"/>
+                <Button Grid.Column="1" Text="{Binding SearchSettings.Field, StringFormat='Order by {0}'}" Command="{Binding ChangeOrderBy}" Margin="0" Padding="0"/>
                 <Button Grid.Column="2" Text="&#xf885;" FontFamily="{StaticResource FontAwesomeSolid}" Margin="0" BackgroundColor="Red" Padding="0" WidthRequest="50" Command="{Binding ToggleSortDirection}" IsVisible="{Binding SearchSettings.Ascending}"/>
                 <Button Grid.Column="2" Text="&#xf160;" FontFamily="{StaticResource FontAwesomeSolid}" Margin="0" BackgroundColor="Green" Padding="0" WidthRequest="50" Command="{Binding ToggleSortDirection}" IsVisible="{Binding SearchSettings.Ascending, Converter={StaticResource NegateConverter}}"/>
             </Grid>
@@ -33,7 +33,7 @@
                 <Label Text="Price" Grid.Column="2" HorizontalTextAlignment="Center"/>
                 <Label Text="Qty" Grid.Column="3" HorizontalTextAlignment="Center"/>
             </Grid>
-            <CollectionView x:Name="ItemsList" ItemsSource="{Binding Items}" SelectionMode="Single" RemainingItemsThreshold="{Binding ItemThreshold}" RemainingItemsThresholdReachedCommand="{Binding LoadMore}">
+            <CollectionView x:Name="ItemsList" ItemsSource="{Binding FilteredItems}" SelectionMode="Single" RemainingItemsThreshold="{Binding ItemThreshold}" RemainingItemsThresholdReachedCommand="{Binding LoadMore}">
                 <CollectionView.ItemTemplate>
                     <DataTemplate>
                         <Grid Margin="3">
