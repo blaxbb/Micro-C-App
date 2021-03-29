@@ -7,69 +7,70 @@
         <vm:SettingsPageViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
-        <ScrollView>
-            <StackLayout Spacing="10" Margin="30">
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Store" WidthRequest="100" VerticalTextAlignment="Center"/>
-                    <Picker x:Name="StorePicker" Title="Store" ItemsSource="{Binding StoreNames}" SelectedItem="{Binding SelectedStoreName, Mode=TwoWay}" HorizontalOptions="FillAndExpand"/>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Sales ID" WidthRequest="100" VerticalTextAlignment="Center"/>
-                    <Entry Placeholder="Sales ID" Text="{Binding SalesID}" HorizontalOptions="FillAndExpand"/>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Tax Rate" WidthRequest="100" VerticalTextAlignment="Center"/>
-                    <Entry Placeholder="Tax Rate" Text="{Binding TaxRate}" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Include CSV with Quote" WidthRequest="100" VerticalTextAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding IncludeCSVWithQuote}" HorizontalOptions="FillAndExpand"/>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Vibrate on Scan" WidthRequest="100" VerticalTextAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding Vibrate}" HorizontalOptions="FillAndExpand"/>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Enhanced Search" WidthRequest="100" VerticalTextAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding EnhancedSearch}" HorizontalOptions="FillAndExpand"/>
-                </StackLayout>
-                <StackLayout Orientation="Horizontal">
-                    <Label Text="Enable Analyitcs" WidthRequest="100" VerticalTextAlignment="Center"/>
-                    <CheckBox IsChecked="{Binding AnalyticsEnabled}" HorizontalOptions="FillAndExpand"/>
-                </StackLayout>
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition  Width="*"/>
-                        <ColumnDefinition  Width="*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
-                    <Picker Grid.Column="0" Grid.Row="0" ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset}" Title="Presets"/>
-                    <Picker Grid.Column="1" Grid.Row="0" ItemsSource="{Binding AllCategoryNames}" SelectedIndex="{Binding SelectedNewItemIndex}" Title="Add Item" x:Name="addCategoryPicker"/>
-                    <StackLayout x:Name="quicksearchCategoriesStack" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
-                        
+        <StackLayout Orientation="Vertical">
+            <ScrollView VerticalOptions="StartAndExpand">
+                <StackLayout Spacing="10" Margin="30">
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Store" WidthRequest="100" VerticalTextAlignment="Center"/>
+                        <Picker x:Name="StorePicker" Title="Store" ItemsSource="{Binding StoreNames}" SelectedItem="{Binding SelectedStoreName, Mode=TwoWay}" HorizontalOptions="FillAndExpand"/>
                     </StackLayout>
-                </Grid>
-                <ContentView>
-                    <OnPlatform x:TypeArguments="ContentView">
-                        <On Platform="Android">
-                            <ContentView>
-                                <StackLayout Orientation="Horizontal">
-                                    <Label Text="Theme" WidthRequest="100" VerticalTextAlignment="Center"/>
-                                    <Picker x:Name="ThemePicker" Title="Theme" ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding Theme}" HorizontalOptions="FillAndExpand"/>
-                                </StackLayout>
-                            </ContentView>
-                        </On>
-                    </OnPlatform>
-                </ContentView>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Sales ID" WidthRequest="100" VerticalTextAlignment="Center"/>
+                        <Entry Placeholder="Sales ID" Text="{Binding SalesID}" HorizontalOptions="FillAndExpand"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Tax Rate" WidthRequest="100" VerticalTextAlignment="Center"/>
+                        <Entry Placeholder="Tax Rate" Text="{Binding TaxRate}" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Include CSV with Quote" WidthRequest="100" VerticalTextAlignment="Center"/>
+                        <CheckBox IsChecked="{Binding IncludeCSVWithQuote}" HorizontalOptions="FillAndExpand"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Vibrate on Scan" WidthRequest="100" VerticalTextAlignment="Center"/>
+                        <CheckBox IsChecked="{Binding Vibrate}" HorizontalOptions="FillAndExpand"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Enhanced Search" WidthRequest="100" VerticalTextAlignment="Center"/>
+                        <CheckBox IsChecked="{Binding EnhancedSearch}" HorizontalOptions="FillAndExpand"/>
+                    </StackLayout>
+                    <StackLayout Orientation="Horizontal">
+                        <Label Text="Enable Analyitcs" WidthRequest="100" VerticalTextAlignment="Center"/>
+                        <CheckBox IsChecked="{Binding AnalyticsEnabled}" HorizontalOptions="FillAndExpand"/>
+                    </StackLayout>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition  Width="*"/>
+                            <ColumnDefinition  Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Picker Grid.Column="0" Grid.Row="0" ItemsSource="{Binding Presets}" SelectedItem="{Binding SelectedPreset}" Title="Presets"/>
+                        <Picker Grid.Column="1" Grid.Row="0" ItemsSource="{Binding AllCategoryNames}" SelectedIndex="{Binding SelectedNewItemIndex}" Title="Add Item" x:Name="addCategoryPicker"/>
+                        <StackLayout x:Name="quicksearchCategoriesStack" Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
 
-                <StackLayout Orientation="Horizontal" IsVisible="True">
-                    <Button Text="Cancel" WidthRequest="100" HorizontalOptions="StartAndExpand" Margin="0,30,30,0" Command="{Binding Cancel}" BackgroundColor="Red"/>
-                    <Button Text="Save" WidthRequest="100" HorizontalOptions="End" Margin="0,30,30,0" Command="{Binding Save}" BackgroundColor="Green"/>
+                        </StackLayout>
+                    </Grid>
+                    <ContentView>
+                        <OnPlatform x:TypeArguments="ContentView">
+                            <On Platform="Android">
+                                <ContentView>
+                                    <StackLayout Orientation="Horizontal">
+                                        <Label Text="Theme" WidthRequest="100" VerticalTextAlignment="Center"/>
+                                        <Picker x:Name="ThemePicker" Title="Theme" ItemsSource="{Binding ThemeOptions}" SelectedItem="{Binding Theme}" HorizontalOptions="FillAndExpand"/>
+                                    </StackLayout>
+                                </ContentView>
+                            </On>
+                        </OnPlatform>
+                    </ContentView>
                 </StackLayout>
+            </ScrollView>
+            <StackLayout Orientation="Horizontal" IsVisible="True" Padding="40, 10">
+                <Button Text="Cancel" WidthRequest="100" HorizontalOptions="StartAndExpand" Command="{Binding Cancel}" BackgroundColor="Red"/>
+                <Button Text="Save" WidthRequest="100" HorizontalOptions="EndAndExpand" Command="{Binding Save}" BackgroundColor="Green"/>
             </StackLayout>
-        </ScrollView>
+        </StackLayout>
     </ContentPage.Content>
 </ContentPage>
