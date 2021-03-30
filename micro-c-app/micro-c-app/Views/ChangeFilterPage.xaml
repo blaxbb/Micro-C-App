@@ -6,6 +6,7 @@
              x:Name="page">
     <ContentPage.Content>
         <ScrollView x:Name="scrollView">
+            <ActivityIndicator IsRunning="True" HorizontalOptions="CenterAndExpand" HeightRequest="200"/>
         </ScrollView>
     </ContentPage.Content>
 </ContentPage>

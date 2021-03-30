@@ -15,6 +15,7 @@ namespace micro_c_app.Views
     public partial class ChangeFilterPage : ContentPage
     {
         public Dictionary<string, List<string>> SpecFilters = new Dictionary<string, List<string>>();
+        private Dictionary<string, Label> FilterQtyLabels = new Dictionary<string, Label>();
         private static string[] ignore = new string[]
         {
             "SKU",
@@ -34,10 +35,14 @@ namespace micro_c_app.Views
         {
             SpecFilters = specFilters;
             InitializeComponent();
-            SetupSpecFilters(items.Select(i => i.CloneAndResetQuantity()).ToList());
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            Task.Run((() => SetupSpecFilters(items.Select(i => i.CloneAndResetQuantity()).ToList())));
+            sw.Stop();
+            Console.WriteLine($"ELAPSED: {sw.ElapsedMilliseconds}");
         }
 
-        private void SetupSpecFilters(List<Item> items)
+        private async Task SetupSpecFilters(List<Item> items)
         {
             Dictionary<string, StackLayout> filterCategories = new Dictionary<string, StackLayout>();
             Dictionary<string, List<string>> allFilterOptions = new Dictionary<string, List<string>>();
@@ -59,8 +64,13 @@ namespace micro_c_app.Views
                     AddFilterItem(field, value, allFiltersStack, filterCategories, allFilterOptions);
                 }
             }
-
-            scrollView.Content = allFiltersStack;
+            await Device.InvokeOnMainThreadAsync(async () =>
+            {
+                await Task.Delay(16);
+                scrollView.Content = allFiltersStack;
+                scrollView.ForceLayout();
+            });
+            
         }
 
         private void AddFilterItem(string field, string value, StackLayout allFiltersStack, Dictionary<string, StackLayout> filterCategories, Dictionary<string, List<string>> allFilterOptions)
@@ -72,31 +82,51 @@ namespace micro_c_app.Views
 
             if (!filterCategories.ContainsKey(field))
             {
-                var filter = new StackLayout()
+                var filterStack = new StackLayout()
                 {
                     Orientation = StackOrientation.Vertical
                 };
 
-                filter.Children.Add(new Label()
+                var filterLabelStack = new StackLayout()
+                {
+                    Orientation = StackOrientation.Horizontal
+                };
+
+                filterLabelStack.Children.Add(new Label()
                 {
                     Text = field,
                     Padding = new Thickness(10),
-                    InputTransparent = true
+                    InputTransparent = true,
+                    HorizontalOptions = LayoutOptions.StartAndExpand
                 });
+
+                int count = SpecFilters.ContainsKey(field) ? SpecFilters[field].Count : 0;
+                var filterQtyLabel = new Label()
+                {
+                    Text = count.ToString(),
+                    Padding = new Thickness(10),
+                    InputTransparent = true,
+                    HorizontalOptions = LayoutOptions.End
+                };
+                FilterQtyLabels[field] = filterQtyLabel;
+                filterLabelStack.Children.Add(filterQtyLabel);
+
+                filterStack.Children.Add(filterLabelStack);
+
                 var optionsStack = new StackLayout()
                 {
                     Orientation = StackOrientation.Vertical,
                     IsVisible = false,
                     Padding = new Thickness(20, 10)
                 };
-                filter.Children.Add(optionsStack);
-                filter.GestureRecognizers.Add(new TapGestureRecognizer()
+                filterStack.Children.Add(optionsStack);
+                filterStack.GestureRecognizers.Add(new TapGestureRecognizer()
                 {
                     Command = new Command(() => { optionsStack.IsVisible = !optionsStack.IsVisible; })
                 });
                 filterCategories[field] = optionsStack;
                 allFilterOptions[field] = new List<string>();
-                allFiltersStack.Children.Add(filter);
+                allFiltersStack.Children.Add(filterStack);
             }
 
             var stack = filterCategories[field];
@@ -114,7 +144,11 @@ namespace micro_c_app.Views
                 {
                     s.IsToggled = true;
                 }
-                s.Toggled += (sender, args) => { ToggleFilter(field, unique); };
+                s.Toggled += (sender, args) => {
+                    ToggleFilter(field, unique);
+                    int count = SpecFilters.ContainsKey(field) ? SpecFilters[field].Count : 0;
+                    FilterQtyLabels[field].Text = count.ToString();
+                };
 
                 internalStack.Children.Add(s);
 
