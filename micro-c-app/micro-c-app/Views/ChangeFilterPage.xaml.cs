@@ -82,6 +82,10 @@ namespace micro_c_app.Views
 
             if (!filterCategories.ContainsKey(field))
             {
+                var stripeColor = Application.Current.UserAppTheme == OSAppTheme.Dark ||
+                  (Application.Current.UserAppTheme == OSAppTheme.Unspecified && Application.Current.RequestedTheme == OSAppTheme.Dark)
+                  ? Color.FromHex("FF595959") : Color.LightGray;
+
                 var filterStack = new StackLayout()
                 {
                     Orientation = StackOrientation.Vertical
@@ -122,7 +126,30 @@ namespace micro_c_app.Views
                 filterStack.Children.Add(optionsStack);
                 filterStack.GestureRecognizers.Add(new TapGestureRecognizer()
                 {
-                    Command = new Command(() => { optionsStack.IsVisible = !optionsStack.IsVisible; })
+                    Command = new Command(() => {
+                        optionsStack.IsVisible = !optionsStack.IsVisible;
+                        if (optionsStack.IsVisible)
+                        {
+                            filterStack.BackgroundColor = stripeColor;
+                        }
+                        else
+                        {
+                            filterStack.BackgroundColor = Color.Transparent;
+                        }
+
+                        if (scrollView.Content is StackLayout root)
+                        {
+                            foreach (StackLayout toDisable in root.Children)
+                            {
+                                if (filterStack != toDisable)
+                                {
+                                    toDisable.BackgroundColor = Color.Transparent;
+                                    var opts = toDisable.Children[1];
+                                    opts.IsVisible = false;
+                                }
+                            }
+                        }
+                    })
                 });
                 filterCategories[field] = optionsStack;
                 allFilterOptions[field] = new List<string>();

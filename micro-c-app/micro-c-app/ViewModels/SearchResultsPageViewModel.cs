@@ -38,6 +38,7 @@ namespace micro_c_app.ViewModels
         private ObservableCollection<Item> items;
         private ObservableCollection<Item> filteredItems;
         private Dictionary<string, List<string>> specFilters;
+        private int filterCount;
         public const int RESULTS_PER_PAGE = 96;
         public int ItemThreshold { get => itemThreshold; set => SetProperty(ref itemThreshold, value); }
         public ICommand LoadMore { get; }
@@ -52,6 +53,7 @@ namespace micro_c_app.ViewModels
         public ICommand ToggleSortDirection { get; }
         public ICommand ChangeFilter { get; }
         public Dictionary<string, List<string>> SpecFilters { get => specFilters; set => SetProperty(ref specFilters, value); }
+        public int FilterCount { get => filterCount; set => SetProperty(ref filterCount, value); }
 
         public SearchResultsPageViewModel()
         {
@@ -126,6 +128,7 @@ namespace micro_c_app.ViewModels
                 {
                     SpecFilters = page.SpecFilters;
                     FilteredItems = new ObservableCollection<Item>(Filter(Items.AsEnumerable()));
+                    FilterCount = SpecFilters.Count(f => f.Value.Count > 0);
                 });
             });
 
@@ -217,7 +220,7 @@ namespace micro_c_app.ViewModels
 
         private bool CheckFilter(List<string> filters, string value)
         {
-            if(filters.Count() == 0)
+            if (filters.Count() == 0)
             {
                 return false;
             }
