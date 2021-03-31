@@ -111,6 +111,7 @@ namespace micro_c_app.ViewModels
                                 {
                                     OrderBy = newMode;
                                     Items.Clear();
+                                    FilteredItems.Clear();
                                     page = 1;
                                     await LoadQuery();
                                 }
@@ -154,8 +155,8 @@ namespace micro_c_app.ViewModels
                     foreach (var item in result.Items)
                     {
                         Items.Add(item);
+                        FilteredItems.Add(item);
                     }
-                    FilteredItems = new ObservableCollection<Item>(Items.AsEnumerable());
                 });
             }
             catch (TaskCanceledException e)
