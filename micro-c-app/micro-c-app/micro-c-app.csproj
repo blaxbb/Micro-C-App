@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BarcodeScanner.XF" Version="4.8.1.1" />
+    <PackageReference Include="BarcodeScanner.XF.Realtime" Version="5.0.4" />
     <PackageReference Include="DataFlareClient" Version="1.0.7" />
     <PackageReference Include="micro-c-lib" Version="1.0.6" />
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.1.0" />
@@ -27,7 +27,7 @@
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
     <PackageReference Include="SkiaSharp" Version="2.80.2" />
     <PackageReference Include="SkiaSharp.Views.Forms" Version="2.80.2" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.1874" />  
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.1905" />  
     <PackageReference Include="Xamarin.Essentials" Version="1.6.0" />  
     <PackageReference Include="ZXing.Net.Mobile" Version="3.0.0-beta5" />  
     <PackageReference Include="ZXing.Net.Mobile.Forms" Version="3.0.0-beta5" />
@@ -74,6 +74,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ProgressView.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\RealtimeScan.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\Reference\ReferencePlanPage.xaml">

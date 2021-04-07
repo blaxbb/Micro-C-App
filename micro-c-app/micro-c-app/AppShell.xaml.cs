@@ -67,6 +67,21 @@ namespace micro_c_app
             }
         }
 
+        private void RealtimeScan(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+                if (!allowed)
+                {
+                    return;
+                }
+
+                FlyoutIsPresented = false;
+                await Navigation.PushAsync(new RealtimeScan());
+            });
+        }
+
         private void DisplaySettings(object sender, EventArgs e)
         {
             Device.BeginInvokeOnMainThread(async () =>

@@ -224,7 +224,7 @@ namespace micro_c_app.Views
             }
         }
 
-        private static string FilterBarcodeResult(BarcodeResult result)
+        public static string FilterBarcodeResult(BarcodeResult result)
         {
             if (Regex.IsMatch(result.DisplayValue, "\\d{12}"))
             {

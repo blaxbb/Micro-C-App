@@ -20,6 +20,8 @@
                 </Grid.ColumnDefinitions>
                 <Button Grid.Column="0" Text="{Binding FilterCount, StringFormat='Filter ({0})'}" Margin="0" Padding="0" Command="{Binding ChangeFilter}" IsEnabled="{Binding EnhancedSearch}"/>
                 <Button Grid.Column="1" Text="{Binding SearchSettings.Field, StringFormat='Order by {0}'}" Command="{Binding ChangeOrderBy}" Margin="0" Padding="0"/>
+                
+                <!--Button backgroundcolor is ignored when isenabled binding is set... Get around this by hiding the sort direction button when not in enhanced search mode-->
                 <Grid Grid.Column="2" IsVisible="{Binding EnhancedSearch}">
                     <Button Text="&#xf885;" BackgroundColor="Green" FontFamily="{StaticResource FontAwesomeSolid}" Margin="0" Padding="0" WidthRequest="50" Command="{Binding ToggleSortDirection}" IsVisible="{Binding SearchSettings.Ascending}"/>
                     <Button Text="&#xf160;" BackgroundColor="Red"   FontFamily="{StaticResource FontAwesomeSolid}" Margin="0" Padding="0" WidthRequest="50" Command="{Binding ToggleSortDirection}" IsVisible="{Binding SearchSettings.Ascending, Converter={StaticResource NegateConverter}}"/>
@@ -27,6 +29,8 @@
                 <Grid Grid.Column="2" IsVisible="{Binding EnhancedSearch, Converter={StaticResource NegateConverter}}">
                     <Button Text="&#xf885;" FontFamily="{StaticResource FontAwesomeSolid}" Margin="0" Padding="0" WidthRequest="50" IsEnabled="False"/>
                 </Grid>
+                
+                
             </Grid>
             <Grid HeightRequest="25">
                 <Grid.ColumnDefinitions>
