@@ -68,7 +68,7 @@ namespace micro_c_app.Views
                 {
                     var info = kvp.Value;
 
-                    if (DateTime.Now - info.LastScanned > TimeSpan.FromMilliseconds(500))
+                    if (DateTime.Now - info.LastScanned > TimeSpan.FromMilliseconds(1000))
                     {
                         toRemove.Add(kvp.Key);
                         continue;
