@@ -8,7 +8,6 @@ using System.Text;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
-using Xamarin.Forms.Shapes;
 using Xamarin.Forms.Xaml;
 using ZXing;
 using ZXing.Mobile;
@@ -29,9 +28,6 @@ namespace micro_c_app.Views
         public ProgressInfo Progress { get => progress; set { progress = value; OnPropertyChanged(nameof(Progress)); } }
 
         public Item LastItem { get => lastItem; set { lastItem = value; OnPropertyChanged(nameof(LastItem)); } }
-        const int POINT_COUNT = 16;
-        Point[] points = new Point[POINT_COUNT];
-        double time = 0d;
 
         public ScannerPage()
         {
