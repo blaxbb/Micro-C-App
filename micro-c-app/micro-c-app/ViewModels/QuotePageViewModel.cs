@@ -325,9 +325,6 @@ namespace micro_c_app.ViewModels
                 b.AppendLine($"Quote created by {salesId} for additional help contact me at {salesId}@microcenter.com");
             }
 
-
-            b.AppendLine("<p>ABCDEFG</p>");
-
             return b.ToString();
         }
 

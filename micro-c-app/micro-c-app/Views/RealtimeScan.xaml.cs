@@ -122,6 +122,7 @@ namespace micro_c_app.Views
             info.SkuLabel.Text = info.Item.SKU;
             info.PriceLabel.Text = info.Item.Price.ToString("$0.00");
             info.StockLabel.Text = $"{info.Item.Stock} in stock";
+            info.ClearanceLabel.Text = info.Item.ClearanceItems.Count > 0 ? $"Clear {info.Item.ClearanceItems.Count}" : "";
         }
 
         private async Task FindItem(RealtimeBarcodeInfo info)
@@ -284,26 +285,36 @@ namespace micro_c_app.Views
             Grid.SetRow(info.NameLabel, 0);
             Grid.SetColumn(info.NameLabel, 0);
 
-            var stack = new StackLayout()
+            var stack1 = new StackLayout()
             {
                 Orientation = StackOrientation.Horizontal,
                 InputTransparent = true
             };
-            barcodeGrid.Children.Add(stack);
-            Grid.SetRow(stack, 1);
-            Grid.SetColumn(stack, 0);
+            barcodeGrid.Children.Add(stack1);
+            Grid.SetRow(stack1, 1);
+            Grid.SetColumn(stack1, 0);
 
             info.SkuLabel = buildLabel();
             info.SkuLabel.HorizontalOptions = LayoutOptions.StartAndExpand;
-            stack.Children.Add(info.SkuLabel);
+            stack1.Children.Add(info.SkuLabel);
 
             info.PriceLabel = buildLabel();
-            stack.Children.Add(info.PriceLabel);
+            stack1.Children.Add(info.PriceLabel);
 
+            var stack2 = new StackLayout()
+            {
+                Orientation = StackOrientation.Horizontal
+            };
+            barcodeGrid.Children.Add(stack2);
+            Grid.SetRow(stack2, 2);
+            Grid.SetColumn(stack2, 0);
+            
             info.StockLabel = buildLabel();
-            barcodeGrid.Children.Add(info.StockLabel);
-            Grid.SetRow(info.StockLabel, 2);
-            Grid.SetColumn(info.StockLabel, 0);
+            info.StockLabel.HorizontalOptions = LayoutOptions.StartAndExpand;
+            stack2.Children.Add(info.StockLabel);
+
+            info.ClearanceLabel = buildLabel();
+            stack2.Children.Add(info.ClearanceLabel);
 
             info.OuterFrame = frame;
             info.Grid = barcodeGrid;
@@ -343,6 +354,7 @@ namespace micro_c_app.Views
         public Label SkuLabel { get; set; }
         public Label PriceLabel { get; set; }
         public Label StockLabel { get; set; }
+        public Label ClearanceLabel { get; set; }
 
         public Item Item { get; set; }
     }

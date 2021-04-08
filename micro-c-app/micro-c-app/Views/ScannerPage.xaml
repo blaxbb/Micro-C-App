@@ -25,7 +25,6 @@
                     </PathGeometry>
                 </Path.Data>
             </Path>
-            <Label x:Name="labelDbg" Text="ABCDEFG" Grid.Row="0" VerticalOptions="Start" HorizontalOptions="Start"/>
 
             <BoxView Grid.Row="0" HeightRequest="2" Color="Red" WidthRequest="100" HorizontalOptions="FillAndExpand" VerticalOptions="Center" Margin="30,0,30,0"/>
             <Frame Grid.Row="0" HorizontalOptions="Center" VerticalOptions="End" BackgroundColor="{DynamicResource NavigationBarColor}" Margin="20" IsVisible="{Binding LastItem, Source={Reference root}, Converter={StaticResource NullBoolConverter}}">
