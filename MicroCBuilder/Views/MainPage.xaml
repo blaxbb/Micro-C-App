@@ -33,6 +33,7 @@
                             <AppBarButton Icon="Upload" Label="Export to Web" Click="ExportToWebClicked"/>
                             <AppBarButton Icon="Download" Label="Import from Web" Click="ImportFromWebClicked"/>
                             <AppBarButton Icon="Pictures" Label="Output Sign Batch" Click="SaveSignsClicked"/>
+                            <AppBarButton Icon="Save" Label="Print Barcodes" Click="PrintBarcodesClicked"/>
                             <AppBarButton Icon="Setting" Label="Settings" Click="SettingsClick"/>
                         </CommandBar.SecondaryCommands>
 

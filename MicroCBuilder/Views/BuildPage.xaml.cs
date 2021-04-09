@@ -7,6 +7,7 @@ using Microsoft.Toolkit.Uwp.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -184,6 +185,158 @@ namespace MicroCBuilder.Views
                     var item = pv.printGrid;
                     pv.Content = null;
                     item.DataContext = comp;
+
+                    //stick it in a border
+                    var border = new Border
+                    {
+                        BorderThickness = new Thickness(1, 0, 1, 1),
+                        BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black),
+                        Child = item
+                    };
+
+                    //add it to the grid
+                    contents.Children.Add(border);
+                    contents.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                    Grid.SetRow(border, j);
+                }
+
+                var border2 = new Border()
+                {
+                    Child = contents,
+                    BorderBrush = new SolidColorBrush(Windows.UI.Colors.Black),
+                    BorderThickness = new Thickness(0, 1, 0, 0)
+                };
+
+                page.Children.Add(border2);
+                Grid.SetRow(border2, 1);
+
+                //add full grid as new page
+                _printHelper.AddFrameworkElementToPrint(page);
+            }
+
+            _printHelper.OnPrintCanceled += PrintHelper_OnPrintCanceled;
+            _printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
+            _printHelper.OnPrintSucceeded += PrintHelper_OnPrintSucceeded;
+
+            var printHelperOptions = new PrintHelperOptions(true)
+            {
+                Orientation = Windows.Graphics.Printing.PrintOrientation.Portrait
+            };
+
+            await _printHelper.ShowPrintUIAsync("Print Quote", printHelperOptions);
+        }
+
+        public async Task PrintBarcodesClicked()
+        {
+            var grid = new Grid();
+            grid.VerticalAlignment = VerticalAlignment.Stretch;
+            grid.HorizontalAlignment = HorizontalAlignment.Stretch;
+            grid.Margin = new Thickness(10);
+
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+
+
+            List<TextBox> serialInputs = new List<TextBox>();
+            foreach(var comp in vm.Components.Where(c => c.Item != null))
+            {
+                grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                var row = grid.Children.Count / 2;
+                var label = new TextBlock() { Text = comp.Item.Name.Length > 16 ? comp.Item.Name.Substring(0, 16) : comp.Item.Name, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(5) };
+                grid.Children.Add(label);
+                Grid.SetColumn(label, 0);
+                Grid.SetRow(label, row);
+
+                var input = new TextBox() { PlaceholderText = "Serial", HorizontalAlignment = HorizontalAlignment.Stretch };
+                serialInputs.Add(input);
+                grid.Children.Add(input);
+                Grid.SetColumn(input, 1);
+
+                Grid.SetRow(input, row);
+
+            }
+
+            var scrollView = new ScrollViewer();
+            scrollView.Content = grid;
+
+            var dialog = new ContentDialog()
+            {
+                Title = "Print Barcodes",
+                Content = scrollView,
+                PrimaryButtonText = "Print",
+                SecondaryButtonText = "Cancel",
+                FullSizeDesired = true,
+                Width = 600
+            };
+
+            var result = await dialog.ShowAsync();
+            if (result != ContentDialogResult.Secondary)
+            {
+                await DoPrintBarcodes(serialInputs.Select(s => s.Text).ToList());
+            }
+        }
+
+        public async Task DoPrintBarcodes(List<string> serials)
+        {
+            var itemsCount = vm.Components.Count(c => c.Item != null);
+            if (itemsCount == 0)
+            {
+                return;
+            }
+
+            _printHelper = new PrintHelper(Container);
+
+            const int BARCODE_ITEMS_PER_PAGE = 9;
+
+            int serialIndex = 0;
+
+            for (int i = 0; i < itemsCount; i += BARCODE_ITEMS_PER_PAGE)
+            {
+                //create a new page
+                Grid page = new Grid
+                {
+                    Padding = new Thickness(40, 10, 40, 10)
+                };
+
+                //
+                //force grid to full width
+                //
+                page.Children.Add(new Canvas() { Width = 1000 });
+                TextBlock header = new TextBlock
+                {
+                    TextWrapping = TextWrapping.WrapWholeWords,
+                    TextAlignment = TextAlignment.Center
+                };
+                header.Text = $"Order created on {DateTime.Now:yyyy-MM-dd}.";
+
+                var footer = new BuildSummaryControl
+                {
+                    SubTotal = vm.SubTotal
+                };
+
+                page.Children.Add(header);
+                page.Children.Add(footer);
+
+                Grid.SetRow(header, 0);
+                Grid.SetRow(footer, 2);
+
+                page.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                page.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+                page.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+
+                var contents = new Grid();
+                var comps = vm.Components.Where(c => c.Item != null).Skip(i).Take(BARCODE_ITEMS_PER_PAGE).ToList();
+                for (int j = 0; j < comps.Count; j++)
+                {
+                    var comp = comps[j];
+                    var serial = serials[serialIndex];
+                    serialIndex++;
+                    //get element from usercontrol
+                    var pv = new BarcodePrintView();
+                    var item = pv.printGrid;
+                    pv.Content = null;
+                    item.DataContext = comp;
+                    pv.SetImages(comp.Item.SKU, serial);
 
                     //stick it in a border
                     var border = new Border
