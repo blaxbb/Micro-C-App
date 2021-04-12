@@ -183,6 +183,12 @@ namespace micro_c_app.Views
                     continue;
                 }
 
+                if(BarcodeInfo.Values.Any(b => b.Item != null && b.Item.SKU == filtered && b.Text != filtered))
+                {
+                    //We already have this SKU barcode as a UPC barcode, so skip it
+                    continue;
+                }
+
                 barcode.DisplayValue = filtered;
 
                 RealtimeBarcodeInfo info;
