@@ -238,21 +238,40 @@ namespace MicroCBuilder.Views
 
 
             List<TextBox> serialInputs = new List<TextBox>();
+            int row = 0;
             foreach(var comp in vm.Components.Where(c => c.Item != null))
             {
-                grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-                var row = grid.Children.Count / 2;
-                var label = new TextBlock() { Text = comp.Item.Name.Length > 16 ? comp.Item.Name.Substring(0, 16) : comp.Item.Name, HorizontalAlignment = HorizontalAlignment.Stretch, VerticalAlignment = VerticalAlignment.Center, Margin = new Thickness(5) };
+                var label = new TextBlock() {
+                    Text = comp.Item.Name.Length > 16 ? comp.Item.Name.Substring(0, 16) : comp.Item.Name,
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Margin = new Thickness(5)
+                };
+
                 grid.Children.Add(label);
                 Grid.SetColumn(label, 0);
                 Grid.SetRow(label, row);
 
-                var input = new TextBox() { PlaceholderText = "Serial", HorizontalAlignment = HorizontalAlignment.Stretch };
-                serialInputs.Add(input);
-                grid.Children.Add(input);
-                Grid.SetColumn(input, 1);
+                for (int i = 0; i < comp.Item.Quantity; i++)
+                {
+                    /*
+                     * Create a text input for each quantity of each build component
+                     */
 
-                Grid.SetRow(input, row);
+                    var input = new TextBox() {
+                        PlaceholderText = "Serial",
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
+                        Text = comp.Serials.Count > i ? comp.Serials[i] : ""
+                    };
+                    input.Tag = (comp, i);
+                    serialInputs.Add(input);
+                    grid.Children.Add(input);
+                    Grid.SetColumn(input, 1);
+
+                    grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                    Grid.SetRow(input, row);
+                    row++;
+                }
 
             }
 
@@ -272,11 +291,51 @@ namespace MicroCBuilder.Views
             var result = await dialog.ShowAsync();
             if (result != ContentDialogResult.Secondary)
             {
-                await DoPrintBarcodes(serialInputs.Select(s => s.Text).ToList());
+                foreach (var input in serialInputs)
+                {
+                    /*
+                     * Pass the updated serial back into the BuildComponent so it can be saved for later
+                     */
+                    if (input.Tag is (BuildComponent comp, int i))
+                    {
+                        if (comp.Serials.Count > i)
+                        {
+                            comp.Serials[i] = input.Text;
+                        }
+                        else
+                        {
+                            comp.Serials.Add(input.Text);
+                        }
+                    }
+                }
+
+                List<(BuildComponent comp, int index)> entries = new List<(BuildComponent comp, int index)>();
+
+
+                BuildComponent last = null;
+                foreach(var entry in serialInputs.Select(s => s.Tag).Cast<(BuildComponent comp, int index)>())
+                {
+                    /*
+                     * Only add a single print entry if there are no serial numbers, otherwise do a single line item per serial number.
+                     */
+                    if(entry.comp == last && string.IsNullOrEmpty(entry.comp.Serials[entry.index]))
+                    {
+                        continue;
+                    }
+
+                    if(string.IsNullOrEmpty(entry.comp.Serials[entry.index]))
+                    {
+                        last = entry.comp;
+                    }
+
+                    entries.Add(entry);
+                }
+
+                await DoPrintBarcodes(entries);
             }
         }
 
-        public async Task DoPrintBarcodes(List<string> serials)
+        public async Task DoPrintBarcodes(List<(BuildComponent comp, int index)> serials)
         {
             var itemsCount = vm.Components.Count(c => c.Item != null);
             if (itemsCount == 0)
@@ -325,18 +384,19 @@ namespace MicroCBuilder.Views
                 page.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
 
                 var contents = new Grid();
-                var comps = vm.Components.Where(c => c.Item != null).Skip(i).Take(BARCODE_ITEMS_PER_PAGE).ToList();
-                for (int j = 0; j < comps.Count; j++)
+                //var comps = vm.Components.Where(c => c.Item != null).Skip(i).Take(BARCODE_ITEMS_PER_PAGE).ToList();
+                var pageItems = serials.Skip(i).Take(BARCODE_ITEMS_PER_PAGE).ToList();
+                for (int j = 0; j < pageItems.Count; j++)
                 {
-                    var comp = comps[j];
-                    var serial = serials[serialIndex];
+                    var lineItem = pageItems[j];
+                    var serial = lineItem.comp.Serials[lineItem.index];
                     serialIndex++;
                     //get element from usercontrol
                     var pv = new BarcodePrintView();
                     var item = pv.printGrid;
                     pv.Content = null;
-                    item.DataContext = comp;
-                    pv.SetImages(comp.Item.SKU, serial);
+                    item.DataContext = lineItem.comp;
+                    pv.SetImages(lineItem.comp.Item.SKU, serial);
 
                     //stick it in a border
                     var border = new Border
