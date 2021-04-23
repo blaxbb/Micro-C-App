@@ -55,7 +55,7 @@ namespace MicroCBuilder
                 var category = BuildComponent.CategoryFilterForType(type);
                 if (!string.IsNullOrWhiteSpace(category))
                 {
-                    var items = await Search.LoadAll(null, Settings.StoreID(), category, Search.OrderByMode.pricelow);
+                    var items = await Search.LoadEnhanced(null, Settings.StoreID(), category);
                     if (Cache.ContainsKey(category))
                     {
                         Debug.WriteLine($"REFRESHING {category}");
