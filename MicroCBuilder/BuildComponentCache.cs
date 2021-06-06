@@ -192,5 +192,20 @@ namespace MicroCBuilder
 
             return BuildComponent.ComponentType.None;
         }
+
+        public Item? FindItem(string sku)
+        {
+            foreach (var kvp in Cache)
+            {
+                var categoryFilter = kvp.Key;
+                var items = kvp.Value;
+                var item = items.FirstOrDefault(i => i.SKU == sku);
+                if(item != null)
+                {
+                    return item;
+                }
+            }
+            return null;
+        }
     }
 }

@@ -53,6 +53,7 @@ namespace MicroCBuilder.ViewModels
         public ICommand AddCustomItem { get; }
         public ICommand ExportToWeb { get; }
         public ICommand ImportFromWeb { get; }
+        public ICommand UpdatePricing { get; }
 
         public BuildComponent SelectedComponent { get => selectedItem; set => SetProperty(ref selectedItem, value); }
 
@@ -123,6 +124,18 @@ namespace MicroCBuilder.ViewModels
             AddCustomItem = new Command(DoAddCustomItem);
             ExportToWeb = new Command(DoExportToWeb);
             ImportFromWeb = new Command(DoImportFromWeb);
+            UpdatePricing = new Command(DoUpdatePricing);
+        }
+
+        private void DoUpdatePricing(object obj)
+        {
+            foreach(var comp in Components.Where(c => c.Item != null))
+            {
+                var item = BuildComponentCache.Current.FindItem(comp.Item.SKU);
+                var qty = comp.Item.Quantity;
+                comp.Item = item.CloneAndResetQuantity();
+                comp.Item.Quantity = qty;
+            }
         }
 
         private void UpdateHintsAndErrors()
