@@ -76,7 +76,6 @@ stages:
                       /p:UapAppxPackageBuildMode=StoreUpload
                       /p:AppxPackageSigningEnabled=true
                       /p:PackageCertificateThumbprint="" 
-                      /p:GenerateAppInstallerFile=true
                       /p:PackageCertificateKeyFile="$(signingCert.secureFilePath)"'
 
     - task: CopyFiles@2
