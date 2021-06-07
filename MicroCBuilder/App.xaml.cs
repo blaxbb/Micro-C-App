@@ -17,6 +17,9 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Microsoft.AppCenter.Crashes;
+using Microsoft.AppCenter.Analytics;
+using Microsoft.AppCenter;
 
 namespace MicroCBuilder
 {
@@ -34,6 +37,8 @@ namespace MicroCBuilder
         {
             this.InitializeComponent();
             this.Suspending += OnSuspending;
+            AppCenter.Start("172e9bf0-70cd-4933-a19c-626e27f8951a",
+                   typeof(Analytics), typeof(Crashes));
         }
 
         /// <summary>
