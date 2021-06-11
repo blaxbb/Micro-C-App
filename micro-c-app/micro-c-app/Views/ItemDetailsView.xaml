@@ -16,6 +16,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -40,15 +42,18 @@
                     <Label Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Large" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Center" HorizontalOptions="Center"/>
                     <Label Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Large" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand"/>
                 </StackLayout>
+                <BoxView HeightRequest="1" Grid.ColumnSpan="2" Color="Gray" Grid.Row="7" Margin="0,10,0,0"/>
 
-                <Grid x:Name="ClearanceGrid" Grid.Row="7" RowSpacing="0" Grid.ColumnSpan="2" IsVisible="{Binding Item.ClearanceItems.Count, Converter={StaticResource GreaterThanZeroConverter}}">
+                <Label Text="Clearance Items" Grid.Column="0" Grid.ColumnSpan="2" Grid.Row="8" FontSize="18" IsVisible="{Binding Item.ClearanceItems.Count, Converter={StaticResource GreaterThanZeroConverter}}"/>
+                <Grid x:Name="ClearanceGrid" Grid.Row="9" RowSpacing="0" Grid.ColumnSpan="2" IsVisible="{Binding Item.ClearanceItems.Count, Converter={StaticResource GreaterThanZeroConverter}}">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="3*"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                 </Grid>
+                <BoxView HeightRequest="1" Grid.ColumnSpan="2" Color="Gray" Grid.Row="10" Margin="0,5,0,5" IsVisible="{Binding Item.ClearanceItems.Count, Converter={StaticResource GreaterThanZeroConverter}}"/>
 
-                <Grid x:Name="SpecsGrid" Grid.Row="8" RowSpacing="0" Grid.ColumnSpan="2">
+                <Grid x:Name="SpecsGrid" Grid.Row="11" RowSpacing="0" Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>

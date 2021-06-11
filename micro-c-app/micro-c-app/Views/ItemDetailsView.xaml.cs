@@ -194,6 +194,7 @@ namespace micro_c_app.Views
                     Grid.SetRow(view, rowIndex);
                     viewIndex++;
                 }
+                rowIndex++;
             }
 
             if(parent != null)
@@ -210,7 +211,7 @@ namespace micro_c_app.Views
             }
 
             List<List<View>> views = new List<List<View>>();
-            foreach(var clearance in Item.ClearanceItems)
+            foreach (var clearance in Item.ClearanceItems)
             {
                 views.Add(new List<View>()
                 {
