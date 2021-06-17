@@ -132,9 +132,11 @@ namespace MicroCBuilder.ViewModels
             foreach(var comp in Components.Where(c => c.Item != null))
             {
                 var item = BuildComponentCache.Current.FindItem(comp.Item.SKU);
-                var qty = comp.Item.Quantity;
-                comp.Item = item.CloneAndResetQuantity();
-                comp.Item.Quantity = qty;
+                if(item != null) {
+                    var qty = comp.Item.Quantity;
+                    comp.Item = item.CloneAndResetQuantity();
+                    comp.Item.Quantity = qty;
+                }
             }
         }
 
