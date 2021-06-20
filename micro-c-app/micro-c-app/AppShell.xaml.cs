@@ -33,7 +33,7 @@ namespace micro_c_app
                     SettingsPage.AnalyticsEnabled(enableAnalytics);
                     if (SettingsPage.VersionPrompt() < SettingsPage.CURRENT_VERSION_PROMPT)
                     {
-                        var goToSettings = await DisplayAlert("Check settings", "You should set your store, sales ID, and tax rate before using the app.", "Ok", "Cancel");
+                        var goToSettings = await DisplayAlert("Check settings", "You should set your store and tax rate before using the app.", "Ok", "Cancel");
                         SettingsPage.VersionPrompt(SettingsPage.CURRENT_VERSION_PROMPT);
                         if (goToSettings)
                         {
@@ -46,7 +46,7 @@ namespace micro_c_app
             {
                 Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    var goToSettings = await DisplayAlert("Check settings", "You should set your store, sales ID, and tax rate before using the app.", "Ok", "Cancel");
+                    var goToSettings = await DisplayAlert("Check settings", "You should set your store and tax rate before using the app.", "Ok", "Cancel");
                     SettingsPage.VersionPrompt(SettingsPage.CURRENT_VERSION_PROMPT);
                     if (goToSettings)
                     {

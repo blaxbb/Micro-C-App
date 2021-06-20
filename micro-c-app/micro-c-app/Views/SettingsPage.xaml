@@ -15,10 +15,6 @@
                         <Picker x:Name="StorePicker" Title="Store" ItemsSource="{Binding StoreNames}" SelectedItem="{Binding SelectedStoreName, Mode=TwoWay}" HorizontalOptions="FillAndExpand"/>
                     </StackLayout>
                     <StackLayout Orientation="Horizontal">
-                        <Label Text="Sales ID" WidthRequest="100" VerticalTextAlignment="Center"/>
-                        <Entry Placeholder="Sales ID" Text="{Binding SalesID}" HorizontalOptions="FillAndExpand"/>
-                    </StackLayout>
-                    <StackLayout Orientation="Horizontal">
                         <Label Text="Tax Rate" WidthRequest="100" VerticalTextAlignment="Center"/>
                         <Entry Placeholder="Tax Rate" Text="{Binding TaxRate}" HorizontalOptions="FillAndExpand" Keyboard="Numeric"/>
                     </StackLayout>

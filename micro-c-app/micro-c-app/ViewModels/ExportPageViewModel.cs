@@ -127,7 +127,7 @@ namespace micro_c_app.ViewModels
             var salesId = Preferences.Get("sales_id", "SALESID");
             if (!string.IsNullOrWhiteSpace(salesId))
             {
-                b.AppendLine($"Quote created by {salesId} for additional help contact me at {salesId}@microcenter.com");
+                //b.AppendLine($"Quote created by {salesId} for additional help contact me at {salesId}@microcenter.com");
             }
 
             return b.ToString();

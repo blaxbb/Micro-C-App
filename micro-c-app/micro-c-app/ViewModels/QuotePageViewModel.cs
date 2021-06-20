@@ -293,9 +293,8 @@ namespace micro_c_app.ViewModels
             var TaxedTotal = Subtotal * SettingsPage.TaxRateFactor();
 
             b.AppendLine();
-            var salesId = Preferences.Get("sales_id", "SALESID");
-            b.AppendLine($"Subtotal,${Subtotal:#0.00},,Sales ID,{salesId}");
-            b.AppendLine($"Total ({SettingsPage.TaxRate()}),${TaxedTotal:#0.00},,Contact,{salesId}@microcenter.com");
+            b.AppendLine($"Subtotal,${Subtotal:#0.00}");
+            b.AppendLine($"Total ({SettingsPage.TaxRate()}),${TaxedTotal:#0.00}");
 
             return b.ToString();
         }
@@ -322,7 +321,7 @@ namespace micro_c_app.ViewModels
             var salesId = Preferences.Get("sales_id", "SALESID");
             if (!string.IsNullOrWhiteSpace(salesId))
             {
-                b.AppendLine($"Quote created by {salesId} for additional help contact me at {salesId}@microcenter.com");
+                //b.AppendLine($"Quote created by {salesId} for additional help contact me at {salesId}@microcenter.com");
             }
 
             return b.ToString();
