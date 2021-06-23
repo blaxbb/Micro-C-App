@@ -1,0 +1,42 @@
+[
+  {
+    "Item": {
+      "URL": "/product/607209/custom-water-cooled-pc-building-service-tier-3",
+      "SKU": "939918",
+      "Name": "Custom Water Cooled PC Building Service - Tier 3",
+      "PictureUrls": [
+        "https://90a1c75758623581b3f8-5c119c3de181c9857fcb2784776b17ef.ssl.cf2.rackcdn.com/0607209_939918.jpg"
+      ],
+      "Stock": "0",
+      "Price": 249.990005,
+      "OriginalPrice": 249.990005,
+      "Discount": 0,
+      "OnSale": false,
+      "Specs": {
+        "SKU": "939918",
+        "Mfr Part#": "KB CUST-BUILD-3",
+        "UPC": "",
+        "Subcategory": "Custom PC Build",
+        "Fulfilled": "In-Store",
+        "Parts Warranty": "90 days for replacements parts, if your device is not covered under a manufacturer\u0027s warranty, or extended service plan. Warranty for retail parts are covered under the manufacturer\u0027s warranty and will vary by part and manufacturer.",
+        "Labor Warranty": "30 Days",
+        "Brand": ""
+      },
+      "Quantity": 1,
+      "Location": "",
+      "Plans": [],
+      "ID": "607209",
+      "Brand": "",
+      "ComingSoon": false,
+      "Categories": null,
+      "ComponentType": 0,
+      "ClearanceItems": []
+    },
+    "Type": 0,
+    "ErrorText": "",
+    "HintText": "",
+    "CategoryFilter": "4294812275",
+    "ComponentLabel": "Custom Water Cooled PC Building Service - Tier 3",
+    "Serials": []
+  }
+]

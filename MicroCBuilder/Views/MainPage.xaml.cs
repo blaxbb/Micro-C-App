@@ -58,11 +58,11 @@ namespace MicroCBuilder.Views
 
             if (Settings.Categories().Count == 0)
             {
-                PushTab("Settings", typeof(SettingsPage));
+                PushTab<SettingsPage>("Settings");
             }
             else
             {
-                PushTab("Quote", typeof(BuildPage));
+                Tabs_AddTabButtonClick(null, null);
             }
 
             MicroCBuilder.ViewModels.SettingsPageViewModel.ForceUpdate += async () => await UpdateCache();
@@ -240,7 +240,7 @@ namespace MicroCBuilder.Views
             }
         }
 
-        private void PushTab(string title, Type pageType)
+        private T PushTab<T>(string title)
         {
             var tab = new TabViewItem()
             {
@@ -251,15 +251,27 @@ namespace MicroCBuilder.Views
             frame.HorizontalAlignment = HorizontalAlignment.Stretch;
             frame.VerticalAlignment = VerticalAlignment.Stretch;
             tab.Content = frame;
-            frame.Navigate(pageType);
+            frame.Navigate(typeof(T));
 
             Tabs.TabItems.Add(tab);
             Tabs.SelectedItem = tab;
+
+            return (T)frame.Content;
+        }
+
+        private void CreateBuild(BuildInfo info)
+        {
+            var buildPage = PushTab<BuildPage>("Build");
+            if (buildPage.DataContext is BuildPageViewModel vm)
+            {
+                vm.InsertComponents(info.Components);
+            }
         }
 
         private void Tabs_AddTabButtonClick(Microsoft.UI.Xaml.Controls.TabView sender, object args)
         {
-            PushTab("Build", typeof(BuildPage));
+            var page = PushTab<LandingPage>("New Build");
+            page.OnCreateBuild += (sender, info) => CreateBuild(info);
         }
 
         private void Tabs_TabCloseRequested(Microsoft.UI.Xaml.Controls.TabView sender, Microsoft.UI.Xaml.Controls.TabViewTabCloseRequestedEventArgs args)
@@ -322,7 +334,7 @@ namespace MicroCBuilder.Views
         }
         private void SettingsClick(object sender, RoutedEventArgs e)
         {
-            PushTab("Settings", typeof(SettingsPage));
+            PushTab<SettingsPage>("Settings");
         }
 
         private void ExportToWebClicked(object sender, RoutedEventArgs e)

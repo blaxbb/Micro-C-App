@@ -90,7 +90,7 @@ namespace micro_c_app.ViewModels
         private string selectedPreset;
         private List<string> presets;
         private List<string> allCategoryNames;
-        private int selectedNewItemIndex;
+        private int selectedNewItemIndex = -2;
         private string selectedNewItem;
 
         public SettingsPageViewModel()

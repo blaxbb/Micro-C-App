@@ -505,7 +505,7 @@ namespace MicroCBuilder.ViewModels
             UpdateHintsAndErrors();
         }
 
-        private void InsertComponents(List<BuildComponent> fromFile)
+        public void InsertComponents(List<BuildComponent> fromFile)
         {
             foreach (var loadedComp in fromFile)
             {
