@@ -10,6 +10,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Storage;
+using Windows.System.Threading;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -46,6 +47,17 @@ namespace MicroCBuilder.Views
             if (DataContext is LandingPageViewModel vm)
             {
                 vm.OnCreateBuild += CreateBuild;
+                TimeSpan period = TimeSpan.FromSeconds(30);
+
+                ThreadPoolTimer PeriodicTimer = ThreadPoolTimer.CreatePeriodicTimer((source) =>
+                {
+                    Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () =>
+                    {
+                        vm.UpdateNetworkFlares?.Execute(null);
+                    });
+
+
+                }, period);
             }
         }
 
@@ -78,6 +90,18 @@ namespace MicroCBuilder.Views
             if (info != null)
             {
                 OnCreateBuild?.Invoke(this, info);
+            }
+        }
+
+        private void FlareDoubleTapped(object sender, DoubleTappedRoutedEventArgs e)
+        {
+            if(e.OriginalSource is FrameworkElement ele && ele.DataContext is FlareInfo info)
+            {
+                CreateBuild(sender, new BuildInfo()
+                {
+                    Name = info.Flare.Title,
+                    Components = info.Components
+                });
             }
         }
     }

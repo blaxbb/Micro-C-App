@@ -510,6 +510,11 @@ namespace MicroCBuilder.ViewModels
             foreach (var loadedComp in fromFile)
             {
                 bool found = false;
+                if(loadedComp.Type == BuildComponent.ComponentType.None && loadedComp.Item != null && loadedComp.Item.ComponentType != None) 
+                {
+                    loadedComp.Type = loadedComp.Item.ComponentType;
+                }
+
                 foreach (var oldComp in Components)
                 {
                     if (oldComp.Type == loadedComp.Type && oldComp.Item == null)

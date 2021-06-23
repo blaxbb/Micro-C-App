@@ -300,7 +300,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="DataFlareClient">
-      <Version>1.0.7</Version>
+      <Version>1.0.8</Version>
     </PackageReference>
     <PackageReference Include="FuzzySharp">
       <Version>2.0.2</Version>
