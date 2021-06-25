@@ -242,7 +242,7 @@ namespace MicroCBuilder.Views
             foreach(var comp in vm.Components.Where(c => c.Item != null))
             {
                 var label = new TextBlock() {
-                    Text = comp.Item.Name.Length > 16 ? comp.Item.Name.Substring(0, 16) : comp.Item.Name,
+                    Text = comp.Item.Name,
                     HorizontalAlignment = HorizontalAlignment.Stretch,
                     VerticalAlignment = VerticalAlignment.Center,
                     Margin = new Thickness(5)
@@ -263,7 +263,19 @@ namespace MicroCBuilder.Views
                         HorizontalAlignment = HorizontalAlignment.Stretch,
                         Text = comp.Serials.Count > i ? comp.Serials[i] : ""
                     };
+
+                    input.KeyDown += (sender, args) =>
+                    {
+                        if(args.Key == Windows.System.VirtualKey.Enter)
+                        {
+                            FocusManager.TryMoveFocus(FocusNavigationDirection.Down, new FindNextElementOptions()
+                            {
+                                SearchRoot = grid
+                            });
+                        }
+                    };
                     input.Tag = (comp, i);
+
                     serialInputs.Add(input);
                     grid.Children.Add(input);
                     Grid.SetColumn(input, 1);
@@ -277,6 +289,7 @@ namespace MicroCBuilder.Views
 
             var scrollView = new ScrollViewer();
             scrollView.Content = grid;
+            scrollView.Width = 500;
 
             var dialog = new ContentDialog()
             {
@@ -285,11 +298,10 @@ namespace MicroCBuilder.Views
                 PrimaryButtonText = "Print",
                 SecondaryButtonText = "Cancel",
                 FullSizeDesired = true,
-                Width = 600
             };
 
             var result = await dialog.ShowAsync();
-            if (result != ContentDialogResult.Secondary)
+            if (result == ContentDialogResult.Primary)
             {
                 foreach (var input in serialInputs)
                 {
