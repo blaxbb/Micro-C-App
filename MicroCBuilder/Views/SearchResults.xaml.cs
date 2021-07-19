@@ -268,6 +268,11 @@ namespace MicroCBuilder.Views
                 return;
             }
             var source = dataGrid.ItemsSource as ObservableCollection<Item>;
+            if(i >= source.Count)
+            {
+                return;
+            }
+
             var item = source[i].CloneAndResetQuantity();
             System.Diagnostics.Debug.WriteLine(item.Name);
             ItemSelected?.Execute(item);

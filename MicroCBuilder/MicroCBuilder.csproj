@@ -315,7 +315,7 @@
       <Version>4.8.0-beta00011</Version>
     </PackageReference>
     <PackageReference Include="micro-c-lib">
-      <Version>1.0.8</Version>
+      <Version>1.0.9</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.AppCenter.Analytics">
       <Version>4.3.0</Version>
