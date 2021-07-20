@@ -184,7 +184,25 @@ namespace MicroCBuilder.Views
                     var pv = new PrintView();
                     var item = pv.printGrid;
                     pv.Content = null;
-                    item.DataContext = comp;
+
+                    var plan1 = PrintView.GetPlan(2, comp);
+                    var plan2 = PrintView.GetPlan(3, comp);
+
+                    if (plan1 != null && plan2 != null)
+                    {
+                        item.DataContext = new
+                        {
+                            Item = comp.Item,
+                            PlanString = $"${plan1?.Item.Price}/${plan2.Item.Price}"
+                        };
+                    }
+                    else
+                    {
+                        item.DataContext = new
+                        {
+                            Item = comp.Item
+                        };
+                    }
 
                     //stick it in a border
                     var border = new Border

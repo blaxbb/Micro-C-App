@@ -1,4 +1,5 @@
 ﻿using MicroCLib.Models;
+using MicroCLib.Models.Reference;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -26,6 +27,40 @@ namespace MicroCBuilder.Views
         public PrintView()
         {
             this.InitializeComponent();
+        }
+
+        public static BuildComponent? GetPlan(int duration, BuildComponent Component)
+        {
+            switch (Component.Type)
+            {
+                case BuildComponent.ComponentType.OperatingSystem:
+                case BuildComponent.ComponentType.BuildService:
+                    return null;
+            }
+
+            var price = Component.Item.Price;
+            var type = price >= 500 ? PlanReference.PlanType.Carry_In : PlanReference.PlanType.Replacement;
+            var plan = PlanReference.Get(type, price);
+            if (plan == null)
+            {
+                return null;
+            }
+
+            var tier = plan.Tiers.FirstOrDefault(p => p.Duration == duration);
+            var comp = new BuildComponent()
+            {
+                Type = BuildComponent.ComponentType.Plan,
+                Item = new Item()
+                {
+                    Name = $"{duration} Year Plan",
+                    Price = tier.Price,
+                    OriginalPrice = tier.Price,
+                    Brand = "Micro Center",
+                    Quantity = 1,
+                },
+            };
+
+            return comp;
         }
     }
 }
