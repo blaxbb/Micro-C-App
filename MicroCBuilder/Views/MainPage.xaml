@@ -35,6 +35,7 @@
                             <AppBarButton Icon="Pictures" Label="Output Sign Batch" Click="SaveSignsClicked"/>
                             <AppBarButton Icon="Refresh" Label="Update Pricing" Click="UpdatePricingClicked"/>
                             <AppBarButton Icon="Save" Label="Print Barcodes" Click="PrintBarcodesClicked"/>
+                            <AppBarButton Icon="Save" Label="Print Promo" Click="PrintPromoClicked"/>
                             <AppBarButton Icon="Setting" Label="Settings" Click="SettingsClick"/>
                         </CommandBar.SecondaryCommands>
 

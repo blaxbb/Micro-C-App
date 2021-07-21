@@ -13,6 +13,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.ServiceModel.Channels;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.Devices.AllJoyn;
 using Windows.Foundation;
@@ -185,8 +186,8 @@ namespace MicroCBuilder.Views
                     var item = pv.printGrid;
                     pv.Content = null;
 
-                    var plan1 = PrintView.GetPlan(2, comp);
-                    var plan2 = PrintView.GetPlan(3, comp);
+                    var plan1 = PrintView.GetPlan(3, comp);
+                    var plan2 = PrintView.GetPlan(2, comp);
 
                     if (plan1 != null && plan2 != null)
                     {
@@ -455,6 +456,99 @@ namespace MicroCBuilder.Views
                 //add full grid as new page
                 _printHelper.AddFrameworkElementToPrint(page);
             }
+
+            _printHelper.OnPrintCanceled += PrintHelper_OnPrintCanceled;
+            _printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;
+            _printHelper.OnPrintSucceeded += PrintHelper_OnPrintSucceeded;
+
+            var printHelperOptions = new PrintHelperOptions(true)
+            {
+                Orientation = Windows.Graphics.Printing.PrintOrientation.Portrait
+            };
+
+            await _printHelper.ShowPrintUIAsync("Print Quote", printHelperOptions);
+        }
+
+        public async Task DoPrintPromo()
+        {
+
+            var itemsCount = vm.Components.Count(c => c.Item != null);
+            if (itemsCount == 0)
+            {
+                return;
+            }
+
+            _printHelper = new PrintHelper(Container);
+
+            Grid page = new Grid
+            {
+                Padding = new Thickness(40, 10, 40, 10)
+            };
+
+            page.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(5, GridUnitType.Star) });
+            page.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(5, GridUnitType.Star) });
+            page.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+
+            page.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(3, GridUnitType.Star) });
+            page.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+
+            var promoGrid = new Grid();
+
+            double fontSize = 36;
+            var promoItems = new List<TextBlock>();
+
+            var cpu = vm.Components.FirstOrDefault(c => c.Type == BuildComponent.ComponentType.CPU);
+            var gpu = vm.Components.FirstOrDefault(c => c.Type == BuildComponent.ComponentType.GPU);
+            var ram = vm.Components.Where(c => c.Type == BuildComponent.ComponentType.RAM);
+            var ssd = vm.Components.FirstOrDefault(c => c.Type == BuildComponent.ComponentType.SSD);
+
+            if (cpu != null)
+            {
+                promoItems.Add(new TextBlock() { Text = $"{cpu.Item.Brand} - {cpu.Item.Name}" });
+            }
+            if (gpu != null)
+            {
+                promoItems.Add(new TextBlock() { Text = $"{gpu.Item.Brand} - {gpu.Item.Name}"});
+            }
+            if (ram != null && ram.Count() > 0)
+            {
+                var total = ram.Where(r => r.Item.Specs.ContainsKey("Memory Capacity")).Select(r => r.Item.Specs["Memory Capacity"]).Select(cap => Regex.Match(cap, "(\\d+)G").Groups[1].Value).Sum(cap => int.Parse(cap));
+                promoItems.Add(new TextBlock() { Text = $"{total}GB RAM" });
+            }
+            if(ssd != null && ssd.Item.Specs.ContainsKey("Capacity"))
+            {
+                promoItems.Add(new TextBlock() { Text = $"{ssd.Item.Specs["Capacity"]} SSD" });
+            }
+
+            promoGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            foreach(var tb in promoItems)
+            {
+                tb.FontSize = fontSize;
+                tb.MaxLines = 2;
+                tb.TextWrapping = TextWrapping.Wrap;
+                promoGrid.RowDefinitions.Add(new RowDefinition());
+                promoGrid.Children.Add(tb);
+                Grid.SetRow(tb, promoGrid.RowDefinitions.Count - 1);
+            }
+
+
+            page.Children.Add(promoGrid);
+            Grid.SetRow(promoGrid, 0);
+            Grid.SetColumn(promoGrid, 0);
+
+            var footer = new BuildSummaryControl
+            {
+                SubTotal = vm.SubTotal,
+                HorizontalAlignment = HorizontalAlignment.Stretch
+            };
+
+            page.Children.Add(footer);
+            Grid.SetRow(footer, 2);
+            Grid.SetColumn(footer, 0);
+            Grid.SetColumnSpan(footer, 2);
+
+            _printHelper.AddFrameworkElementToPrint(page);
+
 
             _printHelper.OnPrintCanceled += PrintHelper_OnPrintCanceled;
             _printHelper.OnPrintFailed += PrintHelper_OnPrintFailed;

@@ -362,6 +362,14 @@ namespace MicroCBuilder.Views
             }
         }
 
+        private void PrintPromoClicked(object sender, RoutedEventArgs e)
+        {
+            if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            {
+                page.DoPrintPromo();
+            }
+        }
+
         private void UpdatePricingClicked(object sender, RoutedEventArgs e)
         {
             if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
