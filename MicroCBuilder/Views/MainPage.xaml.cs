@@ -14,6 +14,8 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -280,11 +282,39 @@ namespace MicroCBuilder.Views
             sender.TabItems.Remove(args.Tab);
         }
 
-        private void LoadClicked(object sender, RoutedEventArgs e)
+        private async void LoadClicked(object sender, RoutedEventArgs e)
         {
-            if(CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+            FileOpenPicker openPicker = new FileOpenPicker
             {
-                vm.Load.Execute(null);
+                ViewMode = PickerViewMode.Thumbnail,
+                SuggestedStartLocation = PickerLocationId.DocumentsLibrary
+            };
+
+            openPicker.FileTypeFilter.Add(".build");
+            try
+            {
+                StorageFile file = await openPicker.PickSingleFileAsync();
+                if (file != null)
+                {
+                    var text = await Windows.Storage.FileIO.ReadTextAsync(file);
+                    var components = System.Text.Json.JsonSerializer.Deserialize<List<BuildComponent>>(text);
+
+                    if (CurrentTabContent is LandingPage)
+                    {
+                        Tabs.TabItems.RemoveAt(Tabs.SelectedIndex);
+                    }
+
+                    var buildPage = PushTab<BuildPage>("Build");
+                    if (buildPage.DataContext is BuildPageViewModel vm)
+                    {
+                        vm.InsertComponents(components);
+                    }
+
+                }
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
             }
         }
 
