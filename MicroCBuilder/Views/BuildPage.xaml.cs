@@ -4,10 +4,11 @@ using MicroCBuilder.ViewModels;
 using MicroCBuilder.Views;
 using MicroCLib.Models;
 using Microsoft.Toolkit.Uwp.Helpers;
+using Microsoft.Toolkit.Uwp.UI.Controls;
+using Microsoft.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -15,6 +16,7 @@ using System.Runtime.InteropServices.WindowsRuntime;
 using System.ServiceModel.Channels;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Activation;
 using Windows.Devices.AllJoyn;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -391,7 +393,7 @@ namespace MicroCBuilder.Views
                 //
                 //force grid to full width
                 //
-                page.Children.Add(new Canvas() { Width = 1000 });
+                page.Children.Add(new Canvas() { Width = 10000 });
                 TextBlock header = new TextBlock
                 {
                     TextWrapping = TextWrapping.WrapWholeWords,
@@ -482,70 +484,184 @@ namespace MicroCBuilder.Views
 
             Grid page = new Grid
             {
-                Padding = new Thickness(40, 10, 40, 10)
+                Padding = new Thickness(20, 10, 20, 10),
+                Margin = new Thickness(0)
             };
+
 
             page.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(5, GridUnitType.Star) });
             page.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(5, GridUnitType.Star) });
             page.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
 
             page.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(3, GridUnitType.Star) });
-            page.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            page.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(2, GridUnitType.Star) });
+
+            var cvs = new Canvas() { Width = 1000 };
+            page.Children.Add(cvs);
+            Grid.SetColumnSpan(cvs, 2);
 
             var promoGrid = new Grid();
 
-            double fontSize = 36;
+            double fontSize = 32;
             var promoItems = new List<TextBlock>();
 
             var cpu = vm.Components.FirstOrDefault(c => c.Type == BuildComponent.ComponentType.CPU);
             var gpu = vm.Components.FirstOrDefault(c => c.Type == BuildComponent.ComponentType.GPU);
             var ram = vm.Components.Where(c => c.Type == BuildComponent.ComponentType.RAM);
             var ssd = vm.Components.FirstOrDefault(c => c.Type == BuildComponent.ComponentType.SSD);
+            var _case = vm.Components.FirstOrDefault(c => c.Type == BuildComponent.ComponentType.Case);
 
-            if (cpu != null)
+            if (cpu?.Item != null && cpu.Item.Specs.ContainsKey("Processor"))
             {
-                promoItems.Add(new TextBlock() { Text = $"{cpu.Item.Brand} - {cpu.Item.Name}" });
+                promoItems.Add(new TextBlock() { Text = $"{cpu.Item.Specs["Processor"]}" });
             }
-            if (gpu != null)
+            if (gpu?.Item != null && gpu.Item.Specs.ContainsKey("GPU Chipset"))
             {
-                promoItems.Add(new TextBlock() { Text = $"{gpu.Item.Brand} - {gpu.Item.Name}"});
+                promoItems.Add(new TextBlock() { Text = $"{gpu.Item.Specs["GPU Chipset"]}"});
             }
-            if (ram != null && ram.Count() > 0)
+            if (ram != null && ram.Count(r => r.Item != null) > 0)
             {
-                var total = ram.Where(r => r.Item.Specs.ContainsKey("Memory Capacity")).Select(r => r.Item.Specs["Memory Capacity"]).Select(cap => Regex.Match(cap, "(\\d+)G").Groups[1].Value).Sum(cap => int.Parse(cap));
-                promoItems.Add(new TextBlock() { Text = $"{total}GB RAM" });
+                var total = ram.Where(r => r.Item != null)
+                    .Where(r => r.Item.Specs.ContainsKey("Memory Capacity"))
+                    .Select(r => r.Item.Specs["Memory Capacity"])
+                    .Select(cap => Regex.Match(cap, "(\\d+)G").Groups[1].Value)
+                    .Sum(cap => int.Parse(cap));
+
+                var first = ram.FirstOrDefault(r => r.Item != null);
+                string speed = "";
+                if(first?.Item != null && first.Item.Specs.ContainsKey("Memory Speed (MHz)"))
+                {
+                    speed = first.Item.Specs["Memory Speed (MHz)"];
+                }
+                promoItems.Add(new TextBlock() { Text = $"{total}GB {speed}Mhz RAM" });
             }
-            if(ssd != null && ssd.Item.Specs.ContainsKey("Capacity"))
+            if(ssd?.Item != null && ssd.Item.Specs.ContainsKey("Capacity") && ssd.Item.Specs.ContainsKey("Interface"))
             {
-                promoItems.Add(new TextBlock() { Text = $"{ssd.Item.Specs["Capacity"]} SSD" });
+                promoItems.Add(new TextBlock() { Text = $"{ssd.Item.Specs["Capacity"]} {ssd.Item.Specs["Interface"]} SSD" });
+            }
+            if(_case?.Item != null)
+            {
+                promoItems.Add(new TextBlock() { Text = $"{_case.Item.Name}" });
             }
 
             promoGrid.ColumnDefinitions.Add(new ColumnDefinition());
+            promoGrid.VerticalAlignment = VerticalAlignment.Center;
             foreach(var tb in promoItems)
             {
                 tb.FontSize = fontSize;
-                tb.MaxLines = 2;
-                tb.TextWrapping = TextWrapping.Wrap;
-                promoGrid.RowDefinitions.Add(new RowDefinition());
+                promoGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
                 promoGrid.Children.Add(tb);
                 Grid.SetRow(tb, promoGrid.RowDefinitions.Count - 1);
             }
-
 
             page.Children.Add(promoGrid);
             Grid.SetRow(promoGrid, 0);
             Grid.SetColumn(promoGrid, 0);
 
-            var footer = new BuildSummaryControl
+
+
+            var itemsGrid = new Grid();
+            itemsGrid.VerticalAlignment = VerticalAlignment.Bottom;
+            itemsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            itemsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(5, GridUnitType.Star) });
+            itemsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            itemsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+
+            foreach (var comp in vm.Components.Where(c => c.Item != null))
             {
-                SubTotal = vm.SubTotal,
-                HorizontalAlignment = HorizontalAlignment.Stretch
+                var item = comp.Item;
+
+                itemsGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+
+                var strings = new string[]
+                {
+                    item.Brand,
+                    item.Name,
+                    $"${item.Price:.00}",
+                    $"Qty {comp.Item.Quantity}"
+                };
+                for(int i = 0; i < strings.Length; i++)
+                {
+                    var tb = new TextBlock() { Text = strings[i]};
+                    itemsGrid.Children.Add(tb);
+                    Grid.SetRow(tb, itemsGrid.RowDefinitions.Count - 1);
+                    Grid.SetColumn(tb, i);
+
+                    if(i >= 2)
+                    {
+                        tb.HorizontalTextAlignment = TextAlignment.Right;
+                    }
+                }
+            }
+
+            var tax = Settings.TaxRate() / 100;
+
+            var footerItems = new (string name, string value)[]
+            {
+                (" "," "),
+                ("Subtotal", $"${vm.SubTotal:.00}"),
+                ("Tax", $"${(tax * vm.SubTotal):.00}"),
+                ("Total", $"${((1 + tax) * vm.SubTotal):.00}"),
             };
 
-            page.Children.Add(footer);
-            Grid.SetRow(footer, 2);
-            Grid.SetColumn(footer, 0);
-            Grid.SetColumnSpan(footer, 2);
+            foreach(var item in footerItems)
+            {
+                var tb1 = new TextBlock() { Text = item.name, HorizontalTextAlignment = TextAlignment.Right };
+                var tb2 = new TextBlock() { Text = item.value, HorizontalTextAlignment = TextAlignment.Right };
+
+                itemsGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+
+                itemsGrid.Children.Add(tb1);
+                itemsGrid.Children.Add(tb2);
+
+                Grid.SetColumn(tb1, 1);
+                Grid.SetColumn(tb2, 2);
+                Grid.SetRow(tb1, itemsGrid.RowDefinitions.Count - 1);
+                Grid.SetRow(tb2, itemsGrid.RowDefinitions.Count - 1);
+
+            }
+
+            page.Children.Add(itemsGrid);
+            Grid.SetRow(itemsGrid, 1);
+            Grid.SetColumn(itemsGrid, 0);
+            Grid.SetColumnSpan(itemsGrid, 2);
+
+
+
+            var priceGrid = new Grid();
+            priceGrid.HorizontalAlignment = HorizontalAlignment.Right;
+            priceGrid.VerticalAlignment = VerticalAlignment.Center;
+            priceGrid.Margin = new Thickness(0);
+            priceGrid.Padding = new Thickness(0);
+            string[] priceStrings = new string[]
+            {
+                $"${vm.SubTotal:.00}",
+                $"2 Year System Coverage - $249.99",
+                $"3 Year System Coverage - $299.99"
+            };
+            for(int i = 0; i < priceStrings.Length; i++)
+            {
+                var tb = new TextBlock() {
+                    Text = priceStrings[i],
+                    TextAlignment = TextAlignment.Right
+                };
+                if (i == 0)
+                {
+                    tb.FontSize = 64;
+                }
+                else
+                {
+                    tb.FontSize = 18;
+                }
+
+                priceGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                priceGrid.Children.Add(tb);
+                Grid.SetRow(tb, priceGrid.RowDefinitions.Count - 1);
+            }
+
+            page.Children.Add(priceGrid);
+            Grid.SetRow(priceGrid, 0);
+            Grid.SetColumn(priceGrid, 1);
 
             _printHelper.AddFrameworkElementToPrint(page);
 
