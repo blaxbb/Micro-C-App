@@ -471,9 +471,35 @@ namespace MicroCBuilder.Views
             await _printHelper.ShowPrintUIAsync("Print Quote", printHelperOptions);
         }
 
-        public async Task DoPrintPromo()
+        public async Task PromoPrintClicked()
         {
+            var grid = new Grid();
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
 
+            var cb = new CheckBox() { Content = "Split page" };
+
+            grid.Children.Add(cb);
+
+            Grid.SetRow(cb, 0);
+
+            var dialog = new ContentDialog()
+            {
+                Title = "Print options",
+                Content = grid,
+                PrimaryButtonText = "Print",
+                SecondaryButtonText = "Cancel"
+            };
+            var result = await dialog.ShowAsync();
+            var doSplit = cb.IsChecked ?? false;
+            if (result != ContentDialogResult.Secondary)
+            {
+                await DoPrintPromo(doSplit);
+            }
+        }
+
+        private async Task DoPrintPromo(bool IsSplit)
+        {
             var itemsCount = vm.Components.Count(c => c.Item != null);
             if (itemsCount == 0)
             {
@@ -489,16 +515,50 @@ namespace MicroCBuilder.Views
             };
 
 
-            page.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(5, GridUnitType.Star) });
-            page.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(5, GridUnitType.Star) });
-            page.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            page.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            page.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
 
-            page.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(3, GridUnitType.Star) });
-            page.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(2, GridUnitType.Star) });
+            page.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
 
+            //
+            //Stretch to full page
+            //
             var cvs = new Canvas() { Width = 1000 };
             page.Children.Add(cvs);
             Grid.SetColumnSpan(cvs, 2);
+
+            var topGrid = new Grid()
+            {
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+            page.Children.Add(topGrid);
+            if (IsSplit)
+            {
+                topGrid.RenderTransformOrigin = new Point(.5, .5);
+                topGrid.RenderTransform = new ScaleTransform() { ScaleY = -1, ScaleX = -1 };
+            }
+
+            topGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(3, GridUnitType.Star) });
+            topGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(2, GridUnitType.Star) });
+            topGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            topGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+
+            Grid.SetColumn(topGrid, 0);
+            Grid.SetRow(topGrid, 0);
+
+            var topHeader = new TextBlock()
+            {
+                Text = "Micro Center Custom Built PC",
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+                HorizontalTextAlignment = TextAlignment.Center,
+                FontSize = 32,
+                Padding = new Thickness(0, 5, 0, 5)
+            };
+            topGrid.Children.Add(topHeader);
+            Grid.SetColumn(topHeader, 0);
+            Grid.SetColumnSpan(topHeader, 2);
+            Grid.SetRow(topHeader, 0);
 
             var promoGrid = new Grid();
 
@@ -541,7 +601,7 @@ namespace MicroCBuilder.Views
             }
             if(_case?.Item != null)
             {
-                promoItems.Add(new TextBlock() { Text = $"{_case.Item.Name}" });
+                promoItems.Add(new TextBlock() { Text = $"{_case.Item.Name}", TextWrapping = TextWrapping.WrapWholeWords, MaxLines = 1 });
             }
 
             promoGrid.ColumnDefinitions.Add(new ColumnDefinition());
@@ -554,14 +614,87 @@ namespace MicroCBuilder.Views
                 Grid.SetRow(tb, promoGrid.RowDefinitions.Count - 1);
             }
 
-            page.Children.Add(promoGrid);
-            Grid.SetRow(promoGrid, 0);
+            topGrid.Children.Add(promoGrid);
+            Grid.SetRow(promoGrid, 1);
             Grid.SetColumn(promoGrid, 0);
 
 
+            var priceGrid = new Grid();
+            priceGrid.HorizontalAlignment = HorizontalAlignment.Right;
+            priceGrid.VerticalAlignment = VerticalAlignment.Center;
+            priceGrid.Margin = new Thickness(0);
+            priceGrid.Padding = new Thickness(0);
+            string[] priceStrings = new string[]
+            {
+                $"${vm.SubTotal:.00}",
+                $"2 Year System Coverage - $249.99",
+                $"3 Year System Coverage - $299.99"
+            };
+            for(int i = 0; i < priceStrings.Length; i++)
+            {
+                var tb = new TextBlock() {
+                    Text = priceStrings[i],
+                    TextAlignment = TextAlignment.Right
+                };
+                if (i == 0)
+                {
+                    tb.FontSize = 64;
+                }
+                else
+                {
+                    tb.FontSize = 18;
+                }
+
+                priceGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                priceGrid.Children.Add(tb);
+                Grid.SetRow(tb, priceGrid.RowDefinitions.Count - 1);
+            }
+
+            topGrid.Children.Add(priceGrid);
+            Grid.SetRow(priceGrid, 1);
+            Grid.SetColumn(priceGrid, 1);
+
+            var bottomGrid = new Grid()
+            {
+                VerticalAlignment = VerticalAlignment.Stretch,
+                HorizontalAlignment = HorizontalAlignment.Stretch,
+            };
+            page.Children.Add(bottomGrid);
+            bottomGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            bottomGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            bottomGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            Grid.SetRow(bottomGrid, 1);
+
+            if (IsSplit)
+            {
+                var botHeader = new TextBlock()
+                {
+                    Text = "Micro Center Custom Built PC",
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    HorizontalTextAlignment = TextAlignment.Center,
+                    FontSize = 32,
+                    Padding = new Thickness(0, 5, 0, 5)
+                };
+                bottomGrid.Children.Add(botHeader);
+                Grid.SetColumn(botHeader, 0);
+                Grid.SetColumnSpan(botHeader, 2);
+                Grid.SetRow(botHeader, 0);
+            }
+            else
+            {
+                var botPadding = new Frame()
+                {
+                    HorizontalAlignment = HorizontalAlignment.Stretch,
+                    Padding = new Thickness(0, 5, 0, 5)
+                };
+                bottomGrid.Children.Add(botPadding);
+                Grid.SetColumn(botPadding, 0);
+                Grid.SetColumnSpan(botPadding, 2);
+                Grid.SetRow(botPadding, 0);
+            }
 
             var itemsGrid = new Grid();
-            itemsGrid.VerticalAlignment = VerticalAlignment.Bottom;
+            itemsGrid.VerticalAlignment = VerticalAlignment.Center;
             itemsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
             itemsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(5, GridUnitType.Star) });
             itemsGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
@@ -621,47 +754,19 @@ namespace MicroCBuilder.Views
 
             }
 
-            page.Children.Add(itemsGrid);
+            bottomGrid.Children.Add(itemsGrid);
             Grid.SetRow(itemsGrid, 1);
             Grid.SetColumn(itemsGrid, 0);
-            Grid.SetColumnSpan(itemsGrid, 2);
 
 
-
-            var priceGrid = new Grid();
-            priceGrid.HorizontalAlignment = HorizontalAlignment.Right;
-            priceGrid.VerticalAlignment = VerticalAlignment.Center;
-            priceGrid.Margin = new Thickness(0);
-            priceGrid.Padding = new Thickness(0);
-            string[] priceStrings = new string[]
+            if (IsSplit)
             {
-                $"${vm.SubTotal:.00}",
-                $"2 Year System Coverage - $249.99",
-                $"3 Year System Coverage - $299.99"
-            };
-            for(int i = 0; i < priceStrings.Length; i++)
-            {
-                var tb = new TextBlock() {
-                    Text = priceStrings[i],
-                    TextAlignment = TextAlignment.Right
-                };
-                if (i == 0)
-                {
-                    tb.FontSize = 64;
-                }
-                else
-                {
-                    tb.FontSize = 18;
-                }
-
-                priceGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-                priceGrid.Children.Add(tb);
-                Grid.SetRow(tb, priceGrid.RowDefinitions.Count - 1);
+                var border = new Border() { BorderThickness = new Thickness(0, 1, 0, 0), BorderBrush = new SolidColorBrush(Color.FromArgb(125, 0, 0, 0)) };
+                border.VerticalAlignment = VerticalAlignment.Bottom;
+                Grid.SetColumnSpan(border, 2);
+                Grid.SetColumn(border, 0);
+                page.Children.Add(border);
             }
-
-            page.Children.Add(priceGrid);
-            Grid.SetRow(priceGrid, 0);
-            Grid.SetColumn(priceGrid, 1);
 
             _printHelper.AddFrameworkElementToPrint(page);
 

@@ -396,7 +396,7 @@ namespace MicroCBuilder.Views
         {
             if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
             {
-                page.DoPrintPromo();
+                page.PromoPrintClicked();
             }
         }
 
