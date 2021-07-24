@@ -3,6 +3,7 @@ using FuzzySharp.SimilarityRatio.Scorer.StrategySensitive;
 using MicroCBuilder.ViewModels;
 using MicroCBuilder.Views;
 using MicroCLib.Models;
+using MicroCLib.Models.Reference;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Microsoft.Toolkit.Uwp.UI.Controls;
 using Microsoft.UI.Xaml.Media;
@@ -475,9 +476,8 @@ namespace MicroCBuilder.Views
         {
             var grid = new Grid();
             grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
 
-            var cb = new CheckBox() { Content = "Split page" };
+            var cb = new CheckBox() { Content = "Split page", IsChecked = true };
 
             grid.Children.Add(cb);
 
@@ -619,18 +619,26 @@ namespace MicroCBuilder.Views
             Grid.SetColumn(promoGrid, 0);
 
 
+
+
             var priceGrid = new Grid();
             priceGrid.HorizontalAlignment = HorizontalAlignment.Right;
             priceGrid.VerticalAlignment = VerticalAlignment.Center;
             priceGrid.Margin = new Thickness(0);
             priceGrid.Padding = new Thickness(0);
-            string[] priceStrings = new string[]
+
+            var planTotal = vm.Components.Where(c => c.Item != null && SettingsPageViewModel.PresetBYO().Contains(c.Type)).Sum(c => c.Item.Price * c.Item.Quantity);
+            var plan = PlanReference.Get(PlanReference.PlanType.Build_Plan, planTotal);
+            var priceStrings = new List<string>()
             {
                 $"${vm.SubTotal:.00}",
-                $"2 Year System Coverage - $249.99",
-                $"3 Year System Coverage - $299.99"
             };
-            for(int i = 0; i < priceStrings.Length; i++)
+            if (plan != default)
+            {
+                priceStrings.Add($"2 Year System Coverage - ${plan.Tiers[0].Price}");
+                priceStrings.Add($"3 Year System Coverage - ${plan.Tiers[1].Price}");
+            }
+            for(int i = 0; i < priceStrings.Count; i++)
             {
                 var tb = new TextBlock() {
                     Text = priceStrings[i],

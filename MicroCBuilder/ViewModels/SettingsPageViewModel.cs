@@ -143,7 +143,7 @@ namespace MicroCBuilder.ViewModels
             }
         }
 
-        private static IEnumerable<ComponentType> PresetBYO()
+        public static IEnumerable<ComponentType> PresetBYO()
         {
             yield return BuildService;
             yield return ComponentType.OperatingSystem;
