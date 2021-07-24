@@ -627,7 +627,7 @@ namespace MicroCBuilder.Views
             priceGrid.Margin = new Thickness(0);
             priceGrid.Padding = new Thickness(0);
 
-            var planTotal = vm.Components.Where(c => c.Item != null && SettingsPageViewModel.PresetBYO().Contains(c.Type)).Sum(c => c.Item.Price * c.Item.Quantity);
+            var planTotal = vm.Components.Where(c => c.Item != null && c.Type != BuildComponent.ComponentType.Plan && c.Type != BuildComponent.ComponentType.BuildService && c.Type != BuildComponent.ComponentType.OperatingSystem SettingsPageViewModel.PresetBYO().Contains(c.Type)).Sum(c => c.Item.Price * c.Item.Quantity);
             var plan = PlanReference.Get(PlanReference.PlanType.Build_Plan, planTotal);
             var priceStrings = new List<string>()
             {
