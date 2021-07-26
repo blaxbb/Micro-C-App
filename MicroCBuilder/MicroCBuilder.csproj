@@ -22,7 +22,7 @@
     <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
     <AppxPackageSigningEnabled>True</AppxPackageSigningEnabled>
     <LangVersion>8.0</LangVersion>
-    <PackageCertificateThumbprint>B0EFE9ACE3484DB5544379DFF23425A19DB7FA9C</PackageCertificateThumbprint>
+    <PackageCertificateThumbprint>BDBC47BB7FD9739F779F82A2334E952FC1849CF1</PackageCertificateThumbprint>
     <PackageCertificateKeyFile>MicroCBuilder_TemporaryKey.pfx</PackageCertificateKeyFile>
     <GenerateAppInstallerFile>False</GenerateAppInstallerFile>
     <AppxPackageSigningTimestampDigestAlgorithm>SHA256</AppxPackageSigningTimestampDigestAlgorithm>

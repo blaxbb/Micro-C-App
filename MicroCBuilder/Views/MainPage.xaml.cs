@@ -263,7 +263,10 @@ namespace MicroCBuilder.Views
 
         private void CreateBuild(BuildInfo info)
         {
-            Tabs.TabItems.RemoveAt(Tabs.SelectedIndex);
+            if (Tabs.SelectedIndex >= 0 && Tabs.SelectedIndex < Tabs.TabItems.Count)
+            {
+                Tabs.TabItems.RemoveAt(Tabs.SelectedIndex);
+            }
             var buildPage = PushTab<BuildPage>("Build");
             if (buildPage.DataContext is BuildPageViewModel vm)
             {
