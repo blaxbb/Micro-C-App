@@ -189,8 +189,17 @@ namespace MicroCBuilder.Views
                     var item = pv.printGrid;
                     pv.Content = null;
 
-                    var plan1 = PrintView.GetPlan(3, comp);
-                    var plan2 = PrintView.GetPlan(2, comp);
+                    BuildComponent plan1, plan2;
+                    if(comp.Type == BuildComponent.ComponentType.BuildService)
+                    {
+                        plan1 = PrintView.GetBuildPlan(3, vm.Components);
+                        plan2 = PrintView.GetBuildPlan(2, vm.Components);
+                    }
+                    else
+                    {
+                        plan1 = PrintView.GetPlan(3, comp);
+                        plan2 = PrintView.GetPlan(2, comp);
+                    }
 
                     if (plan1 != null && plan2 != null)
                     {
@@ -627,8 +636,7 @@ namespace MicroCBuilder.Views
             priceGrid.Margin = new Thickness(0);
             priceGrid.Padding = new Thickness(0);
 
-            var planTotal = vm.Components.Where(c => c.Item != null && c.Type != BuildComponent.ComponentType.Plan && c.Type != BuildComponent.ComponentType.BuildService && c.Type != BuildComponent.ComponentType.OperatingSystem && SettingsPageViewModel.PresetBYO().Contains(c.Type)).Sum(c => c.Item.Price * c.Item.Quantity);
-            var plan = PlanReference.Get(PlanReference.PlanType.Build_Plan, planTotal);
+            var plan = GetBuildPlan(vm.Components);
             var priceStrings = new List<string>()
             {
                 $"${vm.SubTotal:.00}",
@@ -811,6 +819,12 @@ namespace MicroCBuilder.Views
         private void ReleasePrintHelper()
         {
             _printHelper.Dispose();
+        }
+
+        private static PlanReference? GetBuildPlan(IEnumerable<BuildComponent> components)
+        {
+            var planTotal = components.Where(c => c.Item != null && c.Type != BuildComponent.ComponentType.Plan && c.Type != BuildComponent.ComponentType.BuildService && c.Type != BuildComponent.ComponentType.OperatingSystem && SettingsPageViewModel.PresetBYO().Contains(c.Type)).Sum(c => c.Item.Price * c.Item.Quantity);
+            return PlanReference.Get(PlanReference.PlanType.Build_Plan, planTotal);
         }
 
         public void Reset()

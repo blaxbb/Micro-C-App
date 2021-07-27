@@ -1,4 +1,5 @@
-﻿using MicroCLib.Models;
+﻿using MicroCBuilder.ViewModels;
+using MicroCLib.Models;
 using MicroCLib.Models.Reference;
 using System;
 using System.Collections.Generic;
@@ -35,6 +36,7 @@ namespace MicroCBuilder.Views
             {
                 case BuildComponent.ComponentType.OperatingSystem:
                 case BuildComponent.ComponentType.BuildService:
+                case BuildComponent.ComponentType.Miscellaneous:
                     return null;
             }
 
@@ -61,6 +63,37 @@ namespace MicroCBuilder.Views
             };
 
             return comp;
+        }
+
+        public static BuildComponent? GetBuildPlan(int duration, IEnumerable<BuildComponent> components)
+        {
+            var plan = GetBuildPlan(components);
+            if (plan == null)
+            {
+                return null;
+            }
+
+            var tier = plan.Tiers.FirstOrDefault(p => p.Duration == duration);
+            var comp = new BuildComponent()
+            {
+                Type = BuildComponent.ComponentType.Plan,
+                Item = new Item()
+                {
+                    Name = $"{duration} System Coverage",
+                    Price = tier.Price,
+                    OriginalPrice = tier.Price,
+                    Brand = "Micro Center",
+                    Quantity = 1,
+                },
+            };
+
+            return comp;
+        }
+
+        private static PlanReference? GetBuildPlan(IEnumerable<BuildComponent> components)
+        {
+            var planTotal = components.Where(c => c.Item != null && c.Type != BuildComponent.ComponentType.Plan && c.Type != BuildComponent.ComponentType.BuildService && c.Type != BuildComponent.ComponentType.OperatingSystem && SettingsPageViewModel.PresetBYO().Contains(c.Type)).Sum(c => c.Item.Price * c.Item.Quantity);
+            return PlanReference.Get(PlanReference.PlanType.Build_Plan, planTotal);
         }
     }
 }

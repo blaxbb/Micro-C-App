@@ -61,10 +61,10 @@
       "Brand": "",
       "ComingSoon": false,
       "Categories": null,
-      "ComponentType": 0,
+      "ComponentType": 12,
       "ClearanceItems": []
     },
-    "Type": 0,
+    "Type": 12,
     "CategoryFilter": "4294812275",
     "ComponentLabel": "Attach Tech to Build",
     "ErrorText": "",
