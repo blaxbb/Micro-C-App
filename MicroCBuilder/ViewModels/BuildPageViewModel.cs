@@ -433,7 +433,17 @@ namespace MicroCBuilder.ViewModels
 
         private void AddDuplicate(BuildComponent orig)
         {
-            var comp = InsertAtEndByType(orig.Type);
+            var refSku = orig.Item.Specs.ContainsKey("Ref") ? orig.Item.Specs["Ref"] : "";
+            BuildComponent comp;
+            if (refSku == "BUILD" && orig.Item.Specs.ContainsKey("Duration"))
+            {
+                orig = PrintView.GetBuildPlan(int.Parse(orig.Item.Specs["Duration"]), Components);
+                comp = InsertAtIndex(orig.Type, 1);
+            }
+            else
+            {
+                comp = InsertAtSKUIndex(orig.Type, refSku);
+            }
             comp.Item = orig.Item?.CloneAndResetQuantity();
             SelectedComponent = comp;
             OnPropertyChanged(nameof(SubTotal));
@@ -453,6 +463,41 @@ namespace MicroCBuilder.ViewModels
                 }
             }
 
+            var comp = new BuildComponent() { Type = type };
+            comp.PropertyChanged += (sender, args) =>
+            {
+                OnPropertyChanged(nameof(Components));
+            };
+            Components.Insert(index, comp);
+            OnPropertyChanged(nameof(SubTotal));
+            return comp;
+        }
+
+        private BuildComponent InsertAtSKUIndex(BuildComponent.ComponentType type, string sku)
+        {
+            var item = Components.FirstOrDefault(c => c.Item != null && c.Item.SKU == sku);
+            if(item == null)
+            {
+                return InsertAtEndByType(type);
+            }
+            var index = Components.IndexOf(item);
+            if(index < 0)
+            {
+                return InsertAtEndByType(type);
+            }
+
+            var comp = new BuildComponent() { Type = type };
+            comp.PropertyChanged += (sender, args) =>
+            {
+                OnPropertyChanged(nameof(Components));
+            };
+            Components.Insert(index + 1, comp);
+            OnPropertyChanged(nameof(SubTotal));
+            return comp;
+        }
+
+        private BuildComponent InsertAtIndex(BuildComponent.ComponentType type, int index)
+        {
             var comp = new BuildComponent() { Type = type };
             comp.PropertyChanged += (sender, args) =>
             {

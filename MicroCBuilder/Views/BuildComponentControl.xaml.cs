@@ -251,6 +251,10 @@ namespace MicroCBuilder.Views
                     OriginalPrice = tier.Price,
                     Brand = "Micro Center",
                     Quantity = 1,
+                    Specs = new Dictionary<string, string>()
+                    {
+                        {"Duration", duration.ToString() }
+                    }
                 },
             };
 
@@ -262,6 +266,15 @@ namespace MicroCBuilder.Views
             var comp = GetPlan(2);
             if (comp != null)
             {
+                if(Component.Type == BuildComponent.ComponentType.BuildService)
+                {
+                    comp.Item.Specs.Add("Ref", "BUILD");
+                }
+                else
+                {
+                    comp.Item.Specs.Add("Ref", Component.Item.SKU);
+                }
+
                 AddPlan?.Execute(comp);
             }
         }
@@ -271,6 +284,14 @@ namespace MicroCBuilder.Views
             var comp = GetPlan(3);
             if (comp != null)
             {
+                if (Component.Type == BuildComponent.ComponentType.BuildService)
+                {
+                    comp.Item.Specs.Add("Ref", "BUILD");
+                }
+                else
+                {
+                    comp.Item.Specs.Add("Ref", Component.Item.SKU);
+                }
                 AddPlan?.Execute(comp);
             }
         }
