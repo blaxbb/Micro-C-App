@@ -138,6 +138,7 @@
     <Compile Include="BuildComponentCache.cs" />
     <Compile Include="Command.cs" />
     <Compile Include="Converters\NullVisibilityConverter.cs" />
+    <Compile Include="Converters\QuantityBackgroundConverter.cs" />
     <Compile Include="LocalSearch.cs" />
     <Compile Include="MCOLBuildContext.cs" />
     <Compile Include="Settings.cs" />
