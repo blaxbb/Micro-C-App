@@ -11,6 +11,7 @@
                     <converters:StringFormatConverter x:Key="MoneyFormat" Format="$ {0:#,#.00}"/>
                     <converters:NullVisibilityConverter x:Key="HideIfNull"/>
                     <converters:NullVisibilityConverter x:Key="ShowIfNull" NullIsCollapsed="False"/>
+                    <converters:QuantityBackgroundConverter x:Key="QuantityBackground"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

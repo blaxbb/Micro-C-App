@@ -34,6 +34,8 @@
         <TextBlock Grid.Column="2" Grid.Row="1" Text="{Binding Item.Brand}"/>
         <TextBlock Grid.Column="3" Grid.Row="1" Text="{Binding PlanString}"/>
         <TextBlock Grid.Column="4" Grid.RowSpan="2" Text="{Binding Item.Price, Mode=TwoWay}" VerticalAlignment="Center" TextAlignment="Center"/>
-        <TextBlock Grid.Column="5" Grid.RowSpan="2" Text="{Binding Item.Quantity, Mode=TwoWay}"  VerticalAlignment="Center" TextAlignment="Center"/>
+        <Border Grid.Column="5" Grid.RowSpan="2" Background="{Binding Item.Quantity, Converter={StaticResource QuantityBackground}}">
+            <TextBlock Text="{Binding Item.Quantity, Mode=TwoWay}" VerticalAlignment="Center" TextAlignment="Center"/>
+        </Border>
     </Grid>
 </UserControl>
