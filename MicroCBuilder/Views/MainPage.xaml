@@ -39,6 +39,9 @@
                             <AppBarButton Icon="Setting" Label="Settings" Click="SettingsClick"/>
                         </CommandBar.SecondaryCommands>
 
+                        <AppBarElementContainer>
+                            <TextBox x:Name="SearchTextBox" PlaceholderText="Search" Margin="5,5,5,5" MinWidth="200" KeyDown="Search_KeyDown"></TextBox>
+                        </AppBarElementContainer>
                         <AppBarButton Icon="Add" Label="Add" x:Name="AddButton">
                             <AppBarButton.Flyout>
                                 <MenuFlyout/>

@@ -334,14 +334,21 @@ namespace MicroCBuilder.ViewModels
             var dialogResult = await dialog.ShowAsync();
             var query = tb.Text;
 
-            MicroCLib.Models.SearchResults? results = null;
             if (dialogResult != ContentDialogResult.Secondary && !string.IsNullOrWhiteSpace(query))
             {
-                await MainPage.Instance.DisplayProgress(async (progress) =>
-                {
-                    results = await Search.LoadAll(query, Settings.StoreID(), null, Search.OrderByMode.match);
-                }, $"Searching for {query}", 1);
+                await HandleSearch(query);
             }
+        }
+
+        public async Task HandleSearch(string query)
+        {
+            MicroCLib.Models.SearchResults? results = null;
+
+            await MainPage.Instance.DisplayProgress(async (progress) =>
+            {
+                results = await Search.LoadEnhanced(query, Settings.StoreID(), null);
+            }, $"Searching for {query}", 1);
+            
 
             if (results != null)
             {
@@ -367,7 +374,7 @@ namespace MicroCBuilder.ViewModels
 
                 if (item != null)
                 {
-                    var comp = new BuildComponent() { Type = BuildComponent.ComponentType.Miscellaneous, Item = item };
+                    var comp = new BuildComponent() { Type = item.ComponentType, Item = item };
                     AddDuplicate(comp);
 
                 }

@@ -10,6 +10,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.ServiceModel;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
@@ -433,5 +434,23 @@ namespace MicroCBuilder.Views
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
+
+        private async void Search_KeyDown(object sender, KeyRoutedEventArgs e)
+        {
+            if(e.Key == Windows.System.VirtualKey.Enter)
+            {
+                if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
+                {
+                    var text = SearchTextBox.Text;
+                    var match = Regex.Match(text, "(\\d{6}).{4}");
+                    if(match.Success)
+                    {
+                        text = match.Groups[1].Value;
+                    }
+                    await vm.HandleSearch(text);
+                    SearchTextBox.Text = "";
+                }
+            }
+        }
     }
 }
