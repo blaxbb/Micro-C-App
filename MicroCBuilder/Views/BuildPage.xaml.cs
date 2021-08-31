@@ -592,9 +592,9 @@ namespace MicroCBuilder.Views
             {
                 var total = ram.Where(r => r.Item != null)
                     .Where(r => r.Item.Specs.ContainsKey("Memory Capacity"))
-                    .Select(r => r.Item.Specs["Memory Capacity"])
-                    .Select(cap => Regex.Match(cap, "(\\d+)G").Groups[1].Value)
-                    .Sum(cap => int.Parse(cap));
+                    .Select(r => (r.Item.Specs["Memory Capacity"], r))
+                    .Select(data => (Regex.Match(data.Item1, "(\\d+)G").Groups[1].Value, data.r))
+                    .Sum(data => int.Parse(data.Value) * data.r.Item.Quantity);
 
                 var first = ram.FirstOrDefault(r => r.Item != null);
                 string speed = "";
