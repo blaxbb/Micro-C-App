@@ -442,7 +442,7 @@ namespace MicroCBuilder.Views
                 if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
                 {
                     var text = SearchTextBox.Text;
-                    var match = Regex.Match(text, "(\\d{6}).{4}$");
+                    var match = Regex.Match(text, "^(\\d{6}).{4}$");
                     if(match.Success)
                     {
                         text = match.Groups[1].Value;
