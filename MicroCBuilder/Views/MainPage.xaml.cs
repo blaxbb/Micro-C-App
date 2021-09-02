@@ -442,12 +442,28 @@ namespace MicroCBuilder.Views
                 if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
                 {
                     var text = SearchTextBox.Text;
-                    var match = Regex.Match(text, "^(\\d{6}).{4}$");
+                    Item item = default;
+                    var match = Regex.Match(text, "^(\\d{6})(?:(?:.{4}$)|$)");
                     if(match.Success)
                     {
                         text = match.Groups[1].Value;
+                        item = BuildComponentCache.Current.FindItemBySKU(text);
                     }
-                    await vm.HandleSearch(text);
+                    match = Regex.Match(text, "^(\\d{12})$");
+                    if (match.Success)
+                    {
+                        text = match.Groups[1].Value;
+                        item = BuildComponentCache.Current.FindItemByUPC(text);
+                    }
+
+                    if (item == default)
+                    {
+                        await vm.HandleSearch(text);
+                    }
+                    else
+                    {
+                        vm.AddDuplicate(new BuildComponent() { Item = item, Type = item.ComponentType });
+                    }
                     SearchTextBox.Text = "";
                 }
             }

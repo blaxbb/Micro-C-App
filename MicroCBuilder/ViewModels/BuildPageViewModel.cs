@@ -131,7 +131,7 @@ namespace MicroCBuilder.ViewModels
         {
             foreach(var comp in Components.Where(c => c.Item != null))
             {
-                var item = BuildComponentCache.Current.FindItem(comp.Item.SKU);
+                var item = BuildComponentCache.Current.FindItemBySKU(comp.Item.SKU);
                 if(item != null) {
                     var qty = comp.Item.Quantity;
                     comp.Item = item.CloneAndResetQuantity();
@@ -438,7 +438,7 @@ namespace MicroCBuilder.ViewModels
             UpdateHintsAndErrors();
         }
 
-        private void AddDuplicate(BuildComponent orig)
+        public void AddDuplicate(BuildComponent orig)
         {
             var refSku = orig.Item.Specs.ContainsKey("Ref") ? orig.Item.Specs["Ref"] : "";
             BuildComponent comp;
