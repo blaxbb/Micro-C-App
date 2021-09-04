@@ -434,11 +434,12 @@ namespace MicroCBuilder.Views
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-
+        Stopwatch sw = new Stopwatch();
         private async void Search_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             if(e.Key == Windows.System.VirtualKey.Enter)
             {
+                sw.Start();
                 if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
                 {
                     var text = SearchTextBox.Text;
@@ -462,10 +463,12 @@ namespace MicroCBuilder.Views
                     }
                     else
                     {
+                        Debug.WriteLine($"SW => {sw.Elapsed.TotalMilliseconds}");
                         vm.AddDuplicate(new BuildComponent() { Item = item, Type = item.ComponentType });
                     }
                     SearchTextBox.Text = "";
                 }
+                sw.Reset();
             }
         }
     }

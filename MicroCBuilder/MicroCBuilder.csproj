@@ -142,12 +142,16 @@
     <Compile Include="LocalSearch.cs" />
     <Compile Include="MCOLBuildContext.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="SignPublisher.cs" />
     <Compile Include="TimeSpanRollingAverage.cs" />
     <Compile Include="ViewModels\LandingPageViewModel.cs" />
     <Compile Include="ViewModels\SettingsPageViewModel.cs" />
     <Compile Include="Views\BuildSummaryControl.xaml.cs">
       <DependentUpon>BuildSummaryControl.xaml</DependentUpon>
     </Compile>
+	<Compile Include="Views\ExportSignsControl.xaml.cs">
+		<DependentUpon>ExportSignsControl.xaml</DependentUpon>
+	</Compile>
     <Compile Include="Views\LandingPage.xaml.cs">
       <DependentUpon>LandingPage.xaml</DependentUpon>
     </Compile>
@@ -264,6 +268,10 @@
     <Page Include="Views\BuildSummaryControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\ExportSignsControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\LandingPage.xaml">
       <SubType>Designer</SubType>
