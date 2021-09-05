@@ -115,12 +115,15 @@ namespace MicroCBuilder.Views
 
             LocalSearch.ReplaceItems(Items);
             Dictionary<string, List<string>> specs = new Dictionary<string, List<string>>();
+            specs.Add("Stock", new List<string>() { "In Stock" });
             specs.Add("Brand", new List<string>());
 
             string[] ignoredspecs = { "SKU", "UPC", "Mfr Part#" };
 
             foreach (var i in Items)
             {
+                i.Specs["Stock"] = i.Stock != "0" ? "In Stock\nAll Items" : "All Items";
+
                 i.Specs["Brand"] = i.Brand;
                 if (!specs["Brand"].Contains(i.Brand))
                 {
@@ -348,7 +351,7 @@ namespace MicroCBuilder.Views
             dataGrid.ItemsSource = new ObservableCollection<Item>(Results.Where(FilterPredicate));
         }
 
-        private Func<Item, bool> FilterPredicate => item => Filters.All(f => string.IsNullOrWhiteSpace(f.Value) || (item.Specs.ContainsKey(f.Category) && item.Specs[f.Category] == f.Value));
+        private Func<Item, bool> FilterPredicate => item => Filters.All(f => string.IsNullOrWhiteSpace(f.Value) || (item.Specs.ContainsKey(f.Category) && item.Specs[f.Category].Split('\n').Any(s => s == f.Value)));
 
         private void FilterRemoveButtonClick(object sender, RoutedEventArgs e)
         {
@@ -377,17 +380,20 @@ namespace MicroCBuilder.Views
 
         private static string[] DEFAULT_FILTERS = new string[]
         {
+            "Stock",
             "Brand"
         };
 
         private static string[] CPU_FILTERS = new string[]
         {
+            "Stock",
             "Brand",
             "Graphics Specifications"
         };
 
         private static string[] MOBO_FILTERS = new string[]
         {
+            "Stock",
             "Brand",
             "Socket Type",
             "Form Factor",
@@ -397,6 +403,7 @@ namespace MicroCBuilder.Views
 
         private static string[] RAM_FILTERS = new string[]
         {
+            "Stock",
             "Brand",
             "Memory Type",
             "Memory Capacity",
@@ -406,6 +413,7 @@ namespace MicroCBuilder.Views
 
         private static string[] CASE_FILTERS = new string[]
         {
+            "Stock",
             "Brand",
             "Case Type",
             "Max Motherboard Size",
@@ -414,6 +422,7 @@ namespace MicroCBuilder.Views
 
         private static string[] PSU_FILTERS = new string[]
         {
+            "Stock",
             "Brand",
             "Wattage",
             "Form Factor",
@@ -423,6 +432,7 @@ namespace MicroCBuilder.Views
 
         private static string[] GPU_FILTERS = new string[]
         {
+            "Stock",
             "Brand",
             "GPU Manufacturer",
             "GPU Chipset"
@@ -430,6 +440,7 @@ namespace MicroCBuilder.Views
 
         private static string[] SSD_FILTERS = new string[]
         {
+            "Stock",
             "Brand",
             "Capacity",
             "Interface",
@@ -438,6 +449,7 @@ namespace MicroCBuilder.Views
 
         private static string[] HDD_FILTERS = new string[]
         {
+            "Stock",
             "Brand",
             "Capacity",
             "Form Factor"
@@ -445,6 +457,7 @@ namespace MicroCBuilder.Views
 
         private static string[] CASEFAN_FILTERS = new string[]
         {
+            "Stock",
             "Brand",
             "Fan Size",
             "LED Color Details"
@@ -452,9 +465,9 @@ namespace MicroCBuilder.Views
 
         private static string[] WATERCOOLINGKIT_FILTERS = new string[]
         {
+            "Stock",
             "Brand",
             "Radiator Size",
-
         };
 
         public static bool DefaultEnabled(ComponentType componentType, string specCategory)
