@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -195,8 +196,6 @@ namespace MicroCBuilder.Views
                 FilterMenuBar.Items.Add(root);
             }
 
-            
-
             HandleQuery("");
         }
 
@@ -299,6 +298,8 @@ namespace MicroCBuilder.Views
             }
         }
 
+        private Regex NumberConverter = new Regex("^(\\d+\\.?\\d*)");
+
         private void dataGrid_Sorting(object sender, Microsoft.Toolkit.Uwp.UI.Controls.DataGridColumnEventArgs e)
         {
             if (e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Ascending)
@@ -326,7 +327,17 @@ namespace MicroCBuilder.Views
                     sort = (i) => i.SKU;
                     break;
                 case "Stock":
-                    sort = (i) => i.Stock;
+                    
+                    sort = (i) =>
+                    {
+                        var match = NumberConverter.Match(i.Stock);
+                        var f = match.Success ? float.Parse(match.Groups[1].Value) : 0;
+                        if(f == 25 && i.Stock.Contains('+'))
+                        {
+                            f++;
+                        }
+                        return f;
+                    };
                     break;
                 case "Price":
                     sort = (i) => i.Price;
