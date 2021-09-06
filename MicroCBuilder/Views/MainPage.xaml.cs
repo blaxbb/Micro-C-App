@@ -434,22 +434,41 @@ namespace MicroCBuilder.Views
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
         #endregion
-
+        Stopwatch sw = new Stopwatch();
         private async void Search_KeyDown(object sender, KeyRoutedEventArgs e)
         {
             if(e.Key == Windows.System.VirtualKey.Enter)
             {
+                sw.Start();
                 if (CurrentTabContent is BuildPage page && page.DataContext is BuildPageViewModel vm)
                 {
                     var text = SearchTextBox.Text;
-                    var match = Regex.Match(text, "^(\\d{6}).{4}$");
+                    Item item = default;
+                    var match = Regex.Match(text, "^(\\d{6})(?:(?:.{4}$)|$)");
                     if(match.Success)
                     {
                         text = match.Groups[1].Value;
+                        item = BuildComponentCache.Current.FindItemBySKU(text);
                     }
-                    await vm.HandleSearch(text);
+                    match = Regex.Match(text, "^(\\d{12})$");
+                    if (match.Success)
+                    {
+                        text = match.Groups[1].Value;
+                        item = BuildComponentCache.Current.FindItemByUPC(text);
+                    }
+
+                    if (item == default)
+                    {
+                        await vm.HandleSearch(text);
+                    }
+                    else
+                    {
+                        Debug.WriteLine($"SW => {sw.Elapsed.TotalMilliseconds}");
+                        vm.AddDuplicate(new BuildComponent() { Item = item, Type = item.ComponentType });
+                    }
                     SearchTextBox.Text = "";
                 }
+                sw.Reset();
             }
         }
     }

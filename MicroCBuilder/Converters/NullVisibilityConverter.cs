@@ -21,7 +21,15 @@ namespace MicroCBuilder.Converters
                 }
 
                 return NullIsCollapsed ? Visibility.Visible : Visibility.Collapsed;
-            }    
+            }
+            if(value is bool b)
+            {
+                //true  -> true -> visible
+                //true  -> false   -> collapsed
+                //false -> true -> collapsed
+                //false -> false   -> visible
+                return b == NullIsCollapsed ? Visibility.Visible : Visibility.Collapsed;
+            }
 
             if(value is null)
             {

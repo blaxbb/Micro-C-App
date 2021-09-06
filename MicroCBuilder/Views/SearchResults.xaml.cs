@@ -22,6 +22,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text.RegularExpressions;
 using System.Windows.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -32,6 +33,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using static MicroCLib.Models.BuildComponent;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -114,12 +116,15 @@ namespace MicroCBuilder.Views
 
             LocalSearch.ReplaceItems(Items);
             Dictionary<string, List<string>> specs = new Dictionary<string, List<string>>();
+            specs.Add("Stock", new List<string>() { "In Stock" });
             specs.Add("Brand", new List<string>());
 
             string[] ignoredspecs = { "SKU", "UPC", "Mfr Part#" };
 
             foreach (var i in Items)
             {
+                i.Specs["Stock"] = i.Stock != "0" ? "In Stock\nAll Items" : "All Items";
+
                 i.Specs["Brand"] = i.Brand;
                 if (!specs["Brand"].Contains(i.Brand))
                 {
@@ -172,7 +177,12 @@ namespace MicroCBuilder.Views
             foreach (var kvp in specs)
             {
                 var root = new MenuFlyoutSubItem() { Text = kvp.Key };
-                
+                if(SearchFilter.DefaultEnabled(ComponentType, kvp.Key))
+                {
+                    var filter = new SearchFilter(kvp.Key, default) { Options = kvp.Value };
+                    filter.PropertyChanged += (sender, args) => UpdateFilter();
+                    Filters.Add(filter);
+                }
                 foreach(var s in kvp.Value)
                 {
                     var filter = new SearchFilter(kvp.Key, s) { Options = kvp.Value };
@@ -288,6 +298,8 @@ namespace MicroCBuilder.Views
             }
         }
 
+        private Regex NumberConverter = new Regex("^(\\d+\\.?\\d*)");
+
         private void dataGrid_Sorting(object sender, Microsoft.Toolkit.Uwp.UI.Controls.DataGridColumnEventArgs e)
         {
             if (e.Column.SortDirection == null || e.Column.SortDirection == DataGridSortDirection.Ascending)
@@ -315,7 +327,17 @@ namespace MicroCBuilder.Views
                     sort = (i) => i.SKU;
                     break;
                 case "Stock":
-                    sort = (i) => i.Stock;
+                    
+                    sort = (i) =>
+                    {
+                        var match = NumberConverter.Match(i.Stock);
+                        var f = match.Success ? float.Parse(match.Groups[1].Value) : 0;
+                        if(f == 25 && i.Stock.Contains('+'))
+                        {
+                            f++;
+                        }
+                        return f;
+                    };
                     break;
                 case "Price":
                     sort = (i) => i.Price;
@@ -340,7 +362,7 @@ namespace MicroCBuilder.Views
             dataGrid.ItemsSource = new ObservableCollection<Item>(Results.Where(FilterPredicate));
         }
 
-        private Func<Item, bool> FilterPredicate => item => Filters.All(f => item.Specs.ContainsKey(f.Category) && item.Specs[f.Category].Contains(f.Value));
+        private Func<Item, bool> FilterPredicate => item => Filters.All(f => string.IsNullOrWhiteSpace(f.Value) || (item.Specs.ContainsKey(f.Category) && item.Specs[f.Category].Split('\n').Any(s => s == f.Value)));
 
         private void FilterRemoveButtonClick(object sender, RoutedEventArgs e)
         {
@@ -366,6 +388,127 @@ namespace MicroCBuilder.Views
         public string Category { get => category; set => SetProperty(ref category, value); }
         public string Value { get => value; set => SetProperty(ref this.value, value); }
         public List<string> Options { get => options; set => SetProperty(ref options, value); }
+
+        private static string[] DEFAULT_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand"
+        };
+
+        private static string[] CPU_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "Graphics Specifications"
+        };
+
+        private static string[] MOBO_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "Socket Type",
+            "Form Factor",
+            "WiFi Support",
+            "Thunderbolt Ports"
+        };
+
+        private static string[] RAM_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "Memory Type",
+            "Memory Capacity",
+            "Memory Speed (MHz)",
+            "LED Color"
+        };
+
+        private static string[] CASE_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "Case Type",
+            "Max Motherboard Size",
+            "Color"
+        };
+
+        private static string[] PSU_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "Wattage",
+            "Form Factor",
+            "Modular",
+            "Rating"
+        };
+
+        private static string[] GPU_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "GPU Manufacturer",
+            "GPU Chipset"
+        };
+
+        private static string[] SSD_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "Capacity",
+            "Interface",
+
+        };
+
+        private static string[] HDD_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "Capacity",
+            "Form Factor"
+        };
+
+        private static string[] CASEFAN_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "Fan Size",
+            "LED Color Details"
+        };
+
+        private static string[] OPERATINGSYSTEM_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "Media Type"
+        };
+
+        private static string[] WATERCOOLINGKIT_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "Radiator Size",
+        };
+
+        public static bool DefaultEnabled(ComponentType componentType, string specCategory)
+        {
+            string[] items = null;
+            items = componentType switch
+            {
+                ComponentType.CPU => CPU_FILTERS,
+                ComponentType.Motherboard => MOBO_FILTERS,
+                ComponentType.RAM => RAM_FILTERS,
+                ComponentType.Case => CASE_FILTERS,
+                ComponentType.PowerSupply => PSU_FILTERS,
+                ComponentType.GPU => GPU_FILTERS,
+                ComponentType.SSD => SSD_FILTERS,
+                ComponentType.HDD => HDD_FILTERS,
+                ComponentType.CaseFan => CASEFAN_FILTERS,
+                ComponentType.OperatingSystem => OPERATINGSYSTEM_FILTERS,
+                ComponentType.WaterCoolingKit => WATERCOOLINGKIT_FILTERS,
+                _ => DEFAULT_FILTERS
+            };
+
+            return items != null && items.Contains(specCategory);
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void OnPropertyChanged([CallerMemberName] string propertyName = "")

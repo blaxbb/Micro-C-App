@@ -22,6 +22,7 @@ using static MicroCLib.Models.BuildComponent.ComponentType;
 using Newtonsoft.Json;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Windows.UI.Xaml.Media;
+using Windows.Web.Http;
 
 namespace MicroCBuilder.ViewModels
 {
@@ -131,7 +132,7 @@ namespace MicroCBuilder.ViewModels
         {
             foreach(var comp in Components.Where(c => c.Item != null))
             {
-                var item = BuildComponentCache.Current.FindItem(comp.Item.SKU);
+                var item = BuildComponentCache.Current.FindItemBySKU(comp.Item.SKU);
                 if(item != null) {
                     var qty = comp.Item.Quantity;
                     comp.Item = item.CloneAndResetQuantity();
@@ -438,7 +439,7 @@ namespace MicroCBuilder.ViewModels
             UpdateHintsAndErrors();
         }
 
-        private void AddDuplicate(BuildComponent orig)
+        public void AddDuplicate(BuildComponent orig)
         {
             var refSku = orig.Item.Specs.ContainsKey("Ref") ? orig.Item.Specs["Ref"] : "";
             BuildComponent comp;
@@ -631,39 +632,13 @@ namespace MicroCBuilder.ViewModels
 
         private async void DoSaveSigns(object obj)
         {
-            var text = string.Join(Environment.NewLine, Components.Where(c => c.Item != null).Select(c => c.Item.SKU));
-            var titleTextBox = new TextBox()
-            {
-                PlaceholderText = "Batch Title",
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                Margin = new Thickness(5)
-            };
 
-            var signs = new string[]
-            {
-                "AD_PEG",
-                "BULK"
-            };
-
-            var signComboBox = new ComboBox()
-            {
-                ItemsSource = signs,
-                SelectedIndex = 0,
-                HorizontalAlignment = HorizontalAlignment.Stretch,
-                Margin = new Thickness(5)
-            };
-
-            var stack = new StackPanel()
-            {
-                Orientation = Orientation.Vertical
-            };
-            stack.Children.Add(titleTextBox);
-            stack.Children.Add(signComboBox);
+            var signControl = new ExportSignsControl();
 
             var dialog = new ContentDialog()
             {
                 Title = "Save Signs",
-                Content = stack,
+                Content = signControl,
                 PrimaryButtonText = "Save",
                 SecondaryButtonText = "Cancel"
             };
@@ -671,52 +646,56 @@ namespace MicroCBuilder.ViewModels
         showDialog:
             var result = await dialog.ShowAsync();
 
+            if (!signControl.SavePassword)
+            {
+                Settings.SignUsername("");
+                Settings.SignPassword("");
+            }
+
             if (result != ContentDialogResult.Primary)
             {
                 return;
             }
-            if (string.IsNullOrWhiteSpace(titleTextBox.Text))
+
+            var checkStrings = new string[] { signControl.Title, signControl.Username, signControl.Password, signControl.BaseUrl, signControl.SignType };
+            var checkStringsOutput = new string[] { nameof(signControl.Title), nameof(signControl.Username), nameof(signControl.Password), nameof(signControl.BaseUrl), nameof(signControl.SignType) };
+
+            for (int i = 0; i < checkStrings.Length; i++)
             {
-                Windows.UI.Popups.MessageDialog msg = new Windows.UI.Popups.MessageDialog("Batch title cannot be empty!", "Error");
-                await msg.ShowAsync();
-                goto showDialog;
+                if (string.IsNullOrWhiteSpace(checkStrings[i]))
+                {
+                    Windows.UI.Popups.MessageDialog msg = new Windows.UI.Popups.MessageDialog($"{checkStringsOutput[i]} cannot be empty!", "Error");
+                    await msg.ShowAsync();
+                    goto showDialog;
+                }
             }
 
-            var savePicker = new Windows.Storage.Pickers.FileSavePicker
-            {
-                SuggestedStartLocation = Windows.Storage.Pickers.PickerLocationId.DocumentsLibrary,
-                SuggestedFileName = $"{titleTextBox.Text}-{signComboBox.SelectedItem}-{Settings.StoreID()}.txt",
-            };
+            Settings.SignBaseUrl(signControl.BaseUrl);
 
-            // Dropdown of file types the user can save the file as
-            savePicker.FileTypeChoices.Add("Text File", new List<string>() { ".txt" });
-            // Default file name if the user does not type one in or select a file to replace
+            var url = await SignPublisher.Publish(
+                skus: Components.Where(c => c.Item != null)
+                    .Select(c => c.Item.SKU)
+                    .ToList(),
+                baseUrl: signControl.BaseUrl,
+                signType: signControl.SignType,
+                username: signControl.Username,
+                password: signControl.Password,
+                batchName: signControl.Title
+            );
 
-            var file = await savePicker.PickSaveFileAsync();
-            if (file != null)
+            if (string.IsNullOrWhiteSpace(url))
             {
-                // Prevent updates to the remote version of the file until
-                // we finish making changes and call CompleteUpdatesAsync.
-                Windows.Storage.CachedFileManager.DeferUpdates(file);
-                // write to file
-                await Windows.Storage.FileIO.WriteTextAsync(file, text);
-                // Let Windows know that we're finished changing the file so
-                // the other app can update the remote version of the file.
-                // Completing updates may require Windows to ask for user input.
-                Windows.Storage.Provider.FileUpdateStatus status =
-                    await Windows.Storage.CachedFileManager.CompleteUpdatesAsync(file);
-                if (status == Windows.Storage.Provider.FileUpdateStatus.Complete)
-                {
-                    Debug.WriteLine("File " + file.Name + " was saved.");
-                }
-                else
-                {
-                    Debug.WriteLine("File " + file.Name + " couldn't be saved.");
-                }
+                Windows.UI.Popups.MessageDialog msg = new Windows.UI.Popups.MessageDialog("Failed to export signs!", "Error");
+                await msg.ShowAsync();
             }
             else
             {
-                Debug.WriteLine("Operation cancelled.");
+                if (signControl.SavePassword)
+                {
+                    Settings.SignUsername(signControl.Username);
+                    Settings.SignPassword(signControl.Password);
+                }
+                await Windows.System.Launcher.LaunchUriAsync(new Uri(url));
             }
         }
     }
