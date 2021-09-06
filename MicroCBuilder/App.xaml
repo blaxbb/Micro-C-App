@@ -12,6 +12,7 @@
                     <converters:NullVisibilityConverter x:Key="HideIfNull"/>
                     <converters:NullVisibilityConverter x:Key="ShowIfNull" NullIsCollapsed="False"/>
                     <converters:QuantityBackgroundConverter x:Key="QuantityBackground"/>
+                    <converters:SplitStringConverter x:Key="SplitStringConverter"/>
                 </ResourceDictionary>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>

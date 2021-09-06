@@ -71,9 +71,22 @@
             <TextBlock Text="{Binding Component.ErrorText}" MaxLines="4" TextWrapping="WrapWholeWords"/>
         </Border>
         <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Visibility="{Binding IsActive, Converter={StaticResource HideIfNull}}">
-            <Border Background="LightGreen" Padding="10" Visibility="{Binding Component.HintText, Converter={StaticResource HideIfNull}}">
-                <TextBlock Text="{Binding Component.HintText}"  Foreground="Black" TextWrapping="WrapWholeWords"/>
-            </Border>
+            <muxc:ItemsRepeater ItemsSource="{Binding Component.HintText, Converter={StaticResource SplitStringConverter}}" Visibility="{Binding Component.HintText, Converter={StaticResource HideIfNull}}">
+                <muxc:ItemsRepeater.Layout>
+                    <muxc:UniformGridLayout MinItemWidth="200"
+                                            MinItemHeight="100"
+                                            MinColumnSpacing="10"
+                                            MinRowSpacing="10"
+                                            ItemsStretch="Uniform"
+                                ItemsJustification="Start"/>
+                </muxc:ItemsRepeater.Layout>
+                <DataTemplate>
+                    <Border Background="LightGreen" Padding="0" MaxWidth="300">
+                        <TextBlock Text="{Binding}" Foreground="Black" TextWrapping="Wrap" HorizontalTextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                    </Border>
+                </DataTemplate>
+            </muxc:ItemsRepeater>
+            
         </Border>
     </Grid>
 </UserControl>
