@@ -25,7 +25,7 @@ namespace MicroCBuilder
             client.DefaultRequestHeaders.Authorization = new Windows.Web.Http.Headers.HttpCredentialsHeaderValue("bearer", auth);
 
             var batch = await CreateBatch(baseUrl, username, batchName);
-            if (string.IsNullOrWhiteSpace(auth))
+            if (batch == null)
             {
                 return default;
             }
@@ -38,7 +38,8 @@ namespace MicroCBuilder
 
             await AddItems(baseUrl, items, signType, username, batch.batchID.ToString());
             client.Dispose();
-            return batch.links.FirstOrDefault()?.href;
+            
+            return $"{baseUrl.Replace("PublishingServices", "PublishingInstore")}/#/home/viewbatches/viewsign/{batch.batchID}";
         }
 
         class LoginOptions
@@ -91,6 +92,8 @@ namespace MicroCBuilder
             public string batchtype { get; set; } = "SIGNS";
             public string area { get; set; }
             public string areaType { get; set; } = "3";
+
+            [JsonProperty("event")]
             public string _event { get; set; } = "Price Changes";
             public string source { get; set; } = "My Print Sort";
 
@@ -107,7 +110,7 @@ namespace MicroCBuilder
         {
             public int batchID { get; set; }
             public string batchType { get; set; }
-            public List<CreateBatchLink> links { get; set; }
+            public CreateBatchLink links { get; set; }
         }
 
         public class CreateBatchLink
@@ -120,11 +123,11 @@ namespace MicroCBuilder
         private static async Task<CreateBatchResult?> CreateBatch(string baseUrl, string username, string batchName)
         {
             var opts = new List<CreateBatchOptions>() { new CreateBatchOptions(batchName, $"Created for signs by {username}", username) };
-            
+            var json2 = JsonConvert.SerializeObject(opts);
             var result = await client.TryPostAsync(
                 new Uri($"{baseUrl}/api/SignBatches"),
                 new HttpStringContent(
-                    JsonConvert.SerializeObject(opts),
+                    json2,
                     Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json"
                 )
             );
@@ -173,14 +176,15 @@ namespace MicroCBuilder
             query["fields"] = "*";
             query["page"] = "1";
             query["per_page"] = "50";
-            query["area"] = "username";
-            query["sort"] = "name DESC";
-            query["filters"] = $"({string.Join(" OR ", skus.Select(sku => $"itemid like ' {sku} '"))})";
+            query["area"] = username;
+            query["sort"] = "name%20DESC";
+            query["filters"] = $"";
 
             uri.Query = query.ToString();
-
+            var url = uri.Uri.AbsoluteUri;
+            url = $"{baseUrl}/api/StoreItemPrice?fields=*&page=1&per_page=50&area={username}&sort=name%20DESC&filters=((%20areaType%20=%200%20)%20OR%20(%20AreaType%20=%202%20AND%20Area%20=%2019%20)%20OR%20(%20AreaType%20=%203%20AND%20Area%20=%20141%20))%20AND%20({string.Join("%20OR%20", skus.Select(sku => $"itemid%20like%20%27%25{sku}%25%27"))})";
             var result = await client.TryGetAsync(
-                uri.Uri
+                new Uri(url)
             );
 
             if (result.Succeeded)
@@ -209,10 +213,10 @@ namespace MicroCBuilder
                 Area = username;
                 BatchId = batchId;
                 DefaultTemplate = defaultTemplate;
-                Filter = $"((( areaType = 0 ) OR " +
+                Filter = $"(( areaType = 0 ) OR " +
                     $"( AreaType = 2 AND Area = 19 ) OR " +
                     $"( AreaType = 3 AND Area = {username} )) AND " +
-                    $"({string.Join(" OR ", items.Select(i => $"id='{i.itemID}'"))}))";
+                    $"({string.Join(" OR ", items.Select(i => $"ID IN ('{i.libraryid}')"))})";
             }
         }
 
@@ -220,11 +224,11 @@ namespace MicroCBuilder
         private static async Task AddItems(string baseUrl, List<FindItemResult> items, string signType, string username, string batchId)
         {
             var opts = new AddItemsOptions(username, batchId, signType, items);
-
+            var json = JsonConvert.SerializeObject(opts);
             var result = await client.TryPostAsync(
                 new Uri($"{baseUrl}/api/v2/SignItems/Create/all"),
                 new HttpStringContent(
-                    JsonConvert.SerializeObject(opts),
+                    json,
                     Windows.Storage.Streams.UnicodeEncoding.Utf8, "application/json"
                 )
             );
