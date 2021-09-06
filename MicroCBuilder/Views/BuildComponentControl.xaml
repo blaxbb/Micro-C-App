@@ -70,8 +70,10 @@
         <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" Background="Red" Padding="10" Visibility="{Binding Component.ErrorText, Converter={StaticResource HideIfNull}}" Margin="0,0,0,10">
             <TextBlock Text="{Binding Component.ErrorText}" MaxLines="4" TextWrapping="WrapWholeWords"/>
         </Border>
-        <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Background="LightGreen" Padding="10" Visibility="{Binding Component.HintText, Converter={StaticResource HideIfNull}}">
-            <TextBlock Text="{Binding Component.HintText}"  Foreground="Black" TextWrapping="WrapWholeWords"/>
+        <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Visibility="{Binding IsActive, Converter={StaticResource HideIfNull}}">
+            <Border Background="LightGreen" Padding="10" Visibility="{Binding Component.HintText, Converter={StaticResource HideIfNull}}">
+                <TextBlock Text="{Binding Component.HintText}"  Foreground="Black" TextWrapping="WrapWholeWords"/>
+            </Border>
         </Border>
     </Grid>
 </UserControl>

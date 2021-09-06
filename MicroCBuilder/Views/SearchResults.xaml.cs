@@ -408,7 +408,7 @@ namespace MicroCBuilder.Views
             "Brand",
             "Socket Type",
             "Form Factor",
-            "Wifi Support",
+            "WiFi Support",
             "Thunderbolt Ports"
         };
 
@@ -474,6 +474,13 @@ namespace MicroCBuilder.Views
             "LED Color Details"
         };
 
+        private static string[] OPERATINGSYSTEM_FILTERS = new string[]
+        {
+            "Stock",
+            "Brand",
+            "Media Type"
+        };
+
         private static string[] WATERCOOLINGKIT_FILTERS = new string[]
         {
             "Stock",
@@ -495,6 +502,7 @@ namespace MicroCBuilder.Views
                 ComponentType.SSD => SSD_FILTERS,
                 ComponentType.HDD => HDD_FILTERS,
                 ComponentType.CaseFan => CASEFAN_FILTERS,
+                ComponentType.OperatingSystem => OPERATINGSYSTEM_FILTERS,
                 ComponentType.WaterCoolingKit => WATERCOOLINGKIT_FILTERS,
                 _ => DEFAULT_FILTERS
             };
