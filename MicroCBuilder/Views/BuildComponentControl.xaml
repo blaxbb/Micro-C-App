@@ -4,10 +4,12 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:MicroCBuilder.Views"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:viewmodels="using:MicroCBuilder.ViewModels"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewmodels="using:MicroCBuilder.ViewModels"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     xmlns:microcbuilder="using:MicroCBuilder"
     xmlns:converters="using:MicroCBuilder.Converters"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d">
     <!--<UserControl.DataContext>
         <viewmodels:BuildComponentControlViewModel/>
@@ -67,26 +69,31 @@
         <TextBlock Grid.Column="3" Grid.Row="1" Text="{Binding Component.Item.SKU}"/>
         <muxc:NumberBox Grid.Column="4" Value="{Binding Quantity, Mode=TwoWay}"  VerticalAlignment="Center" SpinButtonPlacementMode="Compact" Visibility="{Binding Component.Item, Converter={StaticResource HideIfNull}}"/>
         <TextBlock Grid.Column="4" Grid.Row="1" Text="{Binding Component.Item.Stock, Converter={StaticResource Format}, ConverterParameter='Stock {0}'}" HorizontalAlignment="Center"/>
-        <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" Background="Red" Padding="10" Visibility="{Binding Component.ErrorText, Converter={StaticResource HideIfNull}}" Margin="0,0,0,10">
-            <TextBlock Text="{Binding Component.ErrorText}" MaxLines="4" TextWrapping="WrapWholeWords"/>
+        <Border Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4">
+            <controls:AdaptiveGridView ItemsSource="{Binding Component.ErrorText, Converter={StaticResource SplitStringConverter}}" Visibility="{Binding Component.ErrorText, Converter={StaticResource HideIfNull}}"
+                                       DesiredWidth="200"
+                                       StretchContentForSingleRow="False">
+                <controls:AdaptiveGridView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="Red">
+                            <TextBlock Text="{Binding}" Foreground="White" Padding="15" TextWrapping="Wrap" HorizontalTextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </DataTemplate>
+                </controls:AdaptiveGridView.ItemTemplate>
+            </controls:AdaptiveGridView>
         </Border>
         <Border Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="4" Visibility="{Binding IsActive, Converter={StaticResource HideIfNull}}">
-            <muxc:ItemsRepeater ItemsSource="{Binding Component.HintText, Converter={StaticResource SplitStringConverter}}" Visibility="{Binding Component.HintText, Converter={StaticResource HideIfNull}}">
-                <muxc:ItemsRepeater.Layout>
-                    <muxc:UniformGridLayout MinItemWidth="200"
-                                            MinItemHeight="100"
-                                            MinColumnSpacing="10"
-                                            MinRowSpacing="10"
-                                            ItemsStretch="Uniform"
-                                ItemsJustification="Start"/>
-                </muxc:ItemsRepeater.Layout>
-                <DataTemplate>
-                    <Border Background="LightGreen" Padding="0" MaxWidth="300">
-                        <TextBlock Text="{Binding}" Foreground="Black" TextWrapping="Wrap" HorizontalTextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                    </Border>
-                </DataTemplate>
-            </muxc:ItemsRepeater>
-            
+            <controls:AdaptiveGridView ItemsSource="{Binding Component.HintText, Converter={StaticResource SplitStringConverter}}" Visibility="{Binding Component.HintText, Converter={StaticResource HideIfNull}}"
+                                       DesiredWidth="200"
+                                       StretchContentForSingleRow="False">
+                <controls:AdaptiveGridView.ItemTemplate>
+                    <DataTemplate>
+                        <Border Background="LightGreen">
+                            <TextBlock Text="{Binding}" Foreground="Black" Padding="15" TextWrapping="Wrap" HorizontalTextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </DataTemplate>
+                </controls:AdaptiveGridView.ItemTemplate>
+            </controls:AdaptiveGridView>
         </Border>
     </Grid>
 </UserControl>
