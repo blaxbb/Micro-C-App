@@ -574,11 +574,11 @@ namespace MicroCBuilder.Views
             double fontSize = 32;
             var promoItems = new List<TextBlock>();
 
-            var cpu = vm.Components.FirstOrDefault(c => c.Type == BuildComponent.ComponentType.CPU);
-            var gpu = vm.Components.FirstOrDefault(c => c.Type == BuildComponent.ComponentType.GPU);
-            var ram = vm.Components.Where(c => c.Type == BuildComponent.ComponentType.RAM);
-            var ssd = vm.Components.FirstOrDefault(c => c.Type == BuildComponent.ComponentType.SSD);
-            var _case = vm.Components.FirstOrDefault(c => c.Type == BuildComponent.ComponentType.Case);
+            var cpu = vm.Components.FirstOrDefault(c => c.Item != null && c.Type == BuildComponent.ComponentType.CPU);
+            var gpu = vm.Components.FirstOrDefault(c => c.Item != null && c.Type == BuildComponent.ComponentType.GPU);
+            var ram = vm.Components.Where(c => c.Item != null && c.Type == BuildComponent.ComponentType.RAM);
+            var ssd = vm.Components.FirstOrDefault(c => c.Item != null && c.Type == BuildComponent.ComponentType.SSD);
+            var _case = vm.Components.FirstOrDefault(c => c.Item != null && c.Type == BuildComponent.ComponentType.Case);
 
             if (cpu?.Item != null && cpu.Item.Specs.ContainsKey("Processor"))
             {
@@ -592,9 +592,9 @@ namespace MicroCBuilder.Views
             {
                 var total = ram.Where(r => r.Item != null)
                     .Where(r => r.Item.Specs.ContainsKey("Memory Capacity"))
-                    .Select(r => r.Item.Specs["Memory Capacity"])
-                    .Select(cap => Regex.Match(cap, "(\\d+)G").Groups[1].Value)
-                    .Sum(cap => int.Parse(cap));
+                    .Select(r => (r.Item.Specs["Memory Capacity"], r))
+                    .Select(data => (Regex.Match(data.Item1, "(\\d+)G").Groups[1].Value, data.r))
+                    .Sum(data => int.Parse(data.Value) * data.r.Item.Quantity);
 
                 var first = ram.FirstOrDefault(r => r.Item != null);
                 string speed = "";
