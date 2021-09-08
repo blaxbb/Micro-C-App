@@ -590,11 +590,12 @@ namespace MicroCBuilder.Views
             }
             if (ram != null && ram.Count(r => r.Item != null) > 0)
             {
-                var total = ram.Where(r => r.Item != null)
+                var total = ram.Where(r => r.Item != null && r.Item.Specs != null)
                     .Where(r => r.Item.Specs.ContainsKey("Memory Capacity"))
                     .Select(r => (r.Item.Specs["Memory Capacity"], r))
-                    .Select(data => (Regex.Match(data.Item1, "(\\d+)G").Groups[1].Value, data.r))
-                    .Sum(data => int.Parse(data.Value) * data.r.Item.Quantity);
+                    .Select(data => (Regex.Match(data.Item1, "(\\d+)\\s*G"), data.r))
+                    .Where(data => data.Item1.Success)
+                    .Sum(data => int.Parse(data.Item1.Groups[1].Value) * data.r.Item.Quantity);
 
                 var first = ram.FirstOrDefault(r => r.Item != null);
                 string speed = "";

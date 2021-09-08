@@ -23,6 +23,7 @@ using Newtonsoft.Json;
 using Microsoft.Toolkit.Uwp.Helpers;
 using Windows.UI.Xaml.Media;
 using Windows.Web.Http;
+using static MicroCLib.Models.BuildComponent;
 
 namespace MicroCBuilder.ViewModels
 {
@@ -287,9 +288,39 @@ namespace MicroCBuilder.ViewModels
         {
             var name = new TextBox() { PlaceholderText = "Name" };
             var price = new NumberBox() { PlaceholderText = "Price" };
+            var sku = new TextBox() { PlaceholderText = "SKU" };
+            var type = new ComboBox() { PlaceholderText = "Component Type", ItemsSource = Settings.Categories(), HorizontalAlignment = HorizontalAlignment.Stretch};
+
+            var ramPromoInfo = new Grid() { Visibility = Visibility.Collapsed };
+            ramPromoInfo.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+            ramPromoInfo.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) });
+
+            var ramCapacity = new NumberBox() { PlaceholderText = "Capacity", ValidationMode = NumberBoxValidationMode.InvalidInputOverwritten, HorizontalAlignment = HorizontalAlignment.Stretch };
+            var ramSpeed = new TextBox() { PlaceholderText = "Speed (MHz)", HorizontalAlignment = HorizontalAlignment.Stretch };
+            ramPromoInfo.Children.Add(ramCapacity);
+            ramPromoInfo.Children.Add(ramSpeed);
+            Grid.SetColumn(ramCapacity, 0);
+            Grid.SetColumn(ramSpeed, 1);
+
             var panel = new StackPanel() { Orientation = Orientation.Vertical };
             panel.Children.Add(name);
             panel.Children.Add(price);
+            panel.Children.Add(sku);
+            panel.Children.Add(type);
+            panel.Children.Add(ramPromoInfo);
+
+            type.SelectionChanged += (sender, args) =>
+            {
+                if(type.SelectedValue is ComponentType t && t == RAM)
+                {
+                    ramPromoInfo.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    ramPromoInfo.Visibility = Visibility.Collapsed;
+                }
+            };
+
             var dialog = new ContentDialog
             {
                 Title = "Add - Search",
@@ -303,15 +334,36 @@ namespace MicroCBuilder.ViewModels
             var dialogResult = await dialog.ShowAsync();
             if (dialogResult != ContentDialogResult.Secondary)
             {
-                AddDuplicate(new BuildComponent()
+                var selectedType = (ComponentType)(type.SelectedItem ?? ComponentType.Miscellaneous);
+                var comp = new BuildComponent()
                 {
-                    Type = BuildComponent.ComponentType.Miscellaneous,
+                    Type = selectedType,
                     Item = new Item()
                     {
                         Name = name.Text,
-                        Price = (float)(double.IsNaN(price.Value) ? 0d : price.Value)
+                        Price = (float)(double.IsNaN(price.Value) ? 0d : price.Value),
+                        SKU = string.IsNullOrWhiteSpace(sku.Text) ? "000000" : sku.Text,
+                        ComponentType = selectedType
                     }
-                });
+                };
+
+                switch (comp.Type)
+                {
+                    case CPU:
+                        comp.Item.Specs.Add("Processor", name.Text);
+                        break;
+                    case GPU:
+                        comp.Item.Specs.Add("GPU Chipset", name.Text);
+                        break;
+                    case RAM:
+                        comp.Item.Specs.Add("Memory Capacity", $"{ramCapacity.Value}GB");
+                        comp.Item.Specs.Add("Memory Speed (MHz)", ramSpeed.Text);
+                        break;
+                    case SSD:
+                        comp.Item.Specs.Add("Capacity", name.Text);
+                        break;
+                }
+                AddDuplicate(comp);
             }
 
             UpdateHintsAndErrors();

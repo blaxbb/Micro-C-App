@@ -78,7 +78,7 @@
                     <DataTemplate>
                         <controls:DropShadowPanel VerticalAlignment="Top" HorizontalAlignment="Center">
                             <Border Background="Red">
-                                <TextBlock Text="{Binding}" Foreground="Black" Padding="25" TextWrapping="Wrap" HorizontalTextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                <TextBlock Text="{Binding}" Foreground="White" Padding="25" TextWrapping="Wrap" HorizontalTextAlignment="Center" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                             </Border>
                         </controls:DropShadowPanel>
                     </DataTemplate>
