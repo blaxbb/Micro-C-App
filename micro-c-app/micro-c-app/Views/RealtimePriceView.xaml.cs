@@ -55,6 +55,11 @@ namespace micro_c_app.Views
                     {
                         frame.Background = Brush.Red;
                     }
+                    priceLabel.Text = $"${info.Item.Price} - {priceInfo[maxIndex].Price}";
+                }
+                else
+                {
+                    priceLabel.Text = $"${info.Item.Price}";
                 }
 
                 nameLabel.Text = info.Item.Name;
@@ -67,7 +72,6 @@ namespace micro_c_app.Views
                 {
                     stockLabel.Text = $"{info.Item.Stock} in stock";
                 }
-                priceLabel.Text = $"${info.Item.Price}";
             }
         }
     }
