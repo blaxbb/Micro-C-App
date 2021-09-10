@@ -40,14 +40,14 @@ namespace micro_c_app.Views
                     double maxValue = priceInfo[0].Size;
                     for(int i = 1; i < priceInfo.Count; i++)
                     {
-                        if(priceInfo[i].Size > maxValue)
+                        if(priceInfo[i].Size > maxValue && priceInfo[i].Price > .4)
                         {
                             maxIndex = i;
                             maxValue = priceInfo[i].Size;
                         }
                     }
 
-                    if(info.Item.Price == priceInfo[maxIndex].Price)
+                    if(info.Item.Price == priceInfo[maxIndex].Price || (info.Item.Price == (priceInfo[maxIndex].Price / 100)))
                     {
                         frame.Background = Brush.Green;
                     }
