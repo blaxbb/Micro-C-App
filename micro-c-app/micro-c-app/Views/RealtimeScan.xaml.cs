@@ -2,9 +2,11 @@
 using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
@@ -17,6 +19,7 @@ namespace micro_c_app.Views
     public partial class RealtimeScan : ContentPage
     {
         Dictionary<string, RealtimeBarcodeInfo> BarcodeInfo = new Dictionary<string, RealtimeBarcodeInfo>();
+        Dictionary<string, RealtimePriceInfo> PriceInfo = new Dictionary<string, RealtimePriceInfo>();
         List<string> FailedSearches = new List<string>();
         bool SearchActive { get; set; }
         private const string FAILED_TEXT = "Failed";
@@ -62,6 +65,16 @@ namespace micro_c_app.Views
                     }
                 }
             }
+            List<string> toRemove = new List<string>();
+            foreach (var kvp in PriceInfo)
+            {
+                var info = kvp.Value;
+                if (DateTime.Now - info.LastScanned > TimeSpan.FromMilliseconds(1000))
+                {
+                    toRemove.Add(kvp.Key);
+                }
+            }
+            toRemove.ForEach(k => PriceInfo.Remove(k));
 
             await Device.InvokeOnMainThreadAsync(() =>
             {
@@ -77,52 +90,21 @@ namespace micro_c_app.Views
                         continue;
                     }
 
-                    SetPosition(info);
-
-                    if (info.Item != null)
+                    if (info.View != null)
                     {
-                        SetGUIValues(info);
-                    }
-                    else
-                    {
-                        info.NameLabel.Text = $"Loading... {info.Text}";
+                        info.View.Update(info, PriceInfo.Values.ToList());
                     }
                 }
 
                 foreach (var remove in toRemove)
                 {
                     var info = BarcodeInfo[remove];
-                    grid.Children.Remove(info.OuterFrame);
+                    priceInfo.Children.Remove(info.View);
                     BarcodeInfo.Remove(remove);
                 }
             });
 
-            await Task.Delay(1000 / 30);
-        }
-
-        private void SetPosition(RealtimeBarcodeInfo info)
-        {
-            var maxX = grid.Width - 225;
-            var maxY = grid.Height - 210;
-
-            double clamp(double value, double max) => value > max ? max : value;
-
-            info.CurrentPosition = new Point(
-                                                clamp(Lerp(info.CurrentPosition.X, info.TargetPosition.X, .3d), maxX),
-                                                clamp(Lerp(info.CurrentPosition.Y, info.TargetPosition.Y, .3d), maxY)
-                                            );
-
-            info.Grid.Margin = new Thickness(info.CurrentPosition.X, info.CurrentPosition.Y, 0, 0);
-        }
-
-        private void SetGUIValues(RealtimeBarcodeInfo info)
-        {
-            const int MAX_NAME_LENGTH = 36;
-            info.NameLabel.Text = info.Item.Name.Length > MAX_NAME_LENGTH ? info.Item.Name.Substring(0, MAX_NAME_LENGTH) : info.Item.Name;
-            info.SkuLabel.Text = info.Item.SKU;
-            info.PriceLabel.Text = info.Item.Price.ToString("$0.00");
-            info.StockLabel.Text = $"{info.Item.Stock} in stock";
-            info.ClearanceLabel.Text = info.Item.ClearanceItems.Count > 0 ? $"Clear {info.Item.ClearanceItems.Count}" : "";
+            await Task.Delay(1000/10);
         }
 
         private async Task FindItem(RealtimeBarcodeInfo info)
@@ -169,9 +151,9 @@ namespace micro_c_app.Views
             GoogleVisionBarCodeScanner.Methods.ToggleFlashlight();
         }
 
-        private async void CameraView_OnDetected(object sender, GoogleVisionBarCodeScanner.OnDetectedEventArg e)
+        private async void CameraView_OnDetected(object sender, GoogleVisionBarCodeScanner.OnBarcodeDetectedEventArg e)
         {
-            Device.BeginInvokeOnMainThread(() => GoogleVisionBarCodeScanner.Methods.SetIsScanning(true));
+            Device.BeginInvokeOnMainThread(() => GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true));
 
             List<GoogleVisionBarCodeScanner.BarcodeResult> barcodes = e.BarcodeResults;
 
@@ -189,150 +171,35 @@ namespace micro_c_app.Views
                     continue;
                 }
 
-                barcode.DisplayValue = filtered;
+                barcode.Value = filtered;
 
                 RealtimeBarcodeInfo info;
                 Point target = new Point(barcode.Points[0].x * grid.Width, barcode.Points[0].y * grid.Height);
 
-                if (!BarcodeInfo.ContainsKey(barcode.DisplayValue))
+                if (!BarcodeInfo.ContainsKey(barcode.Value))
                 {
                     //found new barcode
 
                     info = new RealtimeBarcodeInfo()
                     {
-                        Text = barcode.DisplayValue,
-                        CurrentPosition = target,
+                        Text = barcode.Value,
                         LastScanned = DateTime.Now
                     };
-                    BarcodeInfo[barcode.DisplayValue] = info;
+                    BarcodeInfo[barcode.Value] = info;
 
                     await Device.InvokeOnMainThreadAsync(() =>
                     {
-                        CreateGUIForBarcodeInfo(info);
+                        info.View = new RealtimePriceView();
+                        priceInfo.Children.Add(info.View);
                     });
                 }
                 else
                 {
-                    info = BarcodeInfo[barcode.DisplayValue];
+                    info = BarcodeInfo[barcode.Value];
                 }
 
                 info.LastScanned = DateTime.Now;
-                info.TargetPosition = target;
             }
-        }
-
-        private void CreateGUIForBarcodeInfo(RealtimeBarcodeInfo info)
-        {
-            /*
-             * Create GUI for new barcode
-             * 
-             * Frame - transparent, fully covers camera view
-             *  -Grid  - margin is set on this to adjust position
-             *   -Label - Content
-             */
-            Application.Current.Resources.TryGetValue("PrimaryColor", out var color);
-            var primaryColor = (Color)color;
-            Application.Current.Resources.TryGetValue("PrimaryTextColor", out color);
-            var textColor = (Color)color;
-
-            var frame = new Frame()
-            {
-                Padding = 0,
-                BackgroundColor = Color.Transparent,
-                InputTransparent = true
-            };
-
-            var barcodeGrid = new Grid()
-            {
-                BackgroundColor = primaryColor,
-                Opacity = .85d,
-                Margin = new Thickness(0, 0, 0, 0),
-                WidthRequest = ITEM_WIDTH,
-                MinimumWidthRequest = ITEM_WIDTH,
-                HeightRequest = ITEM_HEIGHT,
-                MinimumHeightRequest = ITEM_HEIGHT,
-                HorizontalOptions = LayoutOptions.Start,
-                VerticalOptions = LayoutOptions.Start,
-                Padding = new Thickness(15),
-                InputTransparent = false
-            };
-
-            barcodeGrid.GestureRecognizers.Add(new TapGestureRecognizer()
-            {
-                Command = new Command(async () =>
-                {
-                    if (info.Item != null)
-                    {
-                        await Xamarin.Essentials.Browser.OpenAsync($"https://microcenter.com{info.Item.URL}", Xamarin.Essentials.BrowserLaunchMode.SystemPreferred);
-                    }
-                })
-            });
-
-            barcodeGrid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Star });
-
-            barcodeGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(2, GridUnitType.Star) });
-            barcodeGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Star });
-            barcodeGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Star });
-
-            frame.Content = barcodeGrid;
-
-            Label buildLabel() => new Label()
-            {
-                TextColor = textColor,
-                FontSize = 16,
-                VerticalOptions = LayoutOptions.Center,
-                VerticalTextAlignment = TextAlignment.Center,
-                InputTransparent = true,
-            };
-
-            info.NameLabel = buildLabel();
-            info.NameLabel.MaxLines = 2;
-            barcodeGrid.Children.Add(info.NameLabel);
-            Grid.SetRow(info.NameLabel, 0);
-            Grid.SetColumn(info.NameLabel, 0);
-
-            var stack1 = new StackLayout()
-            {
-                Orientation = StackOrientation.Horizontal,
-                InputTransparent = true
-            };
-            barcodeGrid.Children.Add(stack1);
-            Grid.SetRow(stack1, 1);
-            Grid.SetColumn(stack1, 0);
-
-            info.SkuLabel = buildLabel();
-            info.SkuLabel.HorizontalOptions = LayoutOptions.StartAndExpand;
-            stack1.Children.Add(info.SkuLabel);
-
-            info.PriceLabel = buildLabel();
-            stack1.Children.Add(info.PriceLabel);
-
-            var stack2 = new StackLayout()
-            {
-                Orientation = StackOrientation.Horizontal
-            };
-            barcodeGrid.Children.Add(stack2);
-            Grid.SetRow(stack2, 2);
-            Grid.SetColumn(stack2, 0);
-            
-            info.StockLabel = buildLabel();
-            info.StockLabel.HorizontalOptions = LayoutOptions.StartAndExpand;
-            stack2.Children.Add(info.StockLabel);
-
-            info.ClearanceLabel = buildLabel();
-            stack2.Children.Add(info.ClearanceLabel);
-
-            info.OuterFrame = frame;
-            info.Grid = barcodeGrid;
-
-            grid.Children.Add(frame);
-            Grid.SetRow(frame, 1);
-
-        }
-
-        private double Lerp(double current, double target, double dt)
-        {
-            return (1 - dt) * current + (dt * target);
         }
 
         protected bool SetProperty<T>(ref T backingStore, T value,
@@ -345,23 +212,65 @@ namespace micro_c_app.Views
             OnPropertyChanged(propertyName);
             return true;
         }
+
+        private void CameraView_OnTextDetected(object sender, OnTextDetectedEventArg e)
+        {
+            foreach(var text in e.TextResults)
+            {
+                if (PriceInfo.ContainsKey(text.Value))
+                {
+                    var item = PriceInfo[text.Value];
+                    item.LastScanned = DateTime.Now;
+                    item.Size = RealtimePriceInfo.GetSize(text.Points);
+                    //Debug.WriteLine($"{item.Price} - {item.Size}");
+                }
+                else
+                {
+                    var match = Regex.Match(text.Value, "(\\d+\\.*\\d*)$");
+                    if (match.Success)
+                    {
+                        var price = float.Parse(match.Groups[1].Value);
+
+                        var info = new RealtimePriceInfo()
+                        {
+                            Text = text.Value,
+                            Price = price,
+                            LastScanned = DateTime.Now,
+                            Size = RealtimePriceInfo.GetSize(text.Points)
+                        };
+                        PriceInfo.Add(text.Value, info);
+                    }
+                }
+            }
+            Device.BeginInvokeOnMainThread(async () => {
+                await Task.Delay(100);
+                GoogleVisionBarCodeScanner.Methods.SetIsTextScanning(true);
+            });
+        }
     }
 
     public class RealtimeBarcodeInfo
     {
         public string Text { get; set; }
-        public Point CurrentPosition { get; set; }
-        public Point TargetPosition { get; set; }
         public DateTime LastScanned { get; set; }
 
-        public Frame OuterFrame { get; set; }
-        public Grid Grid { get; set; }
-        public Label NameLabel { get; set; }
-        public Label SkuLabel { get; set; }
-        public Label PriceLabel { get; set; }
-        public Label StockLabel { get; set; }
-        public Label ClearanceLabel { get; set; }
+        public RealtimePriceView View { get; set; }
 
         public Item Item { get; set; }
+    }
+    public class RealtimePriceInfo
+    {
+        public string Text { get; set; }
+        public float Price { get; set; }
+        public double Size { get; set; }
+        public DateTime LastScanned { get; set; }
+        public static double GetSize(List<(double x, double y)> points)
+        {
+            var minX = points.Min(p => p.x);
+            var maxX = points.Max(p => p.x);
+            var minY = points.Min(p => p.y);
+            var maxY = points.Max(p => p.y);
+            return (maxX - minX) * (maxY - minY);
+        }
     }
 }

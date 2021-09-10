@@ -56,11 +56,11 @@ namespace micro_c_app.Views
             //    OnScanResult?.Invoke(result);
             //};
             //scanner.IsScanning = true;
-
-            scanner2.OnDetected += (sender, args) =>
+            Methods.SetIsBarcodeScanning(true);
+            scanner2.OnBarcodeDetected += (sender, args) =>
             {
                 OnScanResult?.Invoke(args.BarcodeResults.FirstOrDefault());
-                Device.StartTimer(TimeSpan.FromSeconds(1), () => { Methods.SetIsScanning(true); return false; });
+                Device.StartTimer(TimeSpan.FromSeconds(1), () => { Methods.SetIsBarcodeScanning(true); return false; });
             };
             IsRunningTask = false;
             PropertyChanged += ScannerPage_PropertyChanged;

@@ -160,7 +160,7 @@ namespace micro_c_app.Views
                         return;
                     }
 
-                    AnalyticsService.Track("Scan Result", result.DisplayValue);
+                    AnalyticsService.Track("Scan Result", result.Value);
                     Debug.WriteLine($"SCANNED {result}");
                     if (SettingsPage.Vibrate())
                     {
@@ -226,17 +226,17 @@ namespace micro_c_app.Views
 
         public static string FilterBarcodeResult(BarcodeResult result)
         {
-            if (Regex.IsMatch(result.DisplayValue, "\\d{12}"))
+            if (Regex.IsMatch(result.Value, "\\d{12}"))
             {
-                return result.DisplayValue;
+                return result.Value;
             }
 
-            if(result.DisplayValue.Length < 6)
+            if(result.Value.Length < 6)
             {
                 return "";
             }
 
-            var match = Regex.Match(result.DisplayValue, "\\d{6}");
+            var match = Regex.Match(result.Value, "\\d{6}");
             if (match.Success)
             {
                 return match.Groups[0].Value;

@@ -19,8 +19,10 @@
                 <Button x:Name="FlashlightButton" Text="Flashlight" BackgroundColor="#0075FF" TextColor="White" Clicked="FlashlightButton_Clicked" HorizontalOptions="EndAndExpand"
                         WidthRequest="150" CornerRadius="0"/>
             </StackLayout>
-            <gv:CameraView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" OnDetected="CameraView_OnDetected" Grid.Row="1"
+            <gv:CameraView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" OnBarcodeDetected="CameraView_OnDetected" OnTextDetected="CameraView_OnTextDetected" Grid.Row="1"
                            DefaultTorchOn="False" VibrationOnDetected="False"/>
+            <StackLayout Orientation="Vertical" VerticalOptions="End" Grid.Row="1" x:Name="priceInfo">
+            </StackLayout>
         </Grid>
 
     </ContentPage.Content>
