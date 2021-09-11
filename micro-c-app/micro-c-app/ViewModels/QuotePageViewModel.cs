@@ -20,6 +20,7 @@ namespace micro_c_app.ViewModels
 {
     public class QuotePageViewModel : BaseViewModel
     {
+        public static QuotePageViewModel Instance;
         public INavigation Navigation;
         private bool notBusy;
         private Item? selectedItem;
@@ -64,6 +65,7 @@ namespace micro_c_app.ViewModels
 
         public QuotePageViewModel()
         {
+            Instance = this;
             Title = "Quote";
             NotBusy = true;
             if (RestoreState.Instance.QuoteItems != null)
@@ -225,6 +227,25 @@ namespace micro_c_app.ViewModels
             });
 
             BatchScan = new Command(() => DoBatchScan());
+        }
+
+        public static void AddItem(Item item)
+        {
+            if(Instance == null)
+            {
+                if (RestoreState.Instance != null)
+                {
+                    RestoreState.Instance.QuoteItems.Add(item);
+                    RestoreState.Save();
+                }
+            }
+            else
+            {
+                Instance.Items.Add(item);
+                item.PropertyChanged += (sender, args) => { Instance.UpdateProperties(); };
+                Instance.LastItem = item;
+
+            }
         }
 
         private void DoLoad(CollectionLoadPageViewModel<Item> obj)

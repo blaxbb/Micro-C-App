@@ -19,6 +19,7 @@ namespace micro_c_app.ViewModels
 {
     public class BuildPageViewModel : BaseViewModel
     {
+        public static BuildPageViewModel Instance;
         private string? buildURL;
         private ObservableCollection<BuildComponent> components;
 
@@ -50,6 +51,7 @@ namespace micro_c_app.ViewModels
 
         public BuildPageViewModel()
         {
+            Instance = this;
             Title = "Build";
 
             MessagingCenter.Subscribe<BuildComponentViewModel>(this, "selected", BuildComponentSelected);
@@ -137,6 +139,33 @@ namespace micro_c_app.ViewModels
             });
 
             BatchScan = new Command(() => DoBatchScan());
+        }
+
+        public static void Add(Item item)
+        {
+            if(Instance != null)
+            {
+                var comp = new BuildComponent()
+                {
+                    Item = item,
+                    Type = item.ComponentType
+                };
+                Instance.ReplaceOrAdd(comp);
+            }
+            else
+            {
+                if(RestoreState.Instance?.BuildComponents != null)
+                {
+                    var comp = new BuildComponent()
+                    {
+                        Item = item,
+                        Type = item.ComponentType
+                    };
+
+                    ReplaceOrAdd(comp, RestoreState.Instance.BuildComponents);
+                    RestoreState.Save();
+                }
+            }
         }
 
         void SetupDefaultComponents()
@@ -238,25 +267,30 @@ namespace micro_c_app.ViewModels
 
         private void ReplaceOrAdd(BuildComponent component)
         {
-            if(component.Item == null)
+            ReplaceOrAdd(component, Components);
+            UpdateProperties();
+        }
+
+        private static void ReplaceOrAdd(BuildComponent component, IList<BuildComponent> components)
+        {
+            if (component.Item == null)
             {
                 return;
             }
 
-            var existing = Components.FirstOrDefault(c => c.Item == null && (c.Type == component.Type || component.Item.ComponentType == c.Type));
-            if(existing != null)
+            var existing = components.FirstOrDefault(c => c.Item == null && (c.Type == component.Type || component.Item.ComponentType == c.Type));
+            if (existing != null)
             {
                 existing.Item = component.Item;
             }
             else
             {
-                var index = Components.ToList().FindLastIndex(c => c.Type == component.Type);
-                if(index >= 0)
+                var index = components.ToList().FindLastIndex(c => c.Type == component.Type);
+                if (index >= 0)
                 {
-                    Components.Insert(index, component);
+                    components.Insert(index, component);
                 }
             }
-            UpdateProperties();
         }
 
         private void DoBatchScan()

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using micro_c_app.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -43,7 +44,7 @@ namespace micro_c_app.Views
                     double maxValue = priceInfo[0].Size;
                     for(int i = 1; i < priceInfo.Count; i++)
                     {
-                        if(priceInfo[i].Size > maxValue && priceInfo[i].Price > .4 && priceInfo[i].Price < 1000000)
+                        if(priceInfo[i].Size > maxValue && priceInfo[i].Price > .4 && priceInfo[i].Price < 10000000)
                         {
                             maxIndex = i;
                             maxValue = priceInfo[i].Size;
@@ -89,9 +90,20 @@ namespace micro_c_app.Views
                         "Add to quote",
                         "Add to build"
                     });
-                    if (result == "Webpage")
+                    switch (result)
                     {
-                        await Xamarin.Essentials.Browser.OpenAsync($"https://microcenter.com{BarcodeInfo.Item.URL}", Xamarin.Essentials.BrowserLaunchMode.SystemPreferred);
+                        case "Webpage":
+                            await Xamarin.Essentials.Browser.OpenAsync($"https://microcenter.com{BarcodeInfo.Item.URL}", Xamarin.Essentials.BrowserLaunchMode.SystemPreferred);
+                            break;
+                        case "Product Info":
+                            await Shell.Current.GoToAsync($"//SearchPage?search={BarcodeInfo.Item.SKU}");
+                            break;
+                        case "Add to quote":
+                            QuotePageViewModel.AddItem(BarcodeInfo.Item.CloneAndResetQuantity());
+                            break;
+                        case "Add to build":
+                            BuildPageViewModel.Add(BarcodeInfo.Item.CloneAndResetQuantity());
+                            break;
                     }
                 }
             });
