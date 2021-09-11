@@ -104,7 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="BarcodeScanner.XF.Realtime">
-      <Version>5.1.2</Version>
+      <Version>5.1.3</Version>
     </PackageReference>
     <PackageReference Include="micro-c-lib">
       <Version>1.0.9</Version>
