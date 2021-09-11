@@ -226,7 +226,7 @@ namespace micro_c_app.Views
                 }
                 else
                 {
-                    var match = Regex.Match(text.Value, "(\\d+\\.*\\d*)$");
+                    var match = Regex.Match(text.Value, "^\\$*(\\d+\\.*\\d*)$");
                     if (match.Success)
                     {
                         var price = float.Parse(match.Groups[1].Value);
@@ -243,7 +243,6 @@ namespace micro_c_app.Views
                 }
             }
             Device.BeginInvokeOnMainThread(async () => {
-                await Task.Delay(100);
                 GoogleVisionBarCodeScanner.Methods.SetIsTextScanning(true);
             });
         }

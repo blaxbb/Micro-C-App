@@ -4,7 +4,10 @@
              x:Class="micro_c_app.Views.RealtimePriceView">
   <ContentView.Content>
         <Frame BorderColor="Black" CornerRadius="5" BackgroundColor="#99f0ff00" Padding="10" Margin="10" x:Name="frame">
-            <Grid>
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Tapped="TapGestureRecognizer_Tapped"/>
+            </Frame.GestureRecognizers>
+            <Grid InputTransparent="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
