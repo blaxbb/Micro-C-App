@@ -407,6 +407,7 @@ namespace MicroCBuilder.Views
             "Stock",
             "Brand",
             "Socket Type",
+            "North Bridge",
             "Form Factor",
             "WiFi Support",
             "Thunderbolt Ports"
