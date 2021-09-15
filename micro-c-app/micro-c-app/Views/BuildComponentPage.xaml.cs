@@ -21,7 +21,7 @@ namespace micro_c_app.Views
         {
             if(BindingContext is BuildComponentViewModel vm && vm.Component != null)
             {
-                if(vm.Component.AutoSearch() && vm.Component.Item == null)
+                if(vm.Component.Item == null && vm.Component.Type != BuildComponent.ComponentType.Miscellaneous)
                 {
                     SearchView.OrderBy = OrderByMode.pricelow;
                     Task.Run(() => SearchView.OnSubmit(""));
