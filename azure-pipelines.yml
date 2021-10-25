@@ -51,46 +51,7 @@ stages:
       inputs:
         ArtifactName: android
         PathtoPublish: '$(build.artifactstagingdirectory)'
-
-  - job: MicroCBuilder
-    steps:
-    - task: NuGetToolInstaller@1
-
-    - task: NuGetCommand@2
-      inputs:
-        restoreSolution: '$(solution)'
-    - task: DownloadSecureFile@1
-      name: signingCert
-      displayName: 'Download CA certificate from library'
-      inputs:
-        secureFile: 'MicroCBuilder.pfx'
-
-    - task: VSBuild@1
-      inputs:
-        platform: 'x86'
-        solution: '**\MicroCBuilder.csproj'
-        configuration: '$(buildConfiguration)'
-        msbuildArgs: '/p:AppxBundlePlatforms="$(buildPlatform)"
-                      /p:AppxPackageDir="$(appxPackageDir)"
-                      /p:AppxBundle=Always
-                      /p:UapAppxPackageBuildMode=StoreUpload
-                      /p:AppxPackageSigningEnabled=true
-                      /p:PackageCertificateThumbprint="" 
-                      /p:GenerateAppInstallerFile=true
-                      /p:PackageCertificateKeyFile="$(signingCert.secureFilePath)"'
-
-    - task: CopyFiles@2
-      displayName: 'Copy Files to: $(build.artifactstagingdirectory)'
-      inputs:
-        SourceFolder: '$(system.defaultworkingdirectory)'
-        Contents: '**\bin\$(BuildConfiguration)\**'
-        TargetFolder: '$(build.artifactstagingdirectory)'
-    - task: PublishBuildArtifacts@1
-      displayName: 'Publish Artifact: MicroCBuilder'
-      inputs:
-        ArtifactName: MicroCBuilder
-        PathtoPublish: '$(build.artifactstagingdirectory)'
-
+        
   - job: iOS
     pool:
       vmimage: 'macOS-latest'
