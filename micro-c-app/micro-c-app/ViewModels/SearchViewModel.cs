@@ -17,14 +17,17 @@ namespace micro_c_app.ViewModels
         private List<ComponentTypeInfo> categories;
         private string hintText;
         private bool hintVisible;
+        private bool fastSearch;
 
         public Stack<Item> ItemQueue { get => itemQueue; set => SetProperty(ref itemQueue, value); }
         public ICommand PopItem { get; }
         public ICommand OnProductFound { get; }
+        public ICommand OnProductFastFound { get; }
         public ICommand OnProductError { get; }
         public ICommand SearchCategory { get; }
         public INavigation Navigation { get; internal set; }
         public Item Item { get => item; set => SetProperty(ref item, value); }
+        public bool FastSearch { get => fastSearch; set => SetProperty(ref fastSearch, value); }
 
         public ICommand GoToWebpage { get; }
         public ICommand AddReminder { get; }
@@ -56,6 +59,17 @@ namespace micro_c_app.ViewModels
 
             OnProductFound = new Command<Item>((Item item) =>
             {
+                if (Item != null && !FastSearch)
+                {
+                    ItemQueue.Push(Item);
+                }
+                FastSearch = false;
+                Item = item;
+            });
+
+            OnProductFastFound = new Command<Item>((Item item) =>
+            {
+                FastSearch = true;
                 if (Item != null)
                 {
                     ItemQueue.Push(Item);

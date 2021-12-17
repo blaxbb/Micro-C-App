@@ -34,9 +34,11 @@ namespace micro_c_app.Views
         private bool busy;
         private ProgressInfo progress;
         public static readonly BindableProperty ProductFoundProperty = BindableProperty.Create(nameof(ProductFound), typeof(ICommand), typeof(SearchView), null);
+        public static readonly BindableProperty ProductFastFoundProperty = BindableProperty.Create(nameof(ProductFastFound), typeof(ICommand), typeof(SearchView), null);
 
         public static readonly BindableProperty ErrorProperty = BindableProperty.Create(nameof(Error), typeof(ICommand), typeof(SearchView), null);
         public ICommand ProductFound { get { return (ICommand)GetValue(ProductFoundProperty); } set { SetValue(ProductFoundProperty, value); } }
+        public ICommand ProductFastFound { get { return (ICommand)GetValue(ProductFastFoundProperty); } set { SetValue(ProductFastFoundProperty, value); } }
         public ICommand Error { get { return (ICommand)GetValue(ErrorProperty); } set { SetValue(ErrorProperty, value); } }
 
         public static readonly BindableProperty CategoryFilterProperty = BindableProperty.Create(nameof(CategoryFilter), typeof(string), typeof(SearchView), "");
@@ -247,21 +249,58 @@ namespace micro_c_app.Views
 
         public async Task OnSubmit(string searchValue)
         {
-            if (string.IsNullOrWhiteSpace(searchValue) && string.IsNullOrWhiteSpace(CategoryFilter))
-            {
-                return;
-            }
-
-            AnalyticsService.Track("SearchSubmit", searchValue);
-
             var cachedItem = App.SearchCache?.Get(searchValue);
-            if(cachedItem != null)
+            if (cachedItem != null)
             {
                 Debug.WriteLine("HIT NEW CACHE!!");
                 AnalyticsService.Track("CacheHit", searchValue);
                 DoProductFound(cachedItem);
                 return;
             }
+
+            //SKU or UPC
+            if (ProductFastFound != null && Regex.IsMatch(searchValue, "^\\d{6}$|^\\d{12}$"))
+            {
+                var fast = await OnSubmitFastQuery(searchValue);
+                if(fast != null)
+                {
+                    DoProductFastFound(fast);
+                }
+
+                if(ProductFound != null)
+                {
+                    await OnSubmitTextQuery(searchValue);
+                }
+
+                return;
+            }
+
+            await OnSubmitTextQuery(searchValue);
+
+        }
+
+        public async Task<Item> OnSubmitFastQuery(string searchValue)
+        {
+            AnalyticsService.Track("FastSearchSubmit", searchValue);
+            tokenSource = new CancellationTokenSource();
+            try
+            {
+                return await LoadFast(searchValue, cancellationToken);
+            }
+            catch(Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public async Task OnSubmitTextQuery(string searchValue)
+        {
+            if (string.IsNullOrWhiteSpace(searchValue) && string.IsNullOrWhiteSpace(CategoryFilter))
+            {
+                return;
+            }
+
+            AnalyticsService.Track("SearchSubmit", searchValue);
 
             bool enhancedSearch = SettingsPage.UseEnhancedSearch();
 
@@ -273,7 +312,7 @@ namespace micro_c_app.Views
             int queryAttempts = 0;
 
             //go back here on error, so that we can retry the request a few times
-            const int NUM_RETRY_ATTEMPTS = 5;
+            const int NUM_RETRY_ATTEMPTS = 2;
         startQuery:
             queryAttempts++;
 
@@ -406,6 +445,14 @@ namespace micro_c_app.Views
             await Device.InvokeOnMainThreadAsync(() =>
             {
                 ProductFound?.Execute(item);
+            });
+        }
+
+        private async void DoProductFastFound(Item item)
+        {
+            await Device.InvokeOnMainThreadAsync(() =>
+            {
+                ProductFastFound?.Execute(item);
             });
         }
 

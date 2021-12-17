@@ -25,10 +25,14 @@
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0" Grid.ColumnSpan="2" Text="{Binding Item.Name}" FontSize="24"/>
                 <Label Grid.Row="1" Grid.Column="0" Text="{Binding Item.Brand}"/>
-                <Label Grid.Row="3" Grid.Column="0" Text="{Binding Item.Specs[SKU]}"/>
                 <Label Grid.Row="2" Grid.Column="0" Text="{Binding Item.Specs[UPC]}"/>
-                <Label Grid.Row="4" Grid.Column="0" Text="{Binding Item.Stock, StringFormat='{0} in stock'}"/>
-                <Label Grid.Row="5" Grid.Column="0" VerticalOptions="FillAndExpand" Text="{Binding Item.Location}"/>
+                <Label Grid.Row="3" Grid.Column="0" Text="{Binding Item.Specs[SKU]}"/>
+                <StackLayout Grid.Row="4" Grid.Column="0" Orientation="Horizontal" IsVisible="{Binding FastView}">
+                    <ActivityIndicator Scale=".5" IsRunning="True" Color="Orange" />
+                    <Label Text="Loading more info" VerticalOptions="Center"/>
+                </StackLayout>
+                <Label Grid.Row="4" Grid.Column="0" Text="{Binding Item.Stock, StringFormat='{0} in stock'}" IsVisible="{Binding FastView, Converter={StaticResource NegateConverter}}"/>
+                <Label Grid.Row="5" Grid.Column="0" VerticalOptions="FillAndExpand" Text="{Binding Item.Location}" IsVisible="{Binding FastView, Converter={StaticResource NegateConverter}}"/>
 
                 <Image Grid.Row="1" Grid.Column="1" Grid.RowSpan="4" Source="{Binding ActivePicture}" HorizontalOptions="FillAndExpand" Aspect="AspectFit"/>
                 <StackLayout Grid.Row="5" Grid.Column="1" Orientation="Horizontal" Margin="5">

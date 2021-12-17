@@ -389,7 +389,6 @@ namespace micro_c_app.ViewModels
             var view = new SearchView();
             view.ProductFound = productFound;
             view.Error = error;
-            await view.OnSubmit("951970");
         }
 
 

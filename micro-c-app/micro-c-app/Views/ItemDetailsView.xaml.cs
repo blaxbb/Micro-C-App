@@ -17,6 +17,9 @@ namespace micro_c_app.Views
         public static readonly BindableProperty ItemProperty = BindableProperty.Create(nameof(Item), typeof(Item), typeof(ItemDetailsView), null, propertyChanged: ItemChanged);
         public Item Item { get => (Item)GetValue(ItemProperty); set => SetValue(ItemProperty, value); }
 
+        public static readonly BindableProperty FastViewProperty = BindableProperty.Create(nameof(FastView), typeof(bool), typeof(ItemDetailsView), null);
+        public bool FastView { get => (bool)GetValue(FastViewProperty); set => SetValue(FastViewProperty, value); }
+
         public ItemDetailsView()
         {
             this.BindingContext = new ItemDetailsViewViewModel();
@@ -34,6 +37,7 @@ namespace micro_c_app.Views
             if (bindable is ItemDetailsView view && view.BindingContext is ItemDetailsViewViewModel vm)
             {
                 vm.Item = newValue as Item;
+                vm.FastView = view.FastView;
                 view.SetSpecs();
                 view.SetClearance();
             }

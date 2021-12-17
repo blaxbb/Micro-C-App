@@ -36,6 +36,9 @@ namespace micro_c_app.ViewModels
         }
         int PictureIndex = 0;
 
+        private bool fastView;
+        public bool FastView { get => fastView; set { SetProperty(ref fastView, value); } }
+
         public ICommand BackPicture { get; }
         public ICommand ForwardPicture { get; }
         public ICommand GoToWebpage { get; }
