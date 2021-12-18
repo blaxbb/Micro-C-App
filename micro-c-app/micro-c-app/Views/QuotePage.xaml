@@ -121,7 +121,7 @@
                     <Label Text="{Binding Subtotal, StringFormat='Subtotal ${0:#,#0.00}', FallbackValue=$123.45}" HorizontalOptions="StartAndExpand" VerticalOptions="CenterAndExpand"/>
                     <Label Text="{Binding TaxedTotal, StringFormat='Total {0}', FallbackValue=(7.5%) $123.45}" HorizontalOptions="EndAndExpand" HorizontalTextAlignment="End" VerticalOptions="CenterAndExpand"/>
                 </StackLayout>
-                <views:SearchView x:Name="SearchView" Grid.Row="1" ProductFound="{Binding OnProductFound}" Error="{Binding OnProductError}" AutoPopSearchPage="True" VerticalOptions="Start" LastItem="{Binding LastItem}"/>
+                <views:SearchView x:Name="SearchView" Grid.Row="1" ProductFound="{Binding OnProductFound}" ProductFastFound="{Binding OnProductFastFound}" Error="{Binding OnProductError}" AutoPopSearchPage="True" VerticalOptions="Start" LastItem="{Binding LastItem}"/>
             </Grid>
         </Grid>
     </ContentPage.Content>

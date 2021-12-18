@@ -252,7 +252,6 @@ namespace micro_c_app.Views
             var cachedItem = App.SearchCache?.Get(searchValue);
             if (cachedItem != null)
             {
-                Debug.WriteLine("HIT NEW CACHE!!");
                 AnalyticsService.Track("CacheHit", searchValue);
                 DoProductFound(cachedItem);
                 return;
@@ -267,7 +266,7 @@ namespace micro_c_app.Views
                     DoProductFastFound(fast);
                 }
 
-                if(ProductFound != null)
+                if (ProductFound != null)
                 {
                     await OnSubmitTextQuery(searchValue);
                 }

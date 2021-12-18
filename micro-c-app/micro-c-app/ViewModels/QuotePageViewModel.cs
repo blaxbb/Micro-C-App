@@ -28,6 +28,7 @@ namespace micro_c_app.ViewModels
         public Item? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); } }
         public ObservableCollection<Item> Items { get => items; set => SetProperty(ref items, value); }
         public ICommand OnProductFound { get; }
+        public ICommand OnProductFastFound { get; }
         public ICommand OnProductError { get; }
         public ICommand IncreaseQuantity { get; }
         public ICommand DecreaseQuantity { get; }
@@ -59,6 +60,7 @@ namespace micro_c_app.ViewModels
         public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${Subtotal * SettingsPage.TaxRateFactor():#0.00}";
 
         private Item lastItem;
+        private bool lastItemWasFast;
         private ObservableCollection<Item> items;
 
         public Item LastItem { get => lastItem; set => SetProperty(ref lastItem, value); }
@@ -77,19 +79,6 @@ namespace micro_c_app.ViewModels
                 Items = new ObservableCollection<Item>();
             }
 
-            //for (int i = 0; i < 10; i++)
-            //{
-            //    var item = new Item()
-            //    {
-            //        Name = "ITEM",
-            //        SKU = "123456",
-            //        OriginalPrice = 100,
-            //        Price = 90,
-            //        Stock = "5 in stock",
-            //    };
-            //    Items.Add(item);
-            //}
-
             Items.CollectionChanged += (sender, args) =>
             {
                 UpdateProperties();
@@ -97,9 +86,22 @@ namespace micro_c_app.ViewModels
 
             OnProductFound = new Command<Item>((Item item) =>
             {
+                if(lastItemWasFast)
+                {
+                    Items.Remove(LastItem);
+                }
+                lastItemWasFast = false;
                 Items.Add(item);
                 item.PropertyChanged += (sender, args) => { UpdateProperties(); };
                 LastItem = item;
+            });
+
+            OnProductFastFound = new Command<Item>((Item item) =>
+            {
+                Items.Add(item);
+                item.PropertyChanged += (sender, args) => { UpdateProperties(); };
+                LastItem = item;
+                lastItemWasFast = true;
             });
 
             OnProductError = new Command<string>(async (string message) =>
