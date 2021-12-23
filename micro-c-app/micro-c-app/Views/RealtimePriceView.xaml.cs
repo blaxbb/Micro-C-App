@@ -13,7 +13,7 @@ namespace micro_c_app.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class RealtimePriceView : ContentView
     {
-        private RealtimeBarcodeInfo BarcodeInfo;
+        public RealtimeBarcodeInfo BarcodeInfo { get; set; }
         public RealtimePriceView()
         {
             InitializeComponent();
@@ -35,9 +35,11 @@ namespace micro_c_app.Views
                 skuLabel.Text = "";
                 stockLabel.Text = "";
                 priceLabel.Text = "";
+                buttonStack.IsVisible = false;
             }
             else
             {
+                buttonStack.IsVisible = true;
                 if (priceInfo != null && priceInfo.Count > 0)
                 {
                     int maxIndex = -1;
@@ -78,35 +80,17 @@ namespace micro_c_app.Views
             }
         }
 
-        private void TapGestureRecognizer_Tapped(object sender, EventArgs e)
+        private void InfoButton_Clicked(object sender, EventArgs e)
         {
-            Device.InvokeOnMainThreadAsync(async () =>
+            Shell.Current.Dispatcher.BeginInvokeOnMainThread(async () =>
             {
-                if (BarcodeInfo != null && BarcodeInfo.Item != null)
-                {
-                    var result = await Shell.Current.DisplayActionSheet(BarcodeInfo.Item.Name, "Cancel", null, new string[] {
-                        "Product Info",
-                        "Webpage",
-                        "Add to quote",
-                        "Add to build"
-                    });
-                    switch (result)
-                    {
-                        case "Webpage":
-                            await Xamarin.Essentials.Browser.OpenAsync($"https://microcenter.com{BarcodeInfo.Item.URL}", Xamarin.Essentials.BrowserLaunchMode.SystemPreferred);
-                            break;
-                        case "Product Info":
-                            await Shell.Current.GoToAsync($"//SearchPage?search={BarcodeInfo.Item.SKU}");
-                            break;
-                        case "Add to quote":
-                            QuotePageViewModel.AddItem(BarcodeInfo.Item.CloneAndResetQuantity());
-                            break;
-                        case "Add to build":
-                            BuildPageViewModel.Add(BarcodeInfo.Item.CloneAndResetQuantity());
-                            break;
-                    }
-                }
+                await Shell.Current.GoToAsync($"//SearchPage?search={BarcodeInfo.Item.SKU}");
             });
+        }
+
+        private void AddButton_Clicked(object sender, EventArgs e)
+        {
+            QuotePageViewModel.AddItem(BarcodeInfo.Item.CloneAndResetQuantity());
         }
     }
 }

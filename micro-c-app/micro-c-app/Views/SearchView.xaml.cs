@@ -249,11 +249,13 @@ namespace micro_c_app.Views
 
         public async Task OnSubmit(string searchValue)
         {
+            Busy = true;
             var cachedItem = App.SearchCache?.Get(searchValue);
             if (cachedItem != null)
             {
                 AnalyticsService.Track("CacheHit", searchValue);
                 DoProductFound(cachedItem);
+                Busy = false;
                 return;
             }
 
@@ -270,7 +272,7 @@ namespace micro_c_app.Views
                 {
                     await OnSubmitTextQuery(searchValue);
                 }
-
+                Busy = false;
                 return;
             }
 
