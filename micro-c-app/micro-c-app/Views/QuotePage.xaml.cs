@@ -53,6 +53,7 @@ namespace micro_c_app.Views
 
                 Grid.SetColumn(listView, 0);
                 Grid.SetColumn(SecondaryStack, 1);
+                Grid.SetColumnSpan(SecondaryStack, 2);
                 SearchView.Orientation = "Vertical";
                 grid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
                 grid.RowDefinitions[2].Height = 0;
@@ -64,6 +65,7 @@ namespace micro_c_app.Views
 
                 Grid.SetColumn(listView, 0);
                 Grid.SetColumn(SecondaryStack, 0);
+                Grid.SetColumnSpan(SecondaryStack, 1);
                 SearchView.Orientation = "Horizontal";
 
                 grid.ColumnDefinitions[1].Width = new GridLength(0);

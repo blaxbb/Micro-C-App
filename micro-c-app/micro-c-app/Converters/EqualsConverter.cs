@@ -23,4 +23,22 @@ namespace micro_c_app
             throw new NotImplementedException();
         }
     }
+
+    public class NotEqualsConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var type = parameter.GetType();
+            if (parameter is Binding b)
+            {
+
+            }
+            return value == null || value != ((View)parameter).BindingContext;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
 }

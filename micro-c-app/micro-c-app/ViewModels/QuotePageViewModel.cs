@@ -65,6 +65,8 @@ namespace micro_c_app.ViewModels
 
         public Item LastItem { get => lastItem; set => SetProperty(ref lastItem, value); }
 
+        public int TotalUnits => Items.Sum(i => i.Quantity);
+
         public QuotePageViewModel()
         {
             Instance = this;
@@ -457,6 +459,7 @@ namespace micro_c_app.ViewModels
         {
             OnPropertyChanged(nameof(Subtotal));
             OnPropertyChanged(nameof(TaxedTotal));
+            OnPropertyChanged(nameof(TotalUnits));
             RestoreState.Instance.QuoteItems = Items.ToList();
             RestoreState.Save();
         }
