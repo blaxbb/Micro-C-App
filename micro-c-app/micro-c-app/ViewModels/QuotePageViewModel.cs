@@ -182,8 +182,10 @@ namespace micro_c_app.ViewModels
             {
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    var detailsPage = new ItemDetailsPageViewModel() { Item = SelectedItem };
-                    await Shell.Current.Navigation.PushAsync(new ItemDetailsPage() { BindingContext = detailsPage, Item = SelectedItem });
+                    if (SelectedItem != null && !string.IsNullOrWhiteSpace(SelectedItem.SKU) && SelectedItem.SKU != "000000")
+                    {
+                        await Shell.Current.GoToAsync($"//SearchPage?search={SelectedItem.SKU}");
+                    }
                 });
             });
 
