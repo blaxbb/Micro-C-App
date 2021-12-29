@@ -19,7 +19,7 @@
 
   <ItemGroup>
     <PackageReference Include="BarcodeScanner.XF.Realtime" Version="5.1.3" />
-    <PackageReference Include="DataFlareClient" Version="1.1.3" />
+    <PackageReference Include="DataFlareClient" Version="1.1.4" />
     <PackageReference Include="FuzzySharp" Version="2.0.2" />
     <PackageReference Include="micro-c-lib" Version="1.0.10" />
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.1.0" />

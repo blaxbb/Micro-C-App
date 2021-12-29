@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Text;
@@ -17,6 +18,8 @@ namespace micro_c_app.Models
 
         public List<BuildComponent> BuildComponents { get; set; }
         public List<Item> QuoteItems { get; set; } = new List<Item>();
+        public List<BuildComponent> MigratedQuoteItems { get; set; } = new List<BuildComponent>();
+        public bool MigrationComplete { get; set; }
         public List<Item> BatchItems { get; set; } = new List<Item>();
         public BuildPageViewModel BuildVM { get; set; }
 
@@ -34,6 +37,17 @@ namespace micro_c_app.Models
                 {
                     var text = File.ReadAllText(Path);
                     Instance = JsonConvert.DeserializeObject<RestoreState>(text);
+                    if (!Instance.MigrationComplete)
+                    {
+                        if (Instance.MigratedQuoteItems == null || (Instance.MigratedQuoteItems.Count == 0 && Instance.QuoteItems.Count > 0))
+                        {
+                            Instance.MigratedQuoteItems = Instance.QuoteItems.Select(i => new BuildComponent() { Item = i, Type = i.ComponentType }).ToList();
+                        }
+
+                        Instance.MigrationComplete = true;
+
+                        Save();
+                    }
                 }
             }
             catch(Exception e)

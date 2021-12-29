@@ -83,7 +83,7 @@ namespace micro_c_app.Views
             }
         }
 
-        Item? previousSelection;
+        BuildComponent? previousSelection;
         private void listView_ItemTapped(object sender, ItemTappedEventArgs e)
         {
             var newItem = e.Item;
@@ -95,7 +95,7 @@ namespace micro_c_app.Views
             }
             else
             {
-                previousSelection = newItem as Item;
+                previousSelection = newItem as BuildComponent;
             }
         }
     }

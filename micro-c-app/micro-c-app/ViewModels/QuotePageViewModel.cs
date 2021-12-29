@@ -23,10 +23,10 @@ namespace micro_c_app.ViewModels
         public static QuotePageViewModel Instance;
         public INavigation Navigation;
         private bool notBusy;
-        private Item? selectedItem;
+        private BuildComponent? selectedItem;
 
-        public Item? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); } }
-        public ObservableCollection<Item> Items { get => items; set => SetProperty(ref items, value); }
+        public BuildComponent? SelectedItem { get => selectedItem; set { SetProperty(ref selectedItem, value); } }
+        public ObservableCollection<BuildComponent> Items { get => items; set => SetProperty(ref items, value); }
         public ICommand OnProductFound { get; }
         public ICommand OnProductFastFound { get; }
         public ICommand OnProductError { get; }
@@ -56,29 +56,30 @@ namespace micro_c_app.ViewModels
 
         public bool NotBusy { get => notBusy; set { SetProperty(ref notBusy, value); } }
 
-        public float Subtotal => Items.Sum(i => i.Price * i.Quantity);
-        public string TaxedTotal => $"({SettingsPage.TaxRate()})% ${Subtotal * SettingsPage.TaxRateFactor():#0.00}";
+        public float Subtotal => Items.Sum(i => i.Item != null ? i.Item.Price * i.Item.Quantity : 0);
+        public float TaxRate => SettingsPage.TaxRate();
+        public float TaxedTotal => Subtotal * SettingsPage.TaxRateFactor();
 
-        private Item lastItem;
+        private BuildComponent lastItem;
         private bool lastItemWasFast;
-        private ObservableCollection<Item> items;
+        private ObservableCollection<BuildComponent> items;
 
-        public Item LastItem { get => lastItem; set => SetProperty(ref lastItem, value); }
+        public BuildComponent LastItem { get => lastItem; set => SetProperty(ref lastItem, value); }
 
-        public int TotalUnits => Items.Sum(i => i.Quantity);
+        public int TotalUnits => Items.Sum(i => i.Item != null ? i.Item.Quantity : 0);
 
         public QuotePageViewModel()
         {
             Instance = this;
             Title = "Quote";
             NotBusy = true;
-            if (RestoreState.Instance.QuoteItems != null)
+            if (RestoreState.Instance.MigratedQuoteItems != null)
             {
-                Items = new ObservableCollection<Item>(RestoreState.Instance.QuoteItems);
+                Items = new ObservableCollection<BuildComponent>(RestoreState.Instance.MigratedQuoteItems);
             }
             else
             {
-                Items = new ObservableCollection<Item>();
+                Items = new ObservableCollection<BuildComponent>();
             }
 
             Items.CollectionChanged += (sender, args) =>
@@ -93,16 +94,12 @@ namespace micro_c_app.ViewModels
                     Items.Remove(LastItem);
                 }
                 lastItemWasFast = false;
-                Items.Add(item);
-                item.PropertyChanged += (sender, args) => { UpdateProperties(); };
-                LastItem = item;
+                LastItem = AddNewItem(item);
             });
 
             OnProductFastFound = new Command<Item>((Item item) =>
             {
-                Items.Add(item);
-                item.PropertyChanged += (sender, args) => { UpdateProperties(); };
-                LastItem = item;
+                LastItem = AddNewItem(item);
                 lastItemWasFast = true;
             });
 
@@ -114,21 +111,27 @@ namespace micro_c_app.ViewModels
                 }
             });
 
-            IncreaseQuantity = new Command<Item>((Item item) =>
+            IncreaseQuantity = new Command<BuildComponent>((BuildComponent comp) =>
             {
-                item.Quantity++;
-                UpdateProperties();
-            });
-
-            DecreaseQuantity = new Command<Item>((Item item) =>
-            {
-                if (item.Quantity > 1)
+                if (comp?.Item != null)
                 {
-                    item.Quantity--;
+                    comp.Item.Quantity++;
                     UpdateProperties();
                 }
             });
-            RemoveItem = new Command<Item>(async (Item item) =>
+
+            DecreaseQuantity = new Command<BuildComponent>((BuildComponent comp) =>
+            {
+                if (comp?.Item != null)
+                {
+                    if (comp.Item.Quantity > 1)
+                    {
+                        comp.Item.Quantity--;
+                        UpdateProperties();
+                    }
+                }
+            });
+            RemoveItem = new Command<BuildComponent>(async (BuildComponent comp) =>
             {
                 /*
                  * 
@@ -143,12 +146,12 @@ namespace micro_c_app.ViewModels
                  */
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    if (item != null)
+                    if (comp != null && comp.Item != null)
                     {
-                        var reset = await Shell.Current.DisplayAlert("Remove", $"Are you sure you want to remove {item.Name}", "Yes", "No");
+                        var reset = await Shell.Current.DisplayAlert("Remove", $"Are you sure you want to remove {comp.Item.Name}", "Yes", "No");
                         if (reset)
                         {
-                            Items.Remove(item);
+                            Items.Remove(comp);
 
                             var tmp = Items.ToList();
                             Items.Clear();
@@ -182,21 +185,21 @@ namespace micro_c_app.ViewModels
             {
                 await Device.InvokeOnMainThreadAsync(async () =>
                 {
-                    if (SelectedItem != null && !string.IsNullOrWhiteSpace(SelectedItem.SKU) && SelectedItem.SKU != "000000")
+                    if (SelectedItem != null && SelectedItem.Item != null && !string.IsNullOrWhiteSpace(SelectedItem.Item.SKU) && SelectedItem.Item.SKU != "000000")
                     {
-                        await Shell.Current.GoToAsync($"//SearchPage?search={SelectedItem.SKU}");
+                        await Shell.Current.GoToAsync($"//SearchPage?search={SelectedItem.Item.SKU}");
                     }
                 });
             });
 
             Load = new Command(async () =>
             {
-                var page = await ImportPage.Create<Item>("quote");
+                var page = await ImportPage.Create<BuildComponent>("quote");
                 page.OnImportResults += (sender) =>
                 {
-                    if (sender.BindingContext is ImportPageViewModel<Item> vm && vm.Result != null)
+                    if (sender.BindingContext is ImportPageViewModel<BuildComponent> vm && vm.Result != null)
                     {
-                        Items = new ObservableCollection<Item>(vm.Result);
+                        Items = new ObservableCollection<BuildComponent>(vm.Result);
                     }
                 };
             });
@@ -222,17 +225,30 @@ namespace micro_c_app.ViewModels
                 {
                     if (comp.Item != null)
                     {
-                        Items.Add(comp.Item);
+                        Items.Add(comp);
                     }
                 }
             });
 
             Save = new Command(async () =>
             {
-                await ExportPage.Create(Items.Select(i => new BuildComponent() { Item = i }).ToList(), "quote");
+                await ExportPage.Create(Items.Where(i => i.Item != null).ToList(), "quote");
             });
 
             BatchScan = new Command(() => DoBatchScan());
+        }
+
+        private BuildComponent AddNewItem(Item item)
+        {
+            var comp = new BuildComponent()
+            {
+                Item = item,
+                Type = item.ComponentType
+            };
+
+            Items.Add(comp);
+            comp.PropertyChanged += (sender, args) => Instance.UpdateProperties();
+            return comp;
         }
 
         public static void AddItem(Item item)
@@ -247,14 +263,15 @@ namespace micro_c_app.ViewModels
             }
             else
             {
-                Instance.Items.Add(item);
-                item.PropertyChanged += (sender, args) => { Instance.UpdateProperties(); };
-                Instance.LastItem = item;
+                var comp = new BuildComponent() { Item = item, Type = item.ComponentType };
+                Instance.Items.Add(comp);
+                comp.PropertyChanged += (sender, args) => { Instance.UpdateProperties(); };
+                Instance.LastItem = comp;
 
             }
         }
 
-        private void DoLoad(CollectionLoadPageViewModel<Item> obj)
+        private void DoLoad(CollectionLoadPageViewModel<BuildComponent> obj)
         {
             Items.Clear();
             foreach (var i in obj.Result)
@@ -265,20 +282,20 @@ namespace micro_c_app.ViewModels
             UpdateProperties();
         }
 
-        public static async Task DoSendQuote(IEnumerable<Item> Items)
+        public static async Task DoSendQuote(IEnumerable<BuildComponent> Items)
         {
             try
             {
                 var message = new EmailMessage()
                 {
                     Subject = $"MicroCenter Quote - {DateTime.Today.ToShortDateString()}",
-                    Body = ExportTxtTable(Items),
+                    Body = ExportTxtTable(Items.Select(i => i.Item)),
                 };
 
                 if (SettingsPage.IncludeCSVWithQuote())
                 {
                     var file = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "quote.csv");
-                    File.WriteAllText(file, ExportCsv(Items));
+                    File.WriteAllText(file, ExportCsv(Items.Select(i => i.Item)));
                     var attach = new EmailAttachment(file);
                     message.Attachments = new List<EmailAttachment>()
                     {
@@ -424,9 +441,7 @@ namespace micro_c_app.ViewModels
                             var item = await Item.FromUrl(stub.URL, storeId, progress: progress);
                             if (item != null)
                             {
-                                Items.Add(item);
-                                item.PropertyChanged += (sender, args) => { UpdateProperties(); };
-                                LastItem = item;
+                                LastItem = AddNewItem(item);
                                 return;
                             }
                         }
@@ -462,7 +477,7 @@ namespace micro_c_app.ViewModels
             OnPropertyChanged(nameof(Subtotal));
             OnPropertyChanged(nameof(TaxedTotal));
             OnPropertyChanged(nameof(TotalUnits));
-            RestoreState.Instance.QuoteItems = Items.ToList();
+            RestoreState.Instance.MigratedQuoteItems = Items.ToList();
             RestoreState.Save();
         }
     }

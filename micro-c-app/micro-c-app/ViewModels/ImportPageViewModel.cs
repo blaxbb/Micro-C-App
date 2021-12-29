@@ -65,7 +65,8 @@ namespace micro_c_app.ViewModels
             ListNetworkFlares = new Command(async () =>
             {
                 Loading = true;
-                var flares = await Flare.GetTag("https://dataflare.bbarrett.me/api/Flare", $"micro-c-{SettingsPage.StoreID()}");
+                var tag = $"micro-c-{SettingsPage.StoreID()}";
+                var flares = await Flare.GetTag("https://dataflare.bbarrett.me/api/Flare", tag);
                 NetworkFlares = new ObservableCollection<Flare>(flares);
                 LocalFilesMode = false;
                 Loading = false;
