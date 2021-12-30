@@ -254,7 +254,7 @@ namespace micro_c_app.ViewModels
             UpdateProperties();
         }
 
-        private void AddNewItem(Item item, ComponentType type)
+        private BuildComponent AddNewItem(Item item, ComponentType type)
         {
             var comp = new BuildComponent()
             {
@@ -263,6 +263,8 @@ namespace micro_c_app.ViewModels
             };
             Components.Add(comp);
             UpdateProperties();
+
+            return comp;
         }
 
         private void ReplaceOrAdd(BuildComponent component)
@@ -330,7 +332,7 @@ namespace micro_c_app.ViewModels
                                     {
                                         comp.Item = item;
                                         UpdateProperties();
-                                        return;
+                                        return comp;
                                     }
                                 }
 
@@ -342,12 +344,10 @@ namespace micro_c_app.ViewModels
                                     var cat = BuildComponent.TypeForCategoryFilter(item.Categories[i].Filter);
                                     if (cat != ComponentType.None)
                                     {
-                                        AddNewItem(item, cat);
-                                        return;
+                                        return AddNewItem(item, cat);
                                     }
                                 }
-                                AddNewItem(item, ComponentType.Miscellaneous);
-                                return;
+                                return AddNewItem(item, ComponentType.Miscellaneous);
                             }
                         }
                     }
@@ -356,7 +356,7 @@ namespace micro_c_app.ViewModels
                         if (queryAttempts > NUM_RETRY_ATTEMPTS)
                         {
                             await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
-                            return;
+                            return null;
                         }
                     }
                     if (queryAttempts > NUM_RETRY_ATTEMPTS)
@@ -374,6 +374,7 @@ namespace micro_c_app.ViewModels
                 {
                     await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
                 }
+                return null;
             }, batchMode: true);
         }
 

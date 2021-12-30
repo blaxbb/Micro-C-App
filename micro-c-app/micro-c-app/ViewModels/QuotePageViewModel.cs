@@ -425,7 +425,7 @@ namespace micro_c_app.ViewModels
                 {
                     int queryAttempts = 0;
                     //go back here on error, so that we can retry the request a few times
-                    const int NUM_RETRY_ATTEMPTS = 5;
+                    const int NUM_RETRY_ATTEMPTS = 2;
 
                     var storeId = SettingsPage.StoreID();
 
@@ -442,7 +442,7 @@ namespace micro_c_app.ViewModels
                             if (item != null)
                             {
                                 LastItem = AddNewItem(item);
-                                return;
+                                return LastItem;
                             }
                         }
                     }
@@ -451,7 +451,7 @@ namespace micro_c_app.ViewModels
                         if (queryAttempts > NUM_RETRY_ATTEMPTS)
                         {
                             await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
-                            return;
+                            return null;
                         }
                     }
                     if (queryAttempts > NUM_RETRY_ATTEMPTS)
@@ -469,6 +469,8 @@ namespace micro_c_app.ViewModels
                 {
                     await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
                 }
+
+                return null;
             }, batchMode: true);
         }
 

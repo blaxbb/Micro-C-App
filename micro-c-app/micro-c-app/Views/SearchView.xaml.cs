@@ -58,7 +58,7 @@ namespace micro_c_app.Views
 
         public ProgressInfo Progress { get => progress; set { progress = value; OnPropertyChanged(nameof(Progress)); } }
 
-        public static readonly BindableProperty LastItemProperty = BindableProperty.Create("LastItem", typeof(Item), typeof(SearchView), null, propertyChanged: LastItemPropertyChanged);
+        public static readonly BindableProperty LastItemProperty = BindableProperty.Create("LastItem", typeof(BuildComponent), typeof(SearchView), null, propertyChanged: LastItemPropertyChanged);
 
         public ICommand SearchCommand { get; }
 
@@ -70,7 +70,7 @@ namespace micro_c_app.Views
             }
         }
 
-        public Item LastItem { get => (Item)GetValue(LastItemProperty); set => SetValue(LastItemProperty, value); }
+        public BuildComponent LastItem { get => (BuildComponent)GetValue(LastItemProperty); set => SetValue(LastItemProperty, value); }
 
         public bool Busy
         {
@@ -127,7 +127,7 @@ namespace micro_c_app.Views
             Progress = info;
         }
 
-        public static async void DoScan(INavigation navigation, Func<string, IProgress<ProgressInfo>?, Task> resultTask, string categoryFilter = "", bool batchMode = false)
+        public static async void DoScan(INavigation navigation, Func<string, IProgress<ProgressInfo>?, Task<BuildComponent>> resultTask, string categoryFilter = "", bool batchMode = false)
         {
             bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
             if (!allowed)
@@ -193,7 +193,7 @@ namespace micro_c_app.Views
                         scanPage.IsRunningTask = true;
                         options.DelayBetweenContinuousScans = int.MaxValue;
 
-                        await resultTask.Invoke(FilterBarcodeResult(result), progress);
+                        scanPage.LastItem = await resultTask.Invoke(FilterBarcodeResult(result), progress);
                         options.DelayBetweenContinuousScans = 0;
                         //scanPage.IsScanning = true;
                         scanPage.IsBusy = false;
@@ -222,6 +222,7 @@ namespace micro_c_app.Views
                     progress?.Report(new ProgressInfo($"Scanned {result}", .33d));
                     await OnSubmit(result);
                     progress?.Report(new ProgressInfo($"Submitted {result}", .66d));
+                    return null;
                 }, categoryFilter: CategoryFilter, batchMode: BatchScan);
             }
         }
