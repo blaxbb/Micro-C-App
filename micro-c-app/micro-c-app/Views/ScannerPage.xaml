@@ -42,7 +42,7 @@
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
                     <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Text="Scanning Serial Numbers" BackgroundColor="Green" Margin="0" Padding="0" IsVisible="{Binding SerialMode, Source={Reference root}}"/>
-                    <ListView Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" ItemsSource="{Binding LastItem.Serials, Source={Reference root}}" BackgroundColor="Green" VerticalOptions="End" RowHeight="50" HeightRequest="200" IsVisible="{Binding SerialMode, Source={Reference root}}">
+                    <ListView x:Name="serialList" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" ItemsSource="{Binding LastItem.Serials, Source={Reference root}}" BackgroundColor="Green" VerticalOptions="End" RowHeight="50" IsVisible="{Binding SerialMode, Source={Reference root}}">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <ViewCell>

@@ -34,6 +34,7 @@ namespace micro_c_app.ViewModels
         public ICommand DecreaseQuantity { get; }
         public ICommand RemoveItem { get; }
         public ICommand DetailItem { get; }
+        public ICommand SerialItem { get; }
 
         public ICommand SendQuote { get; }
         public ICommand ExportQuote { get; }
@@ -162,6 +163,16 @@ namespace micro_c_app.ViewModels
                         }
                     }
                 });
+            });
+
+            SerialItem = new Command<BuildComponent>(async (BuildComponent comp) =>
+            {
+                if(comp == null || comp.Item == null)
+                {
+                    return;
+                }
+
+                await ScannerPage.ScanSerial();
             });
 
             ImportQuote = new Command(async () => await ImportQuoteAction());

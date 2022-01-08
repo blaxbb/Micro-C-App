@@ -1,6 +1,7 @@
 ﻿using GoogleVisionBarCodeScanner;
 using MicroCLib.Models;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -52,6 +53,14 @@ namespace micro_c_app.Views
                 //Debug.WriteLine($"UPDATE: {LastItem?.Name} - {LastItem?.Quantity}");
             });
 
+            serialList.PropertyChanged += (sender, args) =>
+            {
+                if(serialList.ItemsSource != null)
+                {
+                    serialList.HeightRequest = ((IList)serialList.ItemsSource).Count * serialList.RowHeight;
+                }
+            };
+
             //scanner.Options = new MobileBarcodeScanningOptions()
             //{
             //    AutoRotate = false,
@@ -96,6 +105,28 @@ namespace micro_c_app.Views
             PropertyChanged += ScannerPage_PropertyChanged;
 
             RemoveSerialCommand = new Command<string>((serial) => RemoveSerial(serial));
+        }
+
+        public static async Task ScanSerial()
+        {
+            var scanPage = new ScannerPage()
+            {
+
+            };
+
+            // Navigate to our scanner page
+            scanPage.OnScanResult += async (result) =>
+            {
+                Console.WriteLine(result.Value);
+            };
+
+            //var navPage = new NavigationPage(scanPage);
+            //navPage.ToolbarItems.Add(new ToolbarItem()
+            //{
+            //    Text = "Cancel",
+            //    Command = new Command(async () => { await navigation.PopModalAsync(); })
+            //});
+            await Shell.Current.Navigation.PushAsync(scanPage);
         }
 
         private bool TryAddSerial(string serial)
