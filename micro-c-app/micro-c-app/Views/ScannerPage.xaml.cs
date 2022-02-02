@@ -7,7 +7,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using ZXing;
@@ -107,7 +107,7 @@ namespace micro_c_app.Views
             RemoveSerialCommand = new Command<string>((serial) => RemoveSerial(serial));
         }
 
-        public static async Task ScanSerial()
+        public static async Task ScanSerial(Action<string> callback)
         {
             var scanPage = new ScannerPage()
             {
@@ -117,7 +117,11 @@ namespace micro_c_app.Views
             // Navigate to our scanner page
             scanPage.OnScanResult += async (result) =>
             {
-                Console.WriteLine(result.Value);
+                if (SettingsPage.Vibrate())
+                {
+                    Vibration.Vibrate();
+                }
+                callback.Invoke(result.Value);
             };
 
             //var navPage = new NavigationPage(scanPage);

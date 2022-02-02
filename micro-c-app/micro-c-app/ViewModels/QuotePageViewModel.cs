@@ -172,7 +172,10 @@ namespace micro_c_app.ViewModels
                     return;
                 }
 
-                await ScannerPage.ScanSerial();
+                await ScannerPage.ScanSerial((result) =>
+                {
+                    Console.WriteLine("Serial result");
+                });
             });
 
             ImportQuote = new Command(async () => await ImportQuoteAction());

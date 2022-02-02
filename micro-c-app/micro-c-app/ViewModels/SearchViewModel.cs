@@ -26,7 +26,7 @@ namespace micro_c_app.ViewModels
         public ICommand OnProductError { get; }
         public ICommand SearchCategory { get; }
         public INavigation Navigation { get; internal set; }
-        public Item Item { get => item; set => SetProperty(ref item, value); }
+        public Item Item { get => item; set { SetProperty(ref item, value); SetupHint(); } }
         public bool FastSearch { get => fastSearch; set => SetProperty(ref fastSearch, value); }
 
         public ICommand GoToWebpage { get; }
@@ -49,11 +49,7 @@ namespace micro_c_app.ViewModels
             Title = "Search";
             ItemQueue = new Stack<Item>();
 
-            HintText = HelpMessages.GetNextMessage();
-            if(HintText != null)
-            {
-                HintVisible = true;
-            }
+            SetupHint();
 
             Categories = SettingsPage.QuicksearchCategories();
 
@@ -118,6 +114,19 @@ namespace micro_c_app.ViewModels
             });
 
             MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, (_) => { UpdateProperties(); });
+        }
+
+        private void SetupHint()
+        {
+            HintText = HelpMessages.GetNextMessage() ?? "";
+            if (!string.IsNullOrWhiteSpace(HintText) && Item == null)
+            {
+                HintVisible = true;
+            }
+            else
+            {
+                HintVisible = false;
+            }
         }
 
         private void UpdateProperties()
