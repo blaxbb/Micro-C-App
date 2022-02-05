@@ -74,6 +74,11 @@ namespace micro_c_app.Views
 
         private void ItemPriceChanged(object sender, TextChangedEventArgs e)
         {
+            if(e.OldTextValue == null)
+            {
+                return;
+            }
+
             if(BindingContext is QuotePageViewModel vm)
             {
                 Task.Delay(1000).ContinueWith((_) =>
