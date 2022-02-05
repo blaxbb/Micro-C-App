@@ -27,7 +27,7 @@
             </Path>
 
             <BoxView Grid.Row="0" HeightRequest="2" Color="Red" WidthRequest="100" HorizontalOptions="FillAndExpand" VerticalOptions="Center" Margin="30,0,30,0"/>
-            <Frame Grid.Row="0" HorizontalOptions="FillAndExpand" VerticalOptions="End" BackgroundColor="{DynamicResource NavigationBarColor}" Margin="20" IsVisible="{Binding LastItem, Source={Reference root}, Converter={StaticResource NullBoolConverter}}">
+            <Frame Grid.Row="0" HorizontalOptions="FillAndExpand" VerticalOptions="End" Opacity=".75" BackgroundColor="{DynamicResource NavigationBarColor}" Margin="20" IsVisible="{Binding LastItem, Source={Reference root}, Converter={StaticResource NullBoolConverter}}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -41,23 +41,25 @@
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <Label Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="0" Text="Scanning Serial Numbers" BackgroundColor="Green" Margin="0" Padding="0" IsVisible="{Binding SerialMode, Source={Reference root}}"/>
-                    <ListView x:Name="serialList" Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" ItemsSource="{Binding LastItem.Serials, Source={Reference root}}" BackgroundColor="Green" VerticalOptions="End" RowHeight="50" IsVisible="{Binding SerialMode, Source={Reference root}}">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <ViewCell>
-                                    <Grid>
+                    <Label Grid.Column="0" Grid.ColumnSpan="1" Grid.Row="0" Text="Serial Number" VerticalOptions="Center" IsVisible="{Binding SerialMode, Source={Reference root}}"/>
+                    <Button Grid.Column="1" Grid.Row="0" Text="&#xf067;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="FillAndExpand" Clicked="ManualSerialClicked" BackgroundColor="Green" IsVisible="{Binding SerialMode, Source={Reference root}}"/>
+                    <Button Grid.Column="2" Grid.Row="0" Text="&#xf410;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="FillAndExpand" Clicked="SerialClicked" BackgroundColor="Red" IsVisible="{Binding SerialMode, Source={Reference root}}"/>
+                    <ScrollView Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" VerticalOptions="End" IsVisible="{Binding SerialMode, Source={Reference root}}" HeightRequest="125">
+                        <StackLayout BindableLayout.ItemsSource="{Binding LastItem.Serials, Source={Reference root}}" Orientation="Vertical">
+                            <BindableLayout.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid HeightRequest="35">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
-                                        <Label Grid.Column="0" Text="{Binding }"/>
-                                        <Button Grid.Column="1" Text="&#xf067;" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveSerialCommand, Source={Reference root}}" CommandParameter="{Binding }"/>
+                                        <Label Grid.Column="0" Text="{Binding }" VerticalOptions="Center"/>
+                                        <Button Grid.Column="1" Text="&#xf2ed;" FontFamily="{StaticResource FontAwesomeSolid}" Command="{Binding RemoveSerialCommand, Source={Reference root}}" CommandParameter="{Binding }" BackgroundColor="Red"/>
                                     </Grid>
-                                </ViewCell>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                                </DataTemplate>
+                            </BindableLayout.ItemTemplate>
+                        </StackLayout>
+                    </ScrollView>
                     <Label Grid.Column="0" Grid.Row="2" Grid.ColumnSpan="2" Text="{Binding LastItem.Item.Name, Source={Reference root}}" FontSize="Medium" MaxLines="2" LineBreakMode="WordWrap"/>
                     <Label Grid.Column="0" Grid.Row="3" Text="{Binding LastItem.Item.SKU, Source={Reference root}}" FontSize="Medium" VerticalOptions="Center"/>
                     <Label Grid.Column="0" Grid.Row="4" Text="{Binding LastItem.Item.Price, StringFormat='${0:#,#0.00}', Source={Reference root}}" FontSize="Medium" HorizontalTextAlignment="Start"/>

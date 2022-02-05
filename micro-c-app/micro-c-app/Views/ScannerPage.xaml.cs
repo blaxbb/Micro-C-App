@@ -53,31 +53,6 @@ namespace micro_c_app.Views
                 //Debug.WriteLine($"UPDATE: {LastItem?.Name} - {LastItem?.Quantity}");
             });
 
-            serialList.PropertyChanged += (sender, args) =>
-            {
-                if(serialList.ItemsSource != null)
-                {
-                    serialList.HeightRequest = ((IList)serialList.ItemsSource).Count * serialList.RowHeight;
-                }
-            };
-
-            //scanner.Options = new MobileBarcodeScanningOptions()
-            //{
-            //    AutoRotate = false,
-            //    TryHarder = true,
-            //    PossibleFormats = new List<BarcodeFormat>() {
-            //            BarcodeFormat.CODE_128,
-            //            BarcodeFormat.UPC_A
-            //        },
-            //    UseNativeScanning = true,
-            //    DelayBetweenContinuousScans = 1000,
-            //};
-
-            //scanner.OnScanResult += (result) =>
-            //{
-            //    OnScanResult?.Invoke(result);
-            //};
-            //scanner.IsScanning = true;
             Methods.SetIsBarcodeScanning(true);
 
             scanner2.OnBarcodeDetected += (sender, args) =>
@@ -165,6 +140,14 @@ namespace micro_c_app.Views
             {
                 LastItem.Item.Quantity++;
             }
+        }
+
+        private async void ManualSerialClicked(object sender, EventArgs e)
+        {
+            Methods.SetIsBarcodeScanning(false);
+            var result = await DisplayPromptAsync("Serial Number", "Enter a serial number.");
+            TryAddSerial(result);
+            Methods.SetIsBarcodeScanning(true);
         }
 
         private void SerialClicked(object sender, EventArgs e)
