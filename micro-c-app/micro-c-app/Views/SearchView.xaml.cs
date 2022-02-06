@@ -127,7 +127,7 @@ namespace micro_c_app.Views
             Progress = info;
         }
 
-        public static async void DoScan(INavigation navigation, Func<string, IProgress<ProgressInfo>?, Task<BuildComponent>> resultTask, string categoryFilter = "", bool batchMode = false)
+        public static async Task DoScan(INavigation navigation, Func<string, IProgress<ProgressInfo>?, Task<BuildComponent>> resultTask, string categoryFilter = "", bool batchMode = false)
         {
             bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
             if (!allowed)
@@ -199,6 +199,39 @@ namespace micro_c_app.Views
                         scanPage.IsBusy = false;
                         scanPage.IsRunningTask = false;
                     }
+                };
+
+                //var navPage = new NavigationPage(scanPage);
+                //navPage.ToolbarItems.Add(new ToolbarItem()
+                //{
+                //    Text = "Cancel",
+                //    Command = new Command(async () => { await navigation.PopModalAsync(); })
+                //});
+                await navigation.PushAsync(scanPage);
+            });
+        }
+
+        public static async Task DoSerialScan(INavigation navigation, BuildComponent component, Action<BuildComponent> callback)
+        {
+            bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+            if (!allowed)
+            {
+                return;
+            }
+
+            AnalyticsService.Track("DoSerialScan");
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                var scanPage = new ScannerPage()
+                {
+                    LastItem = component,
+                    CurrentScanMode = ScannerPage.ScanMode.Serial,
+                    OnlySerialMode = true
+                };
+
+                scanPage.Disappearing += (sender, args) =>
+                {
+                    callback?.Invoke(component);
                 };
 
                 //var navPage = new NavigationPage(scanPage);

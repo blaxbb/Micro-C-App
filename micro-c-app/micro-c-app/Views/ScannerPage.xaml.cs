@@ -31,13 +31,16 @@ namespace micro_c_app.Views
         public BuildComponent LastItem { get => lastItem; set { lastItem = value; OnPropertyChanged(nameof(LastItem)); } }
 
         ScanMode currentScanMode = ScanMode.Item;
+        private bool onlySerialMode;
+
         public bool SerialMode => CurrentScanMode == ScanMode.Serial;
 
-        private ScanMode CurrentScanMode { get => currentScanMode; set { currentScanMode = value; OnPropertyChanged(nameof(SerialMode)); OnPropertyChanged(nameof(CurrentScanMode)); } }
+        public ScanMode CurrentScanMode { get => currentScanMode; set { currentScanMode = value; OnPropertyChanged(nameof(SerialMode)); OnPropertyChanged(nameof(CurrentScanMode)); } }
+        public bool OnlySerialMode { get => onlySerialMode; set { onlySerialMode = value; OnPropertyChanged(nameof(OnlySerialMode)); } }
 
         public Command<string> RemoveSerialCommand { get; }
 
-        enum ScanMode
+        public enum ScanMode
         {
             Item,
             Serial
@@ -64,7 +67,7 @@ namespace micro_c_app.Views
                         break;
                     case ScanMode.Serial:
                         var result = args.BarcodeResults.FirstOrDefault();
-                        if(result != null && !string.IsNullOrWhiteSpace(result.Value))
+                        if (result != null && !string.IsNullOrWhiteSpace(result.Value))
                         {
                             var success = TryAddSerial(result.Value);
                             if (success && SettingsPage.Vibrate())
@@ -115,13 +118,12 @@ namespace micro_c_app.Views
                 return false;
             }
 
-            if(LastItem?.Item == null || LastItem.Serials.Count >= LastItem.Item.Quantity)
+            if (LastItem?.Item == null || LastItem.Serials.Count >= LastItem.Item.Quantity)
             {
                 return false;
             }
 
             LastItem.Serials.Add(serial);
-            LastItem.Serials = LastItem.Serials.ToList();
             return true;
         }
 
@@ -136,7 +138,7 @@ namespace micro_c_app.Views
 
         private void AddAnotherClicked(object sender, EventArgs e)
         {
-            if(LastItem != null && LastItem.Item != null)
+            if (LastItem != null && LastItem.Item != null)
             {
                 LastItem.Item.Quantity++;
             }
@@ -152,7 +154,7 @@ namespace micro_c_app.Views
 
         private void SerialClicked(object sender, EventArgs e)
         {
-            if(CurrentScanMode == ScanMode.Serial)
+            if (CurrentScanMode == ScanMode.Serial)
             {
                 CurrentScanMode = ScanMode.Item;
             }
@@ -165,10 +167,9 @@ namespace micro_c_app.Views
         private void RemoveSerial(string serial)
         {
             var index = LastItem.Serials.IndexOf(serial);
-            if(index >= 0)
+            if (index >= 0)
             {
                 LastItem.Serials.RemoveAt(index);
-                LastItem.Serials = LastItem.Serials.ToList();
             }
         }
     }

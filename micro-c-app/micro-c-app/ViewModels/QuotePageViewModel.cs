@@ -167,14 +167,22 @@ namespace micro_c_app.ViewModels
 
             SerialItem = new Command<BuildComponent>(async (BuildComponent comp) =>
             {
-                if(comp == null || comp.Item == null)
+                if(comp.Item == null)
                 {
                     return;
                 }
 
-                await ScannerPage.ScanSerial((result) =>
+                var copy = new BuildComponent()
                 {
-                    Console.WriteLine("Serial result");
+                    Item = comp.Item.CloneAndResetQuantity(),
+                    Serials = new ObservableCollection<string>(comp.Serials.ToList()),
+                };
+                copy.Item.Quantity = comp.Item.Quantity;
+
+                await SearchView.DoSerialScan(Navigation, copy, (c) =>
+                {
+                    comp.Serials = new ObservableCollection<string>(c.Serials.ToList());
+                    UpdateProperties();
                 });
             });
 
@@ -429,9 +437,9 @@ namespace micro_c_app.ViewModels
         }
 
 
-        private void DoBatchScan()
+        private async void DoBatchScan()
         {
-            SearchView.DoScan(Navigation, async (result, progress) =>
+            await SearchView.DoScan(Navigation, async (result, progress) =>
             {
                 System.Diagnostics.Debug.WriteLine(result);
 
