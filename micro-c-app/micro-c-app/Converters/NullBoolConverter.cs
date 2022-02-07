@@ -12,6 +12,10 @@ namespace micro_c_app
             {
                 return value == null;
             }
+            else if(parameter is int i)
+            {
+                return i != 0;
+            }
             else
             {
                 return value != null;

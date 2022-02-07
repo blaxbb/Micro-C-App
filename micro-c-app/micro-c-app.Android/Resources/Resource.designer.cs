@@ -6806,6 +6806,7 @@ namespace micro_c_app.Droid
 			global::Xamarin.Essentials.Resource.Id.text2 = global::micro_c_app.Droid.Resource.Id.text2;
 			global::Xamarin.Essentials.Resource.Id.time = global::micro_c_app.Droid.Resource.Id.time;
 			global::Xamarin.Essentials.Resource.Id.title = global::micro_c_app.Droid.Resource.Id.title;
+			global::Xamarin.Essentials.Resource.Id.view_tree_lifecycle_owner = global::micro_c_app.Droid.Resource.Id.view_tree_lifecycle_owner;
 			global::Xamarin.Essentials.Resource.Integer.status_bar_notification_info_maxnum = global::micro_c_app.Droid.Resource.Integer.status_bar_notification_info_maxnum;
 			global::Xamarin.Essentials.Resource.Layout.browser_actions_context_menu_page = global::micro_c_app.Droid.Resource.Layout.browser_actions_context_menu_page;
 			global::Xamarin.Essentials.Resource.Layout.browser_actions_context_menu_row = global::micro_c_app.Droid.Resource.Layout.browser_actions_context_menu_row;
