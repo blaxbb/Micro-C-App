@@ -11,20 +11,6 @@
             </Grid.RowDefinitions>
             <!--<zxing:ZXingScannerView Grid.Row="0" x:Name="scanner"/>-->
             <gv:CameraView x:Name="scanner2" Grid.Row="0" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" DefaultTorchOn="False" VibrationOnDetected="False" AutoStartScanning="True" RequestedFPS="30"/>
-            <Path Grid.Row="0" Stroke="Black"
-                  Aspect="Uniform"
-                  HorizontalOptions="Start"
-                  VerticalOptions="Start"
-                  x:Name="pathObj">
-                <Path.Data>
-                    <PathGeometry>
-                        <PathGeometry.Figures>
-                            <PathFigureCollection x:Name="pathFigure">
-                            </PathFigureCollection>
-                        </PathGeometry.Figures>
-                    </PathGeometry>
-                </Path.Data>
-            </Path>
 
             <BoxView Grid.Row="0" HeightRequest="2" Color="Red" WidthRequest="100" HorizontalOptions="FillAndExpand" VerticalOptions="Center" Margin="30,0,30,0"/>
             <Frame Grid.Row="0" HorizontalOptions="FillAndExpand" VerticalOptions="End" Opacity=".75" BackgroundColor="{DynamicResource NavigationBarColor}" Margin="20" IsVisible="{Binding LastItem, Source={Reference root}, Converter={StaticResource NullBoolConverter}}">
