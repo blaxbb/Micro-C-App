@@ -283,6 +283,11 @@ namespace micro_c_app.Views
 
         public async Task OnSubmit(string searchValue)
         {
+            if (string.IsNullOrWhiteSpace(searchValue))
+            {
+                return;
+            }
+
             Busy = true;
             var cachedItem = App.SearchCache?.Get(searchValue);
             if (cachedItem != null)
