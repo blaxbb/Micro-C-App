@@ -283,11 +283,6 @@ namespace micro_c_app.Views
 
         public async Task OnSubmit(string searchValue)
         {
-            if (string.IsNullOrWhiteSpace(searchValue))
-            {
-                return;
-            }
-
             Busy = true;
             var cachedItem = App.SearchCache?.Get(searchValue);
             if (cachedItem != null)
@@ -299,10 +294,10 @@ namespace micro_c_app.Views
             }
 
             //SKU or UPC
-            if (ProductFastFound != null && Regex.IsMatch(searchValue, "^\\d{6}$|^\\d{12}$"))
+            if (ProductFastFound != null && !string.IsNullOrWhiteSpace(searchValue) && Regex.IsMatch(searchValue, "^\\d{6}$|^\\d{12}$"))
             {
                 var fast = await OnSubmitFastQuery(searchValue);
-                if(fast != null)
+                if (fast != null)
                 {
                     DoProductFastFound(fast);
                 }
@@ -311,12 +306,14 @@ namespace micro_c_app.Views
                 {
                     await OnSubmitTextQuery(searchValue);
                 }
-                Busy = false;
                 return;
             }
+            else
+            {
+                await OnSubmitTextQuery(searchValue);
+            }
 
-            await OnSubmitTextQuery(searchValue);
-
+            Busy = false;
         }
 
         public async Task<Item> OnSubmitFastQuery(string searchValue)

@@ -21,6 +21,7 @@ namespace micro_c_app.ViewModels
 
         public Stack<Item> ItemQueue { get => itemQueue; set => SetProperty(ref itemQueue, value); }
         public ICommand PopItem { get; }
+        public ICommand PopAll { get; }
         public ICommand OnProductFound { get; }
         public ICommand OnProductFastFound { get; }
         public ICommand OnProductError { get; }
@@ -94,6 +95,11 @@ namespace micro_c_app.ViewModels
                 DoPopItem();
             });
 
+            PopAll = new Command(() =>
+            {
+                DoPopAll();
+            });
+
             AddReminder = new Command(async () =>
             {
                 if (Item != null)
@@ -143,6 +149,12 @@ namespace micro_c_app.ViewModels
             }
             Item = null;
             return false;
+        }
+
+        public void DoPopAll()
+        {
+            ItemQueue.Clear();
+            Item = null;
         }
     }
 }
