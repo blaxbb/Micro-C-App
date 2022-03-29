@@ -11,7 +11,7 @@ App includes functions for looking up product information, creating customer quo
 
 ![android screenshot](https://raw.githubusercontent.com/blaxbb/Micro-C-App/master/screenshots/android.png) ![iOS screenshot](https://raw.githubusercontent.com/blaxbb/Micro-C-App/master/screenshots/ios.png)
 
-# [MicroCBuilder](https://github.com/micro-c-builder)
+# [MicroCBuilder](https://github.com/blaxbb/micro-c-builder)
 Windows UWP desktop application for creating custom PC builds.  Caches component information from MicroCenter.com for fast access.  Used for quickly assembling parts lists for customer builds.
 
 ![builder screenshot](https://raw.githubusercontent.com/blaxbb/Micro-C-App/master/screenshots/builder.png)
