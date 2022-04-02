@@ -3,6 +3,7 @@ using micro_c_app.Models;
 using micro_c_app.Views;
 using micro_c_app.Views.CollectionFile;
 using MicroCLib.Models;
+using MicroCLib.Models.Reference;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using Xamarin.Essentials;
 using Xamarin.Forms;
+using static MicroCLib.Models.BuildComponent;
 
 namespace micro_c_app.ViewModels
 {
@@ -35,6 +37,7 @@ namespace micro_c_app.ViewModels
         public ICommand RemoveItem { get; }
         public ICommand DetailItem { get; }
         public ICommand SerialItem { get; }
+        public ICommand SettingsItem { get; }
 
         public ICommand SendQuote { get; }
         public ICommand ExportQuote { get; }
@@ -186,6 +189,35 @@ namespace micro_c_app.ViewModels
                 });
             });
 
+            SettingsItem = new Command<BuildComponent>(async (BuildComponent comp) =>
+            {
+                var action = await Shell.Current.DisplayActionSheet("Options", "Cancel", "Delete", "Add Plan", "Serial Numbers");
+                switch (action)
+                {
+                    case "Delete":
+                        RemoveItem.Execute(comp);
+                        break;
+                    case "Add Plan":
+                        Item? plan;
+                        if (comp.Type == ComponentType.BuildService)
+                        {
+                            plan = await QuotePageViewModel.PlanActionSheet(comp, Items.Where(c => c.Item != null && c.Type.IsBuildPlanApplicable()).Sum(c => c.Item.Price));
+                        }
+                        else
+                        {
+                            plan = await QuotePageViewModel.PlanActionSheet(comp);
+                        }
+                        if (plan != null)
+                        {
+                            InsertNewItem(plan, Items.IndexOf(comp) + 1);
+                        }
+                        break;
+                    case "Serial Numbers":
+                        SerialItem.Execute(comp);
+                        break;
+                }
+            });
+
             ImportQuote = new Command(async () => await ImportQuoteAction());
 
             MessagingCenter.Subscribe<SettingsPageViewModel>(this, SettingsPageViewModel.SETTINGS_UPDATED_MESSAGE, (_) => { UpdateProperties(); });
@@ -270,6 +302,21 @@ namespace micro_c_app.ViewModels
 
             Items.Add(comp);
             comp.PropertyChanged += (sender, args) => Instance.UpdateProperties();
+            return comp;
+        }
+
+        private BuildComponent InsertNewItem(Item item, int index)
+        {
+            var comp = new BuildComponent()
+            {
+                Item = item,
+                Type = item.ComponentType
+            };
+
+            Items.Insert(index, comp);
+            comp.PropertyChanged += (sender, args) => Instance.UpdateProperties();
+            UpdateProperties();
+            RestoreState.Save();
             return comp;
         }
 
@@ -494,6 +541,40 @@ namespace micro_c_app.ViewModels
 
                 return null;
             }, batchMode: true);
+        }
+        public static async Task<Item?> PlanActionSheet(BuildComponent comp)
+        {
+            return await PlanActionSheet(comp, comp?.Item?.Price ?? 1f);
+        }
+
+        public static async Task<Item?> PlanActionSheet(BuildComponent comp, float price)
+        {
+            IEnumerable<PlanReference> plans = comp.ApplicablePlans(price);
+            
+            var planName = await Shell.Current.DisplayActionSheet("Select Plan", "Cancel", null, plans.Select(p => p.Name).ToArray());
+            var plan = plans.FirstOrDefault(p => p.Name == planName);
+            if (plan == null)
+            {
+                return default;
+            }
+
+            var duration = await Shell.Current.DisplayActionSheet("Select Duration", "Cancel", null, plan.Tiers.Select(t => $"{t.Duration} year - ${t.Price}").ToArray());
+            if (string.IsNullOrEmpty(duration) || duration == "Cancel")
+            {
+                return default;
+            }
+
+            var tier = plan.Tiers.FirstOrDefault(t => {
+                var tString = t.Duration.ToString();
+                return tString.Length > 0 && tString[0] == duration[0];
+            });
+
+            if (tier != null)
+            {
+                return tier.GetItem(plan.Name);
+            }
+
+            return default;
         }
 
         public void UpdateProperties()

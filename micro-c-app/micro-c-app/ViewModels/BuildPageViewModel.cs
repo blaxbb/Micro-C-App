@@ -36,6 +36,8 @@ namespace micro_c_app.ViewModels
         public ICommand Load { get; }
         public ICommand OpenURL { get; }
         public ICommand BatchScan { get; }
+        public ICommand SettingsItem { get; }
+        public ICommand SerialItem { get; }
 
         public string? BuildURL { get => buildURL; set => SetProperty(ref buildURL, value); }
 
@@ -138,6 +140,56 @@ namespace micro_c_app.ViewModels
                 }
             });
 
+            SettingsItem = new Command<BuildComponent>(async (BuildComponent comp) =>
+            {
+                var action = await Shell.Current.DisplayActionSheet("Options", "Cancel", "Delete", "Add Plan", "Serial Numbers");
+                switch (action)
+                {
+                    case "Delete":
+                        RemoveComponent(comp);
+                        break;
+                    case "Add Plan":
+                        Item? plan;
+                        if(comp.Type == ComponentType.BuildService)
+                        {
+                            plan = await QuotePageViewModel.PlanActionSheet(comp, Components.Where(c => c.Item != null && c.Type.IsBuildPlanApplicable()).Sum(c => c.Item.Price));
+                        }
+                        else
+                        {
+                            plan = await QuotePageViewModel.PlanActionSheet(comp);
+                        }
+                        if (plan != null)
+                        {
+                            InsertNewItem(plan, Components.IndexOf(comp) + 1);
+                        }
+                        break;
+                    case "Serial Numbers":
+                        SerialItem?.Execute(comp);
+                        break;
+                }
+            });
+
+            SerialItem = new Command<BuildComponent>(async (BuildComponent comp) =>
+            {
+                if (comp.Item == null)
+                {
+                    return;
+                }
+
+                var copy = new BuildComponent()
+                {
+                    Item = comp.Item.CloneAndResetQuantity(),
+                    Serials = new ObservableCollection<string>(comp.Serials.ToList()),
+                };
+                copy.Item.Quantity = comp.Item.Quantity;
+
+                await SearchView.DoSerialScan(Shell.Current.Navigation, copy, (c) =>
+                {
+                    comp.Serials = new ObservableCollection<string>(c.Serials.ToList());
+                    UpdateProperties();
+                });
+            });
+
             BatchScan = new Command(() => DoBatchScan());
         }
 
@@ -166,6 +218,21 @@ namespace micro_c_app.ViewModels
                     RestoreState.Save();
                 }
             }
+        }
+
+        private BuildComponent InsertNewItem(Item item, int index)
+        {
+            var comp = new BuildComponent()
+            {
+                Item = item,
+                Type = item.ComponentType
+            };
+
+            Components.Insert(index, comp);
+            comp.PropertyChanged += (sender, args) => Instance.UpdateProperties();
+            UpdateProperties();
+            RestoreState.Save();
+            return comp;
         }
 
         void SetupDefaultComponents()
@@ -223,6 +290,20 @@ namespace micro_c_app.ViewModels
                 Components.Remove(emptyComponents[i]);
             }
             BuildComponentSelected(updated);
+        }
+
+        private void RemoveComponent(BuildComponent comp)
+        {
+            comp.Item = null;
+            var emptyComponents = Components.Where(c => comp.Type == c.Type && c.Item == null).ToList();
+            var count = emptyComponents.Count;
+            var stop = BuildComponent.MaxNumberPerType(comp.Type) == 0 ? count : count - 1;
+            for (int i = 0; i < stop; i++)
+            {
+                Components.Remove(emptyComponents[i]);
+            }
+
+            UpdateProperties();
         }
 
         private void BuildComponentNew(BuildComponentViewModel updated)
