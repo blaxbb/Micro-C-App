@@ -1,8 +1,10 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
 using MicroCLib.Models;
+using MicroCLib.Models.Reference;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using Xamarin.Forms;
@@ -12,22 +14,34 @@ namespace micro_c_app.ViewModels
     public class ItemDetailsViewViewModel : BaseViewModel
     {
         private Item? item;
-        public Item? Item { get => item;
-            set {
+        public Item? Item
+        {
+            get => item;
+            set
+            {
+                if (value != null && value.ComponentType != BuildComponent.ComponentType.BuildService)
+                {
+                    var comp = new BuildComponent();
+                    comp.Item = value;
+                    comp.Type = value.ComponentType;
+                    value.Plans = comp.ApplicablePlans().SelectMany(p => p.Tiers.Select(t => new Plan() { Name = $"{t.Duration} Year {p.Name}", Price = t.Price })).ToList();
+                }
                 SetProperty(ref item, value);
                 PictureIndex = 0;
+
                 OnPropertyChanged(nameof(ActivePicture));
             }
         }
+
         public string? ActivePicture
         {
             get
             {
-                if(Item?.PictureUrls == null)
+                if (Item?.PictureUrls == null)
                 {
                     return "";
                 }
-                if(PictureIndex >= item.PictureUrls.Count)
+                if (PictureIndex >= item.PictureUrls.Count)
                 {
                     return "";
                 }
@@ -37,6 +51,7 @@ namespace micro_c_app.ViewModels
         int PictureIndex = 0;
 
         private bool fastView;
+
         public bool FastView { get => fastView; set { SetProperty(ref fastView, value); } }
 
         public ICommand BackPicture { get; }

@@ -67,10 +67,15 @@ namespace micro_c_app.Views
             if(parentGrid != null)
             {
                 parentGrid.Children.Remove(SpecsGrid);
+                parentGrid.Children.Remove(PlanGrid);
             }
 
             SpecsGrid.Children.Clear();
             SpecsGrid.RowDefinitions.Clear();
+
+            PlanGrid.Children.Clear();
+            PlanGrid.RowDefinitions.Clear();
+
             var stripeColor = Application.Current.UserAppTheme == OSAppTheme.Dark ||
                               (Application.Current.UserAppTheme == OSAppTheme.Unspecified && Application.Current.RequestedTheme == OSAppTheme.Dark)
                               ? Color.FromHex("FF595959") : Color.LightGray;
@@ -85,7 +90,7 @@ namespace micro_c_app.Views
                         var row = i;
                         var plan = vm.Item.Plans[i];
 
-                        AddStripedBackground(SpecsGrid, stripeColor, row);
+                        AddStripedBackground(PlanGrid, stripeColor, row);
                         
                         var name = new Label()
                         {
@@ -107,14 +112,14 @@ namespace micro_c_app.Views
                             Margin = new Thickness(10)
                         };
 
-                        SpecsGrid.Children.Add(name);
-                        SpecsGrid.Children.Add(price);
+                        PlanGrid.Children.Add(name);
+                        PlanGrid.Children.Add(price);
                         Grid.SetColumn(name, 0);
                         Grid.SetColumn(price, 1);
                         Grid.SetRow(name, row);
                         Grid.SetRow(price, row);
 
-                        SpecsGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                        PlanGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
                     }
                 }
                 if (vm.Item?.Specs != null)
@@ -160,6 +165,7 @@ namespace micro_c_app.Views
 
             if (parentGrid != null)
             {
+                parentGrid.Children.Add(PlanGrid);
                 parentGrid.Children.Add(SpecsGrid);
             }
         }

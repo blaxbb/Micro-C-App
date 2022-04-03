@@ -18,6 +18,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
@@ -56,8 +58,14 @@
                     </Grid.ColumnDefinitions>
                 </Grid>
                 <BoxView HeightRequest="1" Grid.ColumnSpan="2" Color="Gray" Grid.Row="10" Margin="0,5,0,5" IsVisible="{Binding Item.ClearanceItems.Count, Converter={StaticResource GreaterThanZeroConverter}}"/>
-
-                <Grid x:Name="SpecsGrid" Grid.Row="11" RowSpacing="0" Grid.ColumnSpan="2">
+                <Grid x:Name="PlanGrid" Grid.Row="11" RowSpacing="0" Grid.ColumnSpan="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                </Grid>
+                <BoxView HeightRequest="1" Grid.ColumnSpan="2" Color="Gray" Grid.Row="12" Margin="0,5,0,5" IsVisible="{Binding Item.Plans.Count, Converter={StaticResource GreaterThanZeroConverter}}"/>
+                <Grid x:Name="SpecsGrid" Grid.Row="13" RowSpacing="0" Grid.ColumnSpan="2">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="*"/>

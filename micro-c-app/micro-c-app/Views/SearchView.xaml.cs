@@ -2,6 +2,7 @@
 using micro_c_app.Models;
 using micro_c_app.ViewModels;
 using MicroCLib.Models;
+using MicroCLib.Models.Reference;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
 using System;
