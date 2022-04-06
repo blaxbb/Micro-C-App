@@ -20,18 +20,34 @@ namespace micro_c_app.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class InventoryView : ContentPage, INotifyPropertyChanged
     {
-        private InventoryLocation currentLocation;
 
         public InventoryLocation CurrentLocation { get => currentLocation; set => SetProperty(ref currentLocation, value); }
+        public string StatusText { get => statusText; set => SetProperty(ref statusText, value); }
+
+        public int TotalProducts => Scans == null ? 0 : Scans.Sum(kvp => kvp.Value.Count);
+        public int TotalSections => Scans == null ? 0 : Scans.Keys.Count;
 
         Dictionary<string, List<string>> Scans = new Dictionary<string, List<string>>();
         List<string> FailedSearches = new List<string>();
         HttpClient client;
 
+        private InventoryLocation currentLocation;
+        private string statusText;
+
+        public const string SCAN_LOCATION_TEXT = "Scan a location tag.";
+        public const string SCAN_PRODUCT_TEXT = "Scan a product tag.";
+        public const string SCAN_SEARCHING_TEXT = "Searching for product...";
+        public const string SCAN_CACHING_TEXT = "Caching similar products.";
+        public const string SCAN_FAILED_TEXT = "Failed to find product for";
+        public const string SCAN_SUCCESS_TEXT = "Scanned product";
+        public const string SCAN_SUBMIT_SUCCESS_TEXT = "Submitted inventory results.";
+
         public InventoryView()
         {
+            StatusText = SCAN_LOCATION_TEXT;
             BindingContext = this;
             client = new HttpClient();
+            GoogleVisionBarCodeScanner.Methods.SetSupportBarcodeFormat(GoogleVisionBarCodeScanner.BarcodeFormats.All);
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
             InitializeComponent();
         }
@@ -47,7 +63,7 @@ namespace micro_c_app.Views
                     var location = barcode.Value;
                     if (location == CurrentLocation?.Identifier)
                     {
-                        continue;   
+                        continue;
                     }
                     try
                     {
@@ -58,33 +74,33 @@ namespace micro_c_app.Views
                         }
 
                         var textResponse = await response.Content.ReadAsStringAsync();
-                        if(string.IsNullOrWhiteSpace(textResponse))
+                        if (string.IsNullOrWhiteSpace(textResponse))
                         {
                             continue;
                         }
-                    
+
                         CurrentLocation = JsonConvert.DeserializeObject<InventoryLocation>(textResponse);
-                        statusLabel.Text = $"LOC : {barcode.Value.ToString()}";
+                        StatusText = SCAN_PRODUCT_TEXT;
                         if (SettingsPage.Vibrate())
                         {
                             Xamarin.Essentials.Vibration.Vibrate();
                         }
                     }
-                    catch(Exception ex)
+                    catch (Exception ex)
                     {
                         continue;
                     }
                 }
-                else if(CurrentLocation != null)
+                else if (CurrentLocation != null)
                 {
                     var text = SearchView.FilterBarcodeResult(barcode);
                     if (!string.IsNullOrWhiteSpace(text))
                     {
-                        statusLabel.Text = $"Searching for {text}";
+                        StatusText = $"{SCAN_SEARCHING_TEXT} {text}";
                         var item = await FindItem(text);
-                        if(item == null)
+                        if (item == null)
                         {
-                            statusLabel.Text = $"Failed to find item for {text}";
+                            StatusText = $"{SCAN_FAILED_TEXT} {text}";
                             continue;
                         }
 
@@ -93,14 +109,19 @@ namespace micro_c_app.Views
                             Scans[CurrentLocation.Identifier] = new List<string>();
                         }
 
-                        if (Scans[CurrentLocation.Identifier].Contains(text))
+                        if (Scans[CurrentLocation.Identifier].Contains(item.SKU))
                         {
-                            statusLabel.Text = $"Already scanned {item.Name}";
+                            StatusText = $"Already scanned {item.Name}";
+                            if (SettingsPage.Vibrate())
+                            {
+                                Xamarin.Essentials.Vibration.Vibrate();
+                            }
                         }
                         else
                         {
                             Scans[CurrentLocation.Identifier].Add(item.SKU);
-                            statusLabel.Text = $"Scanned {item.Name}";
+                            ScansUpdated();
+                            StatusText = $"{SCAN_SUCCESS_TEXT} {item.Name}";
                             if (SettingsPage.Vibrate())
                             {
                                 Xamarin.Essentials.Vibration.Vibrate();
@@ -136,6 +157,7 @@ namespace micro_c_app.Views
                 //
                 //Load all items from category so cache is hot
                 //
+                App.SearchCache.Add(item);
                 var catResults = await Search.LoadEnhanced("", storeId, BuildComponent.CategoryFilterForType(item.ComponentType));
                 foreach (var res in catResults.Items)
                 {
@@ -147,7 +169,6 @@ namespace micro_c_app.Views
             else
             {
                 FailedSearches.Add(text);
-                statusLabel.Text = "Failed";
                 return default;
             }
         }
@@ -157,14 +178,40 @@ namespace micro_c_app.Views
             return Regex.IsMatch(text, "loc\\d");
         }
 
-        private async void AddSubmitClicked(object sender, EventArgs e)
+        private void ScansUpdated()
         {
-            await Submit("add");
+            OnPropertyChanged(nameof(TotalProducts));
+            OnPropertyChanged(nameof(TotalSections));
         }
 
-        private async void ReplaceSubmitClicked(object sender, EventArgs e)
+        public void ResetClicked(object sender, EventArgs e)
         {
-            await Submit("replace");
+            CurrentLocation = null;
+            Scans.Clear();
+            ScansUpdated();
+            OnPropertyChanged(nameof(Scans));
+        }
+
+        public async void SubmitClicked(object sender, EventArgs e)
+        {
+            const string REPLACE_ACTION = "Replace Items";
+            const string ADD_ACTION = "Add Items";
+            var result = await Shell.Current.DisplayActionSheet("Submit inventory", "Cancel", REPLACE_ACTION, ADD_ACTION);
+            string? method = result switch
+            {
+                REPLACE_ACTION => "replace",
+                ADD_ACTION => "add",
+                _ => default
+            };
+            if (!string.IsNullOrWhiteSpace(method))
+            {
+                var success = await Submit(method);
+                if (success)
+                {
+                    StatusText = SCAN_SUBMIT_SUCCESS_TEXT;
+                    ResetClicked(sender, e);
+                }
+            }
         }
 
         async Task<bool> Submit(string method)
@@ -184,8 +231,6 @@ namespace micro_c_app.Views
                 }
             }
 
-            statusLabel.Text = error ? "Failed to submit" : "Success!";
-
             return !error;
         }
 
@@ -201,7 +246,7 @@ namespace micro_c_app.Views
                     return true;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 AnalyticsService.TrackError(e, location, string.Join(", ", skus), method);
             }
