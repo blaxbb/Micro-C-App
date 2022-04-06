@@ -166,6 +166,15 @@
                 Size="24"/>
         </MenuItem.IconImageSource>
     </MenuItem>
+    <MenuItem Text="Inventory" Clicked="InventoryScan">
+        <MenuItem.IconImageSource>
+            <FontImageSource
+                FontFamily="{StaticResource FontAwesomeSolid}"
+                Glyph="&#xf729;"
+                Color="{DynamicResource PrimaryTextColor}"
+                Size="24"/>
+        </MenuItem.IconImageSource>
+    </MenuItem>
     <MenuItem Text="Settings" Clicked="DisplaySettings">
         <MenuItem.IconImageSource>
             <FontImageSource
