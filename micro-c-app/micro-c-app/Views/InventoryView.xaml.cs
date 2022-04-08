@@ -1,4 +1,4 @@
-﻿using micro_c_app.Models.Inventory;
+﻿using micro_c_lib.Models.Inventory;
 using MicroCLib.Models;
 using Newtonsoft.Json;
 using System;
@@ -54,7 +54,6 @@ namespace micro_c_app.Views
 
         private async void CameraView_OnDetected(object sender, GoogleVisionBarCodeScanner.OnBarcodeDetectedEventArg e)
         {
-
             List<GoogleVisionBarCodeScanner.BarcodeResult> barcodes = e.BarcodeResults;
             foreach (var barcode in barcodes)
             {
@@ -175,7 +174,7 @@ namespace micro_c_app.Views
 
         bool IsLocationIdentifier(string text)
         {
-            return Regex.IsMatch(text, "loc\\d");
+            return Regex.IsMatch(text, "\\d{3}-.*-.*");
         }
 
         private void ScansUpdated()
@@ -240,7 +239,7 @@ namespace micro_c_app.Views
             {
                 var json = JsonConvert.SerializeObject(skus);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"http://192.168.1.160:64198/api/Entries/bulk/add/{location}", content);
+                var response = await client.PostAsync($"http://192.168.1.160:64198/api/Entries/bulk/{method}/{location}", content);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;

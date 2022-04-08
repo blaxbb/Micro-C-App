@@ -1,10 +1,12 @@
 ﻿using GoogleVisionBarCodeScanner;
 using micro_c_app.Models;
 using micro_c_app.ViewModels;
+using micro_c_lib.Models.Inventory;
 using MicroCLib.Models;
 using MicroCLib.Models.Reference;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -36,10 +38,14 @@ namespace micro_c_app.Views
         private ProgressInfo progress;
         public static readonly BindableProperty ProductFoundProperty = BindableProperty.Create(nameof(ProductFound), typeof(ICommand), typeof(SearchView), null);
         public static readonly BindableProperty ProductFastFoundProperty = BindableProperty.Create(nameof(ProductFastFound), typeof(ICommand), typeof(SearchView), null);
+        public static readonly BindableProperty ProductLocationFoundProperty = BindableProperty.Create(nameof(ProductLocationFound), typeof(ICommand), typeof(SearchView), null);
 
-        public static readonly BindableProperty ErrorProperty = BindableProperty.Create(nameof(Error), typeof(ICommand), typeof(SearchView), null);
         public ICommand ProductFound { get { return (ICommand)GetValue(ProductFoundProperty); } set { SetValue(ProductFoundProperty, value); } }
         public ICommand ProductFastFound { get { return (ICommand)GetValue(ProductFastFoundProperty); } set { SetValue(ProductFastFoundProperty, value); } }
+        public ICommand ProductLocationFound { get { return (ICommand)GetValue(ProductLocationFoundProperty); } set { SetValue(ProductLocationFoundProperty, value); } }
+
+        public static readonly BindableProperty ErrorProperty = BindableProperty.Create(nameof(Error), typeof(ICommand), typeof(SearchView), null);
+
         public ICommand Error { get { return (ICommand)GetValue(ErrorProperty); } set { SetValue(ErrorProperty, value); } }
 
         public static readonly BindableProperty CategoryFilterProperty = BindableProperty.Create(nameof(CategoryFilter), typeof(string), typeof(SearchView), "");
@@ -289,7 +295,7 @@ namespace micro_c_app.Views
             if (cachedItem != null)
             {
                 AnalyticsService.Track("CacheHit", searchValue);
-                DoProductFound(cachedItem);
+                await DoProductFound(cachedItem);
                 Busy = false;
                 return;
             }
@@ -478,12 +484,38 @@ namespace micro_c_app.Views
             Busy = false;
         }
 
-        private async void DoProductFound(Item item)
+        async Task FindLocation(Item item)
+        {
+            try
+            {
+                var response = await client.GetAsync($"http://192.168.1.160:64198/api/Entries/Sku/{item.SKU}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var text = await response.Content.ReadAsStringAsync();
+                    var entry = JsonConvert.DeserializeObject<List<InventoryEntry>>(text);
+                    if (entry != null)
+                    {
+                        ProductLocationFound?.Execute(entry);
+                    }
+                }
+            }
+            catch(Exception e)
+            {
+                AnalyticsService.TrackError(e, item?.SKU ?? "null");
+            }
+        }
+
+        private async Task DoProductFound(Item item)
         {
             await Device.InvokeOnMainThreadAsync(() =>
             {
                 ProductFound?.Execute(item);
             });
+
+            if (SettingsPage.StoreID() == "141")
+            {
+                await FindLocation(item);
+            }
         }
 
         private async void DoProductFastFound(Item item)
