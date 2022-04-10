@@ -35,12 +35,12 @@ namespace micro_c_app.Views
         private string statusText;
 
         public const string SCAN_LOCATION_TEXT = "Scan a location tag.";
-        public const string SCAN_PRODUCT_TEXT = "Scan a product tag.";
+        public const string SCAN_PRODUCT_TEXT = "Scan a product.";
         public const string SCAN_SEARCHING_TEXT = "Searching for product...";
         public const string SCAN_CACHING_TEXT = "Caching similar products.";
         public const string SCAN_FAILED_TEXT = "Failed to find product for";
-        public const string SCAN_SUCCESS_TEXT = "Scanned product";
-        public const string SCAN_SUBMIT_SUCCESS_TEXT = "Submitted inventory results.";
+        public const string SCAN_SUCCESS_TEXT = "Scanned ";
+        public const string SCAN_SUBMIT_SUCCESS_TEXT = "Submitted inventory results.\rScan a product tag.";
 
         public InventoryView()
         {
@@ -96,7 +96,9 @@ namespace micro_c_app.Views
                     if (!string.IsNullOrWhiteSpace(text))
                     {
                         StatusText = $"{SCAN_SEARCHING_TEXT} {text}";
+
                         var item = await FindItem(text);
+
                         if (item == null)
                         {
                             StatusText = $"{SCAN_FAILED_TEXT} {text}";
@@ -183,6 +185,60 @@ namespace micro_c_app.Views
             OnPropertyChanged(nameof(TotalSections));
         }
 
+        public async void ManualAddClicked(object sender, EventArgs e)
+        {
+            var manual = await Shell.Current.DisplayPromptAsync("Manual Entry", "Enter a SKU or location ID to manually add it to the scan collection.");
+            if (manual != null)
+            {
+                if (IsLocationIdentifier(manual))
+                {
+                    var response = await client.GetAsync($"http://192.168.1.160:64198/api/Locations/{manual}");
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        await Shell.Current.DisplayAlert("Error", "Manual location entry did not retrieve any location from server!", "Ok");
+                        return;
+                    }
+
+                    var textResponse = await response.Content.ReadAsStringAsync();
+                    if (string.IsNullOrWhiteSpace(textResponse))
+                    {
+                        await Shell.Current.DisplayAlert("Error", "Manual location entry did not retrieve any location from server!", "Ok");
+                        return;
+                    }
+
+                    CurrentLocation = JsonConvert.DeserializeObject<InventoryLocation>(textResponse);
+                    StatusText = SCAN_PRODUCT_TEXT;
+                }
+                else if(Regex.IsMatch(manual, "\\d{6}"))
+                {
+                    if(CurrentLocation == null || string.IsNullOrWhiteSpace(CurrentLocation.Identifier))
+                    {
+                        await Shell.Current.DisplayAlert("Error", "Location must be set before manually entering a SKU.", "Ok");
+                        return;
+                    }
+                    if (!Scans.ContainsKey(CurrentLocation.Identifier))
+                    {
+                        Scans[CurrentLocation.Identifier] = new List<string>();
+                    }
+
+                    if (Scans[CurrentLocation.Identifier].Contains(manual))
+                    {
+                        StatusText = $"Already scanned {manual}";
+                    }
+                    else
+                    {
+                        Scans[CurrentLocation.Identifier].Add(manual);
+                        ScansUpdated();
+                        StatusText = $"Manually submitted {manual}";
+                    }
+                }
+                else
+                {
+                    await Shell.Current.DisplayAlert("Error", "Manual entry not input corrcetly, must be Location ID or 6 digit SKU!", "Ok");
+                }
+            }
+        }
+
         public void ResetClicked(object sender, EventArgs e)
         {
             CurrentLocation = null;
@@ -195,13 +251,25 @@ namespace micro_c_app.Views
         {
             const string REPLACE_ACTION = "Replace Items";
             const string ADD_ACTION = "Add Items";
-            var result = await Shell.Current.DisplayActionSheet("Submit inventory", "Cancel", REPLACE_ACTION, ADD_ACTION);
+            const string REPLACE_METHOD = "replace";
+            const string ADD_METHOD = "add";
+            var result = await Shell.Current.DisplayActionSheet("Submit inventory", "Cancel", null, REPLACE_ACTION, ADD_ACTION);
             string? method = result switch
             {
-                REPLACE_ACTION => "replace",
-                ADD_ACTION => "add",
+                REPLACE_ACTION => REPLACE_METHOD,
+                ADD_ACTION => ADD_METHOD,
                 _ => default
             };
+
+            if(result == REPLACE_ACTION)
+            {
+                var confirm = await Shell.Current.DisplayAlert("Confirm", "This will remove all items previously submitted to the sections scanned.  This is irreversible!", "Confirm", "Cancel");
+                if(!confirm)
+                {
+                    return;
+                }
+            }
+
             if (!string.IsNullOrWhiteSpace(method))
             {
                 var success = await Submit(method);
