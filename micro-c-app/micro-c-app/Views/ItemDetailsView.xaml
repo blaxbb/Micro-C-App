@@ -62,7 +62,7 @@
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
                                 <Label Grid.Column="0" Text="{Binding Location.Name}"/>
-                                <Label Grid.Column="2" HorizontalTextAlignment="Right" Text="{Binding Created, StringFormat='{0:MMM d/yy h:mm tt}'}"/>
+                                <Label Grid.Column="1" HorizontalTextAlignment="Right" Text="{Binding Created, StringFormat='{0:MMM d/yy h:mm tt}'}"/>
                             </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>

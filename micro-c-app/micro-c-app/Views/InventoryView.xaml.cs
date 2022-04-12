@@ -40,7 +40,9 @@ namespace micro_c_app.Views
         public const string SCAN_CACHING_TEXT = "Caching similar products.";
         public const string SCAN_FAILED_TEXT = "Failed to find product for";
         public const string SCAN_SUCCESS_TEXT = "Scanned ";
-        public const string SCAN_SUBMIT_SUCCESS_TEXT = "Submitted inventory results.\rScan a product tag.";
+        public const string SCAN_SUBMIT_SUCCESS_TEXT = "Submitted inventory results.\rScan a location tag.";
+
+        public const string LOCATION_TRACKER_BASEURL = "https://location.bbarrett.me";
 
         public InventoryView()
         {
@@ -66,7 +68,7 @@ namespace micro_c_app.Views
                     }
                     try
                     {
-                        var response = await client.GetAsync($"http://192.168.1.160:64198/api/Locations/{location}");
+                        var response = await client.GetAsync($"{LOCATION_TRACKER_BASEURL}/api/Locations/{location}");
                         if (!response.IsSuccessStatusCode)
                         {
                             continue;
@@ -192,7 +194,7 @@ namespace micro_c_app.Views
             {
                 if (IsLocationIdentifier(manual))
                 {
-                    var response = await client.GetAsync($"http://192.168.1.160:64198/api/Locations/{manual}");
+                    var response = await client.GetAsync($"{LOCATION_TRACKER_BASEURL}/api/Locations/{manual}");
                     if (!response.IsSuccessStatusCode)
                     {
                         await Shell.Current.DisplayAlert("Error", "Manual location entry did not retrieve any location from server!", "Ok");
@@ -307,7 +309,7 @@ namespace micro_c_app.Views
             {
                 var json = JsonConvert.SerializeObject(skus);
                 var content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await client.PostAsync($"http://192.168.1.160:64198/api/Entries/bulk/{method}/{location}", content);
+                var response = await client.PostAsync($"{LOCATION_TRACKER_BASEURL}/api/Entries/bulk/{method}/{location}", content);
                 if (response.IsSuccessStatusCode)
                 {
                     return true;

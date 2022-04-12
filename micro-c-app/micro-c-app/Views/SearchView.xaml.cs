@@ -488,7 +488,7 @@ namespace micro_c_app.Views
         {
             try
             {
-                var response = await client.GetAsync($"http://192.168.1.160:64198/api/Entries/Sku/{item.SKU}");
+                var response = await client.GetAsync($"{InventoryView.LOCATION_TRACKER_BASEURL}/api/Entries/Sku/{item.SKU}");
                 if (response.IsSuccessStatusCode)
                 {
                     var text = await response.Content.ReadAsStringAsync();
