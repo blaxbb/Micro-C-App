@@ -37,9 +37,18 @@ namespace micro_c_app.Views
             if (bindable is ItemDetailsView view && view.BindingContext is ItemDetailsViewViewModel vm)
             {
                 vm.Item = newValue as Item;
+                if (vm.Item != null)
+                {
+                    vm.Item.PropertyChanged += view.Item_PropertyChanged;
+                }
                 vm.FastView = view.FastView;
                 view.StripeStacks();
             }
+        }
+
+        public void Item_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            StripeStacks();
         }
 
         private void StripeStacks()
@@ -48,7 +57,7 @@ namespace micro_c_app.Views
                               (Application.Current.UserAppTheme == OSAppTheme.Unspecified && Application.Current.RequestedTheme == OSAppTheme.Dark)
                               ? Color.FromHex("FF595959") : Color.LightGray;
 
-            var stacks = new []{ SpecsStack, PlanStack, ClearanceStack };
+            var stacks = new []{ SpecsStack, PlanStack, ClearanceStack, InventoryStack };
             foreach(var stack in stacks)
             {
                 for(int i = 0; i < stack.Children.Count; i++)

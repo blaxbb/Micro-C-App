@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gv="clr-namespace:GoogleVisionBarCodeScanner;assembly=BarcodeScanner.XF"
+             x:Class="micro_c_app.Views.InventoryView">
+    <ContentPage.Content>
+        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="grid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <gv:CameraView Grid.Row="0" Grid.RowSpan="3"
+                           OnBarcodeDetected="CameraView_OnDetected"
+                           DefaultTorchOn="False"
+                           VibrationOnDetected="False"/>
+            <Grid Grid.Row="0" Padding="20" BackgroundColor="#9939578f">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.Row="0" HorizontalTextAlignment="Center" Text="Scanned 24 Products
+                       in 2 Sections">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="Scanned "/>
+                            <Span Text="{Binding TotalProducts}"/>
+                            <Span Text=" Products"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Label Grid.Column="0" Grid.Row="1" HorizontalTextAlignment="Center">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="in "/>
+                            <Span Text="{Binding TotalSections}"/>
+                            <Span Text=" sections"/>
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+                <Button Grid.Column="1" Grid.RowSpan="2" Text="Reset" Clicked="ResetClicked" BackgroundColor="Red"/>
+                <Button Grid.Column="2" Grid.RowSpan="2" Text="Submit" Clicked="SubmitClicked" BackgroundColor="Green"/>
+            </Grid>
+            <Grid Grid.Row="2" BackgroundColor="#9939578f" Margin="25" Padding="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="4*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" BackgroundColor="Green" Text="{Binding StatusText}" FontSize="Title" HorizontalTextAlignment="Center"/>
+                <Label Grid.Row="1" Text="{Binding CurrentLocation.Name}" HorizontalTextAlignment="Center" MaxLines="1"/>
+                <Label Grid.Row="2" Text="{Binding CurrentLocation.Identifier}"  HorizontalTextAlignment="Center" MaxLines="1"/>
+                <Button Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Text="+" Clicked="ManualAddClicked"/>
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

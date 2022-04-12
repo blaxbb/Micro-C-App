@@ -1,5 +1,6 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.Views;
+using micro_c_lib.Models.Inventory;
 using MicroCLib.Models;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,6 +25,7 @@ namespace micro_c_app.ViewModels
         public ICommand PopAll { get; }
         public ICommand OnProductFound { get; }
         public ICommand OnProductFastFound { get; }
+        public ICommand OnProductLocationFound { get; }
         public ICommand OnProductError { get; }
         public ICommand SearchCategory { get; }
         public INavigation Navigation { get; internal set; }
@@ -79,6 +81,14 @@ namespace micro_c_app.ViewModels
                 if (Shell.Current != null)
                 {
                     await Shell.Current.DisplayAlert("Error", message, "Ok");
+                }
+            });
+
+            OnProductLocationFound = new Command<List<InventoryEntry>>(async (entries) =>
+            {
+                if(Item != null)
+                {
+                    Item.InventoryEntries = entries.OrderByDescending(e => e.Created).ToList();
                 }
             });
 

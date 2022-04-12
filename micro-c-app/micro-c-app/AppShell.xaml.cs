@@ -82,6 +82,21 @@ namespace micro_c_app
             });
         }
 
+        private void InventoryScan(object sender, EventArgs e)
+        {
+            Device.BeginInvokeOnMainThread(async () =>
+            {
+                bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+                if (!allowed)
+                {
+                    return;
+                }
+
+                FlyoutIsPresented = false;
+                await Navigation.PushAsync(new InventoryView());
+            });
+        }
+
         private void DisplaySettings(object sender, EventArgs e)
         {
             Device.BeginInvokeOnMainThread(async () =>
