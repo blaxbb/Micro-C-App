@@ -63,6 +63,7 @@ namespace micro_c_app.ViewModels
                     ItemQueue.Push(Item);
                 }
                 FastSearch = false;
+
                 Item = item;
             });
 
@@ -73,6 +74,7 @@ namespace micro_c_app.ViewModels
                 {
                     ItemQueue.Push(Item);
                 }
+
                 Item = item;
             });
 
@@ -86,8 +88,9 @@ namespace micro_c_app.ViewModels
 
             OnProductLocationFound = new Command<List<InventoryEntry>>(async (entries) =>
             {
-                if(Item != null)
+                if (Item != null)
                 {
+                    Item.InventoryEntries = null;
                     Item.InventoryEntries = entries.OrderByDescending(e => e.Created).ToList();
                 }
             });
