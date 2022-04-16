@@ -34,6 +34,8 @@ namespace micro_c_app.Views
         private InventoryLocation currentLocation;
         private string statusText;
 
+        string? previousFailedSku;
+
         public const string SCAN_LOCATION_TEXT = "Scan a location tag.";
         public const string SCAN_PRODUCT_TEXT = "Scan a product.";
         public const string SCAN_SEARCHING_TEXT = "Searching for product...";
@@ -61,6 +63,7 @@ namespace micro_c_app.Views
             {
                 if (IsLocationIdentifier(barcode.Value))
                 {
+                    previousFailedSku = null;
                     var location = barcode.Value;
                     if (location == CurrentLocation?.Identifier)
                     {
@@ -104,8 +107,14 @@ namespace micro_c_app.Views
                         if (item == null)
                         {
                             StatusText = $"{SCAN_FAILED_TEXT} {text}";
+                            if(Regex.IsMatch(text, "\\d{6}"))
+                            {
+                                previousFailedSku = text;
+                            }
                             continue;
                         }
+
+                        previousFailedSku = null;
 
                         if (!Scans.ContainsKey(CurrentLocation.Identifier))
                         {
@@ -189,7 +198,8 @@ namespace micro_c_app.Views
 
         public async void ManualAddClicked(object sender, EventArgs e)
         {
-            var manual = await Shell.Current.DisplayPromptAsync("Manual Entry", "Enter a SKU or location ID to manually add it to the scan collection.");
+            var manual = await Shell.Current.DisplayPromptAsync("Manual Entry", "Enter a SKU or location ID to manually add it to the scan collection.", initialValue: previousFailedSku);
+            previousFailedSku = null;
             if (manual != null)
             {
                 if (IsLocationIdentifier(manual))
