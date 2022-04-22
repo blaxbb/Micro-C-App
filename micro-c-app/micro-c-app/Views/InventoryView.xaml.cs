@@ -95,6 +95,37 @@ namespace micro_c_app.Views
                         continue;
                     }
                 }
+                else if (IsClearanceIdentifier(barcode.Value))
+                {
+                    if (CurrentLocation == null)
+                    {
+                        continue;
+                    }
+
+                    if (!Scans.ContainsKey(CurrentLocation.Identifier))
+                    {
+                        Scans[CurrentLocation.Identifier] = new List<string>();
+                    }
+
+                    if (Scans[CurrentLocation.Identifier].Contains(barcode.Value))
+                    {
+                        StatusText = $"Already scanned {barcode.Value}";
+                        if (SettingsPage.Vibrate())
+                        {
+                            Xamarin.Essentials.Vibration.Vibrate();
+                        }
+                    }
+                    else
+                    {
+                        Scans[CurrentLocation.Identifier].Add(barcode.Value);
+                        ScansUpdated();
+                        StatusText = $"{SCAN_SUCCESS_TEXT} {barcode.Value}";
+                        if (SettingsPage.Vibrate())
+                        {
+                            Xamarin.Essentials.Vibration.Vibrate();
+                        }
+                    }
+                }
                 else if (CurrentLocation != null)
                 {
                     var text = SearchView.FilterBarcodeResult(barcode);
@@ -190,6 +221,11 @@ namespace micro_c_app.Views
             return Regex.IsMatch(text, "\\d{3}-.*-.*");
         }
 
+        bool IsClearanceIdentifier(string text)
+        {
+            return Regex.IsMatch(text, "CL\\d{5,}");
+        }
+
         private void ScansUpdated()
         {
             OnPropertyChanged(nameof(TotalProducts));
@@ -220,6 +256,37 @@ namespace micro_c_app.Views
 
                     CurrentLocation = JsonConvert.DeserializeObject<InventoryLocation>(textResponse);
                     StatusText = SCAN_PRODUCT_TEXT;
+                }
+                else if (IsClearanceIdentifier(manual))
+                {
+                    if (CurrentLocation == null)
+                    {
+                        return;
+                    }
+
+                    if (!Scans.ContainsKey(CurrentLocation.Identifier))
+                    {
+                        Scans[CurrentLocation.Identifier] = new List<string>();
+                    }
+
+                    if (Scans[CurrentLocation.Identifier].Contains(manual))
+                    {
+                        StatusText = $"Already scanned {manual}";
+                        if (SettingsPage.Vibrate())
+                        {
+                            Xamarin.Essentials.Vibration.Vibrate();
+                        }
+                    }
+                    else
+                    {
+                        Scans[CurrentLocation.Identifier].Add(manual);
+                        ScansUpdated();
+                        StatusText = $"{SCAN_SUCCESS_TEXT} {manual}";
+                        if (SettingsPage.Vibrate())
+                        {
+                            Xamarin.Essentials.Vibration.Vibrate();
+                        }
+                    }
                 }
                 else if(Regex.IsMatch(manual, "\\d{6}"))
                 {
