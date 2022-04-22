@@ -22,6 +22,7 @@ namespace micro_c_app.Models
         public bool MigrationComplete { get; set; }
         public List<Item> BatchItems { get; set; } = new List<Item>();
         public BuildPageViewModel BuildVM { get; set; }
+        public Dictionary<string, List<string>> InventoryScans { get; set; } = new Dictionary<string, List<string>>();
 
         public const string FILENAME = "RestoreState.json";
         static string Path => System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), FILENAME);

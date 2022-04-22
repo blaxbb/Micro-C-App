@@ -1,4 +1,5 @@
-﻿using micro_c_lib.Models.Inventory;
+﻿using micro_c_app.Models;
+using micro_c_lib.Models.Inventory;
 using MicroCLib.Models;
 using Newtonsoft.Json;
 using System;
@@ -53,6 +54,9 @@ namespace micro_c_app.Views
             client = new HttpClient();
             GoogleVisionBarCodeScanner.Methods.SetSupportBarcodeFormat(GoogleVisionBarCodeScanner.BarcodeFormats.All);
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
+
+            Scans = RestoreState.Instance.InventoryScans ?? new Dictionary<string, List<string>>();
+
             InitializeComponent();
         }
 
@@ -230,6 +234,8 @@ namespace micro_c_app.Views
         {
             OnPropertyChanged(nameof(TotalProducts));
             OnPropertyChanged(nameof(TotalSections));
+            RestoreState.Instance.InventoryScans = Scans;
+            RestoreState.Save();
         }
 
         public async void ManualAddClicked(object sender, EventArgs e)
