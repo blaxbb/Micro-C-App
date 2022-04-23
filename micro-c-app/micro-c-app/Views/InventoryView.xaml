@@ -13,11 +13,11 @@
             <gv:CameraView Grid.Row="0" Grid.RowSpan="3"
                            OnBarcodeDetected="CameraView_OnDetected"
                            DefaultTorchOn="False"
-                           VibrationOnDetected="False"/>
+                           VibrationOnDetected="False"
+                           x:Name="camera"/>
             <Grid Grid.Row="0" Padding="20" BackgroundColor="#9939578f">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="3*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
@@ -43,8 +43,7 @@
                         </FormattedString>
                     </Label.FormattedText>
                 </Label>
-                <Button Grid.Column="1" Grid.RowSpan="2" Text="Reset" Clicked="ResetClicked" BackgroundColor="Red"/>
-                <Button Grid.Column="2" Grid.RowSpan="2" Text="Submit" Clicked="SubmitClicked" BackgroundColor="Green"/>
+                <Button Grid.Column="1" Grid.RowSpan="2" Text="Review" Clicked="ReviewClicked" BackgroundColor="Green"/>
             </Grid>
             <Grid Grid.Row="2" BackgroundColor="#9939578f" Margin="25" Padding="10">
                 <Grid.RowDefinitions>

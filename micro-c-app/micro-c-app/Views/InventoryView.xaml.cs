@@ -1,4 +1,5 @@
 ﻿using micro_c_app.Models;
+using micro_c_app.ViewModels;
 using micro_c_lib.Models.Inventory;
 using MicroCLib.Models;
 using Newtonsoft.Json;
@@ -55,9 +56,18 @@ namespace micro_c_app.Views
             GoogleVisionBarCodeScanner.Methods.SetSupportBarcodeFormat(GoogleVisionBarCodeScanner.BarcodeFormats.All);
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 
-            Scans = RestoreState.Instance.InventoryScans ?? new Dictionary<string, List<string>>();
-
             InitializeComponent();
+        }
+
+        protected override void OnAppearing()
+        {
+            camera.RequestedFPS = 30;
+            Scans = RestoreState.Instance.InventoryScans ?? new Dictionary<string, List<string>>();
+            currentLocation = null;
+            StatusText = SCAN_LOCATION_TEXT;
+            ScansUpdated();
+            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
+            camera.IsEnabled = true;
         }
 
         private async void CameraView_OnDetected(object sender, GoogleVisionBarCodeScanner.OnBarcodeDetectedEventArg e)
@@ -179,7 +189,7 @@ namespace micro_c_app.Views
             }
 
             await Task.Delay(2000);
-            Device.BeginInvokeOnMainThread(() => GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true));
+            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
         }
 
         private async Task<Item?> FindItem(string text)
@@ -324,12 +334,26 @@ namespace micro_c_app.Views
             }
         }
 
-        public void ResetClicked(object sender, EventArgs e)
+        public async void ReviewClicked(object sender, EventArgs e)
         {
-            CurrentLocation = null;
-            Scans.Clear();
-            ScansUpdated();
-            OnPropertyChanged(nameof(Scans));
+            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(false);
+            camera.IsEnabled = false;
+
+            var vm = new InventoryReviewViewModel()
+            {
+                Scans = Scans,
+            };
+            vm.ScansUpdated += (sender, scans) =>
+            {
+                Scans = scans;
+                ScansUpdated();
+            };
+            var page = new InventoryReviewPage()
+            {
+                BindingContext = vm
+            };
+
+            await Shell.Current.Navigation.PushAsync(page);
         }
 
         public async void SubmitClicked(object sender, EventArgs e)
@@ -361,7 +385,7 @@ namespace micro_c_app.Views
                 if (success)
                 {
                     StatusText = SCAN_SUBMIT_SUCCESS_TEXT;
-                    ResetClicked(sender, e);
+                    ReviewClicked(sender, e);
                 }
             }
         }

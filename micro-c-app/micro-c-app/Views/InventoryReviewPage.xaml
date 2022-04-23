@@ -1,0 +1,61 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             x:Class="micro_c_app.Views.InventoryReviewPage">
+    <ContentPage.BindingContext>
+        <vm:InventoryReviewViewModel/>
+    </ContentPage.BindingContext>
+    
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <StackLayout Grid.Column="0" Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="10">
+                <Button Text="Reset" BackgroundColor="Red" HorizontalOptions="StartAndExpand" Command="{Binding Reset}"/>
+                <Button Text="Add" HorizontalOptions="CenterAndExpand" Command="{Binding Add}"/>
+                <Button Text="Replace" HorizontalOptions="EndAndExpand" Command="{Binding Replace}"/>
+            </StackLayout>
+            <ListView Grid.Row="1" ItemsSource="{Binding Scans}" SelectionMode="None" HasUnevenRows="True" x:Name="listView">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid x:Name="item" Padding="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Key}" InputTransparent="True"/>
+                                <Button Grid.Row="0" Grid.Column="1" Text="X" BackgroundColor="Red" HorizontalOptions="Center" Clicked="RemoveLocationClicked"/>
+                                <StackLayout
+                                    Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    BindableLayout.ItemsSource="{Binding Value}"
+                                    Margin="10,0,0,0">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Label Grid.Column="0" Text="{Binding}"/>
+                                                <Button Grid.Column="1" Text="X" HorizontalOptions="Center" Clicked="RemoveEntryClicked" />
+                                            </Grid>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </StackLayout>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
