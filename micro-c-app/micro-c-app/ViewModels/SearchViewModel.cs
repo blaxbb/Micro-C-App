@@ -90,16 +90,14 @@ namespace micro_c_app.ViewModels
             {
                 if (Item != null)
                 {
-                    Item.InventoryEntries = null;
                     Item.InventoryEntries = entries.Where(e => e.Sku == Item.SKU).OrderByDescending(e => e.Created).ToList();
                     foreach(var entry in entries.Where(e => e.Sku.StartsWith("CL")))
                     {
                         var clearance = Item.ClearanceItems.FirstOrDefault(c => c.Id == entry.Sku);
                         clearance.Location = entry.Location.Name;
                     }
-                    var dupe = Item;
-                    Item = null;
-                    Item = dupe;
+
+                    Item = Item.CloneAndResetQuantity();
                 }
             });
 

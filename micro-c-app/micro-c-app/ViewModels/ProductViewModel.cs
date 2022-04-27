@@ -36,6 +36,7 @@ namespace micro_c_app.ViewModels
 
         public string UPC { get => _upc; set => SetProperty(ref _upc, value); }
         public string Picture { get => _picture; set => SetProperty(ref _picture, value); }
+        int PictureIndex = 0;
 
         public ICommand PictureSwipeForward { get; }
         public ICommand PictureSwipeBack { get; }
@@ -58,18 +59,63 @@ namespace micro_c_app.ViewModels
                 {"acccdcc", "123" }
             };
 
+            PictureSwipeBack = new Command(() => BackPicture());
+            PictureSwipeForward = new Command(() => ForwardPicture());
+
             SetTab = new Command<string>((tab) => ActiveTab = tab);
+        }
+
+        void BackPicture()
+        {
+            if(Item?.PictureUrls == null || Item.PictureUrls.Count == 0)
+            {
+                return;
+            }
+
+            if(PictureIndex == 0)
+            {
+                PictureIndex = Item.PictureUrls.Count;
+            }
+            
+            PictureIndex--;
+            if(PictureIndex < 0)
+            {
+                PictureIndex = 0;
+            }
+
+            Picture = Item.PictureUrls[PictureIndex];
+        }
+
+        void ForwardPicture()
+        {
+            if (Item?.PictureUrls == null || Item.PictureUrls.Count == 0)
+            {
+                return;
+            }
+
+            PictureIndex++;
+
+            if (PictureIndex == Item.PictureUrls.Count)
+            {
+                PictureIndex = 0;
+            }
+
+            Picture = Item.PictureUrls[PictureIndex];
         }
 
         void SetItem()
         {
+            Console.WriteLine("SET ITEM");
             if (Item == null)
             {
                 return;
             }
 
             UPC = Item.Specs.ContainsKey("UPC") ? Item.Specs["UPC"] : "";
+
+            PictureIndex = 0;
             Picture = Item.PictureUrls.FirstOrDefault();
+
             Specs = Item.Specs;
             OnPropertyChanged(nameof(Specs));
             Locations = Item.InventoryEntries;

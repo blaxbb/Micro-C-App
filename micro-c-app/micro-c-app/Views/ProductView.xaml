@@ -22,7 +22,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Item.Name}" FontSize="24"/>
+                <Label Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Item.Name}" MaxLines="3" FontSize="24"/>
                 <Label Grid.Column="0" Grid.Row="1" Text="{Binding Item.Brand}"/>
                 <Label Grid.Column="0" Grid.Row="2" Text="{Binding Item.SKU}"/>
                 <Label Grid.Column="0" Grid.Row="3" Text="{Binding UPC}"/>
@@ -31,8 +31,8 @@
 
                 <Image Grid.Column="1" Grid.Row="1" Grid.RowSpan="5" Source="{Binding Picture}" HorizontalOptions="FillAndExpand" Aspect="AspectFit">
                     <Image.GestureRecognizers>
-                        <SwipeGestureRecognizer Direction="Right" Command="{Binding PictureSwipeForward}"/>
-                        <SwipeGestureRecognizer Direction="Left" Command="{Binding PictureSwipeBack}"/>
+                        <SwipeGestureRecognizer Direction="Right" Command="{Binding PictureSwipeBack}"/>
+                        <SwipeGestureRecognizer Direction="Left" Command="{Binding PictureSwipeForward}"/>
                     </Image.GestureRecognizers>
                 </Image>
             </Grid>
