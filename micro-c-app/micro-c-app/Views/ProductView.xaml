@@ -26,6 +26,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
                 <Label Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Item.Name}" MaxLines="3" FontSize="24"/>
                 <Label Grid.Column="0" Grid.Row="1" Text="{Binding Item.Brand}"/>
@@ -33,6 +34,8 @@
                 <Label Grid.Column="0" Grid.Row="3" Text="{Binding UPC}"/>
                 <Label Grid.Column="0" Grid.Row="4" Text="{Binding Item.Stock, StringFormat='{0} in stock'}"/>
                 <Label Grid.Column="0" Grid.Row="5" Text="{Binding Item.Location}"/>
+                <!-- <Label Grid.Column="0" Grid.Row="6" Text="{Binding Item.OriginalPrice}"/> -->
+                <Label Grid.Column="1" Grid.Row="6" Text="{Binding Item.Price}"/>
 
                 <Image Grid.Column="1" Grid.Row="1" Grid.RowSpan="5" Source="{Binding Picture}" HorizontalOptions="FillAndExpand" Aspect="AspectFit">
                     <Image.GestureRecognizers>
