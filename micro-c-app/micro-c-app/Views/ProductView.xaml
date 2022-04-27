@@ -8,8 +8,13 @@
         <vm:ProductViewModel/>
     </ContentView.BindingContext>
     <ContentView.Content>
-        <StackLayout Orientation="Vertical">
-            <Grid VerticalOptions="Start">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
@@ -36,7 +41,7 @@
                     </Image.GestureRecognizers>
                 </Image>
             </Grid>
-            <ScrollView Orientation="Horizontal">
+            <ScrollView Grid.Row="1" Orientation="Horizontal">
                 <StackLayout Orientation="Horizontal" BindableLayout.ItemsSource="{Binding Tabs}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
@@ -46,7 +51,7 @@
                 </StackLayout>
             </ScrollView>
 
-            <ScrollView Orientation="Vertical" VerticalOptions="StartAndExpand" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Specs}">
+            <ScrollView Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Specs}">
                 <StackLayout x:Name="SpecsStack" BindableLayout.ItemsSource="{Binding Specs}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
@@ -63,7 +68,7 @@
                 </StackLayout>
             </ScrollView>
 
-            <ScrollView Orientation="Vertical" VerticalOptions="StartAndExpand"  IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Location}">
+            <ScrollView Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Location}">
                 <StackLayout x:Name="InventoryStack" BindableLayout.ItemsSource="{Binding Locations}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
@@ -81,7 +86,7 @@
             </ScrollView>
 
 
-            <ScrollView Orientation="Vertical" VerticalOptions="StartAndExpand"  IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Clearance}">
+            <ScrollView Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Clearance}">
                 <StackLayout x:Name="ClearanceStack" BindableLayout.ItemsSource="{Binding Item.ClearanceItems}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
@@ -104,7 +109,7 @@
                 </StackLayout>
             </ScrollView>
 
-            <ScrollView Orientation="Vertical" VerticalOptions="StartAndExpand"  IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Plans}">
+            <ScrollView Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Plans}">
                 <StackLayout x:Name="PlanStack" BindableLayout.ItemsSource="{Binding Item.Plans}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
@@ -122,6 +127,6 @@
             </ScrollView>
 
 
-        </StackLayout>
+        </Grid>
     </ContentView.Content>
 </ContentView>
