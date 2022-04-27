@@ -488,7 +488,16 @@ namespace micro_c_app.Views
         {
             try
             {
-                var response = await client.GetAsync($"{InventoryView.LOCATION_TRACKER_BASEURL}/api/Entries/Sku/{item.SKU}");
+                string query;
+                if(item.ClearanceItems.Count > 0)
+                {
+                    query = $"{item.SKU},{string.Join(",", item.ClearanceItems.Select(c => c.Id))}";
+                }
+                else
+                {
+                    query = $"{item.SKU}";
+                }
+                var response = await client.GetAsync($"{InventoryView.LOCATION_TRACKER_BASEURL}/api/Entries/Sku/{query}");
                 if (response.IsSuccessStatusCode)
                 {
                     var text = await response.Content.ReadAsStringAsync();

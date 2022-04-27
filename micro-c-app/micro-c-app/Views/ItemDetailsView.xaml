@@ -78,8 +78,14 @@
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Label Grid.Column="0" Text="{Binding State}"/>
-                                <Label Grid.Column="1" Text="{Binding Price, StringFormat='$ {0:#,#.00}'}"/>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Column="0" Grid.Row="0" Text="{Binding State}"/>
+                                <Label Grid.Column="1" Grid.Row="0" Text="{Binding Price, StringFormat='$ {0:#,#.00}'}"/>
+                                <Label Grid.Column="0" Grid.Row="1" Text="{Binding Id}"/>
+                                <Label Grid.Column="1" Grid.Row="1" Text="{Binding Location}"/>
                             </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
