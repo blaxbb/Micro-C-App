@@ -65,6 +65,9 @@
                             </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
+                    <BindableLayout.EmptyView>
+                        <Label Text="Item has no specifications"/>
+                    </BindableLayout.EmptyView>
                 </StackLayout>
             </ScrollView>
 
@@ -82,6 +85,12 @@
                             </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
+                    <BindableLayout.EmptyView>
+                        <StackLayout Orientation="Vertical">
+                            <Label Text="Location unknown."/>
+                            <Label Text="{Binding Item.Location}"/>
+                        </StackLayout>
+                    </BindableLayout.EmptyView>
                 </StackLayout>
             </ScrollView>
 
@@ -106,6 +115,9 @@
                             </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
+                    <BindableLayout.EmptyView>
+                        <Label Text="No clearance items"/>
+                    </BindableLayout.EmptyView>
                 </StackLayout>
             </ScrollView>
 
@@ -123,6 +135,9 @@
                             </Grid>
                         </DataTemplate>
                     </BindableLayout.ItemTemplate>
+                    <BindableLayout.EmptyView>
+                        <Label Text="Item has no known plans"/>
+                    </BindableLayout.EmptyView>
                 </StackLayout>
             </ScrollView>
 
