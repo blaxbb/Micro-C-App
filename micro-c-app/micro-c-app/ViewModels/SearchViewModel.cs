@@ -97,6 +97,9 @@ namespace micro_c_app.ViewModels
                         var clearance = Item.ClearanceItems.FirstOrDefault(c => c.Id == entry.Sku);
                         clearance.Location = entry.Location.Name;
                     }
+                    var dupe = Item;
+                    Item = null;
+                    Item = dupe;
                 }
             });
 

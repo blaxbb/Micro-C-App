@@ -75,10 +75,22 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <views:ItemDetailsView x:Name="detailView" Grid.Row="1" Item="{Binding BindingContext.Item, Mode=TwoWay, Source={Reference Name=page}}" FastView="{Binding BindingContext.FastSearch, Mode=TwoWay, Source={Reference Name=page}}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}"/>
-        <Button Grid.Row="1" Text="&#xf060;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Start" HorizontalOptions="End" HeightRequest="32" WidthRequest="32" CornerRadius="16" Margin="0" Padding="0" FontSize="Micro" Opacity=".5" BorderColor="DarkGray" Command="{Binding PopItem}" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}"/>
-        <Button Grid.Row="1" Text="&#xf015;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Start" HorizontalOptions="Start" HeightRequest="32" WidthRequest="32" CornerRadius="16" Margin="0" Padding="0" FontSize="Micro" Opacity=".5" BorderColor="DarkGray" Command="{Binding PopAll}" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}"/>
-        <views:SearchView x:Name="searchView" Grid.Row="2" ProductFound="{Binding OnProductFound}" ProductFastFound="{Binding OnProductFastFound}" ProductLocationFound="{Binding OnProductLocationFound}" Error="{Binding OnProductError}" HeightRequest="100" WidthRequest="200" HorizontalOptions="FillAndExpand" Margin="10,5,10,5" AutoPopSearchPage="True"/>
+        <views:ItemDetailsView x:Name="detailView" Grid.Row="1" Item="{Binding BindingContext.Item, Mode=TwoWay, Source={Reference Name=page}}" FastView="{Binding BindingContext.FastSearch, Mode=TwoWay, Source={Reference Name=page}}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" IsVisible="false"/>
+        <views:ProductView x:Name="productView" Grid.Row="1" Item="{Binding BindingContext.Item, Mode=TwoWay, Source={Reference Name=page}}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}"/>
+        <Grid Grid.Row="2" HeightRequest="125">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Column="0" Grid.Row="0" Text="&#xf060;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="32" WidthRequest="32" CornerRadius="16" Margin="5" Padding="5" FontSize="Micro" Opacity=".5" BorderColor="DarkGray" Command="{Binding PopItem}"/>
+            <Button Grid.Column="0" Grid.Row="1" Text="&#xf015;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="32" WidthRequest="32" CornerRadius="16" Margin="5" Padding="5" FontSize="Micro" Opacity=".5" BorderColor="DarkGray" Command="{Binding PopAll}"/>
+            <views:SearchView x:Name="searchView" Grid.Column="1" Grid.RowSpan="2" ProductFound="{Binding OnProductFound}" ProductFastFound="{Binding OnProductFastFound}" ProductLocationFound="{Binding OnProductLocationFound}" Error="{Binding OnProductError}" HorizontalOptions="FillAndExpand" Margin="0,0,5,0" AutoPopSearchPage="True"/>
+            <!--<views:SearchView x:Name="searchView" Grid.Column="1" Grid.RowSpan="2" ProductFound="{Binding OnProductFound}" ProductFastFound="{Binding OnProductFastFound}" ProductLocationFound="{Binding OnProductLocationFound}" Error="{Binding OnProductError}" HorizontalOptions="FillAndExpand" Margin="0,0,5,0" AutoPopSearchPage="True"/>-->
+        </Grid>
         <ContentView x:Name="spacer" Grid.Row="3" />
     </Grid>
 </ContentPage>

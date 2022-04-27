@@ -15,7 +15,12 @@ namespace micro_c_app
             {
                 
             }
-            return value != null && value == ((View)parameter).BindingContext;
+            if(parameter is View view)
+            {
+                return value != null && value == view.BindingContext;
+            }
+
+            return value != null && value == parameter;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -29,11 +34,11 @@ namespace micro_c_app
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var type = parameter.GetType();
-            if (parameter is Binding b)
+            if (parameter is View view)
             {
-
+                return value == null || value != view.BindingContext;
             }
-            return value == null || value != ((View)parameter).BindingContext;
+            return value == null || value != parameter;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

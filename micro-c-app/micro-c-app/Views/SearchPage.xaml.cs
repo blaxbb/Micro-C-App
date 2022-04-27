@@ -43,16 +43,16 @@ namespace micro_c_app.Views
                 Grid.SetRow(hintGrid, 0);
                 Grid.SetRow(detailView, 1);
                 Grid.SetRow(emptyView, 1);
-                Grid.SetRow(searchView, 0);
+                //Grid.SetRow(searchView, 0);
 
-                Grid.SetRowSpan(searchView, 2);
+                //Grid.SetRowSpan(searchView, 2);
 
                 Grid.SetColumn(hintGrid, 0);
                 Grid.SetColumn(detailView, 0);
                 Grid.SetColumn(emptyView, 0);
-                Grid.SetColumn(searchView, 1);
+                //Grid.SetColumn(searchView, 1);
 
-                searchView.Orientation = "Vertical";
+                //searchView.Orientation = "Vertical";
                 grid.RowDefinitions[3].Height = 0;
             }
             else
@@ -60,16 +60,16 @@ namespace micro_c_app.Views
                 Grid.SetRow(hintGrid, 0);
                 Grid.SetRow(detailView, 1);
                 Grid.SetRow(emptyView, 1);
-                Grid.SetRow(searchView, 2);
+                //Grid.SetRow(searchView, 2);
 
                 Grid.SetColumn(hintGrid, 0);
                 Grid.SetColumn(detailView, 0);
                 Grid.SetColumn(emptyView, 0);
-                Grid.SetColumn(searchView, 0);
+                //Grid.SetColumn(searchView, 0);
 
-                Grid.SetRowSpan(searchView, 1);
+                //Grid.SetRowSpan(searchView, 1);
 
-                searchView.Orientation = "Horizontal";
+                //searchView.Orientation = "Horizontal";
                 grid.RowDefinitions[3].Height = new GridLength(1, GridUnitType.Auto);
             }
         }

@@ -1,0 +1,127 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentView xmlns="http://xamarin.com/schemas/2014/forms" 
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels"
+             x:Class="micro_c_app.Views.ProductView"
+             x:Name="view">
+    <ContentView.BindingContext>
+        <vm:ProductViewModel/>
+    </ContentView.BindingContext>
+    <ContentView.Content>
+        <StackLayout Orientation="Vertical">
+            <Grid VerticalOptions="Start">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Label Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Item.Name}" FontSize="24"/>
+                <Label Grid.Column="0" Grid.Row="1" Text="{Binding Item.Brand}"/>
+                <Label Grid.Column="0" Grid.Row="2" Text="{Binding Item.SKU}"/>
+                <Label Grid.Column="0" Grid.Row="3" Text="{Binding UPC}"/>
+                <Label Grid.Column="0" Grid.Row="4" Text="{Binding Item.Stock, StringFormat='{0} in stock'}"/>
+                <Label Grid.Column="0" Grid.Row="5" Text="{Binding Item.Location}"/>
+
+                <Image Grid.Column="1" Grid.Row="1" Grid.RowSpan="5" Source="{Binding Picture}" HorizontalOptions="FillAndExpand" Aspect="AspectFit">
+                    <Image.GestureRecognizers>
+                        <SwipeGestureRecognizer Direction="Right" Command="{Binding PictureSwipeForward}"/>
+                        <SwipeGestureRecognizer Direction="Left" Command="{Binding PictureSwipeBack}"/>
+                    </Image.GestureRecognizers>
+                </Image>
+            </Grid>
+            <ScrollView Orientation="Horizontal">
+                <StackLayout Orientation="Horizontal" BindableLayout.ItemsSource="{Binding Tabs}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Button Text="{Binding }" Command="{Binding BindingContext.SetTab, Source={Reference Name=view}}" CommandParameter="{Binding }"/>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+
+            <ScrollView Orientation="Vertical" VerticalOptions="StartAndExpand" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Specs}">
+                <StackLayout x:Name="SpecsStack" BindableLayout.ItemsSource="{Binding Specs}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding Key}" LineBreakMode="WordWrap"/>
+                                <Label Grid.Column="1" Text="{Binding Value}" LineBreakMode="WordWrap"/>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+
+            <ScrollView Orientation="Vertical" VerticalOptions="StartAndExpand"  IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Location}">
+                <StackLayout x:Name="InventoryStack" BindableLayout.ItemsSource="{Binding Locations}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding Location.Name}"/>
+                                <Label Grid.Column="1" HorizontalTextAlignment="Right" Text="{Binding Created, StringFormat='{0:MMM d/yy h:mm tt}'}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+
+
+            <ScrollView Orientation="Vertical" VerticalOptions="StartAndExpand"  IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Clearance}">
+                <StackLayout x:Name="ClearanceStack" BindableLayout.ItemsSource="{Binding Item.ClearanceItems}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="*"/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Column="0" Grid.Row="0" Text="{Binding State}"/>
+                                <Label Grid.Column="1" Grid.Row="0" Text="{Binding Price, StringFormat='$ {0:#,#.00}'}"/>
+                                <Label Grid.Column="0" Grid.Row="1" Text="{Binding Id}"/>
+                                <Label Grid.Column="1" Grid.Row="1" Text="{Binding Location}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+
+            <ScrollView Orientation="Vertical" VerticalOptions="StartAndExpand"  IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Plans}">
+                <StackLayout x:Name="PlanStack" BindableLayout.ItemsSource="{Binding Item.Plans}">
+                    <BindableLayout.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Padding="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Column="0" Text="{Binding Name}"/>
+                                <Label Grid.Column="1" Text="{Binding Price, StringFormat='$ {0:#,#.00}'}"/>
+                            </Grid>
+                        </DataTemplate>
+                    </BindableLayout.ItemTemplate>
+                </StackLayout>
+            </ScrollView>
+
+
+        </StackLayout>
+    </ContentView.Content>
+</ContentView>
