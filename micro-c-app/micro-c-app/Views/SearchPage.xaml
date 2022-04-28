@@ -86,8 +86,8 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Button Grid.Column="0" Grid.Row="0" Text="&#xf060;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="32" WidthRequest="32" CornerRadius="16" Margin="5" Padding="5" FontSize="Micro" Opacity=".5" BorderColor="DarkGray" Command="{Binding PopItem}"/>
-            <Button Grid.Column="0" Grid.Row="1" Text="&#xf015;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="32" WidthRequest="32" CornerRadius="16" Margin="5" Padding="5" FontSize="Micro" Opacity=".5" BorderColor="DarkGray" Command="{Binding PopAll}"/>
+            <Button Grid.Column="0" Grid.Row="0" Text="&#xf015;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="32" WidthRequest="32" Margin="5" Padding="5" Command="{Binding PopAll}"/>
+            <Button Grid.Column="0" Grid.Row="1" Text="&#xf060;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="32" WidthRequest="32" Margin="5" Padding="5" Command="{Binding PopItem}"/>
             <views:SearchView x:Name="searchView" Grid.Column="1" Grid.RowSpan="2" ProductFound="{Binding OnProductFound}" ProductFastFound="{Binding OnProductFastFound}" ProductLocationFound="{Binding OnProductLocationFound}" Error="{Binding OnProductError}" HorizontalOptions="FillAndExpand" Margin="0,0,5,0" AutoPopSearchPage="True"/>
             <!--<views:SearchView x:Name="searchView" Grid.Column="1" Grid.RowSpan="2" ProductFound="{Binding OnProductFound}" ProductFastFound="{Binding OnProductFastFound}" ProductLocationFound="{Binding OnProductLocationFound}" Error="{Binding OnProductError}" HorizontalOptions="FillAndExpand" Margin="0,0,5,0" AutoPopSearchPage="True"/>-->
         </Grid>

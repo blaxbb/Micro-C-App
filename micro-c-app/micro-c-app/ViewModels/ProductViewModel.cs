@@ -1,4 +1,5 @@
 ﻿using micro_c_app.Models;
+using micro_c_app.Views;
 using micro_c_lib.Models.Inventory;
 using MicroCLib.Models;
 using System;
@@ -12,7 +13,7 @@ namespace micro_c_app.ViewModels
 {
     public class ProductViewModel : BaseViewModel
     {
-        public List<string> Tabs { get; } = new List<string>() { "Specs", "Location", "Plans", "Clearance" };
+        public List<string> Tabs { get; set; } = new List<string>() { "Specs", "Location", "Plans", "Clearance" };
         public string ActiveTab { get => activeTab; set => SetProperty(ref activeTab, value); }
 
         private Item? _item;
@@ -37,6 +38,7 @@ namespace micro_c_app.ViewModels
         public string UPC { get => _upc; set => SetProperty(ref _upc, value); }
         public string Picture { get => _picture; set => SetProperty(ref _picture, value); }
         int PictureIndex = 0;
+        private string store;
 
         public ICommand PictureSwipeForward { get; }
         public ICommand PictureSwipeBack { get; }
@@ -46,9 +48,16 @@ namespace micro_c_app.ViewModels
         public Dictionary<string, string> Specs { get; set; }
         public List<InventoryEntry> Locations { get; set; }
 
+        public string Store { get => store; set => SetProperty(ref store, value); }
+
         public ProductViewModel()
         {
             ActiveTab = Tabs[0];
+            Store = SettingsPage.StoreID();
+            if(Store != "141")
+            {
+                Tabs.Remove("Location");
+            }
 
             UPC = "123567890123";
             Picture = "https://90a1c75758623581b3f8-5c119c3de181c9857fcb2784776b17ef.ssl.cf2.rackcdn.com/632020_243147_01_front_thumbnail.jpg";
@@ -67,18 +76,18 @@ namespace micro_c_app.ViewModels
 
         void BackPicture()
         {
-            if(Item?.PictureUrls == null || Item.PictureUrls.Count == 0)
+            if (Item?.PictureUrls == null || Item.PictureUrls.Count == 0)
             {
                 return;
             }
 
-            if(PictureIndex == 0)
+            if (PictureIndex == 0)
             {
                 PictureIndex = Item.PictureUrls.Count;
             }
-            
+
             PictureIndex--;
-            if(PictureIndex < 0)
+            if (PictureIndex < 0)
             {
                 PictureIndex = 0;
             }
