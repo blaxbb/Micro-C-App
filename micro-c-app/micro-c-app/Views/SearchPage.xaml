@@ -30,8 +30,8 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="0"/>
         </Grid.ColumnDefinitions>
         <Frame Grid.Row="0" x:Name="hintGrid" IsVisible="{Binding HintVisible}" BorderColor="DarkGray" Margin="5">
             <Grid IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}, ConverterParameter=true}">
@@ -75,9 +75,8 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-        <views:ItemDetailsView x:Name="detailView" Grid.Row="1" Item="{Binding BindingContext.Item, Mode=TwoWay, Source={Reference Name=page}}" FastView="{Binding BindingContext.FastSearch, Mode=TwoWay, Source={Reference Name=page}}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" IsVisible="false"/>
         <views:ProductView x:Name="productView" Grid.Row="1" Item="{Binding BindingContext.Item, Mode=TwoWay, Source={Reference Name=page}}" HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" IsVisible="{Binding Item, Converter={StaticResource NullBoolConverter}}"/>
-        <Grid Grid.Row="2" HeightRequest="125">
+        <Grid Grid.Row="2" HeightRequest="125" x:Name="searchGrid">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
@@ -86,8 +85,8 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Button Grid.Column="0" Grid.Row="0" Text="&#xf015;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="32" WidthRequest="32" Margin="5" Padding="5" Command="{Binding PopAll}"/>
-            <Button Grid.Column="0" Grid.Row="1" Text="&#xf060;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="32" WidthRequest="32" Margin="5" Padding="5" Command="{Binding PopItem}"/>
+            <Button x:Name="homeButton" Grid.Column="0" Grid.Row="0" Text="&#xf015;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="32" WidthRequest="32" Margin="5" Padding="5" Command="{Binding PopAll}"/>
+            <Button x:Name="backButton" Grid.Column="0" Grid.Row="1" Text="&#xf060;" FontFamily="{StaticResource FontAwesomeSolid}" VerticalOptions="Center" HorizontalOptions="Center" HeightRequest="32" WidthRequest="32" Margin="5" Padding="5" Command="{Binding PopItem}"/>
             <views:SearchView x:Name="searchView" Grid.Column="1" Grid.RowSpan="2" ProductFound="{Binding OnProductFound}" ProductFastFound="{Binding OnProductFastFound}" ProductLocationFound="{Binding OnProductLocationFound}" Error="{Binding OnProductError}" HorizontalOptions="FillAndExpand" Margin="0,0,5,0" AutoPopSearchPage="True"/>
             <!--<views:SearchView x:Name="searchView" Grid.Column="1" Grid.RowSpan="2" ProductFound="{Binding OnProductFound}" ProductFastFound="{Binding OnProductFastFound}" ProductLocationFound="{Binding OnProductLocationFound}" Error="{Binding OnProductError}" HorizontalOptions="FillAndExpand" Margin="0,0,5,0" AutoPopSearchPage="True"/>-->
         </Grid>

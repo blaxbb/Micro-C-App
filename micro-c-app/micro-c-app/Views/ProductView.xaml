@@ -8,16 +8,16 @@
         <vm:ProductViewModel/>
     </ContentView.BindingContext>
     <ContentView.Content>
-        <Grid Padding="5">
+        <Grid Padding="5" x:Name="mainGrid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid Grid.Row="0">
+            <Grid Grid.Row="0" x:Name="detailGrid">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
@@ -27,25 +27,25 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Label Grid.Column="0" Grid.ColumnSpan="3" Text="{Binding Item.Name}" MaxLines="2" FontSize="Medium"/>
+                <Label Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding Item.Name}" MaxLines="2" FontSize="Medium"/>
                 <Label Grid.Column="0" Grid.Row="1" Text="{Binding Item.Brand}"/>
                 <Label Grid.Column="0" Grid.Row="2" Text="{Binding Item.SKU}"/>
                 <Label Grid.Column="0" Grid.Row="3" Text="{Binding UPC}"/>
                 <Label Grid.Column="0" Grid.Row="4" Text="{Binding Item.Stock, StringFormat='{0} in stock'}"/>
-                <StackLayout Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="3" Orientation="Horizontal">
-                    <Label Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Medium" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Start" HorizontalOptions="StartAndExpand"/>
-                    <Label Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Medium" IsVisible="{Binding Item.OnSale}" HorizontalTextAlignment="Center" HorizontalOptions="Center"/>
-                    <Label Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Medium" HorizontalTextAlignment="End" HorizontalOptions="EndAndExpand"/>
+                <StackLayout x:Name="priceStack" Grid.Row="5" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" HorizontalOptions="FillAndExpand">
+                    <Label Text="{Binding Item.OriginalPrice, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Medium" TextDecorations="Strikethrough" IsVisible="{Binding Item.OnSale}"/>
+                    <Label Text="{Binding Item.Discount, StringFormat='$ {0:#,#.00}', FallbackValue=-$123.45}" FontSize="Medium" IsVisible="{Binding Item.OnSale}"/>
+                    <Label Text="{Binding Item.Price, StringFormat='$ {0:#,#.00}', FallbackValue=$123.45}" FontSize="Medium"/>
                 </StackLayout>
 
-                <Image Grid.Column="2" Grid.Row="1" Grid.RowSpan="4" Source="{Binding Picture}" HorizontalOptions="FillAndExpand" Aspect="AspectFit">
+                <Image x:Name="picture" Grid.Column="1" Grid.Row="1" Grid.RowSpan="4" Source="{Binding Picture}" HorizontalOptions="FillAndExpand" Aspect="AspectFit">
                     <Image.GestureRecognizers>
                         <SwipeGestureRecognizer Direction="Right" Command="{Binding PictureSwipeBack}"/>
                         <SwipeGestureRecognizer Direction="Left" Command="{Binding PictureSwipeForward}"/>
                     </Image.GestureRecognizers>
                 </Image>
             </Grid>
-            <ScrollView Grid.Row="1" Orientation="Horizontal">
+            <ScrollView x:Name="tabButtons" Grid.Row="1" Orientation="Horizontal">
                 <StackLayout Orientation="Horizontal" BindableLayout.ItemsSource="{Binding Tabs}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
@@ -55,7 +55,8 @@
                 </StackLayout>
             </ScrollView>
 
-            <ScrollView Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Specs}">
+
+            <ScrollView x:Name="specsTab" Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Specs}">
                 <StackLayout x:Name="SpecsStack" BindableLayout.ItemsSource="{Binding Specs}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
@@ -75,7 +76,7 @@
                 </StackLayout>
             </ScrollView>
 
-            <ScrollView Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Location}">
+            <ScrollView x:Name="inventoryTab" Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Location}">
                 <StackLayout x:Name="InventoryStack" BindableLayout.ItemsSource="{Binding Locations}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
@@ -99,7 +100,7 @@
             </ScrollView>
 
 
-            <ScrollView Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Clearance}">
+            <ScrollView x:Name="clearanceTab" Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Clearance}">
                 <StackLayout x:Name="ClearanceStack" BindableLayout.ItemsSource="{Binding Item.ClearanceItems}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
@@ -125,7 +126,7 @@
                 </StackLayout>
             </ScrollView>
 
-            <ScrollView Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Plans}">
+            <ScrollView x:Name="planTab" Grid.Row="2" Orientation="Vertical" IsVisible="{Binding ActiveTab, Converter={StaticResource EqualsConverter}, ConverterParameter=Plans}">
                 <StackLayout x:Name="PlanStack" BindableLayout.ItemsSource="{Binding Item.Plans}">
                     <BindableLayout.ItemTemplate>
                         <DataTemplate>
