@@ -271,73 +271,88 @@ namespace micro_c_app.Views
                 },
                 async (result) =>
                 {
-                    using var client = new HttpClient();
-                    var entries = await InventoryView.GetLocationEntries(client, result);
-                    if(entries == null)
+                    try
                     {
-                        await Shell.Current.DisplayAlert("Error", $"Location {result} did not retrieve any information from server!", "Ok");
-                    }
-                    else if(entries.Count == 0)
-                    {
-                        await Shell.Current.DisplayAlert("Error", $"Location {result} did not retrieve any information from server!", "Ok");
-                    }
-                    else
-                    {
-                        var skuItems = entries.Where(e => !e.Sku.StartsWith("CL"));
-                        SearchResults searchResults;
-                        if (skuItems.Count() > 0)
+                        using var client = new HttpClient();
+
+                        var location = await InventoryView.GetLocation(client, result);
+                        var entries = await InventoryView.GetLocationEntries(client, result);
+
+                        if (entries == null)
                         {
-                            searchResults = await Search.LoadMultipleFast(skuItems.Select(e => e.Sku).ToList());
+                            await Shell.Current.DisplayAlert("Error", $"Location {result} did not retrieve any information from server!", "Ok");
+                        }
+                        else if (entries.Count == 0)
+                        {
+                            await Shell.Current.DisplayAlert("Error", $"Location {result} did not retrieve any information from server!", "Ok");
                         }
                         else
                         {
-                            searchResults = new SearchResults();
-                        }
-
-                        var page = new SearchResultsPage()
-                        {
-                            BindingContext = new SearchResultsPageViewModel()
-                        };
-
-                        foreach(var clearanceEntry in entries.Where(e => e.Sku.StartsWith("CL")))
-                        {
-                            searchResults.Items.Add(new Item() { Name = clearanceEntry.Sku });
-                        }
-
-                        if(page.BindingContext is SearchResultsPageViewModel vm)
-                        {
-                            vm.ParseResults(searchResults);
-                        }
-
-                        page.AutoPop = AutoPopSearchPage;
-                        page.ItemTapped += (sender, args) =>
-                        {
-                            if (args.CurrentSelection.FirstOrDefault() is Item shortItem && shortItem.SKU.StartsWith("CL"))
+                            var skuItems = entries.Where(e => !e.Sku.StartsWith("CL"));
+                            SearchResults searchResults;
+                            if (skuItems.Count() > 0)
                             {
-                                return;
+                                searchResults = await Search.LoadMultipleFast(skuItems.Select(e => e.Sku).ToList());
+                            }
+                            else
+                            {
+                                searchResults = new SearchResults();
                             }
 
-                            Task.Run(async () =>
+                            var page = new SearchResultsPage()
                             {
-                                if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
+                                BindingContext = new SearchResultsPageViewModel()
+                            };
+
+                            foreach (var clearanceEntry in entries.Where(e => e.Sku.StartsWith("CL")))
+                            {
+                                searchResults.Items.Add(new Item() { Name = clearanceEntry.Sku });
+                            }
+
+                            if(location != null)
+                            {
+                                searchResults.Items.Insert(0, new Item() { Name = $"Last scanned {location.LastFullScan.ToLocalTime()}" });
+                            }
+
+                            if (page.BindingContext is SearchResultsPageViewModel vm)
+                            {
+                                vm.ParseResults(searchResults);
+                            }
+
+                            page.AutoPop = AutoPopSearchPage;
+                            page.ItemTapped += (sender, args) =>
+                            {
+                                if (args.CurrentSelection.FirstOrDefault() is Item shortItem && shortItem.SKU.StartsWith("CL") && shortItem.SKU != "000000")
                                 {
-                                    Busy = true;
-                                    var sw2 = Stopwatch.StartNew();
-                                    var item = await Item.FromUrl(shortItem.URL, SettingsPage.StoreID(), token: cancellationToken);
-                                    sw2.Stop();
-
-                                    AnalyticsService.Track("Item From Url Elapsed", ElapsedToAnalytics(sw2.ElapsedMilliseconds));
-                                    Busy = false;
-                                    App.SearchCache?.Add(item);
-                                    DoProductFound(item);
+                                    return;
                                 }
-                            }, cancellationToken).ContinueWith((task) => { Busy = false; });
-                        };
 
-                        await Device.InvokeOnMainThreadAsync(async () =>
-                        {
-                            await Shell.Current.Navigation.PushAsync(page);
-                        });
+                                Task.Run(async () =>
+                                {
+                                    if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
+                                    {
+                                        Busy = true;
+                                        var sw2 = Stopwatch.StartNew();
+                                        var item = await Item.FromUrl(shortItem.URL, SettingsPage.StoreID(), token: cancellationToken);
+                                        sw2.Stop();
+
+                                        AnalyticsService.Track("Item From Url Elapsed", ElapsedToAnalytics(sw2.ElapsedMilliseconds));
+                                        Busy = false;
+                                        App.SearchCache?.Add(item);
+                                        DoProductFound(item);
+                                    }
+                                }, cancellationToken).ContinueWith((task) => { Busy = false; });
+                            };
+
+                            await Device.InvokeOnMainThreadAsync(async () =>
+                            {
+                                await Shell.Current.Navigation.PushAsync(page);
+                            });
+                        }
+                    }
+                    catch(Exception e)
+                    {
+                        AnalyticsService.TrackError(e);
                     }
 
                 }, categoryFilter: CategoryFilter, batchMode: BatchScan);

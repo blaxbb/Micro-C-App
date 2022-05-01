@@ -137,6 +137,7 @@
             <local:NotEqualsConverter x:Key="NotEqualsConverter"/>
             <local:NegateConverter x:Key="NegateConverter"/>
             <local:GreaterThanZeroConverter x:Key="GreaterThanZeroConverter" />
+            <local:LocalTimeConverter x:Key="LocalTimeConverter"/>
         </ResourceDictionary>
         <ResourceDictionary>
             <OnPlatform x:TypeArguments="x:String" x:Key="FontAwesomeBrands">
