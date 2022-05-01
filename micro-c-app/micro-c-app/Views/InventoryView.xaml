@@ -7,8 +7,8 @@
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="grid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="2*"/>
                 <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <gv:CameraView Grid.Row="0" Grid.RowSpan="3"
                            OnBarcodeDetected="CameraView_OnDetected"

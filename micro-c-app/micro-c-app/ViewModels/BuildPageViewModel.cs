@@ -456,7 +456,7 @@ namespace micro_c_app.ViewModels
                     await Shell.Current.DisplayAlert("Error", e.Message, "Ok");
                 }
                 return null;
-            }, batchMode: true);
+            }, null, batchMode: true);
         }
 
         private void UpdateProperties()

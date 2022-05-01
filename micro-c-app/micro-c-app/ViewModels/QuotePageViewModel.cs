@@ -540,7 +540,7 @@ namespace micro_c_app.ViewModels
                 }
 
                 return null;
-            }, batchMode: true);
+            }, null, batchMode: true);
         }
         public static async Task<Item?> PlanActionSheet(BuildComponent comp)
         {

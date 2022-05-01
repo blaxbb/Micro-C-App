@@ -134,7 +134,7 @@ namespace micro_c_app.Views
             Progress = info;
         }
 
-        public static async Task DoScan(INavigation navigation, Func<string, IProgress<ProgressInfo>?, Task<BuildComponent>> resultTask, string categoryFilter = "", bool batchMode = false)
+        public static async Task DoScan(INavigation navigation, Func<string, IProgress<ProgressInfo>?, Task<BuildComponent>> resultTask, Func<string, Task> locationResultTask, string categoryFilter = "", bool batchMode = false)
         {
             bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
             if (!allowed)
@@ -184,9 +184,14 @@ namespace micro_c_app.Views
                         {
                             await navigation.PopAsync();
 
-                            //SKUField.Text = FilterBarcodeResult(result);
-                            //await OnSubmit(SKUField.Text);
-                            await resultTask.Invoke(FilterBarcodeResult(result), null);
+                            if (locationResultTask != null && IsLocationTag(result))
+                            {
+                                await locationResultTask.Invoke(result.Value);
+                            }
+                            else
+                            {
+                                await resultTask.Invoke(FilterBarcodeResult(result), null);
+                            }
                         });
                     }
                     else
@@ -263,6 +268,78 @@ namespace micro_c_app.Views
                     await OnSubmit(result);
                     progress?.Report(new ProgressInfo($"Submitted {result}", .66d));
                     return null;
+                },
+                async (result) =>
+                {
+                    using var client = new HttpClient();
+                    var entries = await InventoryView.GetLocationEntries(client, result);
+                    if(entries == null)
+                    {
+                        await Shell.Current.DisplayAlert("Error", $"Location {result} did not retrieve any information from server!", "Ok");
+                    }
+                    else if(entries.Count == 0)
+                    {
+                        await Shell.Current.DisplayAlert("Error", $"Location {result} did not retrieve any information from server!", "Ok");
+                    }
+                    else
+                    {
+                        var skuItems = entries.Where(e => !e.Sku.StartsWith("CL"));
+                        SearchResults searchResults;
+                        if (skuItems.Count() > 0)
+                        {
+                            searchResults = await Search.LoadMultipleFast(skuItems.Select(e => e.Sku).ToList());
+                        }
+                        else
+                        {
+                            searchResults = new SearchResults();
+                        }
+
+                        var page = new SearchResultsPage()
+                        {
+                            BindingContext = new SearchResultsPageViewModel()
+                        };
+
+                        foreach(var clearanceEntry in entries.Where(e => e.Sku.StartsWith("CL")))
+                        {
+                            searchResults.Items.Add(new Item() { Name = clearanceEntry.Sku });
+                        }
+
+                        if(page.BindingContext is SearchResultsPageViewModel vm)
+                        {
+                            vm.ParseResults(searchResults);
+                        }
+
+                        page.AutoPop = AutoPopSearchPage;
+                        page.ItemTapped += (sender, args) =>
+                        {
+                            if (args.CurrentSelection.FirstOrDefault() is Item shortItem && shortItem.SKU.StartsWith("CL"))
+                            {
+                                return;
+                            }
+
+                            Task.Run(async () =>
+                            {
+                                if (args.CurrentSelection.FirstOrDefault() is Item shortItem)
+                                {
+                                    Busy = true;
+                                    var sw2 = Stopwatch.StartNew();
+                                    var item = await Item.FromUrl(shortItem.URL, SettingsPage.StoreID(), token: cancellationToken);
+                                    sw2.Stop();
+
+                                    AnalyticsService.Track("Item From Url Elapsed", ElapsedToAnalytics(sw2.ElapsedMilliseconds));
+                                    Busy = false;
+                                    App.SearchCache?.Add(item);
+                                    DoProductFound(item);
+                                }
+                            }, cancellationToken).ContinueWith((task) => { Busy = false; });
+                        };
+
+                        await Device.InvokeOnMainThreadAsync(async () =>
+                        {
+                            await Shell.Current.Navigation.PushAsync(page);
+                        });
+                    }
+
                 }, categoryFilter: CategoryFilter, batchMode: BatchScan);
             }
         }
@@ -286,6 +363,11 @@ namespace micro_c_app.Views
             }
 
             return "";
+        }
+
+        public static bool IsLocationTag(BarcodeResult result)
+        {
+            return InventoryView.IsLocationIdentifier(result.Value);
         }
 
         public async Task OnSubmit(string searchValue)
