@@ -44,6 +44,9 @@
     <Compile Update="Views\BuildComponentPage.xaml.cs">
       <DependentUpon>BuildComponentPage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\InventoryAudit\UnknownLocationPage.xaml.cs">
+      <DependentUpon>UnknownLocationPage.xaml</DependentUpon>
+    </Compile>
     <Compile Update="Views\InventoryView.xaml.cs">
       <DependentUpon>InventoryView.xaml</DependentUpon>
     </Compile>
@@ -75,6 +78,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ImportPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\InventoryAudit\UnknownLocationPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\InventoryAudit\ZeroStockPage.xaml">

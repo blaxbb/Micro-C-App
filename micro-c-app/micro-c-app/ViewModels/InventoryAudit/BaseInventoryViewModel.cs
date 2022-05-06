@@ -1,7 +1,10 @@
 ﻿using micro_c_app.Views;
+using micro_c_lib.Models.Inventory;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -77,6 +80,31 @@ namespace micro_c_app.ViewModels.InventoryAudit
                 .ForEach(c => ComponentTypes.Add(new ComponentTypeFavoriteInfo(c, false)));
 
             OnPropertyChanged(nameof(ComponentTypes));
+        }
+
+        protected async Task<Dictionary<string, List<InventoryEntry>>?> GetEntries(ComponentType type)
+        {
+            var store = SettingsPage.StoreID();
+
+            using var client = new HttpClient();
+
+            var entriesResult = await client.GetStringAsync($"{BASE_URL}/Entries/{store}/{(int)type}");
+            if (string.IsNullOrWhiteSpace(entriesResult))
+            {
+                return default;
+            }
+
+            return JsonConvert.DeserializeObject<Dictionary<string, List<InventoryEntry>>>(entriesResult);
+        }
+
+        protected async Task<T> Get<T>(ComponentType type, string method)
+        {
+            var store = SettingsPage.StoreID();
+
+            using var client = new HttpClient();
+
+            var result = await client.GetStringAsync($"{BASE_URL}/{method}/{store}/{(int)type}");
+            return JsonConvert.DeserializeObject<T>(result);
         }
     }
 

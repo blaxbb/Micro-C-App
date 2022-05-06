@@ -35,6 +35,7 @@ namespace micro_c_app.Views
 
         private void OnClicked(string item)
         {
+            ContentPage? page = null;
             switch (item)
             {
                 case "Scan":
@@ -50,14 +51,21 @@ namespace micro_c_app.Views
                     });
                     break;
                 case "Zero Stock":
-                    Device.BeginInvokeOnMainThread(async () =>
-                    {
-                        await Navigation.PushAsync(new ZeroStockPage());
-                    });
+                    page = new ZeroStockPage();
+                    break;
+                case "Unknown Location":
+                    page = new UnknownLocationPage();
                     break;
                 default:
                     Console.WriteLine(item);
                     break;
+            }
+            if (page != null)
+            {
+                Device.BeginInvokeOnMainThread(async () =>
+                {
+                    await Navigation.PushAsync(page);
+                });
             }
         }
     }

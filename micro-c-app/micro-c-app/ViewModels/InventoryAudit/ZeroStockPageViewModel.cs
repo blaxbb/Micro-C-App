@@ -34,26 +34,10 @@ namespace micro_c_app.ViewModels.InventoryAudit
                 IsLoading = true;
                 Items?.Clear();
 
-                using var client = new HttpClient();
-                var store = SettingsPage.StoreID();
+                var items = await Get<List<Item>>(Type, "ZeroStock");
+                var entries = await GetEntries(Type);
 
-                var stockResult = await client.GetStringAsync($"{BASE_URL}/ZeroStock/{store}/{(int)Type}");
-                if (string.IsNullOrEmpty(stockResult))
-                {
-                    return;
-                }
-
-                var entriesResult = await client.GetStringAsync($"{BASE_URL}/Entries/{store}/{(int)Type}");
-
-                if (string.IsNullOrWhiteSpace(entriesResult))
-                {
-                    return;
-                }
-
-                var items = JsonConvert.DeserializeObject<List<Item>>(stockResult);
-                var entries = JsonConvert.DeserializeObject<Dictionary<string, List<InventoryEntry>>>(entriesResult);
-
-                foreach(var item in items)
+                foreach (var item in items)
                 {
                     if (entries?.ContainsKey(item.SKU) ?? false)
                     {
