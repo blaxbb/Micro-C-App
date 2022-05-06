@@ -11,48 +11,23 @@ using MicroCLib.Models;
 using Newtonsoft.Json;
 using Xamarin.Forms;
 using static MicroCLib.Models.BuildComponent;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace micro_c_app.ViewModels.InventoryAudit
 {
-    public class ZeroStockPageViewModel : BaseViewModel
+    public class ZeroStockPageViewModel : BaseInventoryViewModel
     {
-        private ComponentType type;
         private ObservableCollection<Tuple<Item, List<InventoryEntry>>> items;
-        private bool hasSelectedCategory;
-        private bool isLoading;
 
-        public ComponentType Type { get => type; set => SetProperty(ref type, value); }
         public ObservableCollection<Tuple<Item, List<InventoryEntry>>> Items { get => items; set => SetProperty(ref items, value); }
 
-        public ICommand CategoryCommand { get; }
-        public bool HasSelectedCategory { get => hasSelectedCategory; set => SetProperty(ref hasSelectedCategory, value); }
-
-        public bool IsLoading { get => isLoading; set => SetProperty(ref isLoading, value); }
-
-        public const string BASE_URL = "https://location.bbarrett.me/api/Audit";
-
-        public ZeroStockPageViewModel()
+        public ZeroStockPageViewModel() : base()
         {
             Items = new ObservableCollection<Tuple<Item, List<InventoryEntry>>>();
-            CategoryCommand = new Command(async () =>
-            {
-                var result = await Shell.Current.DisplayActionSheet("Select Category", "Cancel", null, Enum.GetNames(typeof(ComponentType)));
-                if (result == "Cancel" || result == null)
-                {
-                    return;
-                }
-                else
-                {
-                    if (Enum.TryParse(result, out type))
-                    {
-                        Type = type;
-                        await Load();
-                    }
-                }
-            });
         }
 
-        async Task Load()
+        protected override async Task Load()
         {
             try
             {
@@ -91,8 +66,6 @@ namespace micro_c_app.ViewModels.InventoryAudit
                 }
                 HasSelectedCategory = true;
                 IsLoading = false;
-                OnPropertyChanged(nameof(Type));
-                //OnPropertyChanged(nameof(Items));
             }
             catch (Exception e)
             {

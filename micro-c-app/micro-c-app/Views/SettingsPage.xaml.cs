@@ -1,5 +1,6 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.ViewModels;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -31,6 +32,8 @@ namespace micro_c_app.Views
         public const string PREF_HELPMESSAGE_INDEX = "helpmessage_index";
 
         public const string PREF_ENHANCED_SEARCH = "enhanced_search";
+
+        public const string PREF_INVENTORY_CATEGORIES = "inventory_categories";
 
         public const string LOCATOR_BASE_URL = "https://locator.bbarrettnas.duckdns.org/";
 
@@ -136,6 +139,16 @@ namespace micro_c_app.Views
         }
         public static int HelpMessageIndex() => Preferences.Get(PREF_HELPMESSAGE_INDEX, 0);
         public static bool UseEnhancedSearch() => Preferences.Get(PREF_ENHANCED_SEARCH, false);
+        public static List<ComponentType> InventoryFavorites()
+        {
+            var json = Preferences.Get(PREF_INVENTORY_CATEGORIES, null);
+            if(json == null)
+            {
+                return new List<ComponentType>();
+            }
+
+            return JsonConvert.DeserializeObject<List<ComponentType>>(json) ?? new List<ComponentType>();
+        }
 
 
         public static void StoreID(string id) {Preferences.Set(PREF_SELECTED_STORE, id); SendSettingsUpdated();}
@@ -162,6 +175,12 @@ namespace micro_c_app.Views
             HelpMessageIndex(index + 1);
         }
         public static void UseEnhancedSearch(bool value) { Preferences.Set(PREF_ENHANCED_SEARCH, value); SendSettingsUpdated(); }
+        public static void InventoryFavorites(List<ComponentType> favorites)
+        {
+            var json = JsonConvert.SerializeObject(favorites);
+            Preferences.Set(PREF_INVENTORY_CATEGORIES, json);
+            SendSettingsUpdated();
+        }
 
 
         private static void SendSettingsUpdated()
