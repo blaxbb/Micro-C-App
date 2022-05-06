@@ -1,0 +1,58 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels.InventoryAudit"
+             x:Class="micro_c_app.Views.InventoryAudit.ZeroStockPage">
+    <ContentPage.BindingContext>
+        <vm:ZeroStockPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Text="{Binding Type}" Margin="15" Command="{Binding CategoryCommand}" IsVisible="{Binding HasSelectedCategory}"/>
+            <Button Grid.Row="0" Text="Select Category" Margin="15" Command="{Binding CategoryCommand}" IsVisible="{Binding HasSelectedCategory, Converter={StaticResource NegateConverter}}"/>
+            <ListView Grid.Row="1" x:Name="listView" ItemsSource="{Binding Items}" SelectionMode="Single" HasUnevenRows="True">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid x:Name="grid" Padding="5">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="3*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" HeightRequest="75" Source="{Binding Item1.PictureUrls[0]}"/>
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Item1.Name}" InputTransparent="True"/>
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Item1.Brand}" InputTransparent="True"/>
+                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Item1.Price}" HorizontalOptions="End" InputTransparent="True"/>
+                                <StackLayout Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Item2}"  IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference grid}}">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Label Grid.Column="0" Text="{Binding Location.Name}" InputTransparent="True"/>
+                                                <Label Grid.Column="1" Text="{Binding Created}" InputTransparent="True"/>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </StackLayout>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ActivityIndicator Grid.Row="1" IsVisible="{Binding IsLoading}" IsRunning="True" HeightRequest="50" WidthRequest="50" VerticalOptions="Center" HorizontalOptions="Center"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

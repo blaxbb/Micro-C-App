@@ -86,14 +86,8 @@ namespace micro_c_app
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
-                if (!allowed)
-                {
-                    return;
-                }
-
                 FlyoutIsPresented = false;
-                await Navigation.PushAsync(new InventoryView());
+                await Navigation.PushAsync(new InventoryLandingPage());
             });
         }
 
