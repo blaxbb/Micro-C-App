@@ -168,7 +168,7 @@ namespace micro_c_app.Views
 
                         if (Scans[CurrentLocation.Identifier].Contains(item.SKU))
                         {
-                            StatusText = $"Already scanned {item.SKU} - {item.Name.Substring(0,32)}";
+                            StatusText = $"Already scanned {item.SKU} - {item.Name}";
                             if (SettingsPage.Vibrate())
                             {
                                 Xamarin.Essentials.Vibration.Vibrate();
@@ -178,7 +178,7 @@ namespace micro_c_app.Views
                         {
                             Scans[CurrentLocation.Identifier].Add(item.SKU);
                             ScansUpdated();
-                            StatusText = $"{SCAN_SUCCESS_TEXT} {item.SKU} - {item.Name.Substring(0, 32)}";
+                            StatusText = $"{SCAN_SUCCESS_TEXT} {item.SKU} - {item.Name}";
                             if (SettingsPage.Vibrate())
                             {
                                 Xamarin.Essentials.Vibration.Vibrate();
