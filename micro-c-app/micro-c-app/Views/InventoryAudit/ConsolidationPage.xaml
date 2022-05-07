@@ -1,0 +1,90 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels.InventoryAudit"
+             x:Class="micro_c_app.Views.InventoryAudit.ConsolidationPage"
+             x:Name="page">
+    <ContentPage.BindingContext>
+        <vm:ConsolidationPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Text="Select Category" Margin="15" Command="{Binding ResetCategoryCommand}" IsVisible="{Binding HasSelectedCategory}"/>
+            <ListView Grid.Row="1" ItemsSource="{Binding ComponentTypes}" IsVisible="{Binding HasSelectedCategory, Converter={StaticResource NegateConverter}}" IsEnabled="{Binding IsLoading, Converter={StaticResource NegateConverter}}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Text="" FontFamily="{StaticResource FontAwesomeSolid}" IsVisible="{Binding Favorite}" Command="{Binding BindingContext.SetFavorite, Source={x:Reference page}}" CommandParameter="{Binding ComponentType}"/>
+                                <Button Grid.Column="0" Text="" FontFamily="{StaticResource FontAwesomeRegular}" IsVisible="{Binding Favorite, Converter={StaticResource NegateConverter}}" Command="{Binding BindingContext.SetFavorite, Source={x:Reference page}}" CommandParameter="{Binding ComponentType}"/>
+                                <Button Grid.Column="1" Text="{Binding ComponentType}" Command="{Binding BindingContext.CategoryCommand, Source={x:Reference page}}" CommandParameter="{Binding ComponentType}"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+            <ListView Grid.Row="1" x:Name="listView" ItemsSource="{Binding Items}" Margin="5,0,5,0" SelectionMode="Single" HasUnevenRows="True" IsVisible="{Binding HasSelectedCategory}"  IsEnabled="{Binding IsLoading, Converter={StaticResource NegateConverter}}" ItemTapped="listView_ItemTapped">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid x:Name="grid" Padding="5">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Label Grid.Row="0" Text="{Binding Count, StringFormat='{0} Locations'}" Margin="0,10,0,10" FontSize="Large"/>
+                                <StackLayout Grid.Row="1" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Items}">
+                                    <BindableLayout.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="5,0,5,0">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="3*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" HeightRequest="75" Source="{Binding Item1.PictureUrls[0]}"/>
+                                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Item1.Name}" MaxLines="2" InputTransparent="True"/>
+                                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Item1.Brand}" InputTransparent="True"/>
+                                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Item1.Price, StringFormat='{0:C2}'}" HorizontalOptions="End" InputTransparent="True"/>
+                                                <Label Grid.Row="1" Grid.Column="2" Text="{Binding Item1.Stock}" HorizontalOptions="End" InputTransparent="True"/>
+                                                <StackLayout Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Margin="5,0,5,0" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Item2}"  IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference grid}}">
+                                                    <BindableLayout.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                    <ColumnDefinition Width="*"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <Label Grid.Column="0" Text="{Binding Location.Name}" InputTransparent="True"/>
+                                                                <Label Grid.Column="1" Text="{Binding Created, Converter={StaticResource LocalTimeConverter}, StringFormat='{0:MMM d/yy h:mm tt}'}" HorizontalOptions="End" InputTransparent="True"/>
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </BindableLayout.ItemTemplate>
+                                                </StackLayout>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </BindableLayout.ItemTemplate>
+                                </StackLayout>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ActivityIndicator Grid.Row="1" IsVisible="{Binding IsLoading}" IsRunning="True" HeightRequest="50" WidthRequest="50" VerticalOptions="Center" HorizontalOptions="Center"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

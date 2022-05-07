@@ -56,6 +56,9 @@ namespace micro_c_app.Views
                 case "Unknown Location":
                     page = new UnknownLocationPage();
                     break;
+                case "Consolidation":
+                    page = new ConsolidationPage();
+                    break;
                 default:
                     Console.WriteLine(item);
                     break;
