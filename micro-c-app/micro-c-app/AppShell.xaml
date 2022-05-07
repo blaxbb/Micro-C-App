@@ -170,7 +170,7 @@
         <MenuItem.IconImageSource>
             <FontImageSource
                 FontFamily="{StaticResource FontAwesomeSolid}"
-                Glyph="&#xf729;"
+                Glyph="&#xf468;"
                 Color="{DynamicResource PrimaryTextColor}"
                 Size="24"/>
         </MenuItem.IconImageSource>

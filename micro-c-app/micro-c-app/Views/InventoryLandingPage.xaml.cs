@@ -21,11 +21,11 @@ namespace micro_c_app.Views
             BindingContext = this;
             Items = new List<LandingItem>()
             {
-                new LandingItem("Scan", "\uf2db"),
-                new LandingItem("Zero Stock", "\uf2db"),
-                new LandingItem("Unknown Location", "\uf2db"),
-                new LandingItem("Consolidation", "\uf2db"),
-                new LandingItem("Freshness", "\uf2db")
+                new LandingItem("Scan", "\uf030"),
+                new LandingItem("Zero Stock", "\uf059"),
+                new LandingItem("Unknown Location", "\uf14e"),
+                new LandingItem("Consolidation", "\uf0e8"),
+                new LandingItem("Freshness", "\uf5d0")
             };
 
             Clicked = new Command<string>(OnClicked);

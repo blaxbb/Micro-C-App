@@ -114,9 +114,12 @@
     <Compile Include="ToastMessage.cs" />
   </ItemGroup>
   <ItemGroup>
-    <AndroidAsset Include="Assets\FontAwesome5Solid.otf" />
-    <AndroidAsset Include="Assets\FontAwesome5Brands.otf" />
-    <AndroidAsset Include="Assets\FontAwesome5Regular.otf" />
+    <AndroidAsset Include="Assets\FontAwesome6Brands.otf" />
+    <AndroidAsset Include="Assets\FontAwesome6Regular.otf" />
+    <AndroidAsset Include="Assets\FontAwesome6Solid.otf" />
+    <AndroidAsset Include="Assets\zzzFontAwesome5Brands.otf" />
+    <AndroidAsset Include="Assets\zzzFontAwesome5Regular.otf" />
+    <AndroidAsset Include="Assets\zzzFontAwesome5Solid.otf" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
     <None Include="Properties\AndroidManifest.xml" />

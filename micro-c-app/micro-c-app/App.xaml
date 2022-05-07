@@ -141,23 +141,23 @@
         </ResourceDictionary>
         <ResourceDictionary>
             <OnPlatform x:TypeArguments="x:String" x:Key="FontAwesomeBrands">
-                <On Platform="Android" Value="FontAwesome5Brands.otf#Regular" />
-                <On Platform="iOS" Value="FontAwesome5Brands-Regular" />
-                <On Platform="UWP" Value="/Assets/FontAwesome5Brands.otf#Font Awesome 5 Brands" />
+                <On Platform="Android" Value="FontAwesome6Brands.otf#Regular" />
+                <On Platform="iOS" Value="FontAwesome6Brands-Regular" />
+                <On Platform="UWP" Value="/Assets/FontAwesome6Brands.otf#Font Awesome 6 Brands" />
             </OnPlatform>
 
             <OnPlatform x:TypeArguments="x:String" 
                 x:Key="FontAwesomeSolid">
-                <On Platform="Android" Value="FontAwesome5Solid.otf#Regular" />
-                <On Platform="iOS" Value="FontAwesome5Free-Solid" />
-                <On Platform="UWP" Value="/Assets/FontAwesome5Solid.otf#Font Awesome 5 Free" />
+                <On Platform="Android" Value="FontAwesome6Solid.otf#Regular" />
+                <On Platform="iOS" Value="FontAwesome6Free-Solid" />
+                <On Platform="UWP" Value="/Assets/FontAwesome6Solid.otf#Font Awesome 6 Free" />
             </OnPlatform>
 
             <OnPlatform x:TypeArguments="x:String" 
                 x:Key="FontAwesomeRegular">
-                <On Platform="Android" Value="FontAwesome5Regular.otf#Regular" />
-                <On Platform="iOS" Value="FontAwesome5Free-Regular" />
-                <On Platform="UWP" Value="/Assets/FontAwesome5Regular.otf#Font Awesome 5 Free" />
+                <On Platform="Android" Value="FontAwesome6Regular.otf#Regular" />
+                <On Platform="iOS" Value="FontAwesome6Free-Regular" />
+                <On Platform="UWP" Value="/Assets/FontAwesome6Regular.otf#Font Awesome 6 Free" />
             </OnPlatform>
         </ResourceDictionary>
     </Application.Resources>
