@@ -90,9 +90,6 @@
     <BundleResource Include="Resources\FontAwesome6Brands.otf" />
     <BundleResource Include="Resources\FontAwesome6Regular.otf" />
     <BundleResource Include="Resources\FontAwesome6Solid.otf" />
-    <BundleResource Include="Resources\FontAwesome5Brands.otf" />
-    <BundleResource Include="Resources\FontAwesome5Regular.otf" />
-    <BundleResource Include="Resources\FontAwesome5Solid.otf" />
   </ItemGroup>
   <ItemGroup>
     <InterfaceDefinition Include="Resources\LaunchScreen.storyboard" />
