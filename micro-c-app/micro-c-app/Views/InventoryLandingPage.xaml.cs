@@ -59,8 +59,8 @@ namespace micro_c_app.Views
                 case "Consolidation":
                     page = new ConsolidationPage();
                     break;
-                default:
-                    Console.WriteLine(item);
+                case "Freshness":
+                    page = new FreshnessPage();
                     break;
             }
             if (page != null)

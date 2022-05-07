@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:micro_c_app.ViewModels.InventoryAudit"
+             x:Class="micro_c_app.Views.InventoryAudit.FreshnessPage"
+             x:Name="page">
+    <ContentPage.BindingContext>
+        <vm:FreshnessPageViewModel/>
+    </ContentPage.BindingContext>
+    <ContentPage.Content>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Button Grid.Row="0" Text="Select Category" Margin="15" Command="{Binding ResetCategoryCommand}" IsVisible="{Binding HasSelectedCategory}"/>
+            <ListView Grid.Row="1" ItemsSource="{Binding ComponentTypes}" IsVisible="{Binding HasSelectedCategory, Converter={StaticResource NegateConverter}}" IsEnabled="{Binding IsLoading, Converter={StaticResource NegateConverter}}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" Text="" FontFamily="{StaticResource FontAwesomeSolid}" IsVisible="{Binding Favorite}" Command="{Binding BindingContext.SetFavorite, Source={x:Reference page}}" CommandParameter="{Binding ComponentType}"/>
+                                <Button Grid.Column="0" Text="" FontFamily="{StaticResource FontAwesomeRegular}" IsVisible="{Binding Favorite, Converter={StaticResource NegateConverter}}" Command="{Binding BindingContext.SetFavorite, Source={x:Reference page}}" CommandParameter="{Binding ComponentType}"/>
+                                <Button Grid.Column="1" Text="{Binding ComponentType}" Command="{Binding BindingContext.CategoryCommand, Source={x:Reference page}}" CommandParameter="{Binding ComponentType}"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+
+            </ListView>
+            <ListView Grid.Row="1" x:Name="listView" ItemsSource="{Binding Items}" SelectionMode="Single" HasUnevenRows="True" IsVisible="{Binding HasSelectedCategory}"  IsEnabled="{Binding IsLoading, Converter={StaticResource NegateConverter}}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <ViewCell>
+                            <Grid x:Name="grid" Padding="5,10,5,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="2*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <Label Grid.Row="0" Grid.Column="0" Text="{Binding Name}" InputTransparent="True"/>
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Entries.Count}" HorizontalOptions="Center" InputTransparent="True"/>
+                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding LastFullScan, Converter={StaticResource LocalTimeConverter}}" HorizontalOptions="End" InputTransparent="True"/>
+                            </Grid>
+                        </ViewCell>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <ActivityIndicator Grid.Row="1" IsVisible="{Binding IsLoading}" IsRunning="True" HeightRequest="50" WidthRequest="50" VerticalOptions="Center" HorizontalOptions="Center"/>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>

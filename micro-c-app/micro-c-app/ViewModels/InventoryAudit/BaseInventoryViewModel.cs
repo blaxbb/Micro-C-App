@@ -41,7 +41,10 @@ namespace micro_c_app.ViewModels.InventoryAudit
             CategoryCommand = new Command<ComponentType>(async (type) =>
             {
                 Type = type;
+                IsLoading = true;
                 await Load();
+                HasSelectedCategory = true;
+                IsLoading = false;
             });
 
             SetFavorite = new Command<ComponentType>((t) =>
