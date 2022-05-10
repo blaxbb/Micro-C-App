@@ -14,13 +14,13 @@
     <CollectionView ItemsSource="{Binding Items}">
         <CollectionView.ItemTemplate>
             <DataTemplate>
-                <Grid HeightRequest="160" Padding="10">
+                <Grid HeightRequest="120" Padding="10">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="2*"/>
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="2*"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
                     <Button Grid.ColumnSpan="2" Grid.Row="0" Command="{Binding BindingContext.Clicked, Source={Reference page}}" CommandParameter="{Binding Name}"/>
@@ -38,7 +38,7 @@
                             FontSize="Large"
                         />
                     <Label Grid.Column="1" Grid.Row="0" Text="{Binding Name}" TextColor="{DynamicResource ButtonTextColor}" InputTransparent="True" VerticalTextAlignment="Center"/>
-                    <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" InputTransparent="True" VerticalTextAlignment="Center" Text="{Binding Description}"/>
+                    <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" InputTransparent="True" VerticalTextAlignment="Center" Padding="20,0,20,0" Text="{Binding Description}"/>
                 </Grid>
             </DataTemplate>
         </CollectionView.ItemTemplate>
