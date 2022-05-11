@@ -22,10 +22,10 @@ namespace micro_c_app.Views
             Items = new List<LandingItem>()
             {
                 new LandingItem("Scan", "Scan products into inventory.", "\uf030"),
-                new LandingItem("Zero Stock", "Lists products which have been scanned into inventory which currently display zero stock on microcenter.com.", "\uf059"),
-                new LandingItem("Unknown Location", "Items which have not been scanned into inventory, but are listed as in stock on MicroCenter.com.", "\uf14e"),
-                new LandingItem("Consolidation", "This displays items which have been scanned in multiple areas.  Consider consolidating them into fewer areas if stock warrants.", "\uf0e8"),
-                new LandingItem("Freshness", "This displays the previous time that all sections of a given category have been scanned", "\uf5d0")
+                new LandingItem("Zero Stock", "Products which have been scanned into inventory, but are listed as zero stock on MicroCenter.com. Consider checking for inventory discrepencies.", "\uf059"),
+                new LandingItem("Unknown Location", "Items which have not been scanned into inventory, but are listed as in stock on MicroCenter.com.  Consider checking for product in other areas.", "\uf14e"),
+                new LandingItem("Consolidation", "Items which have been scanned in multiple areas.  Consider consolidating them into fewer areas if stock warrants.", "\uf0e8"),
+                new LandingItem("Freshness", "The previous time that each section of a given category has been scanned.  Consider re-auditing sections when they are too stale.", "\uf5d0")
             };
 
             Clicked = new Command<string>(OnClicked);
