@@ -25,7 +25,8 @@ namespace micro_c_app.Views
                 new LandingItem("Zero Stock", "\uf059"),
                 new LandingItem("Unknown Location", "\uf14e"),
                 new LandingItem("Consolidation", "\uf0e8"),
-                new LandingItem("Freshness", "\uf5d0")
+                new LandingItem("Freshness", "\uf5d0"),
+                new LandingItem("Compliance", "\uf5d0")
             };
 
             Clicked = new Command<string>(OnClicked);
@@ -61,6 +62,9 @@ namespace micro_c_app.Views
                     break;
                 case "Freshness":
                     page = new FreshnessPage();
+                    break;
+                case "Compliance":
+                    page = new CompliancePage();
                     break;
             }
             if (page != null)
