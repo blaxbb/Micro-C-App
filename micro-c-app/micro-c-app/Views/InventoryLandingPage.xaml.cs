@@ -21,12 +21,12 @@ namespace micro_c_app.Views
             BindingContext = this;
             Items = new List<LandingItem>()
             {
-                new LandingItem("Scan", "\uf030"),
-                new LandingItem("Zero Stock", "\uf059"),
-                new LandingItem("Unknown Location", "\uf14e"),
-                new LandingItem("Consolidation", "\uf0e8"),
-                new LandingItem("Freshness", "\uf5d0"),
-                new LandingItem("Compliance", "\uf5d0")
+                new LandingItem("Scan", "Scan products into inventory.", "\uf030"),
+                new LandingItem("Zero Stock", "Products which have been scanned into inventory, but are listed as zero stock on MicroCenter.com. Consider checking for inventory discrepencies.", "\uf059"),
+                new LandingItem("Unknown Location", "Items which have not been scanned into inventory, but are listed as in stock on MicroCenter.com.  Consider checking for product in other areas.", "\uf14e"),
+                new LandingItem("Consolidation", "Items which have been scanned in multiple areas.  Consider consolidating them into fewer areas if stock warrants.", "\uf0e8"),
+                new LandingItem("Freshness", "The previous time that each section of a given category has been scanned.  Consider re-auditing sections when they are too stale.", "\uf5d0"),
+                new LandingItem("Compliance", "Items which conflict with compliance rules for a specific location.", "\uf5d0")
             };
 
             Clicked = new Command<string>(OnClicked);
@@ -80,11 +80,13 @@ namespace micro_c_app.Views
     public class LandingItem
     {
         public string Name { get; }
+        public string Description { get; }
         public string Icon { get; }
 
-        public LandingItem(string name, string icon)
+        public LandingItem(string name, string description, string icon)
         {
             Name = name;
+            Description = description;
             Icon = icon;
         }
     }
