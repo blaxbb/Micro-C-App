@@ -16,6 +16,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
         public ConsolidationPageViewModel() : base()
         {
             Items = new ObservableCollection<ConsolidationInfo>();
+            Title = "Consolidation";
         }
 
         protected override async Task Load()

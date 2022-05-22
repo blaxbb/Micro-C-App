@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:micro_c_app.ViewModels.InventoryAudit"
              x:Class="micro_c_app.Views.InventoryAudit.CompliancePage"
+             Title="{Binding Title}"
              x:Name="page">
     <ContentPage.BindingContext>
         <vm:CompliancePageViewModel/>

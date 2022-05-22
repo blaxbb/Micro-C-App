@@ -13,6 +13,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
         public FreshnessPageViewModel() : base()
         {
             Items = new ObservableCollection<InventoryLocation>();
+            Title = "Freshness";
         }
 
         protected override async Task Load()

@@ -26,7 +26,8 @@ namespace micro_c_app.Views
                 new LandingItem("Unknown Location", "Items which have not been scanned into inventory, but are listed as in stock on MicroCenter.com.  Consider checking for product in other areas.", "\uf14e"),
                 new LandingItem("Consolidation", "Items which have been scanned in multiple areas.  Consider consolidating them into fewer areas if stock warrants.", "\uf0e8"),
                 new LandingItem("Freshness", "The previous time that each section of a given category has been scanned.  Consider re-auditing sections when they are too stale.", "\uf5d0"),
-                new LandingItem("Compliance", "Items which conflict with compliance rules for a specific location.", "\uf3ed")
+                new LandingItem("Compliance", "Items which conflict with compliance rules for a specific location.", "\uf3ed"),
+                new LandingItem("Clearance", "Clearance Id's which exist, but have not been scanned in a section.", "\uf49e")
             };
 
             Clicked = new Command<string>(OnClicked);
@@ -65,6 +66,9 @@ namespace micro_c_app.Views
                     break;
                 case "Compliance":
                     page = new CompliancePage();
+                    break;
+                case "Clearance":
+                    page = new MissingClearance();
                     break;
             }
             if (page != null)

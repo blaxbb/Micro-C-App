@@ -1,4 +1,4 @@
-﻿using micro_c_lib.Models.Inventory;
+﻿using micro_c_lib.Models;
 using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
@@ -8,16 +8,13 @@ using System.Threading.Tasks;
 
 namespace micro_c_app.ViewModels.InventoryAudit
 {
-    public class CompliancePageViewModel : BaseInventoryViewModel
+    public class MissingClearanceViewModel : BaseInventoryViewModel
     {
-        private ObservableCollection<ComplianceReport> items;
-
-        public ObservableCollection<ComplianceReport> Items { get => items; set => SetProperty(ref items, value); }
-
-        public CompliancePageViewModel() : base()
+        public ObservableCollection<MissingClearanceInfo> Items { get; set; }
+        public MissingClearanceViewModel() : base()
         {
-            Items = new ObservableCollection<ComplianceReport>();
-            Title = "Compliance";
+            Items = new ObservableCollection<MissingClearanceInfo>();
+            Title = "Clearance";
         }
 
         protected override async Task Load()
@@ -27,7 +24,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
                 IsLoading = true;
                 Items?.Clear();
 
-                var items = await Get<List<ComplianceReport>>(Type, "Compliance");
+                var items = await Get<List<MissingClearanceInfo>>(Type, "Clearance");
 
                 foreach (var item in items)
                 {
@@ -43,10 +40,9 @@ namespace micro_c_app.ViewModels.InventoryAudit
         }
     }
 
-    public class ComplianceReport
+    public class MissingClearanceInfo
     {
-        public InventoryLocation Location { get; set; }
-        public List<Item> SkuFailures { get; set; }
-        public List<Item> BrandFailures { get; set; }
+        public Item Item { get; set; }
+        public List<ClearanceInfo> MissingClearance { get; set; }
     }
 }

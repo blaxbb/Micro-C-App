@@ -25,6 +25,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
         public ZeroStockPageViewModel() : base()
         {
             Items = new ObservableCollection<Tuple<Item, List<InventoryEntry>>>();
+            Title = "Zero Stock";
         }
 
         protected override async Task Load()

@@ -19,6 +19,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
         public UnknownLocationPageViewModel() : base()
         {
             Items = new ObservableCollection<Item>();
+            Title = "Unknown Location";
         }
 
         protected override async Task Load()

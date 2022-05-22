@@ -1,12 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:vm="clr-namespace:micro_c_app.ViewModels.InventoryAudit"
-             x:Class="micro_c_app.Views.InventoryAudit.ZeroStockPage"
+             xmlns:inventoryaudit="clr-namespace:micro_c_app.ViewModels.InventoryAudit"
+             x:Class="micro_c_app.Views.InventoryAudit.MissingClearance"
              Title="{Binding Title}"
              x:Name="page">
     <ContentPage.BindingContext>
-        <vm:ZeroStockPageViewModel/>
+        <inventoryaudit:MissingClearanceViewModel/>
     </ContentPage.BindingContext>
     <ContentPage.Content>
         <Grid>
@@ -48,11 +48,11 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" HeightRequest="75" Source="{Binding Item1.PictureUrls[0]}"/>
-                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Item1.Name}" InputTransparent="True"/>
-                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Item1.Brand}" InputTransparent="True"/>
-                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Item1.Price}" HorizontalOptions="End" InputTransparent="True"/>
-                                <StackLayout Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Item2}">
+                                <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" HeightRequest="75" Source="{Binding Item.PictureUrls[0]}"/>
+                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Item.Name}" MaxLines="2" InputTransparent="True"/>
+                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Item.Brand}" InputTransparent="True"/>
+                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Item.Price}" HorizontalOptions="End" InputTransparent="True"/>
+                                <StackLayout Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Vertical" BindableLayout.ItemsSource="{Binding MissingClearance}"  IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference grid}}">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
@@ -60,8 +60,13 @@
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="*"/>
                                                 </Grid.ColumnDefinitions>
-                                                <Label Grid.Column="0" Text="{Binding Location.Name}" InputTransparent="True"/>
-                                                <Label Grid.Column="1" Text="{Binding Created, Converter={StaticResource LocalTimeConverter}, StringFormat='{0:MMM d/yy h:mm tt}'}" InputTransparent="True"/>
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
+                                                </Grid.RowDefinitions>
+                                                <Label Grid.Column="0" Grid.Row="0" Text="{Binding Id}" InputTransparent="True"/>
+                                                <Label Grid.Column="1" Grid.Row="0" Text="{Binding Price, StringFormat='{0:C2}'}" HorizontalTextAlignment="End" InputTransparent="True"/>
+                                                <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding State}"/>
                                             </Grid>
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
