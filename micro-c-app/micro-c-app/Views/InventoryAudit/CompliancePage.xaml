@@ -52,12 +52,14 @@
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
-                                                <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" HeightRequest="75" Source="{Binding PictureUrls[0]}"/>
-                                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Name}" InputTransparent="True"/>
-                                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Brand}" InputTransparent="True"/>
+                                                <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" HeightRequest="75" Source="{Binding PictureUrls[0]}"/>
+                                                <Label Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Text="{Binding Name}" InputTransparent="True"/>
                                                 <Label Grid.Row="0" Grid.Column="2" Text="{Binding Price, StringFormat='{0:C2}'}" HorizontalOptions="End" InputTransparent="True"/>
                                                 <Label Grid.Row="1" Grid.Column="2" Text="{Binding Quantity, StringFormat='Stock: {0}'}" HorizontalOptions="End" InputTransparent="True"/>
+                                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Brand}" InputTransparent="True"/>
+                                                <Label Grid.Row="2" Grid.Column="2" Text="{Binding SKU}" HorizontalOptions="End" InputTransparent="True"/>
                                             </Grid>
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>
@@ -75,12 +77,14 @@
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
                                                     <RowDefinition Height="Auto"/>
+                                                    <RowDefinition Height="Auto"/>
                                                 </Grid.RowDefinitions>
                                                 <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" HeightRequest="75" Source="{Binding PictureUrls[0]}"/>
                                                 <Label Grid.Row="0" Grid.Column="1" Text="{Binding Name}" InputTransparent="True"/>
                                                 <Label Grid.Row="1" Grid.Column="1" Text="{Binding Brand}" InputTransparent="True"/>
                                                 <Label Grid.Row="0" Grid.Column="2" Text="{Binding Price, StringFormat='{0:C2}'}" HorizontalOptions="End" InputTransparent="True"/>
                                                 <Label Grid.Row="1" Grid.Column="2" Text="{Binding Quantity, StringFormat='Stock: {0}'}" HorizontalOptions="End" InputTransparent="True"/>
+                                                <Label Grid.Row="2" Grid.Column="2" Text="{Binding SKU}" HorizontalOptions="End" InputTransparent="True"/>
                                             </Grid>
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>

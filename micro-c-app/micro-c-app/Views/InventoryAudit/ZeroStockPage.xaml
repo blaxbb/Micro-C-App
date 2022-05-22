@@ -52,6 +52,7 @@
                                 <Label Grid.Row="0" Grid.Column="1" Text="{Binding Item1.Name}" InputTransparent="True"/>
                                 <Label Grid.Row="1" Grid.Column="1" Text="{Binding Item1.Brand}" InputTransparent="True"/>
                                 <Label Grid.Row="0" Grid.Column="2" Text="{Binding Item1.Price}" HorizontalOptions="End" InputTransparent="True"/>
+                                <Label Grid.Row="1" Grid.Column="2" Text="{Binding Item1.SKU}" HorizontalOptions="End" InputTransparent="True"/>
                                 <StackLayout Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Vertical" BindableLayout.ItemsSource="{Binding Item2}">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate>

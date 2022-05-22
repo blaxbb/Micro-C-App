@@ -47,12 +47,14 @@
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
                                     <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
                                 </Grid.RowDefinitions>
-                                <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="2" HeightRequest="75" Source="{Binding Item.PictureUrls[0]}"/>
-                                <Label Grid.Row="0" Grid.Column="1" Text="{Binding Item.Name}" MaxLines="2" InputTransparent="True"/>
-                                <Label Grid.Row="1" Grid.Column="1" Text="{Binding Item.Brand}" InputTransparent="True"/>
-                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Item.Price}" HorizontalOptions="End" InputTransparent="True"/>
-                                <StackLayout Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Vertical" BindableLayout.ItemsSource="{Binding MissingClearance}"  IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference grid}}">
+                                <Image Grid.Column="0" Grid.Row="0" Grid.RowSpan="3" HeightRequest="75" Source="{Binding Item.PictureUrls[0]}"/>
+                                <Label Grid.Row="0" Grid.Column="1" Grid.RowSpan="2" Text="{Binding Item.Name}" MaxLines="2" InputTransparent="True"/>
+                                <Label Grid.Row="0" Grid.Column="2" Text="{Binding Item.Price, StringFormat='{0:C2}'}" HorizontalOptions="End" InputTransparent="True"/>
+                                <Label Grid.Row="1" Grid.Column="2" Text="{Binding Item.SKU}" HorizontalOptions="End" InputTransparent="True"/>
+                                <Label Grid.Row="2" Grid.Column="1" Text="{Binding Item.Brand}" InputTransparent="True"/>
+                                <StackLayout Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="2" Orientation="Vertical" BindableLayout.ItemsSource="{Binding MissingClearance}"  IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference grid}}">
                                     <BindableLayout.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
