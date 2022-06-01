@@ -8,7 +8,7 @@ namespace micro_c_app
     {
         event EventHandler NotificationReceived;
         void Initialize();
-        int ScheduleNotification(string title, string message);
+        int ScheduleNotification(string title, string message, params (string key, string value)[] extras);
         void ReceiveNotification(string title, string message);
     }
 

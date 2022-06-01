@@ -100,7 +100,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
             return JsonConvert.DeserializeObject<Dictionary<string, List<InventoryEntry>>>(entriesResult);
         }
 
-        protected async Task<T> Get<T>(ComponentType type, string method)
+        public static async Task<T> Get<T>(ComponentType type, string method)
         {
             var store = SettingsPage.StoreID();
 

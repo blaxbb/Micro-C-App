@@ -16,6 +16,8 @@ namespace micro_c_app.ViewModels.InventoryAudit
         private ObservableCollection<Item> items;
         public ObservableCollection<Item> Items { get => items; set => SetProperty(ref items, value); }
 
+        public const string Method = "UnknownLocation";
+
         public UnknownLocationPageViewModel() : base()
         {
             Items = new ObservableCollection<Item>();
@@ -29,7 +31,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
                 IsLoading = true;
                 Items?.Clear();
 
-                var items = await Get<List<Item>>(Type, "UnknownLocation");
+                var items = await Get<List<Item>>(Type, Method);
 
                 foreach (var item in items)
                 {

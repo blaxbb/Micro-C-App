@@ -10,6 +10,8 @@ namespace micro_c_app.ViewModels.InventoryAudit
     public class FreshnessPageViewModel : BaseInventoryViewModel
     {
         public ObservableCollection<InventoryLocation> Items { get; }
+        public const string Method = "Freshness";
+
         public FreshnessPageViewModel() : base()
         {
             Items = new ObservableCollection<InventoryLocation>();
@@ -18,7 +20,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
 
         protected override async Task Load()
         {
-            var result = await Get<List<InventoryLocation>>(Type, "Freshness");
+            var result = await Get<List<InventoryLocation>>(Type, Method);
             foreach(var item in result)
             {
                 Items?.Add(item);

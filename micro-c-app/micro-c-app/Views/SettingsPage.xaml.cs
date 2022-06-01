@@ -1,6 +1,7 @@
 ﻿using micro_c_app.Models;
 using micro_c_app.ViewModels;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -38,6 +39,8 @@ namespace micro_c_app.Views
         public const string LOCATOR_BASE_URL = "https://locator.bbarrettnas.duckdns.org/";
 
         public const string SETTINGS_UPDATED_MESSAGE = "updated";
+
+        public const string INVENTORY_LAST_NOTIFICATION = "inventory_notification_time";
 
         public const int CURRENT_VERSION_PROMPT = 1;
         public SettingsPage()
@@ -150,6 +153,8 @@ namespace micro_c_app.Views
             return JsonConvert.DeserializeObject<List<ComponentType>>(json) ?? new List<ComponentType>();
         }
 
+        public static DateTime LastInventoryNotification() => Preferences.Get(INVENTORY_LAST_NOTIFICATION, DateTime.MinValue);
+
 
         public static void StoreID(string id) {Preferences.Set(PREF_SELECTED_STORE, id); SendSettingsUpdated();}
         public static void SalesID(string id) {Preferences.Set(PREF_SALES_ID, id); SendSettingsUpdated();}
@@ -179,6 +184,12 @@ namespace micro_c_app.Views
         {
             var json = JsonConvert.SerializeObject(favorites);
             Preferences.Set(PREF_INVENTORY_CATEGORIES, json);
+            SendSettingsUpdated();
+        }
+
+        public static void LastInventoryNotification(DateTime time)
+        {
+            Preferences.Set(INVENTORY_LAST_NOTIFICATION, time);
             SendSettingsUpdated();
         }
 

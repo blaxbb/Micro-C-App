@@ -1,4 +1,7 @@
-﻿using micro_c_app.Views.InventoryAudit;
+﻿using micro_c_app.ViewModels.InventoryAudit;
+using micro_c_app.Views.InventoryAudit;
+using micro_c_lib.Models.Inventory;
+using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -78,6 +81,71 @@ namespace micro_c_app.Views
                     await Navigation.PushAsync(page);
                 });
             }
+        }
+
+        public static void CheckNotifications()
+        {
+            var lastNotification = SettingsPage.LastInventoryNotification();
+            if (DateTime.Now - lastNotification < TimeSpan.FromDays(4))
+            {
+                return;
+            }
+
+            SettingsPage.LastInventoryNotification(DateTime.Now);
+
+            if(SettingsPage.StoreID() != "141")
+            {
+                //testing only in 141 for now...
+                return;
+            }
+
+            Task.Run(async () =>
+            {
+                var notificationManager = DependencyService.Get<INotificationManager>();
+                //foreach (var type in SettingsPage.InventoryFavorites())
+                foreach (var type in new BuildComponent.ComponentType[] {BuildComponent.ComponentType.Case, BuildComponent.ComponentType.Motherboard})
+                {
+                    var unknowns = await BaseInventoryViewModel.Get<List<Item>>(type, UnknownLocationPageViewModel.Method);
+                    var compliance = await BaseInventoryViewModel.Get<List<ComplianceReport>>(type, CompliancePageViewModel.Method);
+                    var freshness = await BaseInventoryViewModel.Get<List<InventoryLocation>>(type, FreshnessPageViewModel.Method);
+                    var clearance = await BaseInventoryViewModel.Get<List<MissingClearanceInfo>>(type, MissingClearanceViewModel.Method);
+
+                    StringBuilder sb = new StringBuilder();
+
+                    if (unknowns.Count > 0)
+                    {
+                        sb.AppendLine($"{unknowns.Count} items with unknown locations.");
+                        //notificationManager.ScheduleNotification($"Unknown Location", $"{unknowns.Count} items with unknown locations.");
+                    }
+
+                    if(compliance.Count > 0)
+                    {
+                        //notificationManager.ScheduleNotification($"Compliance", $"{compliance.Count} locations with compliance issues.");
+                        sb.AppendLine($"{compliance.Count} locations with compliance issues.");
+                    }
+
+                    var freshCutoff = DateTime.Now - TimeSpan.FromDays(7);
+                    var staleCutoff = DateTime.Now - TimeSpan.FromDays(14);
+
+                    var expiredCount = freshness?.Count(l => l.LastFullScan < staleCutoff) ?? 0;
+                    var staleCount = freshness?.Count(l => l.LastFullScan < freshCutoff) ?? 0 - expiredCount;
+
+                    if(expiredCount > 0 || staleCount > 0)
+                    {
+                        sb.AppendLine($"{expiredCount} locations are expired, and {staleCount} are stale.");
+                    }
+
+                    if(clearance.Count > 0)
+                    {
+                        sb.AppendLine($"{clearance.Sum(c => c?.MissingClearance.Count ?? 0)} clearance tags are missing.");
+                    }
+
+                    if (sb.Length > 0)
+                    {
+                        notificationManager.ScheduleNotification($"Micro C - {type}", sb.ToString(), ("inventory", type.ToString()));
+                    }
+                }
+            });
         }
     }
 

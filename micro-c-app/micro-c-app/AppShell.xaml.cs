@@ -23,6 +23,8 @@ namespace micro_c_app
             //Routing.RegisterRoute(nameof(BuildPage), typeof(BuildPage));
             //Routing.RegisterRoute(nameof(QuotePage), typeof(QuotePage));
 
+            Routing.RegisterRoute("inventory", typeof(InventoryLandingPage));
+
             RestoreState.Load();
             if(!SettingsPage.AcknowledgedAnalytics())
             {

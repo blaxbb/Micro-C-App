@@ -35,6 +35,7 @@ namespace micro_c_app.Droid
 
         public const string TITLE_KEY = "title";
         public const string MESSAGE_KEY = "message";
+        public const string ACTION_MESSAGE_KEY = "action_message";
         bool initialized = false;
         int messageId = -1;
 
@@ -49,7 +50,7 @@ namespace micro_c_app.Droid
             if(Build.VERSION.SdkInt >= BuildVersionCodes.O)
             {
                 var channelNameJava = new Java.Lang.String(CHANNEL_NAME);
-                var channel = new NotificationChannel(CHANNEL_ID, channelNameJava, NotificationImportance.Default)
+                var channel = new NotificationChannel(CHANNEL_ID, channelNameJava, NotificationImportance.Max)
                 {
                     Description = CHANNEL_DESCRIPTION
                 };
@@ -64,12 +65,12 @@ namespace micro_c_app.Droid
             var args = new NotificationEventArgs()
             {
                 Title = title,
-                Message = message
+                Message = message,
             };
             NotificationReceived?.Invoke(null, args);
         }
 
-        public int ScheduleNotification(string title, string message)
+        public int ScheduleNotification(string title, string message, params (string key, string value)[] extras)
         {
             if (!initialized)
             {
@@ -81,14 +82,23 @@ namespace micro_c_app.Droid
             intent.PutExtra(TITLE_KEY, title);
             intent.PutExtra(MESSAGE_KEY, message);
 
+            if(extras != null)
+            {
+                foreach(var extra in extras)
+                {
+                    intent.PutExtra(extra.key, extra.value);
+                }
+            }
+
             var pendingIntent = PendingIntent.GetActivity(AndroidApp.Context, PENDING_INTENT_ID, intent, PendingIntentFlags.OneShot);
 
             AndroidX.Core.App.NotificationCompat.Builder builder = new AndroidX.Core.App.NotificationCompat.Builder(AndroidApp.Context, CHANNEL_ID)
                 .SetContentIntent(pendingIntent)
                 .SetContentTitle(title)
                 .SetContentText(message)
-                .SetLargeIcon(BitmapFactory.DecodeResource(AndroidApp.Context.Resources, Resource.Drawable.tab_about))
-                .SetSmallIcon(Resource.Drawable.tab_about)
+                .SetStyle(new AndroidX.Core.App.NotificationCompat.BigTextStyle().BigText(message))
+                .SetLargeIcon(BitmapFactory.DecodeResource(AndroidApp.Context.Resources, Resource.Drawable.ic_shortcut_mc))
+                .SetSmallIcon(Resource.Drawable.ic_shortcut_mc)
                 .SetDefaults((int)NotificationDefaults.Vibrate | (int)NotificationDefaults.Sound);
             var notification = builder.Build();
             manager.Notify(messageId, notification);

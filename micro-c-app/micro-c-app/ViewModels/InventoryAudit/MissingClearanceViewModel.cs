@@ -11,6 +11,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
     public class MissingClearanceViewModel : BaseInventoryViewModel
     {
         public ObservableCollection<MissingClearanceInfo> Items { get; set; }
+        public const string Method = "Clearance";
         public MissingClearanceViewModel() : base()
         {
             Items = new ObservableCollection<MissingClearanceInfo>();
@@ -24,7 +25,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
                 IsLoading = true;
                 Items?.Clear();
 
-                var items = await Get<List<MissingClearanceInfo>>(Type, "Clearance");
+                var items = await Get<List<MissingClearanceInfo>>(Type, Method);
 
                 foreach (var item in items)
                 {

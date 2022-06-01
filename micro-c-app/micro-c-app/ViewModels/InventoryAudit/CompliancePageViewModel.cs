@@ -14,6 +14,8 @@ namespace micro_c_app.ViewModels.InventoryAudit
 
         public ObservableCollection<ComplianceReport> Items { get => items; set => SetProperty(ref items, value); }
 
+        public const string Method = "Compliance";
+
         public CompliancePageViewModel() : base()
         {
             Items = new ObservableCollection<ComplianceReport>();
@@ -27,7 +29,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
                 IsLoading = true;
                 Items?.Clear();
 
-                var items = await Get<List<ComplianceReport>>(Type, "Compliance");
+                var items = await Get<List<ComplianceReport>>(Type, Method);
 
                 foreach (var item in items)
                 {

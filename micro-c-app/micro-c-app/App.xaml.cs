@@ -72,6 +72,8 @@ namespace micro_c_app
                                                   typeof(Microsoft.AppCenter.Analytics.Analytics), typeof(Microsoft.AppCenter.Crashes.Crashes));
 
             AnalyticsService.Track("Store ID", SettingsPage.StoreID());
+
+            InventoryLandingPage.CheckNotifications();
         }
 
         protected override void OnSleep()
@@ -80,6 +82,7 @@ namespace micro_c_app
 
         protected override void OnResume()
         {
+            InventoryLandingPage.CheckNotifications();
         }
     }
 }

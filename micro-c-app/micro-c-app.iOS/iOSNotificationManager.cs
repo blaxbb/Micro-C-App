@@ -29,7 +29,7 @@ namespace micro_c_app.iOS
             });
         }
 
-        public int ScheduleNotification(string title, string message)
+        public int ScheduleNotification(string title, string message, params (string key, string value)[] extras)
         {
             // EARLY OUT: app doesn't have permissions
             if (!hasNotificationsPermission)

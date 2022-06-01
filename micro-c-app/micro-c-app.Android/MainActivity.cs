@@ -1,5 +1,6 @@
 ﻿
 using Android.App;
+using Android.Content;
 using Android.Content.PM;
 using Android.OS;
 using Android.Runtime;
@@ -8,7 +9,7 @@ using Xamarin.Essentials;
 
 namespace micro_c_app.Droid
 {
-    [Activity(Label = "Micro C App", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
+    [Activity(Label = "Micro C App", Icon = "@mipmap/icon", Theme = "@style/MainTheme", MainLauncher = true, LaunchMode = LaunchMode.SingleTop, ConfigurationChanges = ConfigChanges.ScreenSize | ConfigChanges.Orientation | ConfigChanges.UiMode | ConfigChanges.ScreenLayout | ConfigChanges.SmallestScreenSize)]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {
         protected override void OnCreate(Bundle savedInstanceState)
@@ -30,6 +31,23 @@ namespace micro_c_app.Droid
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        protected override async void OnNewIntent(Intent intent)
+        {
+            if (intent.HasExtra("inventory"))
+            {
+                System.Console.WriteLine($"INVENTORY - {intent.GetStringExtra("inventory")}");
+                var manager = (NotificationManager)Application.Context.GetSystemService(NotificationService);
+
+                manager.CancelAll();
+
+
+                await Xamarin.Forms.Shell.Current.Navigation.PushAsync(new Views.InventoryLandingPage());
+
+            }
+
+            base.OnNewIntent(intent);
         }
     }
 }
