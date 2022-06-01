@@ -102,8 +102,8 @@ namespace micro_c_app.Views
             Task.Run(async () =>
             {
                 var notificationManager = DependencyService.Get<INotificationManager>();
-                //foreach (var type in SettingsPage.InventoryFavorites())
-                foreach (var type in new BuildComponent.ComponentType[] {BuildComponent.ComponentType.Case, BuildComponent.ComponentType.Motherboard})
+                //foreach (var type in new BuildComponent.ComponentType[] {BuildComponent.ComponentType.Case, BuildComponent.ComponentType.Motherboard})
+                foreach (var type in SettingsPage.InventoryFavorites())
                 {
                     var unknowns = await BaseInventoryViewModel.Get<List<Item>>(type, UnknownLocationPageViewModel.Method);
                     var compliance = await BaseInventoryViewModel.Get<List<ComplianceReport>>(type, CompliancePageViewModel.Method);
