@@ -14,9 +14,9 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
             <StackLayout Grid.Column="0" Orientation="Horizontal" HorizontalOptions="FillAndExpand" Padding="10">
-                <Button Text="Reset" BackgroundColor="Red" HorizontalOptions="StartAndExpand" Command="{Binding Reset}"/>
-                <Button Text="Add" HorizontalOptions="CenterAndExpand" Command="{Binding Add}"/>
-                <Button Text="Replace" HorizontalOptions="EndAndExpand" Command="{Binding Replace}"/>
+                <Button Text="Audit" HorizontalOptions="StartAndExpand" Command="{Binding Replace}"/>
+                <Button Text="Reset" BackgroundColor="Red" HorizontalOptions="CenterAndExpand" Command="{Binding Reset}"/>
+                <Button Text="Submit" HorizontalOptions="EndAndExpand" Command="{Binding Submit}"/>
             </StackLayout>
             <ListView Grid.Row="1" ItemsSource="{Binding Scans}" SelectionMode="None" HasUnevenRows="True" x:Name="listView">
                 <ListView.ItemTemplate>

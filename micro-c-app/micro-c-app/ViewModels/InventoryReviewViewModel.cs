@@ -18,7 +18,7 @@ namespace micro_c_app.ViewModels
         public Dictionary<string, List<string>>? Scans { get => scans; set => SetProperty(ref scans, value); }
 
         public ICommand Reset { get; }
-        public ICommand Add { get; }
+        public ICommand Submit { get; }
         public ICommand Replace { get; }
 
         public const string LOCATION_TRACKER_BASEURL = "https://location.bbarrett.me";
@@ -41,14 +41,10 @@ namespace micro_c_app.ViewModels
                 }
             });
 
-            Add = new Command(async () =>
+            Submit = new Command(async () =>
             {
-                var confirm = await Shell.Current.DisplayAlert("Confirm", "This will add all items you have scanned to their locations.  This will not submit a completed audit of any location.", "Confirm", "Cancel");
-                if (confirm)
-                {
-                    await Submit("add");
-                    await Shell.Current.Navigation.PopAsync();
-                }
+                await DoSubmit("add");
+                await Shell.Current.Navigation.PopAsync();
             });
 
             Replace = new Command(async () =>
@@ -56,7 +52,7 @@ namespace micro_c_app.ViewModels
                 var confirm = await Shell.Current.DisplayAlert("Confirm", "This is a complete audit and will remove all items previously submitted to the locations scanned.  This is irreversible!", "Confirm", "Cancel");
                 if (confirm)
                 {
-                    await Submit("replace");
+                    await DoSubmit("replace");
                     await Shell.Current.Navigation.PopAsync();
                 }
             });
@@ -96,7 +92,7 @@ namespace micro_c_app.ViewModels
             }
         }
 
-        async Task<bool> Submit(string method)
+        async Task<bool> DoSubmit(string method)
         {
             if (Scans == null || Scans.Count == 0 || !Scans.Values.Any(l => l.Count > 0))
             {
@@ -106,7 +102,7 @@ namespace micro_c_app.ViewModels
             bool error = false;
             foreach (var kvp in Scans)
             {
-                var result = await Submit(kvp.Key, kvp.Value, method);
+                var result = await DoSubmit(kvp.Key, kvp.Value, method);
                 if (!result)
                 {
                     error = true;
@@ -125,7 +121,7 @@ namespace micro_c_app.ViewModels
             return !error;
         }
 
-        async Task<bool> Submit(string location, List<string> skus, string method = "add")
+        public static async Task<bool> DoSubmit(string location, List<string> skus, string method = "add")
         {
             try
             {

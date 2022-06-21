@@ -1,0 +1,34 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:gv="clr-namespace:GoogleVisionBarCodeScanner;assembly=BarcodeScanner.XF"
+             x:Class="micro_c_app.Views.InventoryQuickScan">
+    <ContentPage.Content>
+        <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="grid">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <gv:CameraView Grid.Row="0" Grid.RowSpan="2"
+                           OnBarcodeDetected="CameraView_OnDetected"
+                           DefaultTorchOn="False"
+                           VibrationOnDetected="False"
+                           x:Name="camera"/>
+            <Grid Grid.Row="1" BackgroundColor="#9939578f" Margin="25" Padding="10">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding StatusText}" FontSize="Title" HorizontalTextAlignment="Center" IsVisible="{Binding StatusText, Converter={StaticResource StringNullOrEmptyConverter}}"/>
+                <Label Grid.Row="1" Text="{Binding Item.Name}" LineBreakMode="NoWrap" HorizontalTextAlignment="Center" MaxLines="1"/>
+                <Label Grid.Row="2" Text="Scan a location tag to locate item."  HorizontalTextAlignment="Center" MaxLines="1"/>
+                <Button Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Text="+" Clicked="ManualAddClicked"/>
+            </Grid>
+        </Grid>
+    </ContentPage.Content>
+</ContentPage>
