@@ -32,7 +32,6 @@ namespace micro_c_app.Views
 
         public InventoryQuickScan()
         {
-            StatusText = "AJSKLFJK LSALJKF SFJKL KSAFFJKLFJ KLASFJFf  jksdlfj kFfjkl ";
             BindingContext = this;
             GoogleVisionBarCodeScanner.Methods.SetSupportBarcodeFormat(GoogleVisionBarCodeScanner.BarcodeFormats.QRCode);
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
