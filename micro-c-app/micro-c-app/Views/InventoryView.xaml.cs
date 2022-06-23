@@ -5,12 +5,14 @@ using MicroCLib.Models;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 using Xamarin.Forms;
@@ -31,6 +33,7 @@ namespace micro_c_app.Views
 
         Dictionary<string, List<string>> Scans = new Dictionary<string, List<string>>();
         List<string> FailedSearches = new List<string>();
+        public ObservableCollection<InventorySearchingStatus> Searching { get; set; }
         HttpClient client;
 
         private InventoryLocation currentLocation;
@@ -40,17 +43,18 @@ namespace micro_c_app.Views
 
         public const string SCAN_LOCATION_TEXT = "Scan a location tag.";
         public const string SCAN_PRODUCT_TEXT = "Scan a product.";
-        public const string SCAN_SEARCHING_TEXT = "Searching for product...";
-        public const string SCAN_CACHING_TEXT = "Caching similar products.";
-        public const string SCAN_FAILED_TEXT = "Failed to find product for";
-        public const string SCAN_SUCCESS_TEXT = "Scanned ";
         public const string SCAN_SUBMIT_SUCCESS_TEXT = "Submitted inventory results.\rScan a location tag.";
 
         public const string LOCATION_TRACKER_BASEURL = "https://location.bbarrett.me";
 
+        CancellationTokenSource cts = new CancellationTokenSource();
+        Task ticker;
+
         public InventoryView()
         {
             StatusText = SCAN_LOCATION_TEXT;
+            Searching = new ObservableCollection<InventorySearchingStatus>();
+
             BindingContext = this;
             client = new HttpClient();
             GoogleVisionBarCodeScanner.Methods.SetSupportBarcodeFormat(GoogleVisionBarCodeScanner.BarcodeFormats.All);
@@ -59,15 +63,45 @@ namespace micro_c_app.Views
             InitializeComponent();
         }
 
+        protected override void OnDisappearing()
+        {
+            cts.Cancel();
+        }
+
         protected override void OnAppearing()
         {
-            camera.RequestedFPS = 30;
+            camera.RequestedFPS = 15;
             Scans = RestoreState.Instance.InventoryScans ?? new Dictionary<string, List<string>>();
             currentLocation = null;
             StatusText = SCAN_LOCATION_TEXT;
             ScansUpdated();
             GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
             camera.IsEnabled = true;
+
+            cts = new CancellationTokenSource();
+            var token = cts.Token;
+            ticker = Task.Run(async () =>
+            {
+                while (!token.IsCancellationRequested)
+                {
+                    foreach (var status in Searching.ToList())
+                    {
+                        if (status.Failed || status.Success)
+                        {
+                            status.ElapsedTime += 1000;
+                            if (status.ElapsedTime > 5000)
+                            {
+                                var _ = Device.InvokeOnMainThreadAsync(() =>
+                                {
+                                    Searching.Remove(status);
+                                    OnPropertyChanged(nameof(Searching));
+                                });
+                            }
+                        }
+                    }
+                    await Task.Delay(1000, token);
+                }
+            }, token);
         }
 
         private async void CameraView_OnDetected(object sender, GoogleVisionBarCodeScanner.OnBarcodeDetectedEventArg e)
@@ -116,6 +150,13 @@ namespace micro_c_app.Views
                         continue;
                     }
 
+                    var status = new InventorySearchingStatus()
+                    {
+                        Text = barcode.Value
+                    };
+                    status.Success = true;
+                    Searching.Add(status);
+
                     if (!Scans.ContainsKey(CurrentLocation.Identifier))
                     {
                         Scans[CurrentLocation.Identifier] = new List<string>();
@@ -123,7 +164,6 @@ namespace micro_c_app.Views
 
                     if (Scans[CurrentLocation.Identifier].Contains(barcode.Value))
                     {
-                        StatusText = $"Already scanned {barcode.Value}";
                         if (SettingsPage.Vibrate())
                         {
                             Xamarin.Essentials.Vibration.Vibrate();
@@ -133,7 +173,6 @@ namespace micro_c_app.Views
                     {
                         Scans[CurrentLocation.Identifier].Add(barcode.Value);
                         ScansUpdated();
-                        StatusText = $"{SCAN_SUCCESS_TEXT} {barcode.Value}";
                         if (SettingsPage.Vibrate())
                         {
                             Xamarin.Essentials.Vibration.Vibrate();
@@ -145,19 +184,27 @@ namespace micro_c_app.Views
                     var text = SearchView.FilterBarcodeResult(barcode);
                     if (!string.IsNullOrWhiteSpace(text))
                     {
-                        StatusText = $"{SCAN_SEARCHING_TEXT} {text}";
+                        //StatusText = $"{SCAN_SEARCHING_TEXT} {text}";
+                        var status = new InventorySearchingStatus()
+                        {
+                            Text = text
+                        };
+                        Searching.Add(status);
 
                         var item = await FindItem(text);
 
                         if (item == null)
                         {
-                            StatusText = $"{SCAN_FAILED_TEXT} {text}";
+                            status.Failed = true;
+                            //StatusText = $"{SCAN_FAILED_TEXT} {text}";
                             if(Regex.IsMatch(text, "\\d{6}"))
                             {
                                 previousFailedSku = text;
                             }
                             continue;
                         }
+
+                        status.Success = true;
 
                         previousFailedSku = null;
 
@@ -168,7 +215,7 @@ namespace micro_c_app.Views
 
                         if (Scans[CurrentLocation.Identifier].Contains(item.SKU))
                         {
-                            StatusText = $"Already scanned {item.SKU} - {item.Name}";
+                            //StatusText = $"Already scanned {item.SKU} - {item.Name}";
                             if (SettingsPage.Vibrate())
                             {
                                 Xamarin.Essentials.Vibration.Vibrate();
@@ -178,7 +225,7 @@ namespace micro_c_app.Views
                         {
                             Scans[CurrentLocation.Identifier].Add(item.SKU);
                             ScansUpdated();
-                            StatusText = $"{SCAN_SUCCESS_TEXT} {item.SKU} - {item.Name}";
+                            //StatusText = $"{SCAN_SUCCESS_TEXT} {item.SKU} - {item.Name}";
                             if (SettingsPage.Vibrate())
                             {
                                 Xamarin.Essentials.Vibration.Vibrate();
@@ -232,12 +279,12 @@ namespace micro_c_app.Views
 
         public static bool IsLocationIdentifier(string text)
         {
-            return Regex.IsMatch(text, "\\d{3}-.*-.*");
+            return Regex.IsMatch(text, "^\\d{3}-.*-.*$");
         }
 
         bool IsClearanceIdentifier(string text)
         {
-            return Regex.IsMatch(text, "CL\\d{5,}");
+            return Regex.IsMatch(text, "^CL\\d{5,}$");
         }
 
         private void ScansUpdated()
@@ -280,51 +327,58 @@ namespace micro_c_app.Views
                         return;
                     }
 
+                    var status = new InventorySearchingStatus()
+                    {
+                        Text = manual
+                    };
+                    status.Success = true;
+                    Searching.Add(status);
+
                     if (!Scans.ContainsKey(CurrentLocation.Identifier))
                     {
                         Scans[CurrentLocation.Identifier] = new List<string>();
                     }
 
-                    if (Scans[CurrentLocation.Identifier].Contains(manual))
-                    {
-                        StatusText = $"Already scanned {manual}";
-                        if (SettingsPage.Vibrate())
-                        {
-                            Xamarin.Essentials.Vibration.Vibrate();
-                        }
-                    }
-                    else
+                    if (!Scans[CurrentLocation.Identifier].Contains(manual))
                     {
                         Scans[CurrentLocation.Identifier].Add(manual);
                         ScansUpdated();
-                        StatusText = $"{SCAN_SUCCESS_TEXT} {manual}";
-                        if (SettingsPage.Vibrate())
-                        {
-                            Xamarin.Essentials.Vibration.Vibrate();
-                        }
+                    }
+
+                    if (SettingsPage.Vibrate())
+                    {
+                        Xamarin.Essentials.Vibration.Vibrate();
                     }
                 }
-                else if(Regex.IsMatch(manual, "\\d{6}"))
+                else if(Regex.IsMatch(manual, "^\\d{6}$"))
                 {
                     if(CurrentLocation == null || string.IsNullOrWhiteSpace(CurrentLocation.Identifier))
                     {
                         await Shell.Current.DisplayAlert("Error", "Location must be set before manually entering a SKU.", "Ok");
                         return;
                     }
+
+                    var status = new InventorySearchingStatus()
+                    {
+                        Text = manual
+                    };
+                    status.Success = true;
+                    Searching.Add(status);
+
                     if (!Scans.ContainsKey(CurrentLocation.Identifier))
                     {
                         Scans[CurrentLocation.Identifier] = new List<string>();
                     }
 
-                    if (Scans[CurrentLocation.Identifier].Contains(manual))
-                    {
-                        StatusText = $"Already scanned {manual}";
-                    }
-                    else
+                    if (!Scans[CurrentLocation.Identifier].Contains(manual))
                     {
                         Scans[CurrentLocation.Identifier].Add(manual);
                         ScansUpdated();
-                        StatusText = $"Manually submitted {manual}";
+                    }
+
+                    if (SettingsPage.Vibrate())
+                    {
+                        Xamarin.Essentials.Vibration.Vibrate();
                     }
                 }
                 else
@@ -497,6 +551,50 @@ namespace micro_c_app.Views
 
         #region INotifyPropertyChanged
         public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            var changed = PropertyChanged;
+            if (changed == null)
+                return;
+
+            changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+        #endregion
+    }
+
+    public class InventorySearchingStatus : INotifyPropertyChanged
+    {
+        private string? text;
+        private bool failed;
+        private bool success;
+        private bool searching;
+
+        public string? Text { get => text; set => SetProperty(ref text, value); }
+        public bool Failed { get => failed; set { Searching = false; SetProperty(ref failed, value); } }
+        public bool Success { get => success; set { Searching = false; SetProperty(ref success, value); } }
+        public bool Searching { get => searching; set => SetProperty(ref searching, value); }
+        public float ElapsedTime { get; set; }
+
+        public InventorySearchingStatus()
+        {
+            Searching = true;
+        }
+
+        protected bool SetProperty<T>(ref T backingStore, T value,
+            [CallerMemberName] string propertyName = "",
+            Action? onChanged = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(backingStore, value))
+                return false;
+
+            backingStore = value;
+            onChanged?.Invoke();
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        #region INotifyPropertyChanged
+        public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
             var changed = PropertyChanged;

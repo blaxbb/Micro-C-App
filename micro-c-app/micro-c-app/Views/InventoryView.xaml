@@ -9,8 +9,9 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <gv:CameraView Grid.Row="0" Grid.RowSpan="3"
+            <gv:CameraView Grid.Row="0" Grid.RowSpan="4"
                            OnBarcodeDetected="CameraView_OnDetected"
                            DefaultTorchOn="False"
                            VibrationOnDetected="False"
@@ -44,20 +45,39 @@
                 </Label>
                 <Button Grid.Column="1" Grid.RowSpan="2" Text="Review" Clicked="ReviewClicked" BackgroundColor="Green"/>
             </Grid>
-            <Grid Grid.Row="2" BackgroundColor="#9939578f" Margin="25" Padding="10">
+            <StackLayout Grid.Row="2" BindableLayout.ItemsSource="{Binding Searching}" Spacing="0" BackgroundColor="#6939578f">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Grid HorizontalOptions="End">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <Label Grid.Column="0" Padding="10" Text="{Binding Text, StringFormat='Searching: {0}'}" LineBreakMode="NoWrap" VerticalOptions="Center" HorizontalOptions="End" IsVisible="{Binding Searching}"/>
+                            <Label Grid.Column="0" Padding="10" Text="{Binding Text, StringFormat='   Failed: {0}'}" LineBreakMode="NoWrap" VerticalOptions="Center" HorizontalOptions="End" IsVisible="{Binding Failed}"/>
+                            <Label Grid.Column="0" Padding="10" Text="{Binding Text, StringFormat='    Found: {0}'}" LineBreakMode="NoWrap" VerticalOptions="Center" HorizontalOptions="End" IsVisible="{Binding Success}"/>
+
+                            <ActivityIndicator Grid.Column="1" IsRunning="True" HeightRequest="40" IsVisible="{Binding Searching}"/>
+                            <Label Grid.Column="1" Text="X" TextColor="Red" HeightRequest="40" Padding="0,0,20,0" VerticalTextAlignment="Center" IsVisible="{Binding Failed}"/>
+                            <Label Grid.Column="1" Text="&#xf00c;" TextColor="LimeGreen" FontFamily="{StaticResource FontAwesomeSolid}" HeightRequest="40" Padding="0,0,20,0" VerticalTextAlignment="Center" IsVisible="{Binding Success}"/>
+                        </Grid>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+            <Grid Grid.Row="3" BackgroundColor="#9939578f" Padding="10,10,10,20">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="4*"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
-                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding StatusText}" FontSize="Title" HorizontalTextAlignment="Center"/>
-                <Label Grid.Row="1" Text="{Binding CurrentLocation.Name}" HorizontalTextAlignment="Center" MaxLines="1"/>
-                <Label Grid.Row="2" Text="{Binding CurrentLocation.Identifier}"  HorizontalTextAlignment="Center" MaxLines="1"/>
-                <Button Grid.Row="1" Grid.RowSpan="2" Grid.Column="1" Text="+" Clicked="ManualAddClicked"/>
+                <Label Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Text="{Binding StatusText}" LineBreakMode="NoWrap" MaxLines="1" HorizontalTextAlignment="Center"/>
+                <Label Grid.Row="1" Grid.Column="0" Text="{Binding CurrentLocation.Identifier}" IsVisible="{Binding CurrentLocation.Name, Converter={StaticResource StringNullOrEmptyConverter}}" HorizontalTextAlignment="Center" MaxLines="1"/>
+                <Label Grid.Row="1" Grid.Column="1"  Text="{Binding CurrentLocation.Name}" IsVisible="{Binding CurrentLocation.Name, Converter={StaticResource StringNullOrEmptyConverter}}"  HorizontalTextAlignment="Center" MaxLines="1"/>
+                <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Text="+" Clicked="ManualAddClicked"/>
             </Grid>
         </Grid>
     </ContentPage.Content>
