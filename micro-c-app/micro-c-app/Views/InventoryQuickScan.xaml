@@ -14,7 +14,7 @@
                            DefaultTorchOn="False"
                            VibrationOnDetected="False"
                            x:Name="camera"/>
-            <Grid Grid.Row="1" BackgroundColor="#9939578f" Margin="25" Padding="10">
+            <Grid Grid.Row="1" BackgroundColor="#9939578f" Padding="10,10,10,20">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>

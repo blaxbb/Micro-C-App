@@ -61,6 +61,7 @@
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*"/>
                                                     <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <Grid.RowDefinitions>
                                                     <RowDefinition Height="Auto"/>
@@ -69,6 +70,13 @@
                                                 <Label Grid.Column="0" Grid.Row="0" Text="{Binding Id}" InputTransparent="True"/>
                                                 <Label Grid.Column="1" Grid.Row="0" Text="{Binding Price, StringFormat='{0:C2}'}" HorizontalTextAlignment="End" InputTransparent="True"/>
                                                 <Label Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="2" Text="{Binding State}"/>
+                                                <Button Grid.Row="0" Grid.Column="2" Grid.RowSpan="2"
+                                                    FontFamily="{StaticResource FontAwesomeSolid}"
+                                                    Text="&#xf030;"
+                                                    Command="{Binding Path=BindingContext.ScanLocation, Source={x:Reference page}}"
+                                                    CommandParameter="{Binding .}"
+                                                    IsVisible="{Binding Source={x:Reference listView}, Path=SelectedItem, Converter={StaticResource EqualsConverter }, ConverterParameter={Reference grid}}"
+                                                />
                                             </Grid>
                                         </DataTemplate>
                                     </BindableLayout.ItemTemplate>

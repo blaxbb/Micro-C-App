@@ -1,10 +1,14 @@
-﻿using micro_c_lib.Models;
+﻿using micro_c_app.Views;
+using micro_c_lib.Models;
 using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Input;
+using Xamarin.Forms;
 
 namespace micro_c_app.ViewModels.InventoryAudit
 {
@@ -12,10 +16,51 @@ namespace micro_c_app.ViewModels.InventoryAudit
     {
         public ObservableCollection<MissingClearanceInfo> Items { get; set; }
         public const string Method = "Clearance";
+
+        public ICommand ScanLocation { get; }
+
         public MissingClearanceViewModel() : base()
         {
             Items = new ObservableCollection<MissingClearanceInfo>();
             Title = "Clearance";
+
+            ScanLocation = new Command<ClearanceInfo>(async (info) =>
+            {
+                var page = new InventoryQuickScan()
+                {
+                    Item = new Item()
+                    {
+                        SKU = info.Id,
+                        Name = info.Id
+                    }
+                };
+
+                bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+                if (!allowed)
+                {
+                    return;
+                }
+                page.OnSuccess += (object sender, EventArgs e) =>
+                {
+                    var parent = Items.FirstOrDefault(i => i.MissingClearance.Contains(info));
+                    if(parent != null)
+                    {
+                        parent.MissingClearance.Remove(info);
+
+                        Items.Remove(parent);
+                        Items.Add(parent);
+
+                        //
+                        // This fixes layout issues from removing item...
+                        //
+                        var tmp = Items.ToList();
+                        Items = new ObservableCollection<MissingClearanceInfo>(tmp);
+                    }
+
+                };
+
+                await Shell.Current.Navigation.PushAsync(page);
+            });
         }
 
         protected override async Task Load()
