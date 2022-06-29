@@ -85,6 +85,14 @@ namespace micro_c_app.Views
             RemoveSerialCommand = new Command<string>((serial) => RemoveSerial(serial));
         }
 
+        protected override void OnAppearing()
+        {
+            scanner2.RequestedFPS = 30;
+            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
+            scanner2.IsEnabled = true;
+            GoogleVisionBarCodeScanner.Methods.SetSupportBarcodeFormat(GoogleVisionBarCodeScanner.BarcodeFormats.All);
+        }        
+
         public static async Task ScanSerial(Action<string> callback)
         {
             var scanPage = new ScannerPage()
