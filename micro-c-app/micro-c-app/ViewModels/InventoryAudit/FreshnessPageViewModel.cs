@@ -9,22 +9,28 @@ namespace micro_c_app.ViewModels.InventoryAudit
 {
     public class FreshnessPageViewModel : BaseInventoryViewModel
     {
-        public ObservableCollection<InventoryLocation> Items { get; }
-        public const string Method = "Freshness";
+        public ObservableCollection<FreshnessInfo> Items { get; }
+        public const string Method = "Freshness2";
 
         public FreshnessPageViewModel() : base()
         {
-            Items = new ObservableCollection<InventoryLocation>();
+            Items = new ObservableCollection<FreshnessInfo>();
             Title = "Freshness";
         }
 
         protected override async Task Load()
         {
-            var result = await Get<List<InventoryLocation>>(Type, Method);
+            var result = await Get<List<FreshnessInfo>>(Type, Method);
             foreach(var item in result)
             {
                 Items?.Add(item);
             }
         }
+    }
+
+    public class FreshnessInfo
+    {
+        public InventoryLocation Location { get; set; }
+        public int Freshness { get; set; }
     }
 }
