@@ -131,61 +131,113 @@ namespace micro_c_app.Views
 
         private async Task HandleText(string text)
         {
-                if (IsLocationIdentifier(text))
+            if (IsLocationIdentifier(text))
+            {
+                previousFailedSku = null;
+                var location = text;
+                if (location == CurrentLocation?.Identifier)
                 {
-                    previousFailedSku = null;
-                    var location = text;
-                    if (location == CurrentLocation?.Identifier)
+                    continue;
+                }
+                try
+                {
+                    var response = await client.GetAsync($"{LOCATION_TRACKER_BASEURL}/api/Locations/{location}");
+                    if (!response.IsSuccessStatusCode)
                     {
                         continue;
                     }
-                    try
-                    {
-                        var response = await client.GetAsync($"{LOCATION_TRACKER_BASEURL}/api/Locations/{location}");
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            continue;
-                        }
 
-                        var textResponse = await response.Content.ReadAsStringAsync();
-                        if (string.IsNullOrWhiteSpace(textResponse))
-                        {
-                            continue;
-                        }
-
-                        CurrentLocation = JsonConvert.DeserializeObject<InventoryLocation>(textResponse);
-                        StatusText = SCAN_PRODUCT_TEXT;
-                        if (SettingsPage.Vibrate())
-                        {
-                            Xamarin.Essentials.Vibration.Vibrate();
-                        }
-                    }
-                    catch (Exception ex)
+                    var textResponse = await response.Content.ReadAsStringAsync();
+                    if (string.IsNullOrWhiteSpace(textResponse))
                     {
                         continue;
+                    }
+
+                    CurrentLocation = JsonConvert.DeserializeObject<InventoryLocation>(textResponse);
+                    StatusText = SCAN_PRODUCT_TEXT;
+                    if (SettingsPage.Vibrate())
+                    {
+                        Xamarin.Essentials.Vibration.Vibrate();
                     }
                 }
-                else if (IsClearanceIdentifier(text))
+                catch (Exception ex)
                 {
-                    if (CurrentLocation == null)
+                    continue;
+                }
+            }
+            else if (IsClearanceIdentifier(text))
+            {
+                if (CurrentLocation == null)
+                {
+                    continue;
+                }
+
+                var status = new InventorySearchingStatus()
+                {
+                    Text = text
+                };
+                status.Success = true;
+                Searching.Add(status);
+
+                if (!Scans.ContainsKey(CurrentLocation.Identifier))
+                {
+                    Scans[CurrentLocation.Identifier] = new List<string>();
+                }
+
+                if (Scans[CurrentLocation.Identifier].Contains(text))
+                {
+                    if (SettingsPage.Vibrate())
                     {
+                        Xamarin.Essentials.Vibration.Vibrate();
+                    }
+                }
+                else
+                {
+                    Scans[CurrentLocation.Identifier].Add(text);
+                    ScansUpdated();
+                    if (SettingsPage.Vibrate())
+                    {
+                        Xamarin.Essentials.Vibration.Vibrate();
+                    }
+                }
+            }
+            else if (CurrentLocation != null)
+            {
+                var filtered = SearchView.FilterBarcodeResult(text);
+                if (!string.IsNullOrWhiteSpace(filtered))
+                {
+                    //StatusText = $"{SCAN_SEARCHING_TEXT} {text}";
+                    var status = new InventorySearchingStatus()
+                    {
+                        Text = filtered
+                    };
+                    Searching.Add(status);
+
+                    var item = await FindItem(filtered);
+
+                    if (item == null)
+                    {
+                        status.Failed = true;
+                        //StatusText = $"{SCAN_FAILED_TEXT} {filtered}";
+                        if(Regex.IsMatch(filtered, "\\d{6}"))
+                        {
+                            previousFailedSku = filtered;
+                        }
                         continue;
                     }
 
-                    var status = new InventorySearchingStatus()
-                    {
-                        Text = text
-                    };
                     status.Success = true;
-                    Searching.Add(status);
+
+                    previousFailedSku = null;
 
                     if (!Scans.ContainsKey(CurrentLocation.Identifier))
                     {
                         Scans[CurrentLocation.Identifier] = new List<string>();
                     }
 
-                    if (Scans[CurrentLocation.Identifier].Contains(text))
+                    if (Scans[CurrentLocation.Identifier].Contains(item.SKU))
                     {
+                        //StatusText = $"Already scanned {item.SKU} - {item.Name}";
                         if (SettingsPage.Vibrate())
                         {
                             Xamarin.Essentials.Vibration.Vibrate();
@@ -193,65 +245,12 @@ namespace micro_c_app.Views
                     }
                     else
                     {
-                        Scans[CurrentLocation.Identifier].Add(text);
+                        Scans[CurrentLocation.Identifier].Add(item.SKU);
                         ScansUpdated();
+                        //StatusText = $"{SCAN_SUCCESS_TEXT} {item.SKU} - {item.Name}";
                         if (SettingsPage.Vibrate())
                         {
                             Xamarin.Essentials.Vibration.Vibrate();
-                        }
-                    }
-                }
-                else if (CurrentLocation != null)
-                {
-                    var filtered = SearchView.FilterBarcodeResult(text);
-                    if (!string.IsNullOrWhiteSpace(filtered))
-                    {
-                        //StatusText = $"{SCAN_SEARCHING_TEXT} {text}";
-                        var status = new InventorySearchingStatus()
-                        {
-                            Text = filtered
-                        };
-                        Searching.Add(status);
-
-                        var item = await FindItem(filtered);
-
-                        if (item == null)
-                        {
-                            status.Failed = true;
-                            //StatusText = $"{SCAN_FAILED_TEXT} {filtered}";
-                            if(Regex.IsMatch(filtered, "\\d{6}"))
-                            {
-                                previousFailedSku = filtered;
-                            }
-                            continue;
-                        }
-
-                        status.Success = true;
-
-                        previousFailedSku = null;
-
-                        if (!Scans.ContainsKey(CurrentLocation.Identifier))
-                        {
-                            Scans[CurrentLocation.Identifier] = new List<string>();
-                        }
-
-                        if (Scans[CurrentLocation.Identifier].Contains(item.SKU))
-                        {
-                            //StatusText = $"Already scanned {item.SKU} - {item.Name}";
-                            if (SettingsPage.Vibrate())
-                            {
-                                Xamarin.Essentials.Vibration.Vibrate();
-                            }
-                        }
-                        else
-                        {
-                            Scans[CurrentLocation.Identifier].Add(item.SKU);
-                            ScansUpdated();
-                            //StatusText = $"{SCAN_SUCCESS_TEXT} {item.SKU} - {item.Name}";
-                            if (SettingsPage.Vibrate())
-                            {
-                                Xamarin.Essentials.Vibration.Vibrate();
-                            }
                         }
                     }
                 }
