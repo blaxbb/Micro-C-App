@@ -22,7 +22,7 @@ using Xamarin.Forms.Xaml;
 namespace micro_c_app.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class InventoryView : ContentPage, INotifyPropertyChanged
+    public partial class InventoryView : KeyboardPage, INotifyPropertyChanged
     {
 
         public InventoryLocation CurrentLocation { get => currentLocation; set => SetProperty(ref currentLocation, value); }
