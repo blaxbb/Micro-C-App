@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<KeyboardPage xmlns="http://xamarin.com/schemas/2014/forms"
+<microc:KeyboardPage xmlns="http://xamarin.com/schemas/2014/forms"
+            xmlns:microc="clr-namespace:micro_c_app"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:gv="clr-namespace:GoogleVisionBarCodeScanner;assembly=BarcodeScanner.XF"
              x:Class="micro_c_app.Views.InventoryView">
-    <KeyboardPage.Content>
+    <microc:KeyboardPage.Content>
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="grid">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -80,5 +81,5 @@
                 <Button Grid.Row="0" Grid.RowSpan="2" Grid.Column="2" Text="+" Clicked="ManualAddClicked"/>
             </Grid>
         </Grid>
-    </KeyboardPage.Content>
-</KeyboardPage>
+    </microc:KeyboardPage.Content>
+</microc:KeyboardPage>

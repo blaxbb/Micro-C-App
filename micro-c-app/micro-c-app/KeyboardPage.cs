@@ -1,11 +1,14 @@
 using System;
 using Xamarin.Forms;
 
-public class KeyboardPage : ContentPage
+namespace micro_c_app
 {
-    public string Name { get; set; }
+    public class KeyboardPage : ContentPage
+    {
+        public string Name { get; set; }
 
-    public virtual void OnEnter() { return; }
+        public virtual void OnEnter() { return; }
 
-    public virtual void OnKeyUp(string text) { return; }
+        public virtual void OnKeyUp(string text) { return; }
+    }
 }

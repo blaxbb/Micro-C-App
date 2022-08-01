@@ -1,4 +1,5 @@
-﻿using micro_c_app.Models;
+﻿using micro_c_app;
+using micro_c_app.Models;
 using micro_c_app.ViewModels;
 using micro_c_lib.Models.Inventory;
 using MicroCLib.Models;
