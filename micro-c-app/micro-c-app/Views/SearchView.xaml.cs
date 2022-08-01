@@ -361,17 +361,22 @@ namespace micro_c_app.Views
 
         public static string FilterBarcodeResult(BarcodeResult result)
         {
-            if (Regex.IsMatch(result.Value, "\\d{12}"))
+            return FilterBarcodeResult(result.Value);
+        }
+
+        public static string FilterBarcodeResult(string text)
+        {
+            if (Regex.IsMatch(text, "\\d{12}"))
             {
-                return result.Value;
+                return text;
             }
 
-            if(result.Value.Length < 6)
+            if(text.Length < 6)
             {
                 return "";
             }
 
-            var match = Regex.Match(result.Value, "\\d{6}");
+            var match = Regex.Match(text, "\\d{6}");
             if (match.Success)
             {
                 return match.Groups[0].Value;

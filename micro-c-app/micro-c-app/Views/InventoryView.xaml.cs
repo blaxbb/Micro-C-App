@@ -48,6 +48,8 @@ namespace micro_c_app.Views
 
         public const string LOCATION_TRACKER_BASEURL = "https://location.bbarrett.me";
 
+        string ManualText = "";
+
         CancellationTokenSource cts = new CancellationTokenSource();
         Task ticker;
 
@@ -62,6 +64,17 @@ namespace micro_c_app.Views
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 
             InitializeComponent();
+        }
+
+
+        public override void OnKeyUp(string text)
+        {
+            ManualText = ManualText.Append(text);
+        }
+
+        public override void OnEnter()
+        {
+            base.OnEnter();
         }
 
         protected override void OnDisappearing()
@@ -110,10 +123,18 @@ namespace micro_c_app.Views
             List<GoogleVisionBarCodeScanner.BarcodeResult> barcodes = e.BarcodeResults;
             foreach (var barcode in barcodes)
             {
-                if (IsLocationIdentifier(barcode.Value))
+                HandleText(barcode.value);
+            }
+            await Task.Delay(2000);
+            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
+        }
+
+        private async Task HandleText(string text)
+        {
+                if (IsLocationIdentifier(text))
                 {
                     previousFailedSku = null;
-                    var location = barcode.Value;
+                    var location = text;
                     if (location == CurrentLocation?.Identifier)
                     {
                         continue;
@@ -144,7 +165,7 @@ namespace micro_c_app.Views
                         continue;
                     }
                 }
-                else if (IsClearanceIdentifier(barcode.Value))
+                else if (IsClearanceIdentifier(text))
                 {
                     if (CurrentLocation == null)
                     {
@@ -153,7 +174,7 @@ namespace micro_c_app.Views
 
                     var status = new InventorySearchingStatus()
                     {
-                        Text = barcode.Value
+                        Text = text
                     };
                     status.Success = true;
                     Searching.Add(status);
@@ -163,7 +184,7 @@ namespace micro_c_app.Views
                         Scans[CurrentLocation.Identifier] = new List<string>();
                     }
 
-                    if (Scans[CurrentLocation.Identifier].Contains(barcode.Value))
+                    if (Scans[CurrentLocation.Identifier].Contains(text))
                     {
                         if (SettingsPage.Vibrate())
                         {
@@ -172,7 +193,7 @@ namespace micro_c_app.Views
                     }
                     else
                     {
-                        Scans[CurrentLocation.Identifier].Add(barcode.Value);
+                        Scans[CurrentLocation.Identifier].Add(text);
                         ScansUpdated();
                         if (SettingsPage.Vibrate())
                         {
@@ -182,25 +203,25 @@ namespace micro_c_app.Views
                 }
                 else if (CurrentLocation != null)
                 {
-                    var text = SearchView.FilterBarcodeResult(barcode);
-                    if (!string.IsNullOrWhiteSpace(text))
+                    var filtered = SearchView.FilterBarcodeResult(text);
+                    if (!string.IsNullOrWhiteSpace(filtered))
                     {
                         //StatusText = $"{SCAN_SEARCHING_TEXT} {text}";
                         var status = new InventorySearchingStatus()
                         {
-                            Text = text
+                            Text = filtered
                         };
                         Searching.Add(status);
 
-                        var item = await FindItem(text);
+                        var item = await FindItem(filtered);
 
                         if (item == null)
                         {
                             status.Failed = true;
-                            //StatusText = $"{SCAN_FAILED_TEXT} {text}";
-                            if(Regex.IsMatch(text, "\\d{6}"))
+                            //StatusText = $"{SCAN_FAILED_TEXT} {filtered}";
+                            if(Regex.IsMatch(filtered, "\\d{6}"))
                             {
-                                previousFailedSku = text;
+                                previousFailedSku = filtered;
                             }
                             continue;
                         }
@@ -235,9 +256,6 @@ namespace micro_c_app.Views
                     }
                 }
             }
-
-            await Task.Delay(2000);
-            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
         }
 
         private async Task<Item?> FindItem(string text)
