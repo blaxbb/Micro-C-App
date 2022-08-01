@@ -125,7 +125,7 @@ namespace micro_c_app.Views
             List<GoogleVisionBarCodeScanner.BarcodeResult> barcodes = e.BarcodeResults;
             foreach (var barcode in barcodes)
             {
-                HandleText(barcode.value);
+                HandleText(barcode.Value);
             }
             await Task.Delay(2000);
             GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
@@ -139,20 +139,20 @@ namespace micro_c_app.Views
                 var location = text;
                 if (location == CurrentLocation?.Identifier)
                 {
-                    continue;
+                    return;
                 }
                 try
                 {
                     var response = await client.GetAsync($"{LOCATION_TRACKER_BASEURL}/api/Locations/{location}");
                     if (!response.IsSuccessStatusCode)
                     {
-                        continue;
+                        return;
                     }
 
                     var textResponse = await response.Content.ReadAsStringAsync();
                     if (string.IsNullOrWhiteSpace(textResponse))
                     {
-                        continue;
+                        return;
                     }
 
                     CurrentLocation = JsonConvert.DeserializeObject<InventoryLocation>(textResponse);
@@ -164,14 +164,14 @@ namespace micro_c_app.Views
                 }
                 catch (Exception ex)
                 {
-                    continue;
+                    return;
                 }
             }
             else if (IsClearanceIdentifier(text))
             {
                 if (CurrentLocation == null)
                 {
-                    continue;
+                    return;
                 }
 
                 var status = new InventorySearchingStatus()
@@ -225,7 +225,7 @@ namespace micro_c_app.Views
                         {
                             previousFailedSku = filtered;
                         }
-                        continue;
+                        return;
                     }
 
                     status.Success = true;
