@@ -69,11 +69,13 @@ namespace micro_c_app.Views
 
         public override void OnKeyUp(string text)
         {
-            ManualText = ManualText.Append(text);
+            ManualText = ManualText + text;
         }
 
         public override void OnEnter()
         {
+            HandleText(ManualText);
+            ManualText = "";
             base.OnEnter();
         }
 
