@@ -23,11 +23,27 @@ public class KeyboardPageRenderer : PageRenderer
         base.OnElementChanged(e);
 
         if (Visibility == ViewStates.Visible)
-            RequestFocus();
+        {
+            try
+            {
+                RequestFocus();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
 
         _page.Appearing += (sender, args) =>
         {
-            RequestFocus();
+            try
+            {
+                RequestFocus();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         };
     }
 
