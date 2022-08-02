@@ -72,11 +72,10 @@ namespace micro_c_app.Views
             ManualText = ManualText + text;
         }
 
-        public override void OnEnter()
+        public override async void OnEnter()
         {
-            HandleText(ManualText);
+            await HandleText(ManualText);
             ManualText = "";
-            base.OnEnter();
         }
 
         protected override void OnDisappearing()
@@ -125,7 +124,7 @@ namespace micro_c_app.Views
             List<GoogleVisionBarCodeScanner.BarcodeResult> barcodes = e.BarcodeResults;
             foreach (var barcode in barcodes)
             {
-                HandleText(barcode.Value);
+                await HandleText(barcode.Value);
             }
             await Task.Delay(2000);
             GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);

@@ -24,7 +24,6 @@ namespace micro_c_app.Views
             BindingContext = this;
             Items = new List<LandingItem>()
             {
-                new LandingItem("Scan", "Scan products into inventory.", "\uf030"),
                 new LandingItem("Zero Stock", "Products which have been scanned into inventory, but are listed as zero stock on MicroCenter.com. Consider checking for inventory discrepencies.", "\uf059"),
                 new LandingItem("Unknown Location", "Items which have not been scanned into inventory, but are listed as in stock on MicroCenter.com.  Consider checking for product in other areas.", "\uf14e"),
                 new LandingItem("Consolidation", "Items which have been scanned in multiple areas.  Consider consolidating them into fewer areas if stock warrants.", "\uf0e8"),
