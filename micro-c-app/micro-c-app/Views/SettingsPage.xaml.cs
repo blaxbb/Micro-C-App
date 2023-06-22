@@ -141,7 +141,7 @@ namespace micro_c_app.Views
             return Newtonsoft.Json.JsonConvert.DeserializeObject<List<ComponentTypeInfo>>(json);
         }
         public static int HelpMessageIndex() => Preferences.Get(PREF_HELPMESSAGE_INDEX, 0);
-        public static bool UseEnhancedSearch() => Preferences.Get(PREF_ENHANCED_SEARCH, false);
+        public static bool UseEnhancedSearch() => true;
         public static List<ComponentType> InventoryFavorites()
         {
             var json = Preferences.Get(PREF_INVENTORY_CATEGORIES, null);
