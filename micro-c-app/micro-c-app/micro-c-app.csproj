@@ -21,7 +21,7 @@
     <PackageReference Include="BarcodeScanner.XF.Realtime" Version="5.1.3" />
     <PackageReference Include="DataFlareClient" Version="1.1.4" />
     <PackageReference Include="FuzzySharp" Version="2.0.2" />
-    <PackageReference Include="micro-c-lib" Version="1.0.38" />
+    <PackageReference Include="micro-c-lib" Version="1.0.40" />
     <PackageReference Include="Microsoft.AppCenter.Analytics" Version="4.5.0" />
     <PackageReference Include="Microsoft.AppCenter.Crashes" Version="4.5.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
