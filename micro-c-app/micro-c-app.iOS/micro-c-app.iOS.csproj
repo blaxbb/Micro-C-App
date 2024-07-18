@@ -218,6 +218,7 @@
     </VisualStudio>
   </ProjectExtensions>
   <PropertyGroup>
+    <CompressBindingResourcePackage>true</CompressBindingResourcePackage>
     <MtouchExtraArgs>$(MtouchExtraArgs) -gcc_flags "-Xlinker -ld_classic"</MtouchExtraArgs>
   </PropertyGroup>
   <ItemGroup>
