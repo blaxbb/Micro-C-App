@@ -217,4 +217,10 @@
       <UserProperties TriggeredFromHotReload="False" />
     </VisualStudio>
   </ProjectExtensions>
+  <PropertyGroup>
+    <MtouchExtraArgs>$(MtouchExtraArgs) -gcc_flags "-Xlinker -ld_classic"</MtouchExtraArgs>
+  </PropertyGroup>
+  <ItemGroup>
+    <_MainLinkerFlags Include="-ld_classic" />
+  </ItemGroup>
 </Project>
