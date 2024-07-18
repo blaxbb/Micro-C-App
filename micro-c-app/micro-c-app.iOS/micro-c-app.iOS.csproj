@@ -222,6 +222,6 @@
     <MtouchExtraArgs>$(MtouchExtraArgs) -gcc_flags "-Xlinker -ld_classic"</MtouchExtraArgs>
   </PropertyGroup>
   <ItemGroup>
-    <_MainLinkerFlags Include="-ld_classic" />
+    <_MainLinkerFlags Include="-ld_classic -v" />
   </ItemGroup>
 </Project>
