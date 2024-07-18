@@ -60,10 +60,8 @@ stages:
         
   - job: iOS
     pool:
-      vmimage: 'macOS-latest'
+      vmimage: 'macOS-13'
     steps:
-    - name: Set default Xamarin SDK versions
-      run: $VM_ASSETS/select-xamarin-sdk-v2.sh --ios=17.5
     
     - task: InstallAppleCertificate@2
       inputs:
