@@ -60,7 +60,7 @@ stages:
         
   - job: iOS
     pool:
-      vmimage: 'macOS-14'
+      vmimage: 'macOS-13'
     steps:
 
     - task: Bash@3
