@@ -62,15 +62,13 @@ stages:
     pool:
       vmimage: 'macOS-13'
     steps:
-
     - task: Bash@3
       displayName: Install Xamarin
       inputs:
         targetType: 'inline'
         script: |
           brew install --cask xamarin-ios
-          brew install --cask xamarin-android
-    
+          brew install --cask xamarin-android    
     - task: InstallAppleCertificate@2
       inputs:
         keychain: 'temp'
@@ -95,7 +93,7 @@ stages:
         configuration: 'Release'
         packageApp: true
         buildForSimulator: false
-        runNugetRestore: true
+        runNugetRestore: false
         signingIdentity: $(APPLE_CERTIFICATE_SIGNING_IDENTITY)
         signingProvisioningProfileID: $(APPLE_PROV_PROFILE_UUID)
 
