@@ -39,8 +39,8 @@ namespace micro_c_app.iOS
             GoogleVisionBarCodeScanner.iOS.Initializer.Init();
             // Temporary work around for bug on Firebase Library
 	        // https://github.com/xamarin/GoogleApisForiOSComponents/issues/368
-	        Firebase.Core.App.Configure();
-	        RemoteConfig.SharedInstance.ConfigSettings = new RemoteConfigSettings();
+	        //Firebase.Core.App.Configure();
+	        //RemoteConfig.SharedInstance.ConfigSettings = new RemoteConfigSettings();
 
 
             return base.FinishedLaunching(app, options);
