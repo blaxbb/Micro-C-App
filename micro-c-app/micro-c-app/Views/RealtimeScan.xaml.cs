@@ -1,4 +1,4 @@
-﻿using GoogleVisionBarCodeScanner;
+﻿using BarcodeScanner.Mobile;
 using MicroCLib.Models;
 using System;
 using System.Collections.Generic;
@@ -32,7 +32,7 @@ namespace micro_c_app.Views
             AnalyticsService.Track("Start AR");
             FailedSearches.Add(FAILED_TEXT);
             BindingContext = this;
-            GoogleVisionBarCodeScanner.Methods.SetSupportBarcodeFormat(BarcodeFormats.All);
+            BarcodeScanner.Mobile.Methods.SetSupportBarcodeFormat(BarcodeFormats.All);
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
             Task.Run(ScheduleTick);
         }
@@ -148,59 +148,59 @@ namespace micro_c_app.Views
 
         private void FlashlightButton_Clicked(object sender, EventArgs e)
         {
-            GoogleVisionBarCodeScanner.Methods.ToggleFlashlight();
+            //BarcodeScanner.Mobile.Methods.ToggleFlashlight();
         }
 
-        private async void CameraView_OnDetected(object sender, GoogleVisionBarCodeScanner.OnBarcodeDetectedEventArg e)
-        {
-            Device.BeginInvokeOnMainThread(() => GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true));
+        //private async void CameraView_OnDetected(object sender, BarcodeScanner.Mobile.Methods.OnBarcodeDetectedEventArg e)
+        //{
+        //    Device.BeginInvokeOnMainThread(() => BarcodeScanner.Mobile.Methods.SetIsBarcodeScanning(true));
 
-            List<GoogleVisionBarCodeScanner.BarcodeResult> barcodes = e.BarcodeResults;
+        //    List<BarcodeScanner.Mobile.BarcodeResult> barcodes = e.BarcodeResults;
 
-            foreach (var barcode in barcodes)
-            {
-                var filtered = SearchView.FilterBarcodeResult(barcode);
-                if (string.IsNullOrWhiteSpace(filtered))
-                {
-                    continue;
-                }
+        //    foreach (var barcode in barcodes)
+        //    {
+        //        var filtered = SearchView.FilterBarcodeResult(barcode);
+        //        if (string.IsNullOrWhiteSpace(filtered))
+        //        {
+        //            continue;
+        //        }
 
-                if(BarcodeInfo.Values.Any(b => b.Item != null && b.Item.SKU == filtered && b.Text != filtered))
-                {
-                    //We already have this SKU barcode as a UPC barcode, so skip it
-                    continue;
-                }
+        //        if(BarcodeInfo.Values.Any(b => b.Item != null && b.Item.SKU == filtered && b.Text != filtered))
+        //        {
+        //            //We already have this SKU barcode as a UPC barcode, so skip it
+        //            continue;
+        //        }
 
-                barcode.Value = filtered;
+        //        barcode.Value = filtered;
 
-                RealtimeBarcodeInfo info;
-                Point target = new Point(barcode.Points[0].x * grid.Width, barcode.Points[0].y * grid.Height);
+        //        RealtimeBarcodeInfo info;
+        //        Point target = new Point(barcode.Points[0].x * grid.Width, barcode.Points[0].y * grid.Height);
 
-                if (!BarcodeInfo.ContainsKey(barcode.Value))
-                {
-                    //found new barcode
+        //        if (!BarcodeInfo.ContainsKey(barcode.Value))
+        //        {
+        //            //found new barcode
 
-                    info = new RealtimeBarcodeInfo()
-                    {
-                        Text = barcode.Value,
-                        LastScanned = DateTime.Now
-                    };
-                    BarcodeInfo[barcode.Value] = info;
+        //            info = new RealtimeBarcodeInfo()
+        //            {
+        //                Text = barcode.Value,
+        //                LastScanned = DateTime.Now
+        //            };
+        //            BarcodeInfo[barcode.Value] = info;
 
-                    await Device.InvokeOnMainThreadAsync(() =>
-                    {
-                        info.View = new RealtimePriceView();
-                        priceInfo.Children.Add(info.View);
-                    });
-                }
-                else
-                {
-                    info = BarcodeInfo[barcode.Value];
-                }
+        //            await Device.InvokeOnMainThreadAsync(() =>
+        //            {
+        //                info.View = new RealtimePriceView();
+        //                priceInfo.Children.Add(info.View);
+        //            });
+        //        }
+        //        else
+        //        {
+        //            info = BarcodeInfo[barcode.Value];
+        //        }
 
-                info.LastScanned = DateTime.Now;
-            }
-        }
+        //        info.LastScanned = DateTime.Now;
+        //    }
+        //}
 
         protected bool SetProperty<T>(ref T backingStore, T value,
             [CallerMemberName] string propertyName = "")
@@ -213,39 +213,39 @@ namespace micro_c_app.Views
             return true;
         }
 
-        private void CameraView_OnTextDetected(object sender, OnTextDetectedEventArg e)
-        {
-            foreach(var text in e.TextResults)
-            {
-                if (PriceInfo.ContainsKey(text.Value))
-                {
-                    var item = PriceInfo[text.Value];
-                    item.LastScanned = DateTime.Now;
-                    item.Size = RealtimePriceInfo.GetSize(text.Points);
-                    //Debug.WriteLine($"{item.Price} - {item.Size}");
-                }
-                else
-                {
-                    var match = Regex.Match(text.Value, "^\\$*(\\d+\\.*\\d*)$");
-                    if (match.Success)
-                    {
-                        var price = float.Parse(match.Groups[1].Value);
+        //private void CameraView_OnTextDetected(object sender, OnTextDetectedEventArg e)
+        //{
+        //    foreach(var text in e.TextResults)
+        //    {
+        //        if (PriceInfo.ContainsKey(text.Value))
+        //        {
+        //            var item = PriceInfo[text.Value];
+        //            item.LastScanned = DateTime.Now;
+        //            item.Size = RealtimePriceInfo.GetSize(text.Points);
+        //            //Debug.WriteLine($"{item.Price} - {item.Size}");
+        //        }
+        //        else
+        //        {
+        //            var match = Regex.Match(text.Value, "^\\$*(\\d+\\.*\\d*)$");
+        //            if (match.Success)
+        //            {
+        //                var price = float.Parse(match.Groups[1].Value);
 
-                        var info = new RealtimePriceInfo()
-                        {
-                            Text = text.Value,
-                            Price = price,
-                            LastScanned = DateTime.Now,
-                            Size = RealtimePriceInfo.GetSize(text.Points)
-                        };
-                        PriceInfo.Add(text.Value, info);
-                    }
-                }
-            }
-            Device.BeginInvokeOnMainThread(async () => {
-                GoogleVisionBarCodeScanner.Methods.SetIsTextScanning(true);
-            });
-        }
+        //                var info = new RealtimePriceInfo()
+        //                {
+        //                    Text = text.Value,
+        //                    Price = price,
+        //                    LastScanned = DateTime.Now,
+        //                    Size = RealtimePriceInfo.GetSize(text.Points)
+        //                };
+        //                PriceInfo.Add(text.Value, info);
+        //            }
+        //        }
+        //    }
+        //    //Device.BeginInvokeOnMainThread(async () => {
+        //    //    BarcodeScanner.Mobile.Methods.SetIsTextScanning(true);
+        //    //});
+        //}
     }
 
     public class RealtimeBarcodeInfo

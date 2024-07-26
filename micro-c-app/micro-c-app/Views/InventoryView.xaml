@@ -2,7 +2,7 @@
 <microc:KeyboardPage xmlns="http://xamarin.com/schemas/2014/forms"
             xmlns:microc="clr-namespace:micro_c_app"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:gv="clr-namespace:GoogleVisionBarCodeScanner;assembly=BarcodeScanner.XF"
+             xmlns:gv="clr-namespace:BarcodeScanner.Mobile;assembly=BarcodeScanner.Mobile.XamarinForms"
              x:Class="micro_c_app.Views.InventoryView">
     <microc:KeyboardPage.Content>
         <Grid HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" x:Name="grid">
@@ -13,8 +13,7 @@
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
             <gv:CameraView Grid.Row="0" Grid.RowSpan="4"
-                           OnBarcodeDetected="CameraView_OnDetected"
-                           DefaultTorchOn="False"
+                           OnDetected="CameraView_OnDetected"
                            VibrationOnDetected="False"
                            x:Name="camera"/>
             <Grid Grid.Row="0" Padding="20" BackgroundColor="#9939578f">

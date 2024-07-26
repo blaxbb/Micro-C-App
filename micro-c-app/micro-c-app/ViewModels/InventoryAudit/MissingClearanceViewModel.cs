@@ -35,7 +35,7 @@ namespace micro_c_app.ViewModels.InventoryAudit
                     }
                 };
 
-                bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+                bool allowed = await BarcodeScanner.Mobile.Methods.AskForRequiredPermission();
                 if (!allowed)
                 {
                     return;

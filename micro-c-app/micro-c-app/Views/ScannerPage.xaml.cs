@@ -1,4 +1,4 @@
-﻿using GoogleVisionBarCodeScanner;
+﻿using BarcodeScanner.Mobile;
 using MicroCLib.Models;
 using System;
 using System.Collections;
@@ -56,9 +56,9 @@ namespace micro_c_app.Views
                 //Debug.WriteLine($"UPDATE: {LastItem?.Name} - {LastItem?.Quantity}");
             });
 
-            Methods.SetIsBarcodeScanning(true);
+            //Methods.SetIsBarcodeScanning(true);
 
-            scanner2.OnBarcodeDetected += (sender, args) =>
+            scanner2.OnDetected += (sender, args) =>
             {
                 switch (CurrentScanMode)
                 {
@@ -67,17 +67,17 @@ namespace micro_c_app.Views
                         break;
                     case ScanMode.Serial:
                         var result = args.BarcodeResults.FirstOrDefault();
-                        if (result != null && !string.IsNullOrWhiteSpace(result.Value))
+                        if (result != null && !string.IsNullOrWhiteSpace(result.DisplayValue))
                         {
-                            var success = TryAddSerial(result.Value);
+                            var success = TryAddSerial(result.DisplayValue);
                             if (success && SettingsPage.Vibrate())
                             {
-                                Xamarin.Essentials.Vibration.Vibrate();
+                                Xamarin.Essentials.Vibration.Vibrate(); 
                             }
                         }
                         break;
                 }
-                Device.StartTimer(TimeSpan.FromSeconds(1), () => { Methods.SetIsBarcodeScanning(true); return false; });
+                //Device.StartTimer(TimeSpan.FromSeconds(1), () => { Methods.SetIsBarcodeScanning(true); return false; });
             };
             IsRunningTask = false;
             PropertyChanged += ScannerPage_PropertyChanged;
@@ -88,9 +88,9 @@ namespace micro_c_app.Views
         protected override void OnAppearing()
         {
             scanner2.RequestedFPS = 30;
-            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
+            //BarcodeScanner.Mobile.Methods.SetIsBarcodeScanning(true);
             scanner2.IsEnabled = true;
-            GoogleVisionBarCodeScanner.Methods.SetSupportBarcodeFormat(GoogleVisionBarCodeScanner.BarcodeFormats.All);
+            BarcodeScanner.Mobile.Methods.SetSupportBarcodeFormat(BarcodeScanner.Mobile.BarcodeFormats.All);
         }        
 
         public static async Task ScanSerial(Action<string> callback)
@@ -107,7 +107,7 @@ namespace micro_c_app.Views
                 {
                     Vibration.Vibrate();
                 }
-                callback.Invoke(result.Value);
+                callback.Invoke(result.DisplayValue);
             };
 
             //var navPage = new NavigationPage(scanPage);
@@ -154,10 +154,10 @@ namespace micro_c_app.Views
 
         private async void ManualSerialClicked(object sender, EventArgs e)
         {
-            Methods.SetIsBarcodeScanning(false);
+            //Methods.SetIsBarcodeScanning(false);
             var result = await DisplayPromptAsync("Serial Number", "Enter a serial number.");
             TryAddSerial(result);
-            Methods.SetIsBarcodeScanning(true);
+            //Methods.SetIsBarcodeScanning(true);
         }
 
         private void SerialClicked(object sender, EventArgs e)

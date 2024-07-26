@@ -1,4 +1,4 @@
-﻿using GoogleVisionBarCodeScanner;
+﻿using BarcodeScanner.Mobile;
 using micro_c_app.Models;
 using micro_c_app.ViewModels;
 using micro_c_lib.Models.Inventory;
@@ -136,7 +136,7 @@ namespace micro_c_app.Views
 
         public static async Task DoScan(INavigation navigation, Func<string, IProgress<ProgressInfo>?, Task<BuildComponent>> resultTask, Func<string, Task> locationResultTask, string categoryFilter = "", bool batchMode = false)
         {
-            bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+            bool allowed = await BarcodeScanner.Mobile.Methods.AskForRequiredPermission();
             if (!allowed)
             {
                 return;
@@ -169,7 +169,7 @@ namespace micro_c_app.Views
                         return;
                     }
 
-                    AnalyticsService.Track("Scan Result", result.Value);
+                    AnalyticsService.Track("Scan Result", result.DisplayValue);
                     Debug.WriteLine($"SCANNED {result}");
                     if (SettingsPage.Vibrate())
                     {
@@ -186,7 +186,7 @@ namespace micro_c_app.Views
 
                             if (locationResultTask != null && IsLocationTag(result))
                             {
-                                await locationResultTask.Invoke(result.Value);
+                                await locationResultTask.Invoke(result.DisplayValue);
                             }
                             else
                             {
@@ -225,7 +225,7 @@ namespace micro_c_app.Views
 
         public static async Task DoSerialScan(INavigation navigation, BuildComponent component, Action<BuildComponent> callback)
         {
-            bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+            bool allowed = await BarcodeScanner.Mobile.Methods.AskForRequiredPermission();
             if (!allowed)
             {
                 return;
@@ -258,7 +258,7 @@ namespace micro_c_app.Views
 
         private async void OnScanClicked(object sender, EventArgs e)
         {
-            bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+            bool allowed = await BarcodeScanner.Mobile.Methods.AskForRequiredPermission();
             if (allowed)
             {
                 DoScan(Navigation, async (result, progress) =>
@@ -361,7 +361,7 @@ namespace micro_c_app.Views
 
         public static string FilterBarcodeResult(BarcodeResult result)
         {
-            return FilterBarcodeResult(result.Value);
+            return FilterBarcodeResult(result.DisplayValue);
         }
 
         public static string FilterBarcodeResult(string text)
@@ -387,7 +387,7 @@ namespace micro_c_app.Views
 
         public static bool IsLocationTag(BarcodeResult result)
         {
-            return InventoryView.IsLocationIdentifier(result.Value);
+            return InventoryView.IsLocationIdentifier(result.DisplayValue);
         }
 
         public async Task OnSubmit(string searchValue)

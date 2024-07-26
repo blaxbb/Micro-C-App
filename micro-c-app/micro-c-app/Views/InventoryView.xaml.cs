@@ -60,7 +60,7 @@ namespace micro_c_app.Views
 
             BindingContext = this;
             client = new HttpClient();
-            GoogleVisionBarCodeScanner.Methods.SetSupportBarcodeFormat(GoogleVisionBarCodeScanner.BarcodeFormats.All);
+            BarcodeScanner.Mobile.Methods.SetSupportBarcodeFormat(BarcodeScanner.Mobile.BarcodeFormats.All);
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
 
             InitializeComponent();
@@ -90,7 +90,7 @@ namespace micro_c_app.Views
             currentLocation = null;
             StatusText = SCAN_LOCATION_TEXT;
             ScansUpdated();
-            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
+            //BarcodeScanner.Mobile.Methods.SetIsBarcodeScanning(true);
             camera.IsEnabled = true;
 
             cts = new CancellationTokenSource();
@@ -119,15 +119,15 @@ namespace micro_c_app.Views
             }, token);
         }
 
-        private async void CameraView_OnDetected(object sender, GoogleVisionBarCodeScanner.OnBarcodeDetectedEventArg e)
+        private async void CameraView_OnDetected(object sender, BarcodeScanner.Mobile.OnDetectedEventArg e)
         {
-            List<GoogleVisionBarCodeScanner.BarcodeResult> barcodes = e.BarcodeResults;
+            List<BarcodeScanner.Mobile.BarcodeResult> barcodes = e.BarcodeResults;
             foreach (var barcode in barcodes)
             {
-                await HandleText(barcode.Value);
+                await HandleText(barcode.DisplayValue);
             }
             await Task.Delay(2000);
-            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
+            //BarcodeScanner.Mobile.Methods.SetIsBarcodeScanning(true);
         }
 
         private async Task HandleText(string text)
@@ -409,7 +409,7 @@ namespace micro_c_app.Views
 
         public async void ReviewClicked(object sender, EventArgs e)
         {
-            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(false);
+            //BarcodeScanner.Mobile.Methods.SetIsBarcodeScanning(false);
             camera.IsEnabled = false;
 
             var vm = new InventoryReviewViewModel()

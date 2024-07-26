@@ -73,7 +73,7 @@ namespace micro_c_app
         {
             Device.BeginInvokeOnMainThread(async () =>
             {
-                bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+                bool allowed = await BarcodeScanner.Mobile.Methods.AskForRequiredPermission();
                 if (!allowed)
                 {
                     return;

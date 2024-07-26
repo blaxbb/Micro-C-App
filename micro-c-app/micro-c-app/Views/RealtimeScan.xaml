@@ -2,7 +2,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:d="http://xamarin.com/schemas/2014/forms/design"
-             xmlns:gv="clr-namespace:GoogleVisionBarCodeScanner;assembly=BarcodeScanner.XF"
+             xmlns:gv="clr-namespace:BarcodeScanner.Mobile;assembly=BarcodeScanner.Mobile.XamarinForms"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d"
              x:Class="micro_c_app.Views.RealtimeScan">
@@ -19,8 +19,8 @@
                 <Button x:Name="FlashlightButton" Text="Flashlight" BackgroundColor="#0075FF" TextColor="White" Clicked="FlashlightButton_Clicked" HorizontalOptions="EndAndExpand"
                         WidthRequest="150" CornerRadius="0"/>
             </StackLayout>
-            <gv:CameraView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" OnBarcodeDetected="CameraView_OnDetected" OnTextDetected="CameraView_OnTextDetected" Grid.Row="1"
-                           DefaultTorchOn="False" VibrationOnDetected="False"/>
+            <gv:CameraView HorizontalOptions="FillAndExpand" VerticalOptions="FillAndExpand" Grid.Row="1"
+                            VibrationOnDetected="False"/>
             <StackLayout Orientation="Vertical" VerticalOptions="End" Grid.Row="1" x:Name="priceInfo">
             </StackLayout>
         </Grid>

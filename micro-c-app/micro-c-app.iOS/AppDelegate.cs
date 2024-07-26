@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Firebase.RemoteConfig;
+//using Firebase.RemoteConfig;
 using Foundation;
 using UIKit;
 using UserNotifications;
@@ -36,7 +36,7 @@ namespace micro_c_app.iOS
 
             LoadApplication(new App());
 
-            GoogleVisionBarCodeScanner.iOS.Initializer.Init();
+            BarcodeScanner.Mobile.Methods.iOS.Initializer.Init();
             // Temporary work around for bug on Firebase Library
 	        // https://github.com/xamarin/GoogleApisForiOSComponents/issues/368
 	        //Firebase.Core.App.Configure();

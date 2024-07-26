@@ -33,7 +33,7 @@ namespace micro_c_app.Views
         public InventoryQuickScan()
         {
             BindingContext = this;
-            GoogleVisionBarCodeScanner.Methods.SetSupportBarcodeFormat(GoogleVisionBarCodeScanner.BarcodeFormats.QRCode);
+            BarcodeScanner.Mobile.Methods.SetSupportBarcodeFormat(BarcodeScanner.Mobile.BarcodeFormats.QRCode);
             On<Xamarin.Forms.PlatformConfiguration.iOS>().SetUseSafeArea(true);
             client = new HttpClient();
             InitializeComponent();
@@ -42,18 +42,18 @@ namespace micro_c_app.Views
         protected override void OnAppearing()
         {
             camera.RequestedFPS = 30;
-            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
+            //BarcodeScanner.Mobile.Methods.SetIsBarcodeScanning(true);
             camera.IsEnabled = true;
         }
 
-        private async void CameraView_OnDetected(object sender, GoogleVisionBarCodeScanner.OnBarcodeDetectedEventArg e)
+        private async void CameraView_OnDetected(object sender, BarcodeScanner.Mobile.OnDetectedEventArg e)
         {
-            List<GoogleVisionBarCodeScanner.BarcodeResult> barcodes = e.BarcodeResults;
+            List<BarcodeScanner.Mobile.BarcodeResult> barcodes = e.BarcodeResults;
             foreach (var barcode in barcodes)
             {
-                if (InventoryView.IsLocationIdentifier(barcode.Value))
+                if (InventoryView.IsLocationIdentifier(barcode.DisplayValue))
                 {
-                    var location = barcode.Value;
+                    var location = barcode.DisplayValue;
 
                     try
                     {
@@ -67,7 +67,7 @@ namespace micro_c_app.Views
             }
 
             await Task.Delay(2000);
-            GoogleVisionBarCodeScanner.Methods.SetIsBarcodeScanning(true);
+            //BarcodeScanner.Mobile.Methods.SetIsBarcodeScanning(true);
         }
 
         public async void ManualAddClicked(object sender, EventArgs e)

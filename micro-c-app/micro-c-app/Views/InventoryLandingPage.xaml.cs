@@ -45,7 +45,7 @@ namespace micro_c_app.Views
                 case "Scan":
                     Device.BeginInvokeOnMainThread(async () =>
                     {
-                        bool allowed = await GoogleVisionBarCodeScanner.Methods.AskForRequiredPermission();
+                        bool allowed = await BarcodeScanner.Mobile.Methods.AskForRequiredPermission();
                         if (!allowed)
                         {
                             return;
