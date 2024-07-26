@@ -87,10 +87,10 @@
       <Version>2.88.8</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.AndroidX.CoordinatorLayout">
-      <Version>1.1.0.8</Version>
+      <Version>1.1.0.10</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.AndroidX.SwipeRefreshLayout">
-      <Version>1.1.0.3</Version>
+      <Version>1.1.0.5</Version>
     </PackageReference>
     <PackageReference Include="Xamarin.Forms" Version="5.0.0.2662" />
     <PackageReference Include="Xamarin.Essentials" Version="1.8.1" />
@@ -187,7 +187,7 @@
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties TriggeredFromHotReload="False" XamarinHotReloadDebuggerTimeoutExceptionmicrocappAndroidHideInfoBar="True" XamarinHotReloadUnhandledDeviceExceptionmicrocappAndroidHideInfoBar="True" />
+      <UserProperties XamarinHotReloadUnhandledDeviceExceptionmicrocappAndroidHideInfoBar="True" XamarinHotReloadDebuggerTimeoutExceptionmicrocappAndroidHideInfoBar="True" TriggeredFromHotReload="False" />
     </VisualStudio>
   </ProjectExtensions>
 </Project>
